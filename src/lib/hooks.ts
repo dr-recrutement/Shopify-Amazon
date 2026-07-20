@@ -25,6 +25,20 @@ export function useAuth() {
   return { session, loading, isSuperAdmin, user: session?.user ?? null };
 }
 
+export function useTenant() {
+  const { session } = useAuth();
+  const [tenant, setTenant] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session?.user?.id) { setLoading(false); return; }
+    supabase.from('tenants').select('*').eq('owner_id', session.user.id).maybeSingle()
+      .then(({ data }) => { setTenant(data); setLoading(false); });
+  }, [session?.user?.id]);
+
+  return { tenant, loading };
+}
+
 export function useIntersectionObserver(options?: IntersectionObserverInit) {
   const [ref, setRef] = useState<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);

@@ -45,21 +45,36 @@ Les secrets serveur (clés de chiffrement des clés API paiement vendeurs, clés
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
 
-### ⚠️ Correction de l'erreur de déploiement Vite
+### ⚠️ Correction de l'erreur de déploiement Vite + nom de projet
 
-**Erreur corrigée** : Cloudflare (Wrangler) ne pouvait pas configurer automatiquement un projet Vite en dessous de la version 6. Le log renvoyait :
+**Erreurs corrigées** :
 
+1. **Vite 5.4.8 → 6.4.3** : Cloudflare (Wrangler) ne pouvait pas configurer automatiquement un projet Vite < 6.0.0. Le log renvoyait :
 ```
 ✘ [ERROR] The version of Vite used in the project ("5.4.8") cannot be automatically configured.
 Please update the Vite version to at least "6.0.0" and try again.
 ```
 
-**Correction appliquée** :
-- Mise à jour de `vite` vers `^6.4.3` et `@vitejs/plugin-react` vers `^4.7.0` dans `package.json`
-- Regénération du lockfile via `npm install`
-- Vérification du build local : `npm run build` se termine sans erreur
-- `vite.config.ts` reste compatible (aucun changement de configuration requis)
-- Le fichier `public/_redirects` (`/* /index.html 200`) assure le routing SPA côté Cloudflare Pages
+2. **Nom de projet `shopify-amazon` → `liafrikos-platform`** : Le `name` dans `package.json` était hérité du starter (`vite-react-typescript-starter`), causant la détection d'un Worker nommé `shopify-amazon` par Cloudflare. Renommé en `liafrikos-platform`.
+
+**Corrections appliquées** :
+- `vite` mis à jour vers `^6.4.3`, `@vitejs/plugin-react` vers `^4.7.0`
+- `name` dans `package.json` renommé `liafrikos-platform`
+- Lockfile régénéré via `npm install`
+- Build local vérifié : `npm run build` se termine sans erreur
+- `vite.config.ts` reste compatible (aucun changement requis)
+- `public/_redirects` (`/* /index.html 200`) assure le routing SPA
+
+### Mode de déploiement recommandé
+
+Ce projet est un **frontend statique SPA** (React + Vite). Le déploiement recommandé est **Cloudflare Pages** (et non Workers via `wrangler deploy`) :
+
+1. Connecter le dépôt GitHub à Cloudflare Pages
+2. Build command : `npm run build`
+3. Output directory : `dist`
+4. Variables d'environnement : `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+
+Si des fonctions serverless sont nécessaires (webhooks paiement, proxy API), les déployer séparément via **Supabase Edge Functions** ou **Cloudflare Workers** dédiés.
 
 ### Routing SPA
 

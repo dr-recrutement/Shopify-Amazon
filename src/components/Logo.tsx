@@ -22,7 +22,7 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
         style={{ width: sizes[size].img, height: sizes[size].img }}
       />
       {!iconOnly && (
-        <span className={`font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
+        <span className={`font-semibold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
           LiAfrik <span className="text-green-600">OS</span>
         </span>
       )}

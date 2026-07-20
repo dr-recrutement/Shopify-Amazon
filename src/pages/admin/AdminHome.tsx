@@ -68,7 +68,7 @@ export default function AdminHome() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-gray-500 uppercase">{s.label}</p>
-                  <p className="mt-2 text-2xl font-bold">{s.value}</p>
+                  <p className="mt-2 text-2xl font-semibold">{s.value}</p>
                   <p className="mt-1 text-xs text-green-600 font-medium">{s.change}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colors[s.color]}`}><Icon size={20} /></div>
@@ -134,16 +134,16 @@ export default function AdminHome() {
           <div className="space-y-4">
             <div>
               <p className="text-xs text-gray-500 uppercase">Taux de churn</p>
-              <p className="text-2xl font-bold text-gray-900">{churnData.rate}</p>
+              <p className="text-2xl font-semibold text-gray-900">{churnData.rate}</p>
               <p className="text-xs text-green-600">{churnData.trend}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase">LTV moyenne</p>
-              <p className="text-2xl font-bold text-gray-900">{churnData.ltv}</p>
+              <p className="text-2xl font-semibold text-gray-900">{churnData.ltv}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase">Nouvelles inscriptions ({period})</p>
-              <p className="text-2xl font-bold text-green-600">+847</p>
+              <p className="text-2xl font-semibold text-green-600">+847</p>
             </div>
           </div>
         </Card>

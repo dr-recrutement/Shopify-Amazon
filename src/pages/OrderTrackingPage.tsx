@@ -62,7 +62,7 @@ export default function OrderTrackingPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">Robe wax M</span><span>15 000 XOF</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Sac cuir x2</span><span>50 000 XOF</span></div>
-                <div className="flex justify-between pt-2 border-t border-gray-100"><span className="font-semibold">Total</span><span className="font-bold">66 000 XOF</span></div>
+                <div className="flex justify-between pt-2 border-t border-gray-100"><span className="font-semibold">Total</span><span className="font-semibold">66 000 XOF</span></div>
               </div>
               <Button variant="secondary" size="sm" className="mt-4 flex items-center gap-2"><MessageCircle size={14} /> Contacter le vendeur</Button>
             </Card>

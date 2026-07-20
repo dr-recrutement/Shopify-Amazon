@@ -70,7 +70,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between"><span className="text-gray-500">Robe wax M</span><span>15 000 XOF</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Sac cuir x2</span><span>50 000 XOF</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Livraison</span><span>{fmt(shippingCost)} XOF</span></div>
-                <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg">{fmt(total + shippingCost)} XOF</span></div>
+                <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-semibold text-lg">{fmt(total + shippingCost)} XOF</span></div>
               </div>
               <Button onClick={placeOrder} className="mt-4 w-full">Confirmer la commande <ArrowRight size={16} /></Button>
               <div className="mt-4 space-y-2 text-xs text-gray-500">

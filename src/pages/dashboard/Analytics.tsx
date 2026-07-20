@@ -15,7 +15,7 @@ export default function Analytics() {
         {metrics.map(m => (
           <Card key={m.label} className="p-5">
             <p className="text-xs text-gray-500 uppercase">{m.label}</p>
-            <p className="mt-2 text-2xl font-bold">{m.value}</p>
+            <p className="mt-2 text-2xl font-semibold">{m.value}</p>
             <div className={`mt-1 text-xs font-medium flex items-center gap-1 ${m.up ? 'text-green-600' : 'text-red-600'}`}>
               {m.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {m.change}
             </div>

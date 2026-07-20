@@ -263,7 +263,7 @@ export default function OnboardingPage() {
                         <div className="text-xs text-gray-500">{p.products === -1 ? 'Produits illimités' : `${p.products} produits`}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-gray-900">${data.billing === 'annual' ? p.annualPrice : p.price}</div>
+                        <div className="font-semibold text-gray-900">${data.billing === 'annual' ? p.annualPrice : p.price}</div>
                         <div className="text-xs text-gray-500">/{data.billing === 'annual' ? 'an' : 'mois'}</div>
                       </div>
                     </div>

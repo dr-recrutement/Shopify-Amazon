@@ -13,9 +13,9 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
-            🇨🇲 Conçu au Cameroun — pour toute l'Afrique 🌍
+            🇨🇲 Conçu au Cameroun — pour toute l'Afrique
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 tracking-tight">
             {fr ? 'Notre histoire' : 'Our story'}
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
@@ -26,7 +26,7 @@ export default function AboutPage() {
         </div>
 
         <Card className="p-8 mb-8 bg-gradient-to-br from-orange-50 to-white">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             {fr ? 'Un manifeste, pas une adaptation' : 'A manifesto, not an adaptation'}
           </h2>
           <p className="text-gray-700 leading-relaxed">
@@ -55,7 +55,7 @@ export default function AboutPage() {
 
         <Card className="p-8 text-center bg-gray-900 text-white">
           <Sparkles size={24} className="text-orange-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-3">
+          <h2 className="text-2xl font-semibold mb-3">
             {fr ? 'Construite ici. Pensée pour nous.' : 'Built here. Designed for us.'}
           </h2>
           <p className="text-gray-300 max-w-xl mx-auto">

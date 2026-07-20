@@ -11,9 +11,9 @@ export default function Customers() {
     <div>
       <PageHeader title="Clients" subtitle="Votre base clients et segments." action={<Button><UserPlus size={16} /> Ajouter</Button>} />
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Total clients</p><p className="mt-2 text-2xl font-bold">3</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Nouveaux (30j)</p><p className="mt-2 text-2xl font-bold">1</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-bold">15 000 XOF</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Total clients</p><p className="mt-2 text-2xl font-semibold">3</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Nouveaux (30j)</p><p className="mt-2 text-2xl font-semibold">1</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-semibold">15 000 XOF</p></Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <Card className="p-5">

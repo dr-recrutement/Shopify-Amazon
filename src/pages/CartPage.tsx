@@ -62,7 +62,7 @@ export default function CartPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Sous-total</span><span className="font-medium">{fmt(total)} XOF</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Livraison estimée</span><span className="font-medium">{fmt(shipping)} XOF</span></div>
-                  <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg">{fmt(total + shipping)} XOF</span></div>
+                  <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-semibold text-lg">{fmt(total + shipping)} XOF</span></div>
                 </div>
                 <Link to="/checkout"><Button className="mt-4 w-full">Finaliser ma commande <ArrowRight size={16} /></Button></Link>
               </Card>

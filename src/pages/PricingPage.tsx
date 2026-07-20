@@ -21,9 +21,9 @@ export default function PricingPage() {
           {PLANS.map(p => (
             <Card key={p.id} className={`p-8 relative ${p.popular ? 'border-2 border-orange-500 shadow-xl' : 'border border-gray-100'}`}>
               {p.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-orange-600 text-white text-xs font-semibold rounded-full">Le plus populaire</div>}
-              <h3 className="font-serif-display text-2xl font-bold">{p.name}</h3>
+              <h3 className="font-serif-display text-2xl font-semibold">{p.name}</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold">${p.price}</span><span className="text-gray-500">/mois</span>
+                <span className="text-4xl font-semibold">${p.price}</span><span className="text-gray-500">/mois</span>
               </div>
               <p className="mt-1 text-xs text-gray-500">ou ${p.annualPrice}/an (-2 mois)</p>
               <ul className="mt-6 space-y-3 text-sm">

@@ -126,7 +126,7 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
     case 'header':
       return (
         <div className="flex items-center justify-between px-6 py-3 border-b" style={{ borderColor: '#eee' }}>
-          <div className="font-bold text-sm" style={{ color: colors.text }}>Ma Boutique</div>
+          <div className="font-semibold text-sm" style={{ color: colors.text }}>Ma Boutique</div>
           <div className="hidden md:flex gap-4 text-xs" style={{ color: colors.text }}>
             {(section.props.nav || []).map((n: string) => <span key={n}>{n}</span>)}
           </div>
@@ -136,7 +136,7 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
     case 'hero':
       return (
         <div className="px-6 py-12 text-center">
-          <h2 className="text-2xl font-extrabold" style={{ color: colors.text }}>{section.props.title || 'Hero'}</h2>
+          <h2 className="text-2xl font-semibold" style={{ color: colors.text }}>{section.props.title || 'Hero'}</h2>
           <p className="mt-2 text-sm" style={{ color: '#666' }}>{section.props.subtitle || ''}</p>
           <div className="mt-4 inline-block px-4 py-2 rounded-lg text-white text-xs font-semibold" style={{ backgroundColor: primary }}>{section.props.cta || 'Découvrir'}</div>
         </div>
@@ -152,7 +152,7 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
     case 'category-grid':
       return (
         <div className="px-6 py-8">
-          <h3 className="font-bold text-sm mb-3" style={{ color: colors.text }}>{section.props.title || 'Catégories'}</h3>
+          <h3 className="font-semibold text-sm mb-3" style={{ color: colors.text }}>{section.props.title || 'Catégories'}</h3>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-square bg-gray-100 rounded-lg" />)}
           </div>
@@ -161,7 +161,7 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
     case 'countdown':
       return (
         <div className="px-6 py-6 text-center" style={{ backgroundColor: primary, color: 'white' }}>
-          <h3 className="font-bold text-sm">{section.props.title || 'Promo'}</h3>
+          <h3 className="font-semibold text-sm">{section.props.title || 'Promo'}</h3>
           <div className="mt-2 flex justify-center gap-2">
             {['J', 'H', 'M', 'S'].map(u => <div key={u} className="bg-white/20 rounded px-2 py-1 text-xs font-mono">00 {u}</div>)}
           </div>

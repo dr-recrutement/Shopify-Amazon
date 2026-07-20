@@ -27,10 +27,10 @@ export default function Marketing() {
       <PageHeader title="Marketing" subtitle="Campagnes, automatisations et performance." action={<Button onClick={() => setShowEditor(true)}><Plus size={16} /> Créer une campagne</Button>} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4"><Mail size={18} className="text-orange-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'Email').length}</p></Card>
-        <Card className="p-4"><MessageSquare size={18} className="text-green-600 mb-2" /><p className="text-xs text-gray-500">Campagnes WhatsApp</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'WhatsApp').length}</p></Card>
-        <Card className="p-4"><Calendar size={18} className="text-blue-600 mb-2" /><p className="text-xs text-gray-500">Programmées</p><p className="text-xl font-bold">{campaigns.filter(c => c.status === 'scheduled').length}</p></Card>
-        <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-bold">50%</p></Card>
+        <Card className="p-4"><Mail size={18} className="text-orange-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-semibold">{campaigns.filter(c => c.channel === 'Email').length}</p></Card>
+        <Card className="p-4"><MessageSquare size={18} className="text-green-600 mb-2" /><p className="text-xs text-gray-500">Campagnes WhatsApp</p><p className="text-xl font-semibold">{campaigns.filter(c => c.channel === 'WhatsApp').length}</p></Card>
+        <Card className="p-4"><Calendar size={18} className="text-blue-600 mb-2" /><p className="text-xs text-gray-500">Programmées</p><p className="text-xl font-semibold">{campaigns.filter(c => c.status === 'scheduled').length}</p></Card>
+        <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-semibold">50%</p></Card>
       </div>
 
       <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-orange-50 to-white">

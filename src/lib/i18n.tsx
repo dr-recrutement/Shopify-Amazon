@@ -35,8 +35,8 @@ export const translations: Dict = {
     en: 'The pan-African e-commerce SaaS platform. Your online store, in your image. Everywhere in Africa.'
   },
   'footer.origin': {
-    fr: 'Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP — pour toute l\'Afrique 🌍',
-    en: 'Designed and developed in Cameroon 🇨🇲 by LIYAH GROUP — for all of Africa 🌍'
+    fr: 'Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP — pour toute l\'Afrique',
+    en: 'Designed and developed in Cameroon 🇨🇲 by LIYAH GROUP — for all of Africa'
   },
 };
 

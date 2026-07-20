@@ -118,9 +118,9 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-medium mb-6">
               <Star size={14} fill="currentColor" /> {t('hero.badge')}
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-gray-900 leading-[1.05] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-semibold text-gray-900 leading-[1.05] tracking-tight">
               {t('hero.title1')}<br />
-              <span className="italic text-orange-600 font-bold">{t('hero.title2')}</span><br />
+              <span className="italic text-orange-600 font-semibold">{t('hero.title2')}</span><br />
               {t('hero.title3')}
             </h1>
             <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -142,7 +142,7 @@ export default function LandingPage() {
             {stats.map((s, i) => (
               <Section key={s.label} delay={i * 80}>
                 <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight">
+                  <div className="text-4xl lg:text-5xl font-semibold text-gray-900 tracking-tight">
                     <CountUp end={s.value} suffix={s.suffix} />
                   </div>
                   <p className="mt-2 text-sm text-gray-600">{s.label}</p>
@@ -163,7 +163,7 @@ export default function LandingPage() {
             {paymentLogos.map((p, i) => (
               <Section key={p.name} delay={i * 60}>
                 <div className="flex flex-col items-center justify-center h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm mb-1" style={{ backgroundColor: p.color }}>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold text-sm mb-1" style={{ backgroundColor: p.color }}>
                     {p.name.charAt(0)}
                   </div>
                   <span className="text-xs font-medium text-gray-700">{p.name}</span>
@@ -179,9 +179,9 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
-              🇨🇲 Conçu au Cameroun — pour toute l'Afrique 🌍
+              🇨🇲 Conçu au Cameroun — pour toute l'Afrique
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi LiAfrikOS ?</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Pourquoi LiAfrikOS ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed">
               LiAfrikOS n'est pas une adaptation d'un outil étranger — c'est pensé et construit depuis l'Afrique, pour l'Afrique, dès sa fondation. Mobile Money natif, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce africain.
             </p>
@@ -208,7 +208,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre en Afrique</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre en Afrique</h2>
             <p className="mt-4 text-gray-600">Une suite complète, pensée pour les réalités africaines — mobile money, connexions faibles, multilinguisme, livraison informelle.</p>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -231,7 +231,7 @@ export default function LandingPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Des tarifs simples, sans commission</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Des tarifs simples, sans commission</h2>
             <p className="mt-4 text-gray-600">Choisissez votre plan, bénéficiez de 7 jours d'essai gratuit. L'argent de vos ventes va directement dans votre compte.</p>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -245,9 +245,9 @@ export default function LandingPage() {
                   {p.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-orange-600 text-white text-xs font-semibold rounded-full">Le plus populaire</div>
                   )}
-                  <h3 className="text-2xl font-bold text-gray-900">{p.name}</h3>
+                  <h3 className="text-2xl font-semibold text-gray-900">{p.name}</h3>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold text-gray-900">${p.price}</span>
+                    <span className="text-4xl font-semibold text-gray-900">${p.price}</span>
                     <span className="text-gray-500">/mois</span>
                   </div>
                   <ul className="mt-6 space-y-3">
@@ -271,7 +271,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Ils vendent déjà avec LiAfrikOS</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Ils vendent déjà avec LiAfrikOS</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((tm, i) => (
@@ -323,7 +323,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Questions fréquentes</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Questions fréquentes</h2>
           </Section>
           <div className="space-y-4">
             {faqs.map((f, i) => (
@@ -348,7 +348,7 @@ export default function LandingPage() {
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-500 rounded-full mix-blend-overlay filter blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
+          <h2 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
           <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs africains. 7 jours d'essai gratuit, sans carte bancaire.</p>
           <Link to="/register" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 transition-all hover:scale-[1.02] active:scale-95 shadow-xl">
             Créer ma boutique gratuitement <ArrowRight size={18} />

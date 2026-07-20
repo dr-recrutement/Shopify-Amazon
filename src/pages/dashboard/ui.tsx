@@ -26,7 +26,7 @@ export function StatCard({ label, value, change, icon: Icon, color = 'orange' }:
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-gray-900">{value}</p>
+          <p className="mt-2 text-2xl font-semibold text-gray-900">{value}</p>
           {change && <p className="mt-1 text-xs text-green-600 font-medium">{change}</p>}
         </div>
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colors[color]}`}>

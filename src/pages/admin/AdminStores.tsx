@@ -15,10 +15,10 @@ export default function AdminStores() {
     <div>
       <PageHeader title="Boutiques" subtitle="Toutes les boutiques de la plateforme." action={<Button>Exporter</Button>} />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Total</p><p className="text-2xl font-bold">12 348</p></Card>
-        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Actives</p><p className="text-2xl font-bold text-green-600">11 892</p></Card>
-        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">En essai</p><p className="text-2xl font-bold text-orange-600">412</p></Card>
-        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Suspendues</p><p className="text-2xl font-bold text-red-600">44</p></Card>
+        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Total</p><p className="text-2xl font-semibold">12 348</p></Card>
+        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Actives</p><p className="text-2xl font-semibold text-green-600">11 892</p></Card>
+        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">En essai</p><p className="text-2xl font-semibold text-orange-600">412</p></Card>
+        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Suspendues</p><p className="text-2xl font-semibold text-red-600">44</p></Card>
       </div>
       <Card>
         <div className="p-4 border-b border-gray-100 flex items-center gap-3">

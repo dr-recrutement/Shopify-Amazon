@@ -16,9 +16,9 @@ export default function Markets() {
     <div>
       <PageHeader title="Markets" subtitle="Activez les pays et devises pour votre boutique. 54 pays africains supportés." action={<Button>Activer un marché</Button>} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marché par défaut</p><p className="mt-2 text-lg font-bold">🇨🇮 Côte d'Ivoire</p><p className="text-xs text-gray-500">XOF</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marchés actifs</p><p className="mt-2 text-lg font-bold">3 pays</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Devises supportées</p><p className="mt-2 text-lg font-bold">XOF, GHS, NGN</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marché par défaut</p><p className="mt-2 text-lg font-semibold">🇨🇮 Côte d'Ivoire</p><p className="text-xs text-gray-500">XOF</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marchés actifs</p><p className="mt-2 text-lg font-semibold">3 pays</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Devises supportées</p><p className="mt-2 text-lg font-semibold">XOF, GHS, NGN</p></Card>
       </div>
       {REGIONS.map(region => {
         const countries = AFRICAN_COUNTRIES.filter(c => c.region === region);

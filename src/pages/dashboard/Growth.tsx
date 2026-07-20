@@ -11,9 +11,9 @@ export default function Growth() {
     <div>
       <PageHeader title="Growth" subtitle="Recommandations IA pour augmenter vos ventes." />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Score de croissance</p><p className="mt-2 text-3xl font-bold text-orange-600">65<span className="text-lg text-gray-400">/100</span></p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Opportunités</p><p className="mt-2 text-3xl font-bold">3</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Potentiel de revenu</p><p className="mt-2 text-3xl font-bold">+45 000 XOF</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Score de croissance</p><p className="mt-2 text-3xl font-semibold text-orange-600">65<span className="text-lg text-gray-400">/100</span></p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Opportunités</p><p className="mt-2 text-3xl font-semibold">3</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Potentiel de revenu</p><p className="mt-2 text-3xl font-semibold">+45 000 XOF</p></Card>
       </div>
       <div className="space-y-3">
         {recs.map((r, i) => {

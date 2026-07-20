@@ -38,10 +38,10 @@ export default function Accounting() {
       } />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">CA (mois)</p><p className="mt-2 text-2xl font-bold">125 000 XOF</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marge</p><p className="mt-2 text-2xl font-bold text-green-600">38%</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-bold">5 200 XOF</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Taux retour</p><p className="mt-2 text-2xl font-bold">2.1%</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">CA (mois)</p><p className="mt-2 text-2xl font-semibold">125 000 XOF</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marge</p><p className="mt-2 text-2xl font-semibold text-green-600">38%</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-semibold">5 200 XOF</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Taux retour</p><p className="mt-2 text-2xl font-semibold">2.1%</p></Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

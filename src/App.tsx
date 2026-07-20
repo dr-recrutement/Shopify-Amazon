@@ -12,8 +12,15 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import SupportPage from './pages/SupportPage';
-import GenericPage from './pages/GenericPage';
 import AboutPage from './pages/AboutPage';
+import FeaturesPage from './pages/FeaturesPage';
+import AcademyPage from './pages/AcademyPage';
+import BlogPage from './pages/BlogPage';
+import HelpPage from './pages/HelpPage';
+import ContactPage from './pages/ContactPage';
+import LegalTermsPage from './pages/LegalTermsPage';
+import LegalPrivacyPage from './pages/LegalPrivacyPage';
+import LegalNoticePage from './pages/LegalNoticePage';
 
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import DashboardHome from './pages/dashboard/Home';
@@ -40,7 +47,13 @@ import AdminHome from './pages/admin/AdminHome';
 import AdminStores from './pages/admin/AdminStores';
 import AdminThemes from './pages/admin/AdminThemes';
 import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
-import AdminGeneric from './pages/admin/AdminGeneric';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminBilling from './pages/admin/AdminBilling';
+import AdminContent from './pages/admin/AdminContent';
+import AdminModeration from './pages/admin/AdminModeration';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminAudit from './pages/admin/AdminAudit';
+import AdminSettings from './pages/admin/AdminSettings';
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { session, loading } = useAuth();
@@ -67,15 +80,15 @@ export default function App() {
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
         {/* Public content pages */}
-        <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre en Afrique." />} />
-        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce africain." />} />
-        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce africain, success stories, conseils marketing." />} />
-        <Route path="/help" element={<SupportPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/academy" element={<AcademyPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez-nous." />} />
-        <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU LiAfrikOS." />} />
-        <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées." />} />
-        <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="LiAfrikOS — LIYAH GROUP." />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/legal/terms" element={<LegalTermsPage />} />
+        <Route path="/legal/privacy" element={<LegalPrivacyPage />} />
+        <Route path="/legal/legal" element={<LegalNoticePage />} />
 
         {/* Vendor dashboard */}
         <Route path="/app" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
@@ -105,13 +118,13 @@ export default function App() {
           <Route path="stores" element={<AdminStores />} />
           <Route path="themes" element={<AdminThemes />} />
           <Route path="super-admins" element={<AdminSuperAdmins />} />
-          <Route path="users" element={<AdminGeneric title="Utilisateurs" subtitle="Tous les utilisateurs de la plateforme." />} />
-          <Route path="billing" element={<AdminGeneric title="Facturation SaaS" subtitle="Revenus abonnements, MRR, churn, LTV." />} />
-          <Route path="content" element={<AdminGeneric title="CMS Plateforme" subtitle="Contenu institutionnel, blog, académie, pages légales." />} />
-          <Route path="moderation" element={<AdminGeneric title="Modération" subtitle="Suspension, validation, produits interdits, litiges." />} />
-          <Route path="analytics" element={<AdminGeneric title="Statistiques globales" subtitle="Rapports avancés et exportables." />} />
-          <Route path="audit" element={<AdminGeneric title="Audit & Logs" subtitle="Traçabilité complète, impersonations, sécurité." />} />
-          <Route path="settings" element={<AdminGeneric title="Configuration" subtitle="Intégrations globales, paiements par pays." />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="billing" element={<AdminBilling />} />
+          <Route path="content" element={<AdminContent />} />
+          <Route path="moderation" element={<AdminModeration />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="audit" element={<AdminAudit />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

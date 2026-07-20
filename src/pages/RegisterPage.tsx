@@ -33,7 +33,7 @@ export default function RegisterPage() {
             <Link to="/"><Logo size="lg" /></Link>
           </div>
           <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-            <h1 className="font-serif-display text-2xl font-bold text-gray-900">Créer ma boutique</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Créer ma boutique</h1>
             <p className="mt-1 text-sm text-gray-500">7 jours d'essai gratuit, sans carte bancaire</p>
             <form onSubmit={submit} className="mt-6 space-y-4">
               {error && (

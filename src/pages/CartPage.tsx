@@ -17,7 +17,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Panier</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Panier</h1>
         {items.length === 0 ? (
           <Card className="p-12 text-center">
             <ShoppingBag size={32} className="text-gray-300 mx-auto mb-4" />

@@ -82,7 +82,7 @@ export default function OnboardingPage() {
         <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-sm">
           {step === 1 && (
             <div>
-              <h1 className="font-serif-display text-2xl font-bold text-gray-900">Bienvenue !</h1>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Bienvenue !</h1>
               <p className="mt-1 text-gray-600">Configurons votre boutique en quelques étapes.</p>
               <div className="mt-6 p-4 bg-orange-50 rounded-xl flex items-center gap-3">
                 <Sparkles className="text-orange-600" size={20} />
@@ -96,7 +96,7 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Nom de votre boutique</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Nom de votre boutique</h2>
               <p className="text-gray-600 text-sm">Choisissez le nom de votre boutique et votre secteur d'activité.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la boutique</label>
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Localisation de votre entreprise</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Localisation de votre entreprise</h2>
               <p className="text-gray-600 text-sm">Sélectionnez votre pays. La devise locale sera appliquée automatiquement.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
@@ -164,7 +164,7 @@ export default function OnboardingPage() {
 
           {step === 4 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Choisissez un thème</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Choisissez un thème</h2>
               <p className="text-gray-600 text-sm">Tous les thèmes sont gratuits. Vous pourrez tout personnaliser ensuite.</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -192,7 +192,7 @@ export default function OnboardingPage() {
 
           {step === 5 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Votre premier produit</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Votre premier produit</h2>
               <p className="text-gray-600 text-sm">Ajoutez un produit pour démarrer. L'IA peut générer la description.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom du produit</label>
@@ -216,7 +216,7 @@ export default function OnboardingPage() {
 
           {step === 6 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Moyen de paiement</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Moyen de paiement</h2>
               <p className="text-gray-600 text-sm">Connectez au moins une passerelle. L'argent va directement dans votre compte.</p>
               <div className="space-y-2">
                 {[
@@ -247,7 +247,7 @@ export default function OnboardingPage() {
 
           {step === 7 && (
             <div className="space-y-4">
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">Choisissez votre plan</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">Choisissez votre plan</h2>
               <p className="text-gray-600 text-sm">7 jours d'essai gratuit inclus. Aucune commission sur vos ventes.</p>
               <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
                 <button onClick={() => setData({ ...data, billing: 'monthly' })} className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${data.billing === 'monthly' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Mensuel</button>
@@ -282,7 +282,7 @@ export default function OnboardingPage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <Check className="text-green-600" size={32} />
               </div>
-              <h2 className="font-serif-display text-2xl font-bold text-gray-900">C'est prêt !</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">C'est prêt !</h2>
               <p className="text-gray-600">Votre boutique <strong>{data.shopName || 'Ma Boutique'}</strong> est prête à être lancée.</p>
               <div className="text-left p-4 bg-gray-50 rounded-xl space-y-1 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">Boutique</span><span className="font-medium">{data.shopName || 'Ma Boutique'}</span></div>

@@ -1,0 +1,32 @@
+{
+  "name": "LiAfrikOS — E-commerce panafricain",
+  "short_name": "LiAfrikOS",
+  "description": "La plateforme SaaS e-commerce panafricaine, conçue au Cameroun par LIYAH GROUP.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F2632C",
+  "orientation": "portrait-primary",
+  "categories": ["business", "shopping", "productivity"],
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/assets/images/Gemini_Generated_Image_v4c5hrv4c5hrv4c5.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/Gemini_Generated_Image_v4c5hrv4c5hrv4c5.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/Gemini_Generated_Image_v4c5hrv4c5hrv4c5.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}

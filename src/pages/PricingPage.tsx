@@ -14,7 +14,7 @@ export default function PricingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-medium mb-4">
             <CheckCircle2 size={14} /> 0% de commission — pour toujours
           </div>
-          <h1 className="font-serif-display text-4xl font-bold text-gray-900">Des tarifs simples et transparents</h1>
+          <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">Des tarifs simples et transparents</h1>
           <p className="mt-3 text-gray-600">7 jours d'essai gratuit inclus. Aucune carte bancaire requise.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">

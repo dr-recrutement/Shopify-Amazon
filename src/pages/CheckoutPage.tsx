@@ -19,7 +19,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Checkout</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Checkout</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-5">

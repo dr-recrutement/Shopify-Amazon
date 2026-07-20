@@ -7,7 +7,7 @@ export default function GenericPage({ title, subtitle, children }: { title: stri
     <div className="min-h-screen bg-white">
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="font-serif-display text-4xl font-bold text-gray-900">{title}</h1>
+        <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">{title}</h1>
         {subtitle && <p className="mt-3 text-gray-600 text-lg">{subtitle}</p>}
         <div className="mt-8">{children ?? <Card className="p-8"><p className="text-gray-600">Contenu de la page.</p></Card>}</div>
       </div>

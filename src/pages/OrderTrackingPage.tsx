@@ -18,7 +18,7 @@ export default function OrderTrackingPage() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Suivi de commande</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Suivi de commande</h1>
         <Card className="p-5 mb-6">
           <p className="text-sm text-gray-500 mb-3">Entrez votre numéro de suivi pour suivre votre commande.</p>
           <div className="flex gap-2">

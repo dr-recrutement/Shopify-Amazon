@@ -6,10 +6,12 @@ import { signOut } from '../../lib/auth';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Bot, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search
+  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Shield
 } from 'lucide-react';
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: any; end?: boolean; superAdminOnly?: boolean };
+
+const NAV: { group: string; items: NavItem[] }[] = [
   { group: 'Vendre', items: [
     { to: '/app', label: 'Home', icon: Home, end: true },
     { to: '/app/orders', label: 'Orders', icon: ShoppingCart },
@@ -34,10 +36,13 @@ const NAV = [
     { to: '/app/automations', label: 'Automations', icon: Zap },
     { to: '/app/settings', label: 'Paramètres', icon: Settings },
   ]},
+  { group: 'Administration', items: [
+    { to: '/admin', label: 'Super Admin', icon: Shield, superAdminOnly: true },
+  ]},
 ];
 
 export default function DashboardLayout() {
-  const { user } = useAuth();
+  const { user, isSuperAdmin } = useAuth();
   const nav = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
@@ -56,7 +61,7 @@ export default function DashboardLayout() {
             <div key={section.group}>
               <div className="px-3 mb-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">{section.group}</div>
               <div className="space-y-0.5">
-                {section.items.map(item => {
+                {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map(item => {
                   const Icon = item.icon;
                   return (
                     <NavLink

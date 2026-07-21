@@ -121,4 +121,5 @@ export const SUPER_ADMIN_EMAILS = [
   'webdxb1@gmail.com',
   'vincentnogue@yahoo.com',
   'vincentnogue2@gmail.com',
+  'vincentnguessom@gmail.com',
 ];

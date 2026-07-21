@@ -5,7 +5,7 @@ import { useAuth } from '../../lib/hooks';
 import { signOut } from '../../lib/auth';
 import {
   LayoutDashboard, Store, Users, CreditCard, Palette, FileText, Shield,
-  Settings, BarChart3, Menu, X, LogOut, AlertTriangle, Crown
+  Settings, BarChart3, Menu, X, LogOut, AlertTriangle, Crown, Tag, UsersRound, TrendingUp
 } from 'lucide-react';
 
 const NAV = [
@@ -13,6 +13,9 @@ const NAV = [
   { to: '/admin/stores', label: 'Boutiques', icon: Store },
   { to: '/admin/users', label: 'Utilisateurs', icon: Users },
   { to: '/admin/billing', label: 'Facturation SaaS', icon: CreditCard },
+  { to: '/admin/commercial-codes', label: 'Codes commerciaux', icon: Tag },
+  { to: '/admin/custom-roles', label: 'Rôles & Staff', icon: UsersRound },
+  { to: '/admin/staff-performance', label: 'Performance Staff', icon: TrendingUp },
   { to: '/admin/themes', label: 'Thèmes', icon: Palette },
   { to: '/admin/content', label: 'CMS Plateforme', icon: FileText },
   { to: '/admin/moderation', label: 'Modération', icon: Shield },

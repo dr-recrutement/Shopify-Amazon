@@ -3,7 +3,7 @@ import { PageHeader, Card, Button, Badge } from './ui';
 import { useTenant } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { AFRICAN_COUNTRIES } from '../../lib/constants';
-import { Check, X, Lock, Plus, Trash2, AlertCircle, Edit3, Globe } from 'lucide-react';
+import { Check, X, Lock, Plus, Trash2, AlertCircle, Edit3, Globe, Facebook, Instagram, MessageCircle, Music2, Sun, Moon, Monitor } from 'lucide-react';
 
 const SECTIONS = [
   { id: 'general', label: 'General' }, { id: 'plan', label: 'Plan' }, { id: 'billing', label: 'Billing' },
@@ -14,6 +14,7 @@ const SECTIONS = [
   { id: 'events', label: 'Customer events' }, { id: 'notifications', label: 'Notifications' },
   { id: 'metafields', label: 'Metafields and metaobjects' }, { id: 'languages', label: 'Languages' },
   { id: 'privacy', label: 'Customer privacy' }, { id: 'policies', label: 'Policies' },
+  { id: 'social', label: 'Réseaux sociaux' }, { id: 'appearance', label: 'Apparence back-office' },
 ];
 
 const GATEWAYS = [
@@ -75,6 +76,13 @@ export default function Settings() {
   const [showTeamForm, setShowTeamForm] = useState(false);
   const [teamForm, setTeamForm] = useState({ email: '', role: 'staff' });
 
+  // Social connections
+  const [socials, setSocials] = useState<any[]>([]);
+  const [connectingSocial, setConnectingSocial] = useState<string | null>(null);
+
+  // Back-office appearance
+  const [boMode, setBoMode] = useState<'light' | 'dark' | 'system'>('light');
+
   const showSaved = () => { setSaved(true); setTimeout(() => setSaved(false), 3000); };
 
   // Load data
@@ -94,6 +102,10 @@ export default function Settings() {
     setChannels(c.data || []);
     setGateways(g.data || []);
     setTeamMembers(t.data || []);
+    const { data: socData } = await supabase.from('social_connections').select('*').eq('tenant_id', tenant.id);
+    setSocials(socData || []);
+    const savedMode = localStorage.getItem('liafrikos-bo-mode') as 'light' | 'dark' | 'system' | null;
+    if (savedMode) setBoMode(savedMode);
   }, [tenant]);
 
   useEffect(() => { if (tenant) loadData(); }, [tenant, loadData]);
@@ -197,6 +209,40 @@ export default function Settings() {
 
   const planRank: any = { starter: 0, premium: 1, entreprise: 2 };
   const canUse = (planRequired: string) => planRank[tenant?.plan || 'starter'] >= planRank[planRequired];
+
+  // Social connection helpers
+  const SOCIAL_PLATFORMS = [
+    { id: 'facebook', name: 'Facebook / Meta Ads', icon: Facebook, plan: 'starter', fields: ['App ID', 'App Secret'] },
+    { id: 'instagram', name: 'Instagram Shop', icon: Instagram, plan: 'premium', fields: ['Access Token'] },
+    { id: 'whatsapp', name: 'WhatsApp Business', icon: MessageCircle, plan: 'starter', fields: ['Phone Number ID', 'Access Token'] },
+    { id: 'tiktok', name: 'TikTok Ads', icon: Music2, plan: 'premium', fields: ['Advertiser ID', 'Access Token'] },
+  ];
+
+  const connectSocial = async (platformId: string, formData: Record<string, string>) => {
+    if (!tenant) return;
+    const platform = SOCIAL_PLATFORMS.find(p => p.id === platformId)!;
+    if (!canUse(platform.plan)) { setError(`Connexion ${platform.name} nécessite le plan ${platform.plan}.`); return; }
+    const existing = socials.find(s => s.platform === platformId);
+    if (existing) {
+      await supabase.from('social_connections').update({ is_connected: true, access_token_encrypted: JSON.stringify(formData), account_name: formData[Object.keys(formData)[0]] || '' }).eq('id', existing.id);
+    } else {
+      await supabase.from('social_connections').insert({ tenant_id: tenant.id, platform: platformId, is_connected: true, access_token_encrypted: JSON.stringify(formData), account_name: formData[Object.keys(formData)[0]] || '', plan_required: platform.plan });
+    }
+    setConnectingSocial(null); loadData();
+  };
+
+  const disconnectSocial = async (platformId: string) => {
+    const s = socials.find(x => x.platform === platformId);
+    if (s) { await supabase.from('social_connections').update({ is_connected: false }).eq('id', s.id); loadData(); }
+  };
+
+  const applyBoMode = (mode: 'light' | 'dark' | 'system') => {
+    setBoMode(mode); localStorage.setItem('liafrikos-bo-mode', mode);
+    if (mode === 'dark') document.documentElement.classList.add('dark');
+    else if (mode === 'light') document.documentElement.classList.remove('dark');
+    else { const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; if (prefersDark) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark'); }
+    showSaved();
+  };
 
   return (
     <div>
@@ -564,6 +610,73 @@ export default function Settings() {
               <div><label className="block text-sm font-medium mb-1">Politique de confidentialité</label><textarea rows={3} defaultValue="Vos données sont protégées..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
               <div><label className="block text-sm font-medium mb-1">Conditions de service</label><textarea rows={3} defaultValue="En commandant, vous acceptez..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
               <Button onClick={showSaved}>Sauvegarder</Button>
+            </div>
+          )}
+
+          {active === 'social' && (
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Connexion réseaux sociaux</h3>
+              <p className="text-sm text-gray-500">Connectez vos comptes pour gérer vos publicités depuis la plateforme. L'accès est conditionné par votre plan.</p>
+              {SOCIAL_PLATFORMS.map(sp => {
+                const Icon = sp.icon;
+                const conn = socials.find(s => s.platform === sp.id);
+                const isConnected = conn?.is_connected;
+                const allowed = canUse(sp.plan);
+                return (
+                  <div key={sp.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="flex items-center justify-between p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center"><Icon size={16} className="text-gray-700" /></div>
+                        <div><p className="text-sm font-medium text-gray-900">{sp.name}</p><p className="text-xs text-gray-500">{isConnected ? `Connecté: ${conn.account_name || 'OK'}` : 'Non connecté'}</p></div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {!allowed && <Badge color="orange">Plan {sp.plan}</Badge>}
+                        {isConnected ? (
+                          <button onClick={() => disconnectSocial(sp.id)} className="text-red-600 text-xs hover:underline">Déconnecter</button>
+                        ) : connectingSocial === sp.id ? (
+                          <button onClick={() => setConnectingSocial(null)} className="text-gray-500 text-xs">Annuler</button>
+                        ) : (
+                          <Button variant="secondary" size="sm" disabled={!allowed} onClick={() => setConnectingSocial(sp.id)}>Connecter</Button>
+                        )}
+                      </div>
+                    </div>
+                    {connectingSocial === sp.id && (
+                      <div className="p-3 border-t border-gray-100 bg-gray-50 space-y-2">
+                        {sp.fields.map(f => <div key={f}><label className="block text-xs font-medium text-gray-700 mb-1">{f}</label><input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono" onChange={e => { const form: Record<string, string> = {}; form[f] = e.target.value; (e.target as any)._form = form; }} /></div>)}
+                        <Button size="sm" onClick={() => {
+                          const inputs = document.querySelectorAll('input[type="password"]');
+                          const formData: Record<string, string> = {};
+                          sp.fields.forEach((f, i) => { formData[f] = (inputs[i] as HTMLInputElement)?.value || ''; });
+                          connectSocial(sp.id, formData);
+                        }}>Connecter</Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {active === 'appearance' && (
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Apparence du back-office</h3>
+              <p className="text-sm text-gray-500">Personnalisez l'interface de votre espace de gestion. Sans impact sur votre boutique publique.</p>
+              <div className="grid grid-cols-3 gap-3">
+                {([
+                  { mode: 'light', label: 'Clair', icon: Sun },
+                  { mode: 'dark', label: 'Sombre', icon: Moon },
+                  { mode: 'system', label: 'Système', icon: Monitor },
+                ] as const).map(opt => {
+                  const Icon = opt.icon;
+                  return (
+                    <button key={opt.mode} onClick={() => applyBoMode(opt.mode)} className={`p-4 rounded-xl border-2 transition-all ${boMode === opt.mode ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                      <Icon size={20} className={boMode === opt.mode ? 'text-orange-600' : 'text-gray-400'} />
+                      <p className="mt-2 text-sm font-medium">{opt.label}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-500">Le mode sombre est appliqué immédiatement et sauvegardé pour vos prochaines visites.</div>
             </div>
           )}
         </Card>

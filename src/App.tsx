@@ -54,6 +54,9 @@ import AdminModeration from './pages/admin/AdminModeration';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminCommercialCodes from './pages/admin/AdminCommercialCodes';
+import AdminCustomRoles from './pages/admin/AdminCustomRoles';
+import AdminStaffPerformance from './pages/admin/AdminStaffPerformance';
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { session, loading } = useAuth();
@@ -125,6 +128,9 @@ export default function App() {
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="audit" element={<AdminAudit />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="commercial-codes" element={<AdminCommercialCodes />} />
+          <Route path="custom-roles" element={<AdminCustomRoles />} />
+          <Route path="staff-performance" element={<AdminStaffPerformance />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

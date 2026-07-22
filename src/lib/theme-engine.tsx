@@ -621,3 +621,185 @@ export function renderSection(
       return null;
   }
 }
+export interface ThemeVariant {
+  key: string;
+  label: string;
+  siteType: SiteType;
+  build: () => ThemeConfig;
+}
+
+const v = (id: string, type: ThemeSection['type'], props: Record<string, any> = {}): ThemeSection =>
+  ({ id, type, visible: true, props: { ...getSectionDefaults(type), ...props } });
+
+export const THEME_VARIANTS: ThemeVariant[] = [
+  // ---- ECOMMERCE ----
+  {
+    key: 'ecommerce-modern-minimal', label: 'Ecommerce — Moderne & Minimal', siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce', spacing: 'spacious', isPublished: false,
+      colors: { primary: '#111114', secondary: '#6b7280', accent: '#111114', background: '#FFFFFF', text: '#111114' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header', { megaMenu: false }),
+        v('s2', 'hero', { title: 'Simplicité et élégance', subtitle: 'Une sélection soignée, sans superflu', cta: 'Découvrir' }),
+        v('s3', 'product-grid', { columns: 3, title: 'Sélection du moment' }),
+        v('s4', 'testimonials'),
+        v('s5', 'newsletter'),
+        v('s6', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'ecommerce-bold-vibrant', label: 'Ecommerce — Bold & Vibrant', siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce', spacing: 'comfortable', isPublished: false,
+      colors: { primary: '#F2632C', secondary: '#eab308', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header', { megaMenu: true }),
+        v('s2', 'hero', { title: 'Les meilleures offres sont ici', subtitle: 'Promotions exclusives toute la semaine', cta: 'Voir les promos' }),
+        v('s3', 'countdown', { title: 'Vente flash' }),
+        v('s4', 'category-grid'),
+        v('s5', 'filters-list'),
+        v('s6', 'product-grid', { columns: 4 }),
+        v('s7', 'testimonials'),
+        v('s8', 'payments'),
+        v('s9', 'social-bar'),
+        v('s10', 'chat-float'),
+        v('s11', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'ecommerce-luxury-dark', label: 'Ecommerce — Luxury Dark', siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce', spacing: 'spacious', isPublished: false,
+      colors: { primary: '#c9a24a', secondary: '#8a8a8a', accent: '#c9a24a', background: '#0f1115', text: '#f4f4f5' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header'),
+        v('s2', 'hero', { title: 'Le luxe redéfini', subtitle: 'Une expérience shopping exclusive', cta: 'Explorer la collection' }),
+        v('s3', 'product-grid', { columns: 3, title: 'Pièces d\'exception' }),
+        v('s4', 'product-detail'),
+        v('s5', 'testimonials'),
+        v('s6', 'payments'),
+        v('s7', 'footer'),
+      ],
+    }),
+  },
+
+  // ---- LANDING ----
+  {
+    key: 'landing-launch-classic', label: 'Landing — Launch Classic', siteType: 'landing',
+    build: () => ({
+      siteType: 'landing', spacing: 'comfortable', isPublished: false,
+      colors: { primary: '#2563eb', secondary: '#0ea5e9', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header'),
+        v('s2', 'hero', { title: 'Lancez votre produit avec impact', subtitle: 'Une page qui convertit dès la première visite', cta: 'Je réserve le mien' }),
+        v('s3', 'countdown', { title: 'Offre de lancement' }),
+        v('s4', 'testimonials'),
+        v('s5', 'faq'),
+        v('s6', 'newsletter'),
+        v('s7', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'landing-bold-cta', label: 'Landing — Bold CTA', siteType: 'landing',
+    build: () => ({
+      siteType: 'landing', spacing: 'spacious', isPublished: false,
+      colors: { primary: '#f43f5e', secondary: '#fb7185', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header'),
+        v('s2', 'hero', { title: 'Ne ratez pas cette opportunité', subtitle: 'Rejoignez des milliers de clients satisfaits', cta: 'Commencer maintenant' }),
+        v('s3', 'about'),
+        v('s4', 'testimonials'),
+        v('s5', 'payments'),
+        v('s6', 'chat-float'),
+        v('s7', 'footer'),
+      ],
+    }),
+  },
+
+  // ---- BUSINESS ----
+  {
+    key: 'business-corporate-trust', label: 'Vitrine — Corporate Trust', siteType: 'business',
+    build: () => ({
+      siteType: 'business', spacing: 'spacious', isPublished: false,
+      colors: { primary: '#0f172a', secondary: '#2563eb', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header'),
+        v('s2', 'hero', { title: 'Votre partenaire de confiance', subtitle: 'Des solutions professionnelles pour votre réussite', cta: 'Nous contacter' }),
+        v('s3', 'about'),
+        v('s4', 'testimonials'),
+        v('s5', 'faq'),
+        v('s6', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'business-creative-studio', label: 'Vitrine — Creative Studio', siteType: 'business',
+    build: () => ({
+      siteType: 'business', spacing: 'comfortable', isPublished: false,
+      colors: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header'),
+        v('s2', 'hero', { title: 'Créativité sans limites', subtitle: 'Nous donnons vie à vos idées', cta: 'Voir nos projets' }),
+        v('s3', 'about'),
+        v('s4', 'testimonials'),
+        v('s5', 'newsletter'),
+        v('s6', 'social-bar'),
+        v('s7', 'footer'),
+      ],
+    }),
+  },
+
+  // ---- MARKETPLACE ----
+  {
+    key: 'marketplace-classic', label: 'Marketplace — Classic', siteType: 'marketplace',
+    build: () => ({
+      siteType: 'marketplace', spacing: 'comfortable', isPublished: false,
+      colors: { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header', { megaMenu: true }),
+        v('s2', 'hero', { title: "Tout ce dont vous avez besoin, ici", subtitle: 'Des milliers de vendeurs, un seul endroit', cta: 'Parcourir' }),
+        v('s3', 'category-grid'),
+        v('s4', 'product-grid', { columns: 4 }),
+        v('s5', 'testimonials'),
+        v('s6', 'payments'),
+        v('s7', 'social-bar'),
+        v('s8', 'chat-float'),
+        v('s9', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'marketplace-premium', label: 'Marketplace — Premium', siteType: 'marketplace',
+    build: () => ({
+      siteType: 'marketplace', spacing: 'spacious', isPublished: false,
+      colors: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header', { megaMenu: true }),
+        v('s2', 'hero', { title: "L'excellence, sélectionnée pour vous", subtitle: 'Vendeurs vérifiés, produits premium', cta: 'Explorer' }),
+        v('s3', 'category-grid'),
+        v('s4', 'countdown'),
+        v('s5', 'product-grid', { columns: 4 }),
+        v('s6', 'testimonials'),
+        v('s7', 'payments'),
+        v('s8', 'footer'),
+      ],
+    }),
+  },
+];
+
+export function getThemeVariant(key: string): ThemeConfig | null {
+  const found = THEME_VARIANTS.find(t => t.key === key);
+  return found ? found.build() : null;
+}

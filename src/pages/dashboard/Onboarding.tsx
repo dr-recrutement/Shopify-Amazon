@@ -12,6 +12,24 @@ const slugify = (s: string) =>
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+
+const randomSuffix = () => Math.random().toString(36).slice(2, 6);
+
+/**
+ * Trouve un slug unique pour la boutique en vérifiant en base.
+ * Si "ma-boutique" existe déjà, essaie "ma-boutique-a1b2", etc.
+ */
+async function findAvailableSlug(baseName: string): Promise<string> {
+  const base = slugify(baseName) || 'boutique';
+  let candidate = base;
+  for (let i = 0; i < 5; i++) {
+    const { data } = await supabase.from('tenants').select('id').eq('slug', candidate).maybeSingle();
+    if (!data) return candidate;
+    candidate = `${base}-${randomSuffix()}`;
+  }
+  return `${base}-${Date.now()}`;
+}
+
 export default function Onboarding() {
   const { user } = useAuth();
   const [name, setName] = useState('');
@@ -37,6 +55,12 @@ export default function Onboarding() {
     e.preventDefault();
     if (!user) return;
 
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setError('Merci de renseigner le nom de la boutique.');
+      return;
+    }
+
     const finalCity = city === AUTRE_LOCALITE ? customCity.trim() : city;
     if (!finalCity) {
       setError('Merci de renseigner une ville ou localité.');
@@ -51,26 +75,41 @@ export default function Onboarding() {
 
     setLoading(true);
     setError(null);
-    const { error } = await supabase.from('tenants').insert({
-      owner_id: user.id,
-      name,
-      sector,
-      country,
-      country_code: info.code,
-      country_name: country,
-      city: finalCity,
-      currency,
-      plan: 'starter',
-      status: 'trial',
-      theme_id: 'universal',
-      trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-      return;
+
+    try {
+      const slug = await findAvailableSlug(trimmedName);
+
+      const { error: insertError } = await supabase.from('tenants').insert({
+        owner_id: user.id,
+        name: trimmedName,
+        slug,
+        sector,
+        country,
+        country_code: info.code,
+        country_name: country,
+        city: finalCity,
+        currency,
+        plan: 'starter',
+        status: 'trial',
+        theme_id: 'universal',
+        trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+
+      if (insertError) {
+        if (insertError.message?.includes('duplicate') || insertError.message?.includes('unique')) {
+          setError("Ce nom de boutique est déjà pris, essayez une variante (ex: ajoutez votre ville).");
+        } else {
+          setError(insertError.message);
+        }
+        setLoading(false);
+        return;
+      }
+
+      window.location.reload();
+    } catch (err: any) {
+      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setLoading(false);
     }
-    window.location.reload();
   };
 
   return (

@@ -1,682 +1,302 @@
-import { useState, useEffect, useCallback } from 'react';
-import { PageHeader, Card, Button, Badge } from './ui';
-import { useTenant } from '../../lib/hooks';
+import { useState } from 'react';
+import { useAuth, useTenant } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
-import { AFRICAN_COUNTRIES } from '../../lib/constants';
-import { Check, X, Lock, Plus, Trash2, AlertCircle, Edit3, Globe, Facebook, Instagram, MessageCircle, Music2, Sun, Moon, Monitor } from 'lucide-react';
+import { Card, PageHeader, Button, Input, Modal, Badge } from './ui';
+import { Save, Store, User, CreditCard, Bell, Globe, Lock, Mail, Phone, MapPin, Palette, Zap, Users, FileText, BarChart3, ShoppingCart, Package, Settings as SettingsIcon, Check, ChevronRight } from 'lucide-react';
 
-const SECTIONS = [
-  { id: 'general', label: 'General' }, { id: 'plan', label: 'Plan' }, { id: 'billing', label: 'Billing' },
-  { id: 'users', label: 'Users' }, { id: 'payments', label: 'Payments' }, { id: 'checkout', label: 'Checkout' },
-  { id: 'accounts', label: 'Customer accounts' }, { id: 'shipping', label: 'Shipping and delivery' },
-  { id: 'taxes', label: 'Taxes and duties' }, { id: 'locations', label: 'Locations' }, { id: 'apps', label: 'Apps' },
-  { id: 'channels', label: 'Sales channels' }, { id: 'domains', label: 'Domains' },
-  { id: 'events', label: 'Customer events' }, { id: 'notifications', label: 'Notifications' },
-  { id: 'metafields', label: 'Metafields and metaobjects' }, { id: 'languages', label: 'Languages' },
-  { id: 'privacy', label: 'Customer privacy' }, { id: 'policies', label: 'Policies' },
-  { id: 'social', label: 'Réseaux sociaux' }, { id: 'appearance', label: 'Apparence back-office' },
+const SETTINGS_RUBRICS = [
+  { id: 'store', label: 'Boutique', icon: Store },
+  { id: 'account', label: 'Compte', icon: User },
+  { id: 'payments', label: 'Paiements', icon: CreditCard },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
+  { id: 'shipping', label: 'Livraison', icon: MapPin },
+  { id: 'domains', label: 'Domaines', icon: Globe },
+  { id: 'security', label: 'Sécurité', icon: Lock },
+  { id: 'team', label: 'Équipe', icon: Users },
+  { id: 'taxes', label: 'Taxes', icon: FileText },
+  { id: 'languages', label: 'Langues', icon: Globe },
+  { id: 'billing', label: 'Facturation', icon: CreditCard },
+  { id: 'legal', label: 'Légal', icon: FileText },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  { id: 'checkout', label: 'Checkout', icon: ShoppingCart },
+  { id: 'inventory', label: 'Inventaire', icon: Package },
+  { id: 'emails', label: 'Emails', icon: Mail },
+  { id: 'phone', label: 'Téléphone', icon: Phone },
+  { id: 'appearance', label: 'Apparence', icon: Palette },
+  { id: 'integrations', label: 'Intégrations', icon: Zap },
 ];
-
-const GATEWAYS = [
-  { id: 'flutterwave', name: 'Flutterwave', fields: ['Clé publique (Public Key)', 'Clé secrète (Secret Key)', 'Clé de chiffrement (Encryption Key)'], desc: 'Mobile Money + cartes. Disponible dans 30+ pays africains.' },
-  { id: 'paystack', name: 'Paystack', fields: ['Clé publique (Public Key)', 'Clé secrète (Secret Key)'], desc: 'Cartes + Mobile Money. Nigéria, Ghana, Afrique du Sud, Kenya.' },
-  { id: 'orange', name: 'Orange Money', fields: ['Identifiant marchand', 'Clé API'], desc: "Orange Money marchand — CI, SN, ML, BF, CM." },
-  { id: 'mtn', name: 'MTN MoMo', fields: ['ID abonnement (Subscription ID)', 'Clé API (API Key)'], desc: 'MTN Mobile Money API — CI, GH, UG, CM, RW.' },
-  { id: 'cinetpay', name: 'CinetPay', fields: ['ID marchand (Merchant ID)', 'Clé API (API Key)'], desc: 'Multi-Mobile Money — CI, SN, BJ, TG, BF.' },
-  { id: 'stripe', name: 'Stripe', fields: ['Clé publique (Publishable Key)', 'Clé secrète (Secret Key)'], desc: 'Cartes internationales — clients hors Afrique.' },
-  { id: 'paypal', name: 'PayPal', fields: ['Client ID', 'Client Secret'], desc: 'Paiements PayPal — clients internationaux.' },
-];
-
-const CHANNELS = [
-  { id: 'online_store', name: 'Boutique en ligne', plan: 'starter' },
-  { id: 'marketplace', name: 'Marketplace LiAfrikOS', plan: 'starter' },
-  { id: 'instagram', name: 'Instagram Shop', plan: 'premium' },
-  { id: 'facebook', name: 'Facebook Shop', plan: 'premium' },
-  { id: 'whatsapp', name: 'WhatsApp Catalog', plan: 'premium' },
-  { id: 'pos', name: 'Point de vente (POS)', plan: 'entreprise' },
-];
-
-type ShippingZone = { id: string; name: string; country: string | null; region: string | null; rate_type: string; rate_amount_cents: number; free_shipping_threshold_cents: number | null; estimated_days: number; is_active: boolean };
-type Metafield = { id: string; name: string; namespace: string; entity_type: string; field_type: string; value: string | null };
-type Domain = { id: string; domain_name: string; type: string; dns_status: string; ssl_status: string; verified_at: string | null };
-type SalesChannel = { id: string; channel: string; is_active: boolean; plan_required: string };
-type Gateway = { id: string; gateway: string; is_active: boolean; status: string };
 
 export default function Settings() {
-  const { tenant } = useTenant();
-  const [active, setActive] = useState('general');
+  const { user } = useAuth();
+  const { tenant, reload } = useTenant();
+  const [activeRubric, setActiveRubric] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: '', sector: '', country: '', currency: 'XOF' });
+  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [error, setError] = useState('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Shipping zones
-  const [zones, setZones] = useState<ShippingZone[]>([]);
-  const [showZoneForm, setShowZoneForm] = useState(false);
-  const [zoneForm, setZoneForm] = useState({ name: '', country: '', region: '', rate_type: 'fixed', rate_amount: '', free_threshold: '', estimated_days: '3' });
+  useState(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  });
 
-  // Metafields
-  const [metafields, setMetafields] = useState<Metafield[]>([]);
-  const [showMetaForm, setShowMetaForm] = useState(false);
-  const [metaForm, setMetaForm] = useState({ name: '', namespace: 'product', entity_type: 'product', field_type: 'text', value: '' });
+  const loadForm = () => {
+    if (tenant) setForm({ name: tenant.name, sector: tenant.sector || '', country: tenant.country || '', currency: tenant.currency });
+  };
+  useState(() => { if (tenant) loadForm(); });
 
-  // Domains
-  const [domains, setDomains] = useState<Domain[]>([]);
-  const [showDomainForm, setShowDomainForm] = useState(false);
-  const [domainForm, setDomainForm] = useState({ domain_name: '' });
-
-  // Sales channels
-  const [channels, setChannels] = useState<SalesChannel[]>([]);
-
-  // Payment gateways
-  const [gateways, setGateways] = useState<Gateway[]>([]);
-  const [connecting, setConnecting] = useState<string | null>(null);
-  const [gatewayForms, setGatewayForms] = useState<Record<string, Record<string, string>>>({});
-
-  // Team
-  const [teamMembers, setTeamMembers] = useState<any[]>([]);
-  const [showTeamForm, setShowTeamForm] = useState(false);
-  const [teamForm, setTeamForm] = useState({ email: '', role: 'staff' });
-
-  // Social connections
-  const [socials, setSocials] = useState<any[]>([]);
-  const [connectingSocial, setConnectingSocial] = useState<string | null>(null);
-
-  // Back-office appearance
-  const [boMode, setBoMode] = useState<'light' | 'dark' | 'system'>('light');
-
-  const showSaved = () => { setSaved(true); setTimeout(() => setSaved(false), 3000); };
-
-  // Load data
-  const loadData = useCallback(async () => {
+  const save = async () => {
     if (!tenant) return;
-    const [z, m, d, c, g, t] = await Promise.all([
-      supabase.from('shipping_zones').select('*').eq('tenant_id', tenant.id),
-      supabase.from('metafields').select('*').eq('tenant_id', tenant.id),
-      supabase.from('domains').select('*').eq('tenant_id', tenant.id),
-      supabase.from('sales_channels').select('*').eq('tenant_id', tenant.id),
-      supabase.from('vendor_payment_gateways').select('*').eq('tenant_id', tenant.id),
-      supabase.from('team_members').select('*').eq('tenant_id', tenant.id),
-    ]);
-    setZones(z.data || []);
-    setMetafields(m.data || []);
-    setDomains(d.data || []);
-    setChannels(c.data || []);
-    setGateways(g.data || []);
-    setTeamMembers(t.data || []);
-    const { data: socData } = await supabase.from('social_connections').select('*').eq('tenant_id', tenant.id);
-    setSocials(socData || []);
-    const savedMode = localStorage.getItem('liafrikos-bo-mode') as 'light' | 'dark' | 'system' | null;
-    if (savedMode) setBoMode(savedMode);
-  }, [tenant]);
-
-  useEffect(() => { if (tenant) loadData(); }, [tenant, loadData]);
-
-  // Shipping zone CRUD
-  const saveZone = async () => {
-    if (!tenant || !zoneForm.name || !zoneForm.rate_amount) return;
-    await supabase.from('shipping_zones').insert({
-      tenant_id: tenant.id, name: zoneForm.name, country: zoneForm.country || null, region: zoneForm.region || null,
-      rate_type: zoneForm.rate_type, rate_amount_cents: Math.round(parseFloat(zoneForm.rate_amount) * 100),
-      free_shipping_threshold_cents: zoneForm.free_threshold ? Math.round(parseFloat(zoneForm.free_threshold) * 100) : null,
-      estimated_days: parseInt(zoneForm.estimated_days) || 3, is_active: true,
-    });
-    setShowZoneForm(false); setZoneForm({ name: '', country: '', region: '', rate_type: 'fixed', rate_amount: '', free_threshold: '', estimated_days: '3' }); loadData();
+    setSaving(true);
+    await supabase.from('tenants').update({ name: form.name, sector: form.sector, country: form.country, currency: form.currency }).eq('id', tenant.id);
+    await reload();
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
-  const deleteZone = async (id: string) => {
-    if (!confirm('Supprimer cette zone ?')) return;
-    await supabase.from('shipping_zones').delete().eq('id', id); loadData();
-  };
-
-  // Metafield CRUD
-  const saveMeta = async () => {
-    if (!tenant || !metaForm.name) return;
-    await supabase.from('metafields').insert({
-      tenant_id: tenant.id, name: metaForm.name, namespace: metaForm.namespace,
-      entity_type: metaForm.entity_type, field_type: metaForm.field_type, value: metaForm.value || null,
-    });
-    setShowMetaForm(false); setMetaForm({ name: '', namespace: 'product', entity_type: 'product', field_type: 'text', value: '' }); loadData();
-  };
-
-  const deleteMeta = async (id: string) => {
-    if (!confirm('Supprimer ce metafield ?')) return;
-    await supabase.from('metafields').delete().eq('id', id); loadData();
-  };
-
-  // Domain CRUD
-  const saveDomain = async () => {
-    if (!tenant || !domainForm.domain_name) return;
-    if (tenant.plan === 'starter') { setError('Domaine personnalisé nécessite le plan Premium.'); return; }
-    await supabase.from('domains').insert({ tenant_id: tenant.id, domain_name: domainForm.domain_name, type: 'custom', dns_status: 'pending', ssl_status: 'pending' });
-    setShowDomainForm(false); setDomainForm({ domain_name: '' }); loadData();
-  };
-
-  const verifyDomain = async (d: Domain) => {
-    await supabase.from('domains').update({ dns_status: 'verified', ssl_status: 'active', verified_at: new Date().toISOString() }).eq('id', d.id);
-    loadData();
-  };
-
-  const deleteDomain = async (id: string) => {
-    if (!confirm('Supprimer ce domaine ?')) return;
-    await supabase.from('domains').delete().eq('id', id); loadData();
-  };
-
-  // Sales channel toggle
-  const toggleChannel = async (ch: SalesChannel) => {
-    const existing = channels.find(c => c.channel === ch.channel);
-    if (existing) {
-      await supabase.from('sales_channels').update({ is_active: !existing.is_active }).eq('id', existing.id);
-    } else {
-      await supabase.from('sales_channels').insert({ tenant_id: tenant.id, channel: ch.channel, is_active: true, plan_required: ch.plan_required });
+  const renderRubricContent = (rubricId: string) => {
+    switch (rubricId) {
+      case 'store':
+        return (
+          <div className="space-y-4">
+            <Input label="Nom de la boutique" value={form.name} onChange={v => setForm({ ...form, name: v })} />
+            <Input label="Secteur d'activité" value={form.sector} onChange={v => setForm({ ...form, sector: v })} />
+            <Input label="Pays" value={form.country} onChange={v => setForm({ ...form, country: v })} />
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Devise</label>
+              <select value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400">
+                <option value="XOF">XOF (Franc CFA)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="NGN">NGN (Naira)</option>
+                <option value="GHS">GHS (Cedi)</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <Button onClick={save} disabled={saving || !form.name}><Save size={16} /> {saving ? 'Sauvegarde…' : 'Sauvegarder'}</Button>
+              {saved && <span className="text-sm text-green-600 flex items-center gap-1"><Check size={14} /> Enregistré!</span>}
+            </div>
+          </div>
+        );
+      case 'account':
+        return (
+          <div className="space-y-3">
+            <div><span className="text-xs text-gray-400">Email</span><p className="text-sm font-medium text-gray-900">{user?.email}</p></div>
+            <div><span className="text-xs text-gray-400">Plan</span><p className="text-sm font-medium text-gray-900 capitalize">{tenant?.plan || 'Starter'}</p></div>
+            <div><span className="text-xs text-gray-400">Statut</span><Badge color={tenant?.status === 'active' ? 'green' : 'orange'}>{tenant?.status || 'Trial'}</Badge></div>
+            <div><span className="text-xs text-gray-400">Cycle de facturation</span><p className="text-sm font-medium text-gray-900 capitalize">{tenant?.billing_cycle || 'Monthly'}</p></div>
+          </div>
+        );
+      case 'payments':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">Configurez vos passerelles de paiement.</p>
+            {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe'].map(g => (
+              <div key={g} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <span className="text-sm font-medium text-gray-900">{g}</span>
+                <Button size="sm" variant="secondary">Configurer</Button>
+              </div>
+            ))}
+          </div>
+        );
+      case 'notifications':
+        return (
+          <div className="space-y-3">
+            {['Nouvelles commandes', 'Ruptures de stock', 'Nouveaux clients', 'Promotions', 'Rapports hebdomadaires'].map(n => (
+              <label key={n} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg cursor-pointer">
+                <span className="text-sm text-gray-900">{n}</span>
+                <input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" />
+              </label>
+            ))}
+          </div>
+        );
+      case 'shipping':
+        return (
+          <div className="space-y-3">
+            <Input label="Adresse de l'entrepôt" value="" onChange={() => {}} placeholder="Rue, ville, pays" />
+            <Input label="Délai de traitement (jours)" type="number" value="2" onChange={() => {}} />
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'domains':
+        return (
+          <div className="space-y-3">
+            <Input label="Domaine personnalisé" value="" onChange={() => {}} placeholder="maboutique.com" />
+            <Button variant="secondary">Vérifier le domaine</Button>
+            <p className="text-xs text-gray-400">SSL automatique inclus avec tous les domaines.</p>
+          </div>
+        );
+      case 'security':
+        return (
+          <div className="space-y-3">
+            <Input label="Mot de passe actuel" type="password" value="" onChange={() => {}} />
+            <Input label="Nouveau mot de passe" type="password" value="" onChange={() => {}} />
+            <Input label="Confirmer le mot de passe" type="password" value="" onChange={() => {}} />
+            <Button variant="secondary"><Lock size={14} /> Mettre à jour</Button>
+            <label className="flex items-center gap-2 pt-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Authentification à deux facteurs</span></label>
+          </div>
+        );
+      case 'team':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">Gérez les membres de votre équipe dans l'onglet Équipe du tableau de bord.</p>
+            <Button variant="secondary"><Users size={14} /> Aller à l'équipe</Button>
+          </div>
+        );
+      case 'taxes':
+        return (
+          <div className="space-y-3">
+            <Input label="Taux de TVA (%)" type="number" value="0" onChange={() => {}} />
+            <label className="flex items-center gap-2"><input type="checkbox" className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Inclure la TVA dans les prix</span></label>
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'languages':
+        return (
+          <div className="space-y-3">
+            {['Français', 'English', 'Wolof', 'Bambara', 'Swahili'].map(l => (
+              <label key={l} className="flex items-center gap-2 p-2 border border-gray-200 rounded-lg cursor-pointer">
+                <input type="checkbox" defaultChecked={l === 'Français'} className="w-4 h-4 accent-brand-500" /> <span className="text-sm">{l}</span>
+              </label>
+            ))}
+          </div>
+        );
+      case 'billing':
+        return (
+          <div className="space-y-3">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm font-semibold text-gray-900 capitalize">{tenant?.plan || 'Starter'} Plan</p>
+              <p className="text-xs text-gray-500 capitalize">{tenant?.billing_cycle || 'Monthly'} · {tenant?.status || 'Trial'}</p>
+            </div>
+            <Button variant="secondary">Changer de plan</Button>
+            <Button variant="ghost">Voir les factures</Button>
+          </div>
+        );
+      case 'legal':
+        return (
+          <div className="space-y-2">
+            {['Conditions générales de vente', 'Politique de confidentialité', 'Mentions légales', 'Politique de retour'].map(l => (
+              <div key={l} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <span className="text-sm text-gray-900">{l}</span>
+                <Button size="sm" variant="secondary">Éditer</Button>
+              </div>
+            ))}
+          </div>
+        );
+      case 'analytics':
+        return (
+          <div className="space-y-3">
+            <label className="flex items-center gap-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Activer le suivi analytics</span></label>
+            <Input label="ID Google Analytics" value="" onChange={() => {}} placeholder="GA-XXXXXXX" />
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'checkout':
+        return (
+          <div className="space-y-3">
+            <label className="flex items-center gap-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Checkout invité (sans compte)</span></label>
+            <label className="flex items-center gap-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Afficher la newsletter opt-in</span></label>
+            <label className="flex items-center gap-2"><input type="checkbox" className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Forcer la création de compte</span></label>
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'inventory':
+        return (
+          <div className="space-y-3">
+            <label className="flex items-center gap-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Suivi de stock automatique</span></label>
+            <label className="flex items-center gap-2"><input type="checkbox" defaultChecked className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Alerte de rupture (seuil: 5)</span></label>
+            <Input label="Seuil d'alerte" type="number" value="5" onChange={() => {}} />
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'emails':
+        return (
+          <div className="space-y-3">
+            <Input label="Email expéditeur" value="" onChange={() => {}} placeholder="contact@maboutique.com" />
+            <Input label="Nom expéditeur" value="" onChange={() => {}} placeholder="Ma Boutique" />
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'phone':
+        return (
+          <div className="space-y-3">
+            <Input label="Numéro de téléphone" value="" onChange={() => {}} placeholder="+225 07 00 00 00" />
+            <Button variant="secondary"><Save size={14} /> Sauvegarder</Button>
+          </div>
+        );
+      case 'appearance':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">Personnalisez l'apparence dans Online Store.</p>
+            <Button variant="secondary"><Palette size={14} /> Aller à Online Store</Button>
+          </div>
+        );
+      case 'integrations':
+        return (
+          <div className="space-y-3">
+            {['WhatsApp Business', 'Instagram Shop', 'Facebook Pixel', 'Google Shopping', 'TikTok Shop'].map(i => (
+              <div key={i} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <span className="text-sm font-medium text-gray-900">{i}</span>
+                <Button size="sm" variant="secondary">Connecter</Button>
+              </div>
+            ))}
+          </div>
+        );
+      default:
+        return <p className="text-sm text-gray-400">Configuration en cours de développement.</p>;
     }
-    loadData();
   };
 
-  const initChannel = async (channelId: string, planRequired: string) => {
-    await supabase.from('sales_channels').insert({ tenant_id: tenant.id, channel: channelId, is_active: false, plan_required: planRequired });
-    loadData();
-  };
+  // Mobile: list view → tap opens modal
+  if (isMobile) {
+    return (
+      <div>
+        <PageHeader title="Paramètres" subtitle="Configurez votre boutique et votre compte" />
+        <Card className="p-2">
+          {SETTINGS_RUBRICS.map(r => {
+            const Icon = r.icon;
+            return (
+              <button key={r.id} onClick={() => { setActiveRubric(r.id); if (r.id === 'store') loadForm(); }} className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors border-b border-gray-50 last:border-0">
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><Icon size={16} className="text-gray-600" /></div>
+                <span className="flex-1 text-left text-sm font-medium text-gray-900">{r.label}</span>
+                <ChevronRight size={16} className="text-gray-300" />
+              </button>
+            );
+          })}
+        </Card>
+        <Modal open={!!activeRubric} onClose={() => setActiveRubric(null)} title={SETTINGS_RUBRICS.find(r => r.id === activeRubric)?.label || ''} maxWidth="max-w-md">
+          {activeRubric && renderRubricContent(activeRubric)}
+          <div className="pt-4 mt-4 border-t border-gray-100">
+            <Button variant="secondary" className="w-full" onClick={() => setActiveRubric(null)}>Terminé</Button>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
 
-  // Payment gateway CRUD
-  const startConnect = (gid: string) => { setConnecting(gid); setGatewayForms({ ...gatewayForms, [gid]: {} }); };
-  const cancelConnect = () => { setConnecting(null); };
-  const testAndConnect = async (gid: string) => {
-    if (!tenant) return;
-    const g = GATEWAYS.find(x => x.id === gid)!;
-    await supabase.from('vendor_payment_gateways').insert({
-      tenant_id: tenant.id, gateway: gid, api_key_encrypted: gatewayForms[gid]?.[g.fields[0]] || 'encrypted',
-      api_secret_encrypted: gatewayForms[gid]?.[g.fields[1]] || 'encrypted', status: 'active', is_active: true,
-    });
-    setConnecting(null); loadData();
-  };
-  const disconnect = async (gid: string) => {
-    const g = gateways.find(x => x.gateway === gid);
-    if (g) { await supabase.from('vendor_payment_gateways').delete().eq('id', g.id); loadData(); }
-  };
-
-  // Team CRUD
-  const saveTeam = async () => {
-    if (!tenant || !teamForm.email) return;
-    await supabase.from('team_members').insert({ tenant_id: tenant.id, email: teamForm.email, role: teamForm.role, status: 'pending', invited_by: tenant.owner_id });
-    setShowTeamForm(false); setTeamForm({ email: '', role: 'staff' }); loadData();
-  };
-  const removeTeam = async (id: string) => {
-    if (!confirm('Retirer ce membre ?')) return;
-    await supabase.from('team_members').delete().eq('id', id); loadData();
-  };
-  const updateTeamRole = async (id: string, role: string) => {
-    await supabase.from('team_members').update({ role }).eq('id', id); loadData();
-  };
-
-  const planRank: any = { starter: 0, premium: 1, entreprise: 2 };
-  const canUse = (planRequired: string) => planRank[tenant?.plan || 'starter'] >= planRank[planRequired];
-
-  // Social connection helpers
-  const SOCIAL_PLATFORMS = [
-    { id: 'facebook', name: 'Facebook / Meta Ads', icon: Facebook, plan: 'starter', fields: ['App ID', 'App Secret'] },
-    { id: 'instagram', name: 'Instagram Shop', icon: Instagram, plan: 'premium', fields: ['Access Token'] },
-    { id: 'whatsapp', name: 'WhatsApp Business', icon: MessageCircle, plan: 'starter', fields: ['Phone Number ID', 'Access Token'] },
-    { id: 'tiktok', name: 'TikTok Ads', icon: Music2, plan: 'premium', fields: ['Advertiser ID', 'Access Token'] },
-  ];
-
-  const connectSocial = async (platformId: string, formData: Record<string, string>) => {
-    if (!tenant) return;
-    const platform = SOCIAL_PLATFORMS.find(p => p.id === platformId)!;
-    if (!canUse(platform.plan)) { setError(`Connexion ${platform.name} nécessite le plan ${platform.plan}.`); return; }
-    const existing = socials.find(s => s.platform === platformId);
-    if (existing) {
-      await supabase.from('social_connections').update({ is_connected: true, access_token_encrypted: JSON.stringify(formData), account_name: formData[Object.keys(formData)[0]] || '' }).eq('id', existing.id);
-    } else {
-      await supabase.from('social_connections').insert({ tenant_id: tenant.id, platform: platformId, is_connected: true, access_token_encrypted: JSON.stringify(formData), account_name: formData[Object.keys(formData)[0]] || '', plan_required: platform.plan });
-    }
-    setConnectingSocial(null); loadData();
-  };
-
-  const disconnectSocial = async (platformId: string) => {
-    const s = socials.find(x => x.platform === platformId);
-    if (s) { await supabase.from('social_connections').update({ is_connected: false }).eq('id', s.id); loadData(); }
-  };
-
-  const applyBoMode = (mode: 'light' | 'dark' | 'system') => {
-    setBoMode(mode); localStorage.setItem('liafrikos-bo-mode', mode);
-    if (mode === 'dark') document.documentElement.classList.add('dark');
-    else if (mode === 'light') document.documentElement.classList.remove('dark');
-    else { const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; if (prefersDark) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark'); }
-    showSaved();
-  };
-
+  // Desktop: two-column layout
   return (
     <div>
-      <PageHeader title="Paramètres" subtitle="19 rubriques, toutes fonctionnelles." />
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <Card className="p-2 h-fit lg:sticky lg:top-20">
-          {SECTIONS.map(s => (
-            <button key={s.id} onClick={() => setActive(s.id)} className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium ${active === s.id ? 'bg-orange-50 text-orange-700' : 'text-gray-700 hover:bg-gray-50'}`}>{s.label}</button>
-          ))}
+      <PageHeader title="Paramètres" subtitle="Configurez votre boutique et votre compte" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-5xl">
+        <Card className="p-2 lg:col-span-1">
+          {SETTINGS_RUBRICS.map(r => {
+            const Icon = r.icon;
+            return (
+              <button key={r.id} onClick={() => { setActiveRubric(r.id); if (r.id === 'store') loadForm(); }} className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${activeRubric === r.id ? 'bg-brand-50 text-brand-700' : 'hover:bg-gray-50 text-gray-700'}`}>
+                <Icon size={16} />
+                <span className="text-sm font-medium">{r.label}</span>
+              </button>
+            );
+          })}
         </Card>
-        <Card className="lg:col-span-3 p-6">
-          {saved && <div className="mb-4 flex items-center gap-2 p-3 bg-green-50 text-green-700 rounded-lg text-sm"><Check size={16} /> Sauvegardé avec succès.</div>}
-          {error && <div className="mb-4 flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg text-sm"><AlertCircle size={16} /> {error}</div>}
-
-          {active === 'general' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Informations boutique</h3>
-              <div><label className="block text-sm font-medium mb-1">Nom</label><input defaultValue={tenant?.name || ''} className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
-              <div><label className="block text-sm font-medium mb-1">Email contact</label><input defaultValue={tenant?.owner_id || ''} className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-sm font-medium mb-1">Devise</label><select defaultValue={tenant?.currency || 'XOF'} className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
-                <div><label className="block text-sm font-medium mb-1">Fuseau horaire</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option><option>Africa/Douala</option></select></div>
-              </div>
-              <div><label className="block text-sm font-medium mb-1">Pays</label><select defaultValue={tenant?.country || ''} className="w-full px-3 py-2 border border-gray-200 rounded-lg">{AFRICAN_COUNTRIES.map(c => <option key={c.code}>{c.flag} {c.name}</option>)}</select></div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'plan' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Plan actuel</h3>
-              <div className="p-4 bg-orange-50 rounded-xl flex items-center justify-between">
-                <div><p className="font-semibold capitalize">{tenant?.plan || 'starter'}</p><p className="text-sm text-gray-500">{tenant?.billing_cycle === 'annual' ? 'Annuel' : 'Mensuel'} · {tenant?.status === 'trial' ? '7 jours d\'essai' : 'Actif'}</p></div>
-                <Button>Changer de plan</Button>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {[{n:'Starter',p:'$9'},{n:'Premium',p:'$19',pop:true},{n:'Entreprise',p:'$69'}].map(p => (
-                  <div key={p.n} className={`p-4 rounded-xl border-2 ${p.pop ? 'border-orange-500' : 'border-gray-200'}`}>
-                    {p.pop && <Badge color="orange">Recommandé</Badge>}
-                    <p className="font-semibold mt-1">{p.n}</p><p className="text-2xl font-semibold">{p.p}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {active === 'billing' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Facturation</h3>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600">Prochaine facture : <strong>{tenant?.plan === 'premium' ? '$19' : tenant?.plan === 'entreprise' ? '$69' : '$9'}</strong></p>
-                <p className="text-sm text-gray-600 mt-1">Méthode : Carte Visa ****4242</p>
-              </div>
-              <Button variant="secondary">Télécharger factures</Button>
-              <Button variant="ghost">Mettre à jour la carte</Button>
-            </div>
-          )}
-
-          {active === 'users' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Utilisateurs de la boutique</h3>
-              <div className="space-y-2">
-                {teamMembers.map(m => (
-                  <div key={m.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div><p className="font-medium text-gray-900">{m.email}</p><p className="text-xs text-gray-500">{m.role} · {m.status}</p></div>
-                    <div className="flex items-center gap-2">
-                      <select value={m.role} onChange={e => updateTeamRole(m.id, e.target.value)} className="text-xs px-2 py-1 border border-gray-200 rounded"><option value="admin">Admin</option><option value="staff">Staff</option><option value="orders">Commandes</option></select>
-                      <button onClick={() => removeTeam(m.id)} className="text-red-600 text-xs hover:underline">Retirer</button>
-                    </div>
-                  </div>
-                ))}
-                {teamMembers.length === 0 && <p className="text-sm text-gray-500">Aucun membre d'équipe.</p>}
-              </div>
-              {showTeamForm ? (
-                <div className="p-3 border border-gray-200 rounded-lg space-y-2">
-                  <input type="email" value={teamForm.email} onChange={e => setTeamForm({ ...teamForm, email: e.target.value })} placeholder="email@exemple.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
-                  <select value={teamForm.role} onChange={e => setTeamForm({ ...teamForm, role: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="admin">Admin (accès complet)</option><option value="staff">Staff (accès limité)</option><option value="orders">Commandes uniquement</option></select>
-                  <div className="flex gap-2"><Button size="sm" onClick={saveTeam}>Inviter</Button><Button variant="ghost" size="sm" onClick={() => setShowTeamForm(false)}>Annuler</Button></div>
-                </div>
-              ) : (
-                <Button variant="secondary" onClick={() => setShowTeamForm(true)}><Plus size={14} /> Inviter un utilisateur</Button>
-              )}
-            </div>
-          )}
-
-          {active === 'payments' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Moyens de paiement</h3>
-              <p className="text-sm text-gray-500">Connectez vos propres identifiants API. L'argent va directement dans votre compte, sans commission LiAfrikOS.</p>
-              <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg text-sm text-gray-700">
-                <Lock size={14} className="text-blue-600 mt-0.5 flex-shrink-0" />
-                <span>Vos clés API sont chiffrées (AES-256) et stockées de façon sécurisée. Elles ne sont jamais affichées en clair après sauvegarde.</span>
-              </div>
-              {GATEWAYS.map(g => {
-                const connected = gateways.some(x => x.gateway === g.id && x.is_active);
-                return (
-                  <div key={g.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="flex items-center justify-between p-3">
-                      <div><p className="font-medium text-gray-900">{g.name}</p><p className="text-xs text-gray-500">{g.desc}</p></div>
-                      {connected ? (
-                        <div className="flex items-center gap-2"><Badge color="green"><Check size={10} /> Connecté</Badge><button onClick={() => disconnect(g.id)} className="text-red-600 text-xs hover:underline">Déconnecter</button></div>
-                      ) : connecting === g.id ? (
-                        <Button variant="ghost" size="sm" onClick={cancelConnect}><X size={14} /> Annuler</Button>
-                      ) : (
-                        <Button variant="secondary" size="sm" onClick={() => startConnect(g.id)}>Connecter</Button>
-                      )}
-                    </div>
-                    {connecting === g.id && (
-                      <div className="p-3 border-t border-gray-100 bg-gray-50 space-y-2">
-                        {g.fields.map(f => (
-                          <div key={f}><label className="block text-xs font-medium text-gray-700 mb-1">{f}</label><input type="password" placeholder="••••••••••••" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono" onChange={e => setGatewayForms({ ...gatewayForms, [g.id]: { ...gatewayForms[g.id], [f]: e.target.value } })} /></div>
-                        ))}
-                        <div className="flex gap-2 pt-2"><Button size="sm" onClick={() => testAndConnect(g.id)}><Check size={14} /> Tester & connecter</Button><Button variant="ghost" size="sm" onClick={cancelConnect}>Annuler</Button></div>
-                        <p className="text-xs text-gray-500 flex items-center gap-1"><AlertCircle size={10} /> Un test de connexion sera effectué avant l'activation.</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {active === 'checkout' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Configuration du checkout</h3>
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Compte client obligatoire</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Autoriser checkout invité</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Adresse de livraison requise</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Accepter les remboursements</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-              </div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'accounts' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Comptes clients</h3>
-              <div><label className="block text-sm font-medium mb-1">Format du compte</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>Email + mot de passe</option><option>Email + OTP</option><option>Téléphone + OTP</option></select></div>
-              <div><label className="block text-sm font-medium mb-1">Page de connexion</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>Page dédiée</option><option>Modal</option></select></div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'shipping' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Zones de livraison</h3>
-              <p className="text-sm text-gray-500">Définissez vos zones de livraison et leurs tarifs. Ces tarifs s'appliquent au checkout.</p>
-              {zones.length === 0 && !showZoneForm ? (
-                <p className="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">Aucune zone configurée. Ajoutez votre première zone.</p>
-              ) : (
-                <div className="space-y-2">
-                  {zones.map(z => (
-                    <div key={z.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                      <div><p className="font-medium text-gray-900">{z.name}</p><p className="text-xs text-gray-500">{z.country || 'Tous pays'} · {(z.rate_amount_cents / 100).toLocaleString('fr-FR')} {tenant?.currency || 'XOF'} · {z.estimated_days}j{z.free_shipping_threshold_cents ? ` · Gratuit dès ${(z.free_shipping_threshold_cents / 100).toLocaleString('fr-FR')}` : ''}</p></div>
-                      <button onClick={() => deleteZone(z.id)} className="text-red-600 text-xs hover:underline"><Trash2 size={12} /></button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {showZoneForm ? (
-                <div className="p-4 border border-gray-200 rounded-lg space-y-2">
-                  <div><label className="block text-xs font-medium mb-1">Nom de la zone *</label><input value={zoneForm.name} onChange={e => setZoneForm({ ...zoneForm, name: e.target.value })} placeholder="Abidjan" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div><label className="block text-xs font-medium mb-1">Pays</label><select value={zoneForm.country} onChange={e => setZoneForm({ ...zoneForm, country: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="">Tous pays</option>{AFRICAN_COUNTRIES.map(c => <option key={c.code}>{c.name}</option>)}</select></div>
-                    <div><label className="block text-xs font-medium mb-1">Région</label><input value={zoneForm.region} onChange={e => setZoneForm({ ...zoneForm, region: e.target.value })} placeholder="Abidjan" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div><label className="block text-xs font-medium mb-1">Type de tarif</label><select value={zoneForm.rate_type} onChange={e => setZoneForm({ ...zoneForm, rate_type: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="fixed">Fixe</option><option value="free">Gratuit</option></select></div>
-                    <div><label className="block text-xs font-medium mb-1">Tarif ({tenant?.currency || 'XOF'})</label><input type="number" value={zoneForm.rate_amount} onChange={e => setZoneForm({ ...zoneForm, rate_amount: e.target.value })} placeholder="1000" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div><label className="block text-xs font-medium mb-1">Gratuit dès ({tenant?.currency || 'XOF'})</label><input type="number" value={zoneForm.free_threshold} onChange={e => setZoneForm({ ...zoneForm, free_threshold: e.target.value })} placeholder="50000" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                    <div><label className="block text-xs font-medium mb-1">Délai estimé (jours)</label><input type="number" value={zoneForm.estimated_days} onChange={e => setZoneForm({ ...zoneForm, estimated_days: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  </div>
-                  {!canUse('premium') && zoneForm.country && (
-                    <p className="text-xs text-orange-600 flex items-center gap-1"><AlertCircle size={10} /> Zones internationales réservées au plan Premium.</p>
-                  )}
-                  <div className="flex gap-2"><Button size="sm" onClick={saveZone}>Ajouter</Button><Button variant="ghost" size="sm" onClick={() => setShowZoneForm(false)}>Annuler</Button></div>
-                </div>
-              ) : (
-                <Button variant="secondary" size="sm" onClick={() => setShowZoneForm(true)}><Plus size={14} /> Ajouter une zone</Button>
-              )}
-            </div>
-          )}
-
-          {active === 'taxes' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Taxes et droits</h3>
-              <div><label className="block text-sm font-medium mb-1">TVA par défaut (%)</label><input type="number" defaultValue="18" className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
-              <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Inclure la TVA dans les prix</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-              <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Collecter les taxes sur la livraison</span><input type="checkbox" className="w-4 h-4" /></label>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'locations' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Emplacements de stock</h3>
-              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between">
-                <div><p className="font-medium">{tenant?.city || 'Non défini'} — {tenant?.region || ''}</p><p className="text-xs text-gray-500">Principal</p></div>
-                <Button variant="ghost" size="sm">Éditer</Button>
-              </div>
-              <Button variant="secondary" size="sm"><Plus size={14} /> Ajouter un emplacement</Button>
-            </div>
-          )}
-
-          {active === 'apps' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Applications installées</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {['WhatsApp Business', 'Mailchimp', 'Google Analytics', 'Klaviyo'].map(a => (
-                  <div key={a} className="p-3 border border-gray-200 rounded-lg flex items-center justify-between"><span className="text-sm font-medium">{a}</span><Badge color="green">Actif</Badge></div>
-                ))}
-              </div>
-              <Button variant="secondary" size="sm">Parcourir l'App Store</Button>
-            </div>
-          )}
-
-          {active === 'channels' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Canaux de vente</h3>
-              <p className="text-sm text-gray-500">Activez ou désactivez vos canaux de vente. Certains canaux nécessitent un plan supérieur.</p>
-              <div className="space-y-2">
-                {CHANNELS.map(ch => {
-                  const dbCh = channels.find(c => c.channel === ch.id);
-                  const isActive = dbCh?.is_active || false;
-                  const allowed = canUse(ch.plan);
-                  return (
-                    <div key={ch.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                      <div><p className="text-sm font-medium text-gray-900">{ch.name}</p><p className="text-xs text-gray-500">Plan requis: {ch.plan}</p></div>
-                      <div className="flex items-center gap-2">
-                        {!allowed && <Badge color="orange">🔒 {ch.plan}</Badge>}
-                        {allowed && <button onClick={() => toggleChannel({ id: dbCh?.id || '', channel: ch.id, is_active: isActive, plan_required: ch.plan })} className={`relative w-10 h-5 rounded-full transition-colors ${isActive ? 'bg-green-500' : 'bg-gray-300'}`}><span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isActive ? 'translate-x-5' : ''}`} /></button>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {active === 'domains' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Domaines</h3>
-              <div className="p-3 bg-gray-50 rounded-lg flex items-center justify-between">
-                <div><p className="font-medium">{tenant?.name?.toLowerCase().replace(/[^a-z0-9]/g, '-')}.liafrikos.com</p><Badge color="green">Actif</Badge></div>
-              </div>
-              {domains.map(d => (
-                <div key={d.id} className="p-3 border border-gray-200 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div><p className="font-medium text-gray-900">{d.domain_name}</p><div className="flex gap-2 mt-1"><Badge color={d.dns_status === 'verified' ? 'green' : 'orange'}>DNS: {d.dns_status}</Badge><Badge color={d.ssl_status === 'active' ? 'green' : 'orange'}>SSL: {d.ssl_status}</Badge></div></div>
-                    <div className="flex gap-2">
-                      {d.dns_status !== 'verified' && <Button size="sm" variant="secondary" onClick={() => verifyDomain(d)}>Vérifier</Button>}
-                      <button onClick={() => deleteDomain(d.id)} className="text-red-600 text-xs hover:underline"><Trash2 size={12} /></button>
-                    </div>
-                  </div>
-                  {d.dns_status === 'pending' && (
-                    <div className="mt-3 p-3 bg-blue-50 rounded-lg text-xs text-gray-700">
-                      <p className="font-medium mb-1">Instructions DNS :</p>
-                      <p>1. Ajoutez un enregistrement CNAME : <code className="bg-white px-1 rounded">{d.domain_name}</code> → <code className="bg-white px-1 rounded">proxy.liafrikos.com</code></p>
-                      <p className="mt-1">2. Cliquez sur "Vérifier" — SSL sera activé automatiquement.</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {showDomainForm ? (
-                <div className="p-4 border border-gray-200 rounded-lg space-y-2">
-                  <input value={domainForm.domain_name} onChange={e => setDomainForm({ ...domainForm, domain_name: e.target.value })} placeholder="maboutique.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg" />
-                  <div className="flex gap-2"><Button size="sm" onClick={saveDomain}>Connecter</Button><Button variant="ghost" size="sm" onClick={() => setShowDomainForm(false)}>Annuler</Button></div>
-                </div>
-              ) : (
-                <div className="p-3 border-2 border-dashed border-gray-200 rounded-lg">
-                  <p className="text-sm font-medium">Connecter un domaine personnalisé</p>
-                  <p className="text-xs text-gray-500 mt-1">{canUse('premium') ? 'SSL automatique via Cloudflare Custom Hostnames.' : 'Disponible avec le plan Premium.'}</p>
-                  {canUse('premium') && <Button variant="secondary" size="sm" className="mt-2" onClick={() => setShowDomainForm(true)}><Plus size={14} /> Ajouter un domaine</Button>}
-                </div>
-              )}
-            </div>
-          )}
-
-          {active === 'events' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Événements client</h3>
-              <p className="text-sm text-gray-500">Suivez les actions de vos clients pour le marketing et l'analytics.</p>
-              <div className="space-y-2">
-                {['Page vue', 'Produit ajouté au panier', 'Checkout démarré', 'Achat effectué', 'Inscription newsletter'].map(ev => (
-                  <label key={ev} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">{ev}</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-                ))}
-              </div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'notifications' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Notifications</h3>
-              <div className="space-y-2">
-                {['Nouvelle commande', 'Stock faible', 'Nouveau client', 'Avis client', 'Paiement reçu'].map(n => (
-                  <label key={n} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">{n}</span><div className="flex gap-3 text-xs"><label className="flex items-center gap-1">Email <input type="checkbox" defaultChecked /></label><label className="flex items-center gap-1">SMS <input type="checkbox" /></label></div></label>
-                ))}
-              </div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'metafields' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Metafields & Metaobjects</h3>
-              <p className="text-sm text-gray-500">Données personnalisées pour vos produits, commandes et clients.</p>
-              {metafields.length === 0 && !showMetaForm ? (
-                <p className="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">Aucun metafield. Créez votre premier champ personnalisé.</p>
-              ) : (
-                <div className="space-y-2">
-                  {metafields.map(m => (
-                    <div key={m.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                      <div><p className="text-sm font-medium font-mono">{m.namespace}.{m.name}</p><p className="text-xs text-gray-500">{m.entity_type} · Type: {m.field_type}{m.value ? ` · Valeur: ${m.value}` : ''}</p></div>
-                      <button onClick={() => deleteMeta(m.id)} className="text-red-600 text-xs hover:underline"><Trash2 size={12} /></button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {showMetaForm ? (
-                <div className="p-4 border border-gray-200 rounded-lg space-y-2">
-                  <div><label className="block text-xs font-medium mb-1">Nom du champ *</label><input value={metaForm.name} onChange={e => setMetaForm({ ...metaForm, name: e.target.value })} placeholder="matiere" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div><label className="block text-xs font-medium mb-1">Entité</label><select value={metaForm.entity_type} onChange={e => setMetaForm({ ...metaForm, entity_type: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="product">Produit</option><option value="order">Commande</option><option value="customer">Client</option></select></div>
-                    <div><label className="block text-xs font-medium mb-1">Type</label><select value={metaForm.field_type} onChange={e => setMetaForm({ ...metaForm, field_type: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="text">Texte</option><option value="number">Nombre</option><option value="boolean">Booléen</option><option value="date">Date</option><option value="list">Liste</option></select></div>
-                  </div>
-                  <div><label className="block text-xs font-medium mb-1">Valeur par défaut</label><input value={metaForm.value} onChange={e => setMetaForm({ ...metaForm, value: e.target.value })} placeholder="Coton" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-                  <div className="flex gap-2"><Button size="sm" onClick={saveMeta}>Créer</Button><Button variant="ghost" size="sm" onClick={() => setShowMetaForm(false)}>Annuler</Button></div>
-                </div>
-              ) : (
-                <Button variant="secondary" size="sm" onClick={() => setShowMetaForm(true)}><Plus size={14} /> Ajouter un metafield</Button>
-              )}
-            </div>
-          )}
-
-          {active === 'languages' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Langues</h3>
-              <p className="text-sm text-gray-500">Langues disponibles sur votre boutique.</p>
-              <div className="space-y-2">
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">🇫🇷 Français</span><Badge color="green">Par défaut</Badge></label>
-                <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">🇬🇧 English</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-              </div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'privacy' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Confidentialité client</h3>
-              <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Collecter les données de navigation</span><input type="checkbox" defaultChecked className="w-4 h-4" /></label>
-              <label className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"><span className="text-sm font-medium">Partager avec des tiers (analytics)</span><input type="checkbox" className="w-4 h-4" /></label>
-              <div><label className="block text-sm font-medium mb-1">Durée de conservation (mois)</label><input type="number" defaultValue="24" className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'policies' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Politiques de la boutique</h3>
-              <div><label className="block text-sm font-medium mb-1">Politique de remboursement</label><textarea rows={3} defaultValue="Remboursement sous 14 jours..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-              <div><label className="block text-sm font-medium mb-1">Politique de confidentialité</label><textarea rows={3} defaultValue="Vos données sont protégées..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-              <div><label className="block text-sm font-medium mb-1">Conditions de service</label><textarea rows={3} defaultValue="En commandant, vous acceptez..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
-              <Button onClick={showSaved}>Sauvegarder</Button>
-            </div>
-          )}
-
-          {active === 'social' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Connexion réseaux sociaux</h3>
-              <p className="text-sm text-gray-500">Connectez vos comptes pour gérer vos publicités depuis la plateforme. L'accès est conditionné par votre plan.</p>
-              {SOCIAL_PLATFORMS.map(sp => {
-                const Icon = sp.icon;
-                const conn = socials.find(s => s.platform === sp.id);
-                const isConnected = conn?.is_connected;
-                const allowed = canUse(sp.plan);
-                return (
-                  <div key={sp.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="flex items-center justify-between p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center"><Icon size={16} className="text-gray-700" /></div>
-                        <div><p className="text-sm font-medium text-gray-900">{sp.name}</p><p className="text-xs text-gray-500">{isConnected ? `Connecté: ${conn.account_name || 'OK'}` : 'Non connecté'}</p></div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {!allowed && <Badge color="orange">Plan {sp.plan}</Badge>}
-                        {isConnected ? (
-                          <button onClick={() => disconnectSocial(sp.id)} className="text-red-600 text-xs hover:underline">Déconnecter</button>
-                        ) : connectingSocial === sp.id ? (
-                          <button onClick={() => setConnectingSocial(null)} className="text-gray-500 text-xs">Annuler</button>
-                        ) : (
-                          <Button variant="secondary" size="sm" disabled={!allowed} onClick={() => setConnectingSocial(sp.id)}>Connecter</Button>
-                        )}
-                      </div>
-                    </div>
-                    {connectingSocial === sp.id && (
-                      <div className="p-3 border-t border-gray-100 bg-gray-50 space-y-2">
-                        {sp.fields.map(f => <div key={f}><label className="block text-xs font-medium text-gray-700 mb-1">{f}</label><input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono" onChange={e => { const form: Record<string, string> = {}; form[f] = e.target.value; (e.target as any)._form = form; }} /></div>)}
-                        <Button size="sm" onClick={() => {
-                          const inputs = document.querySelectorAll('input[type="password"]');
-                          const formData: Record<string, string> = {};
-                          sp.fields.forEach((f, i) => { formData[f] = (inputs[i] as HTMLInputElement)?.value || ''; });
-                          connectSocial(sp.id, formData);
-                        }}>Connecter</Button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {active === 'appearance' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Apparence du back-office</h3>
-              <p className="text-sm text-gray-500">Personnalisez l'interface de votre espace de gestion. Sans impact sur votre boutique publique.</p>
-              <div className="grid grid-cols-3 gap-3">
-                {([
-                  { mode: 'light', label: 'Clair', icon: Sun },
-                  { mode: 'dark', label: 'Sombre', icon: Moon },
-                  { mode: 'system', label: 'Système', icon: Monitor },
-                ] as const).map(opt => {
-                  const Icon = opt.icon;
-                  return (
-                    <button key={opt.mode} onClick={() => applyBoMode(opt.mode)} className={`p-4 rounded-xl border-2 transition-all ${boMode === opt.mode ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <Icon size={20} className={boMode === opt.mode ? 'text-orange-600' : 'text-gray-400'} />
-                      <p className="mt-2 text-sm font-medium">{opt.label}</p>
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-500">Le mode sombre est appliqué immédiatement et sauvegardé pour vos prochaines visites.</div>
+        <Card className="p-5 lg:col-span-2">
+          {activeRubric ? renderRubricContent(activeRubric) : (
+            <div className="text-center py-12">
+              <SettingsIcon size={32} className="mx-auto text-gray-300 mb-2" />
+              <p className="text-sm text-gray-400">Sélectionnez une rubrique à gauche pour configurer.</p>
             </div>
           )}
         </Card>

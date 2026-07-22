@@ -1,113 +1,81 @@
-import { PageHeader, Card, Button, Badge } from './ui';
-import { Zap, Plus, ArrowRight, Bell, Users, Tag, X, Trash2, Power } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useTenant } from '../../lib/hooks';
+import { supabase } from '../../lib/supabase';
+import { Card, PageHeader, Button, Input, Modal, Badge } from './ui';
+import { Plus, Zap } from 'lucide-react';
 
-interface Automation {
-  title: string; trigger: string; action: string; active: boolean;
-}
+interface Automation { id: string; name: string; trigger: string; action: string; active: boolean; }
 
 export default function Automations() {
-  const [automations, setAutomations] = useState<Automation[]>([
-    { title: 'Alerte stock bas', trigger: 'Si stock < 5', action: 'Envoyer email au vendeur', active: true },
-    { title: 'Segment VIP auto', trigger: 'Si client passe 3 commandes', action: 'Ajouter au segment VIP', active: false },
-    { title: 'Promo anniversaire', trigger: 'Si anniversaire client', action: 'Envoyer code promo -15%', active: true },
-  ]);
-  const [showBuilder, setShowBuilder] = useState(false);
-  const [form, setForm] = useState({ title: '', triggerField: 'stock', triggerOp: '<', triggerValue: '', actionType: 'email', actionValue: '' });
+  const { tenant } = useTenant();
+  const [automations, setAutomations] = useState<Automation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ name: '', trigger: 'order_created', action: 'send_email' });
 
-  const triggers = [
-    { value: 'stock', label: 'Stock produit' },
-    { value: 'orders_count', label: 'Nombre de commandes client' },
-    { value: 'birthday', label: 'Anniversaire client' },
-    { value: 'cart_abandoned', label: 'Panier abandonné' },
-    { value: 'new_customer', label: 'Nouveau client' },
-  ];
-  const actions = [
-    { value: 'email', label: 'Envoyer un email' },
-    { value: 'segment', label: 'Ajouter à un segment' },
-    { value: 'promo', label: 'Envoyer un code promo' },
-    { value: 'alert', label: 'Créer une alerte' },
-    { value: 'tag', label: 'Taguer le client' },
-  ];
+  const load = () => {
+    if (!tenant) return;
+    supabase.from('automations').select('*').eq('tenant_id', tenant.id).order('created_at', { ascending: false })
+      .then(({ data }) => { setAutomations((data as Automation[]) || []); setLoading(false); });
+  };
+  useEffect(load, [tenant]);
 
-  const createAutomation = () => {
-    if (!form.title) return;
-    const trigLabel = triggers.find(t => t.value === form.triggerField)?.label || form.triggerField;
-    const actLabel = actions.find(a => a.value === form.actionType)?.label || form.actionType;
-    setAutomations([{ title: form.title, trigger: `Si ${trigLabel} ${form.triggerOp} ${form.triggerValue}`, action: actLabel + (form.actionValue ? ` "${form.actionValue}"` : ''), active: true }, ...automations]);
-    setShowBuilder(false);
-    setForm({ title: '', triggerField: 'stock', triggerOp: '<', triggerValue: '', actionType: 'email', actionValue: '' });
+  const create = async () => {
+    if (!tenant || !form.name) return;
+    await supabase.from('automations').insert({ tenant_id: tenant.id, name: form.name, trigger: form.trigger, action: form.action, active: true });
+    setModal(false); setForm({ name: '', trigger: 'order_created', action: 'send_email' }); load();
   };
 
-  const toggle = (i: number) => setAutomations(automations.map((a, idx) => idx === i ? { ...a, active: !a.active } : a));
-  const remove = (i: number) => setAutomations(automations.filter((_, idx) => idx !== i));
+  const toggle = async (a: Automation) => { await supabase.from('automations').update({ active: !a.active }).eq('id', a.id); load(); };
 
   return (
     <div>
-      <PageHeader title="Automations" subtitle="Créez des règles automatiques sans code — façon Shopify Flow." action={<Button onClick={() => setShowBuilder(true)}><Plus size={16} /> Créer une automatisation</Button>} />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {automations.map((a, i) => (
-          <Card key={i} className="p-5 hover:shadow-md transition-all">
-            <div className="flex items-start justify-between">
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center"><Zap size={18} className="text-orange-600" /></div>
-              <div className="flex gap-1">
-                <button onClick={() => toggle(i)} className={`p-1 rounded ${a.active ? 'text-green-600' : 'text-gray-300'}`}><Power size={14} /></button>
-                <button onClick={() => remove(i)} className="p-1 rounded text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
-              </div>
-            </div>
-            <h3 className="mt-3 font-semibold text-gray-900">{a.title}</h3>
-            <div className="mt-3 space-y-1 text-xs">
-              <div className="flex items-center gap-1 text-gray-500"><span className="px-1.5 py-0.5 bg-gray-100 rounded font-mono">SI</span> {a.trigger}</div>
-              <div className="flex items-center gap-1 text-gray-500"><span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-mono">ALORS</span> {a.action}</div>
-            </div>
-            <div className="mt-3"><Badge color={a.active ? 'green' : 'gray'}>{a.active ? 'Active' : 'Inactive'}</Badge></div>
-          </Card>
-        ))}
-      </div>
-
-      <Card className="mt-6 p-5 bg-gradient-to-r from-purple-50 to-white">
-        <div className="flex items-center gap-3">
-          <Zap className="text-purple-600" size={20} />
-          <p className="text-sm text-gray-700">Moteur d'automatisation façon Shopify Flow — créez vos règles sans code. Combinez déclencheurs, conditions et actions.</p>
-        </div>
-      </Card>
-
-      {/* Rule builder modal */}
-      {showBuilder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowBuilder(false)}>
-          <div className="bg-white rounded-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">Créer une automatisation</h3>
-              <button onClick={() => setShowBuilder(false)}><X size={18} /></button>
-            </div>
-            <div className="p-5 space-y-4">
-              <div><label className="block text-sm font-medium mb-1">Nom de l'automatisation</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Ex. Alerte stock critique" /></div>
-
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <div className="text-xs font-semibold text-gray-500 uppercase mb-2">Déclencheur (SI)</div>
-                <div className="grid grid-cols-3 gap-2">
-                  <select value={form.triggerField} onChange={e => setForm({ ...form, triggerField: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs">{triggers.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select>
-                  <select value={form.triggerOp} onChange={e => setForm({ ...form, triggerOp: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs"><option value="<">&lt;</option><option value=">">&gt;</option><option value="=">=</option><option value="est">est</option></select>
-                  <input value={form.triggerValue} onChange={e => setForm({ ...form, triggerValue: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs" placeholder="valeur" />
+      <PageHeader title="Automations" subtitle="Automate repetitive tasks with triggers and actions" action={<Button onClick={() => setModal(true)}><Plus size={16} /> New Automation</Button>} />
+      <Card className="p-5">
+        {loading ? <div className="text-gray-400 text-sm py-8 text-center">Loading…</div> : automations.length === 0 ? (
+          <div className="text-center py-12"><Zap size={32} className="mx-auto text-gray-300 mb-2" /><p className="text-sm text-gray-400">No automations yet</p></div>
+        ) : (
+          <div className="space-y-3">
+            {automations.map((a) => (
+              <div key={a.id} className="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-gray-300">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${a.active ? 'bg-brand-50 text-brand-600' : 'bg-gray-100 text-gray-400'}`}><Zap size={18} /></div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{a.name}</p>
+                    <p className="text-xs text-gray-400">When <span className="font-medium text-gray-600">{a.trigger.replace(/_/g, ' ')}</span> → <span className="font-medium text-gray-600">{a.action.replace(/_/g, ' ')}</span></p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge color={a.active ? 'green' : 'gray'}>{a.active ? 'On' : 'Off'}</Badge>
+                  <button onClick={() => toggle(a)} className={`relative w-11 h-6 rounded-full transition-colors ${a.active ? 'bg-brand-500' : 'bg-gray-200'}`}>
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${a.active ? 'translate-x-5' : ''}`} />
+                  </button>
                 </div>
               </div>
-
-              <div className="flex justify-center"><ArrowRight size={18} className="text-gray-400" /></div>
-
-              <div className="p-3 bg-orange-50 rounded-lg">
-                <div className="text-xs font-semibold text-orange-500 uppercase mb-2">Action (ALORS)</div>
-                <div className="grid grid-cols-2 gap-2">
-                  <select value={form.actionType} onChange={e => setForm({ ...form, actionType: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs">{actions.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}</select>
-                  <input value={form.actionValue} onChange={e => setForm({ ...form, actionValue: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs" placeholder="paramètre" />
-                </div>
-              </div>
-
-              <Button onClick={createAutomation} className="w-full">Créer l'automatisation</Button>
-            </div>
+            ))}
           </div>
+        )}
+      </Card>
+      <Modal open={modal} onClose={() => setModal(false)} title="New Automation">
+        <div className="space-y-4">
+          <Input label="Name" value={form.name} onChange={v => setForm({ ...form, name: v })} placeholder="Welcome email" />
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Trigger</label>
+            <select value={form.trigger} onChange={e => setForm({ ...form, trigger: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400">
+              <option value="order_created">Order Created</option><option value="customer_signup">Customer Signup</option><option value="low_stock">Low Stock</option><option value="abandoned_cart">Abandoned Cart</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Action</label>
+            <select value={form.action} onChange={e => setForm({ ...form, action: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400">
+              <option value="send_email">Send Email</option><option value="send_sms">Send SMS</option><option value="create_task">Create Task</option><option value="update_inventory">Update Inventory</option>
+            </select>
+          </div>
+          <div className="flex gap-2 justify-end pt-2"><Button variant="secondary" onClick={() => setModal(false)}>Cancel</Button><Button onClick={create} disabled={!form.name}>Create</Button></div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

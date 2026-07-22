@@ -1,127 +1,124 @@
-import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { useState } from 'react';
-import { Logo } from '../../components/Logo';
-import { useAuth } from '../../lib/hooks';
-import { signOut } from '../../lib/auth';
+import { useState, ReactNode } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
-  Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
-  BarChart3, Bot, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Shield
+  LayoutDashboard, ShoppingCart, Package, Users, TrendingUp, Tag, Megaphone,
+  FileText, Globe, BarChart3, Store, Bot, Calculator, UserCog, FileBarChart,
+  Zap, Settings, Menu, X, LogOut,
 } from 'lucide-react';
+import { useAuth, useTenant } from '../../lib/hooks';
 
-type NavItem = { to: string; label: string; icon: any; end?: boolean; superAdminOnly?: boolean };
+interface NavItem { to: string; label: string; icon: ReactNode; }
 
-const NAV: { group: string; items: NavItem[] }[] = [
-  { group: 'Vendre', items: [
-    { to: '/app', label: 'Home', icon: Home, end: true },
-    { to: '/app/orders', label: 'Orders', icon: ShoppingCart },
-    { to: '/app/products', label: 'Products', icon: Package },
-    { to: '/app/customers', label: 'Customers', icon: Users },
-    { to: '/app/growth', label: 'Growth', icon: TrendingUp },
-    { to: '/app/discounts', label: 'Discounts', icon: Tag },
-  ]},
-  { group: 'Contenu', items: [
-    { to: '/app/content', label: 'Content', icon: FileText },
-    { to: '/app/markets', label: 'Markets', icon: Globe },
-    { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
-    { to: '/app/agentic', label: 'Agentic', icon: Bot },
-    { to: '/app/online-store', label: 'Online Store', icon: Store },
-  ]},
-  { group: 'Croissance', items: [
-    { to: '/app/marketing', label: 'Marketing', icon: Megaphone },
-    { to: '/app/accounting', label: 'Comptabilité', icon: Calculator },
-    { to: '/app/team', label: 'Équipe', icon: UserCog },
-    { to: '/app/chat', label: 'Chat', icon: MessageSquare },
-    { to: '/app/reports', label: 'Reports', icon: FileBarChart },
-    { to: '/app/automations', label: 'Automations', icon: Zap },
-    { to: '/app/settings', label: 'Paramètres', icon: Settings },
-  ]},
-  { group: 'Administration', items: [
-    { to: '/admin', label: 'Super Admin', icon: Shield, superAdminOnly: true },
-  ]},
+const main: NavItem[] = [
+  { to: '/dashboard', label: 'Home', icon: <LayoutDashboard size={18} /> },
+  { to: '/dashboard/orders', label: 'Orders', icon: <ShoppingCart size={18} /> },
+  { to: '/dashboard/products', label: 'Products', icon: <Package size={18} /> },
+  { to: '/dashboard/customers', label: 'Customers', icon: <Users size={18} /> },
+];
+const growth: NavItem[] = [
+  { to: '/dashboard/growth', label: 'Growth', icon: <TrendingUp size={18} /> },
+  { to: '/dashboard/discounts', label: 'Discounts', icon: <Tag size={18} /> },
+  { to: '/dashboard/marketing', label: 'Marketing', icon: <Megaphone size={18} /> },
+  { to: '/dashboard/content', label: 'Content', icon: <FileText size={18} /> },
+];
+const settings: NavItem[] = [
+  { to: '/dashboard/markets', label: 'Markets', icon: <Globe size={18} /> },
+  { to: '/dashboard/analytics', label: 'Analytics', icon: <BarChart3 size={18} /> },
+  { to: '/dashboard/online-store', label: 'Online Store', icon: <Store size={18} /> },
+  { to: '/dashboard/agentic', label: 'Agentic', icon: <Bot size={18} /> },
+];
+const bottom: NavItem[] = [
+  { to: '/dashboard/comptabilite', label: 'Comptabilite', icon: <Calculator size={18} /> },
+  { to: '/dashboard/team', label: 'Team', icon: <UserCog size={18} /> },
+  { to: '/dashboard/reports', label: 'Reports', icon: <FileBarChart size={18} /> },
+  { to: '/dashboard/automations', label: 'Automations', icon: <Zap size={18} /> },
+  { to: '/dashboard/settings', label: 'Settings', icon: <Settings size={18} /> },
 ];
 
-export default function DashboardLayout() {
-  const { user, isSuperAdmin } = useAuth();
-  const nav = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userMenu, setUserMenu] = useState(false);
+function NavGroup({ items, title }: { items: NavItem[]; title?: string }) {
+  return (
+    <div className="mb-4">
+      {title && <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">{title}</p>}
+      {items.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.to === '/dashboard'}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
+              isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-100'
+            }`
+          }
+        >
+          {item.icon}
+          {item.label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
 
-  const logout = async () => { await signOut(); nav('/'); };
+export default function DashboardLayout() {
+  const { tenant } = useTenant();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const sidebarContent = (
+    <>
+      <div className="px-4 py-5">
+        <span className="text-lg font-bold text-gray-900 tracking-tight">{tenant?.name || 'Store'}</span>
+      </div>
+      <nav className="flex-1 px-2 overflow-y-auto">
+        <NavGroup items={main} />
+        <NavGroup items={growth} title="Growth" />
+        <NavGroup items={settings} title="Settings" />
+        <NavGroup items={bottom} />
+      </nav>
+      <div className="p-3 border-t border-gray-100">
+        <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 w-full">
+          <LogOut size={18} /> Sign Out
+        </button>
+      </div>
+    </>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-white border-r border-gray-100 flex flex-col transition-transform duration-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="h-16 flex items-center px-5 border-b border-gray-100 flex-shrink-0">
-          <Logo />
-        </div>
-        <nav className="flex-1 overflow-y-auto scrollbar-thin py-4 px-3 space-y-6">
-          {NAV.map(section => (
-            <div key={section.group}>
-              <div className="px-3 mb-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">{section.group}</div>
-              <div className="space-y-0.5">
-                {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      end={item.end}
-                      onClick={() => setSidebarOpen(false)}
-                      className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-orange-50 text-orange-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
-                    >
-                      <Icon size={16} /> {item.label}
-                    </NavLink>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </nav>
+    <div className="min-h-screen bg-gray-50 font-montserrat">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-60 bg-white border-r border-gray-200">
+        {sidebarContent}
       </aside>
 
-      {sidebarOpen && <div className="fixed inset-0 z-30 bg-black/30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+      {/* Mobile top bar */}
+      <div className="md:hidden sticky top-0 z-30 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3">
+        <span className="font-bold text-gray-900">{tenant?.name || 'Store'}</span>
+        <button onClick={() => setMobileOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600">
+          <Menu size={20} />
+        </button>
+      </div>
 
-      {/* Main */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-20 h-16 bg-white/95 backdrop-blur-md border-b border-gray-100 flex items-center px-4 sm:px-6 gap-3">
-          <button className="lg:hidden p-2" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-          <div className="flex-1 max-w-md relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input placeholder="Rechercher..." className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-gray-200" />
-          </div>
-          <button className="p-2 rounded-lg hover:bg-gray-50 relative">
-            <Bell size={18} className="text-gray-600" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full" />
-          </button>
-          <div className="relative">
-            <button onClick={() => setUserMenu(!userMenu)} className="flex items-center gap-2 p-1 pr-2 rounded-lg hover:bg-gray-50">
-              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center font-semibold text-orange-700 text-sm">
-                {user?.email?.charAt(0).toUpperCase() || 'V'}
-              </div>
-              <ChevronDown size={14} className="text-gray-400" />
+      {/* Mobile sidebar overlay */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-40 flex">
+          <div className="fixed inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <aside className="relative w-64 bg-white border-r border-gray-200 flex flex-col">
+            <button onClick={() => setMobileOpen(false)} className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+              <X size={18} />
             </button>
-            {userMenu && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setUserMenu(false)} />
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-gray-100 shadow-lg z-20 py-1">
-                  <div className="px-3 py-2 border-b border-gray-100">
-                    <div className="text-sm font-medium text-gray-900 truncate">{user?.email}</div>
-                    <div className="text-xs text-gray-500">Vendeur</div>
-                  </div>
-                  <button onClick={logout} className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                    <LogOut size={14} /> Déconnexion
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </header>
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+      {/* Main content */}
+      <div className="md:pl-60">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
           <Outlet />
         </main>
       </div>

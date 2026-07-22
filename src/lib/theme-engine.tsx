@@ -9,13 +9,7 @@ export interface ThemeSection {
 
 export interface ThemeConfig {
   siteType: SiteType;
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    text: string;
-  };
+  colors: { primary: string; secondary: string; accent: string; background: string; text: string };
   fonts: { heading: string; body: string };
   spacing: 'compact' | 'comfortable' | 'spacious';
   sections: ThemeSection[];
@@ -23,10 +17,10 @@ export interface ThemeConfig {
 }
 
 export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
-  { id: 'landing', label: 'Landing page', desc: 'Page de présentation produit/service unique, sans catalogue complet' },
-  { id: 'ecommerce', label: 'E-commerce complet', desc: 'Catalogue multi-produits, panier, checkout, filtres, fiches produit' },
-  { id: 'business', label: 'Site vitrine', desc: 'À propos + services + contact, vente limitée ou aucune' },
-  { id: 'marketplace', label: 'Marketplace basique', desc: 'Plusieurs vendeurs/catégories sur une même boutique' },
+  { id: 'landing', label: 'Landing page', desc: 'Page de présentation produit/service unique' },
+  { id: 'ecommerce', label: 'E-commerce complet', desc: 'Catalogue, panier, checkout, filtres' },
+  { id: 'business', label: 'Site vitrine', desc: 'À propos + services + contact' },
+  { id: 'marketplace', label: 'Marketplace', desc: 'Multi-vendeurs, multi-catégories' },
 ];
 
 export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon: string }[] = [
@@ -37,7 +31,7 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
   { type: 'countdown', label: 'Compte à rebours', icon: '⏱' },
   { type: 'filters-list', label: 'Filtres + liste', icon: '⇕' },
   { type: 'product-detail', label: 'Fiche produit', icon: '⬚' },
-  { type: 'payments', label: 'Paiements compatibles', icon: '💳' },
+  { type: 'payments', label: 'Paiements', icon: '💳' },
   { type: 'testimonials', label: 'Témoignages', icon: '★' },
   { type: 'about', label: 'À propos', icon: 'ℹ' },
   { type: 'newsletter', label: 'Newsletter', icon: '✉' },
@@ -48,9 +42,6 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
 ];
 
 export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' }[]> = {
-  header: [
-    { key: 'logo', label: 'Afficher le logo', type: 'text' },
-  ],
   hero: [
     { key: 'title', label: 'Titre', type: 'text' },
     { key: 'subtitle', label: 'Sous-titre', type: 'textarea' },
@@ -66,9 +57,7 @@ export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 
     { key: 'title', label: 'Titre', type: 'text' },
     { key: 'endDate', label: 'Date de fin', type: 'date' },
   ],
-  'filters-list': [
-    { key: 'filters', label: 'Filtres (séparés par virgules)', type: 'text' },
-  ],
+  'filters-list': [{ key: 'filters', label: 'Filtres (séparés par virgules)', type: 'text' }],
   'product-detail': [
     { key: 'title', label: 'Nom du produit', type: 'text' },
     { key: 'price', label: 'Prix', type: 'text' },
@@ -207,13 +196,7 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-const spacingMap = { compact: '0.5rem', comfortable: '1rem', spacious: '2rem' };
-
-export function renderSection(
-  section: ThemeSection,
-  colors: ThemeConfig['colors'],
-  spacing: 'compact' | 'comfortable' | 'spacious' = 'comfortable',
-): React.ReactNode {
+export function renderSection(section: ThemeSection, colors: ThemeConfig['colors']): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
   const bg = colors.background;
@@ -227,9 +210,8 @@ export function renderSection(
         <div className="flex items-center justify-between px-6 py-3" style={{ borderBottom: `2px solid ${hexToRgba(primary, 0.1)}`, background: bg }}>
           <div className="flex items-center gap-2">
             {section.props.logo !== false && (
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>L</div>
+              <span className="font-bold text-base" style={{ color: primary, letterSpacing: '-0.02em' }}>Ma Boutique</span>
             )}
-            <span className="font-bold text-base" style={{ color: txt, letterSpacing: '-0.02em' }}>Ma Boutique</span>
           </div>
           <div className="hidden md:flex items-center gap-5 text-sm font-medium" style={{ color: txt }}>
             {(section.props.nav || []).map((n: string) => (
@@ -292,9 +274,6 @@ export function renderSection(
                 <div className="relative aspect-square overflow-hidden" style={{ background: hexToRgba(primary, 0.03) }}>
                   <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
                   {p.tag && <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-bold text-white" style={{ background: p.tag === 'Promo' ? '#ef4444' : primary }}>{p.tag}</span>}
-                  <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={primary} strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
-                  </div>
                 </div>
                 <div className="p-3">
                   <p className="text-sm font-semibold truncate" style={{ color: txt }}>{p.name}</p>
@@ -327,12 +306,7 @@ export function renderSection(
       );
 
     case 'countdown': {
-      const units = [
-        { label: 'Jours', value: '07' },
-        { label: 'Heures', value: '14' },
-        { label: 'Minutes', value: '32' },
-        { label: 'Secondes', value: '45' },
-      ];
+      const units = [{ label: 'Jours', value: '07' }, { label: 'Heures', value: '14' }, { label: 'Minutes', value: '32' }, { label: 'Secondes', value: '45' }];
       return (
         <div className="px-6 py-8 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
@@ -408,9 +382,6 @@ export function renderSection(
               </div>
               <div className="flex gap-3">
                 <div className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>Ajouter au panier</div>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ border: `1.5px solid ${hexToRgba(txt, 0.15)}` }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={primary} strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
-                </div>
               </div>
             </div>
           </div>
@@ -455,7 +426,6 @@ export function renderSection(
       return (
         <div className="px-6 py-10" style={{ background: bg }}>
           <div className="max-w-3xl mx-auto text-center">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>ℹ</div>
             <h3 className="text-2xl font-bold mb-3" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'À propos de nous'}</h3>
             <p className="text-base" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.text || 'Notre histoire, notre mission, nos valeurs.'}</p>
             <div className="grid grid-cols-3 gap-4 mt-6">
@@ -471,7 +441,6 @@ export function renderSection(
       return (
         <div className="px-6 py-10 text-center" style={{ background: `linear-gradient(135deg, ${hexToRgba(primary, 0.06)}, ${hexToRgba(secondary, 0.04)})` }}>
           <div className="max-w-md mx-auto">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 text-white" style={{ background: primary }}>✉</div>
             <h3 className="text-xl font-bold mb-1" style={{ color: txt }}>{section.props.title || 'Restez connecté'}</h3>
             <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.5) }}>Recevez nos offres exclusives et nouveautés</p>
             <div className="flex gap-2 max-w-sm mx-auto">
@@ -506,11 +475,8 @@ export function renderSection(
         <div className="px-6 py-8" style={{ background: '#0f1623', color: 'rgba(255,255,255,0.7)' }}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>L</div>
-                <span className="font-bold text-white">Ma Boutique</span>
-              </div>
-              <p className="text-xs text-white/40">Votre boutique de confiance en Afrique.</p>
+              <span className="font-bold text-white text-sm">Ma Boutique</span>
+              <p className="text-xs text-white/40 mt-2">Votre boutique de confiance en Afrique.</p>
             </div>
             {[
               { title: 'Boutique', links: ['Nouveautés', 'Best Sellers', 'Promotions'] },
@@ -534,10 +500,8 @@ export function renderSection(
       return (
         <div className="fixed right-3 top-1/2 -translate-y-1/2 space-y-2 z-30">
           {[
-            { bg: '#1877F2', icon: 'f' },
-            { bg: '#E4405F', icon: 'ig' },
-            { bg: '#1DA1F2', icon: 'tw' },
-            { bg: '#FF0000', icon: 'yt' },
+            { bg: '#1877F2', icon: 'f' }, { bg: '#E4405F', icon: 'ig' },
+            { bg: '#1DA1F2', icon: 'tw' }, { bg: '#FF0000', icon: 'yt' },
           ].map(s => (
             <div key={s.icon} className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-all hover:scale-110" style={{ background: s.bg, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>{s.icon}</div>
           ))}

@@ -44,9 +44,17 @@ export default function App() {
     );
   }
 
-  // Check if user is super admin
+  // Check if user is super admin.
+  // NOTE: relies on `role` set in app_metadata (server-side only — cannot be
+  // edited by the user themselves via the client SDK, unlike user_metadata).
+  const isSuperAdmin = user.app_metadata?.role === 'super_admin';
   const isAdminRoute = window.location.pathname.startsWith('/admin');
+
   if (isAdminRoute) {
+    if (!isSuperAdmin) {
+      // Logged in but not an admin: bounce them back to the normal app.
+      return <Navigate to="/dashboard" replace />;
+    }
     return (
       <Routes>
         <Route path="/admin" element={<SuperAdminLayout />}>
@@ -57,6 +65,7 @@ export default function App() {
           <Route path="platform-analytics" element={<SuperAdminAnalytics />} />
           <Route path="content" element={<SuperAdminContent />} />
           <Route path="settings" element={<SuperAdminSettings />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
       </Routes>
     );

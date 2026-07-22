@@ -7,6 +7,11 @@ import { Shield } from 'lucide-react';
 
 const AUTRE_LOCALITE = '__autre__';
 
+const slugify = (s: string) =>
+  s.toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 export default function Onboarding() {
   const { user } = useAuth();
   const [name, setName] = useState('');

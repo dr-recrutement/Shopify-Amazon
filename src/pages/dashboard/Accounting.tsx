@@ -1,5 +1,5 @@
-import { PageHeader, Card, Button, LockedFeature, Badge } from './ui';
-import { Download, FileText, Bot, TrendingUp, Plus, X } from 'lucide-react';
+import { PageHeader, Card, Button, Badge } from './ui';
+import { Download, FileText, Bot, TrendingUp, Plus, X, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Accounting() {
@@ -99,7 +99,13 @@ export default function Accounting() {
         </div>
       </Card>
 
-      <LockedFeature title="Assistant comptable IA" desc="Catégorisation automatique, alertes anomalies, résumés mensuels." plan="Premium" />
+      <Card className="p-5">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center text-brand-600"><Sparkles size={18} /></div>
+          <div><h3 className="font-semibold text-gray-900">Assistant comptable IA</h3><p className="text-xs text-gray-400">Catégorisation automatique, alertes anomalies, résumés mensuels.</p></div>
+        </div>
+        <Badge color="orange">Premium</Badge>
+      </Card>
 
       {/* Invoice modal */}
       {showInvoice && (

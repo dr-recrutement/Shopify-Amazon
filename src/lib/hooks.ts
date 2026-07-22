@@ -11,6 +11,7 @@ export interface Tenant {
   status: string;
   theme_id: string;
   billing_cycle: string;
+  city: string | null;
 }
 
 export interface AuthUser {

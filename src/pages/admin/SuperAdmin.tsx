@@ -1,9 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Store, Users, Palette, Globe, BarChart3, FileText, Settings, Menu, X, LogOut, Shield, Check, Trash2, Plus, Eye, EyeOff } from 'lucide-react';
+import { LayoutDashboard, Store, Users, Palette, Globe, BarChart3, FileText, Settings, Menu, X, LogOut, Shield, Check, Trash2, Plus, Eye, EyeOff, Save } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/hooks';
 import { Card, Button, Badge, Modal, Input } from '../dashboard/ui';
+
+function useSavedState<T>(key: string, initial: T): [T, (v: T) => void, () => Promise<void>, boolean, string | null] {
+  const [value, setValue] = useState<T>(initial);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const save = useCallback(async () => {
+    setSaving(true);
+    try { localStorage.setItem(key, JSON.stringify(value)); setMsg('Enregistré!'); setTimeout(() => setMsg(null), 2000); } finally { setSaving(false); }
+  }, [key, value]);
+  useEffect(() => { const s = localStorage.getItem(key); if (s) setValue(JSON.parse(s)); }, [key]);
+  return [value, setValue, save, saving, msg];
+}
 
 interface NavItem { to: string; label: string; icon: React.ReactNode }
 const navItems: NavItem[] = [
@@ -288,24 +300,67 @@ export function SuperAdminAnalytics() {
 }
 
 export function SuperAdminContent() {
+  const [pages, setPages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false);
+  const [form, setForm] = useState({ title: '', slug: '', body: '' });
+
+  const load = useCallback(() => {
+    supabase.from('content_pages').select('*').order('created_at', { ascending: false }).then(({ data }) => {
+      setPages(data || []); setLoading(false);
+    });
+  }, []);
+  useEffect(load, [load]);
+
+  const create = async () => {
+    await supabase.from('content_pages').insert({ ...form, status: 'published', published_at: new Date().toISOString() });
+    setModal(false); setForm({ title: '', slug: '', body: '' }); load();
+  };
+  const remove = async (id: string) => { await supabase.from('content_pages').delete().eq('id', id); load(); };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Contenu plateforme</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Contenu plateforme</h1>
+        <Button onClick={() => setModal(true)}><Plus size={16} /> Nouvelle page</Button>
+      </div>
       <Card className="p-5">
-        <p className="text-sm text-gray-500 text-center py-8">Gestion du contenu en cours de configuration.</p>
+        {loading ? <p className="text-gray-400 text-sm text-center py-4">Chargement…</p> : pages.length === 0 ? (
+          <p className="text-gray-400 text-sm text-center py-8">Aucune page de contenu.</p>
+        ) : (
+          <div className="space-y-2">
+            {pages.map(p => (
+              <div key={p.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div><p className="text-sm font-medium text-gray-900">{p.title}</p><p className="text-xs text-gray-400">/{p.slug}</p></div>
+                <div className="flex gap-2"><Badge color={p.status === 'published' ? 'green' : 'gray'}>{p.status}</Badge><button onClick={() => remove(p.id)} className="p-1 text-gray-400 hover:text-red-600"><Trash2 size={14} /></button></div>
+              </div>
+            ))}
+          </div>
+        )}
       </Card>
+      <Modal open={modal} onClose={() => setModal(false)} title="Nouvelle page">
+        <div className="space-y-3">
+          <Input label="Titre" value={form.title} onChange={v => setForm({ ...form, title: v })} />
+          <Input label="Slug" value={form.slug} onChange={v => setForm({ ...form, slug: v })} placeholder="ma-page" />
+          <div><label className="block text-xs font-medium text-gray-700 mb-1">Contenu</label><textarea rows={4} value={form.body} onChange={e => setForm({ ...form, body: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" /></div>
+          <div className="flex gap-2 justify-end"><Button variant="secondary" onClick={() => setModal(false)}>Annuler</Button><Button onClick={create} disabled={!form.title}>Créer</Button></div>
+        </div>
+      </Modal>
     </div>
   );
 }
 
 export function SuperAdminSettings() {
+  const [form, setForm, saveForm, saving, msg] = useSavedState('admin_platform_settings', { name: 'LiAfrikOS', supportEmail: '', signupEnabled: true, maintenance: false });
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Paramètres plateforme</h1>
       <Card className="p-5 space-y-4">
-        <Input label="Nom de la plateforme" value="LiAfrikOS" onChange={() => {}} />
-        <Input label="Email support" value="" onChange={() => {}} placeholder="support@liafrikos.com" />
-        <Button variant="secondary"><Check size={14} /> Sauvegarder</Button>
+        <Input label="Nom de la plateforme" value={form.name} onChange={v => setForm({ ...form, name: v })} />
+        <Input label="Email support" value={form.supportEmail} onChange={v => setForm({ ...form, supportEmail: v })} placeholder="support@liafrikos.com" />
+        <label className="flex items-center gap-2"><input type="checkbox" checked={form.signupEnabled} onChange={e => setForm({ ...form, signupEnabled: e.target.checked })} className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Inscriptions ouvertes</span></label>
+        <label className="flex items-center gap-2"><input type="checkbox" checked={form.maintenance} onChange={e => setForm({ ...form, maintenance: e.target.checked })} className="w-4 h-4 accent-brand-500" /> <span className="text-sm">Mode maintenance</span></label>
+        <div className="flex items-center gap-3 pt-2"><Button onClick={saveForm} disabled={saving}><Save size={16} /> {saving ? 'Sauvegarde…' : 'Sauvegarder'}</Button>{msg && <span className="text-sm text-green-600 flex items-center gap-1"><Check size={14} /> {msg}</span>}</div>
       </Card>
     </div>
   );

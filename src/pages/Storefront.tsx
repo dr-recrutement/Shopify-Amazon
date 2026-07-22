@@ -11,15 +11,35 @@ interface StoreProduct {
   thumbnail: string | null;
 }
 
-export default function Storefront({ slug }: { slug: string }) {
+// Sections qui doivent recevoir les vrais produits (pas seulement product-grid,
+// sinon filters-list et product-detail continuent d'afficher les produits d'exemple
+// aux vrais visiteurs).
+const PRODUCT_AWARE_SECTIONS = new Set(['product-grid', 'filters-list', 'product-detail']);
+
+interface StorefrontProps {
+  // Fournir SOIT slug (boutique sur sous-domaine liafrik.com) SOIT tenantId
+  // (boutique résolue via un domaine personnalisé, cf. domains table).
+  slug?: string;
+  tenantId?: string;
+}
+
+export default function Storefront({ slug, tenantId }: StorefrontProps) {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [theme, setTheme] = useState<any>(null);
   const [products, setProducts] = useState<StoreProduct[]>([]);
 
   useEffect(() => {
+    if (!slug && !tenantId) { setNotFound(true); setLoading(false); return; }
     (async () => {
-      const { data: t } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
+      setLoading(true);
+      setNotFound(false);
+
+      const tenantQuery = supabase.from('tenants').select('*');
+      const { data: t } = tenantId
+        ? await tenantQuery.eq('id', tenantId).maybeSingle()
+        : await tenantQuery.eq('slug', slug).maybeSingle();
+
       if (!t) { setNotFound(true); setLoading(false); return; }
 
       const { data: cfg } = await supabase.from('theme_configs').select('*').eq('tenant_id', t.id).maybeSingle();
@@ -43,7 +63,7 @@ export default function Storefront({ slug }: { slug: string }) {
       setProducts(list);
       setLoading(false);
     })();
-  }, [slug]);
+  }, [slug, tenantId]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400">Chargement…</div>;
   if (notFound) return <div className="min-h-screen flex items-center justify-center text-gray-400">Boutique introuvable ou non publiée.</div>;
@@ -54,7 +74,7 @@ export default function Storefront({ slug }: { slug: string }) {
   return (
     <div style={{ background: colors.background }}>
       {sections.filter(s => s.visible).map(s => (
-        <div key={s.id}>{renderSection(s, colors, s.type === 'product-grid' ? products : undefined)}</div>
+        <div key={s.id}>{renderSection(s, colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined)}</div>
       ))}
     </div>
   );

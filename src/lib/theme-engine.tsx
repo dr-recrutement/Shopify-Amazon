@@ -16,6 +16,14 @@ export interface ThemeConfig {
   isPublished: boolean;
 }
 
+export interface StorefrontProduct {
+  id: string;
+  name: string;
+  price_cents: number;
+  currency: string;
+  thumbnail: string | null;
+}
+
 export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
   { id: 'landing', label: 'Landing page', desc: 'Page de présentation produit/service unique' },
   { id: 'ecommerce', label: 'E-commerce complet', desc: 'Catalogue, panier, checkout, filtres' },
@@ -189,6 +197,19 @@ const sampleTestimonials = [
   { name: 'Fatou D.', text: 'Boutique sérieuse, paiement Mobile Money facile.', rating: 4, role: 'Cliente' },
 ];
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  XOF: 'FCFA', XAF: 'FCFA', NGN: '₦', GHS: '₵', GNF: 'FG', CDF: 'FC',
+  USD: '$', EUR: '€', GBP: '£', MAD: 'DH', DZD: 'DA', TND: 'DT', EGP: 'E£',
+  KES: 'KSh', TZS: 'TSh', UGX: 'USh', RWF: 'FRw', ETB: 'Br', ZAR: 'R',
+  ZWL: 'Z$', ZMW: 'ZK', MGA: 'Ar', MUR: '₨', CVE: '$', LRD: 'L$',
+  SLL: 'Le', GMD: 'D', MRU: 'UM', SDG: 'SDG',
+};
+
+function formatPrice(amount: number, currency: string): string {
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
+  return `${amount.toLocaleString('fr-FR')} ${symbol}`;
+}
+
 function hexToRgba(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -196,13 +217,29 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-export function renderSection(section: ThemeSection, colors: ThemeConfig['colors']): React.ReactNode {
+/**
+ * Renders a single section.
+ *
+ * @param realProducts - IMPORTANT: distinguish two contexts by whether this argument is
+ *   `undefined` vs an (possibly empty) array:
+ *   - `undefined`  → editor/preview context (dashboard): show sample/mock data so the
+ *     merchant can visualize the layout even before adding real products.
+ *   - array (incl. []) → live public storefront context: always show real data, and show
+ *     an explicit "no products yet" empty state instead of fake products when empty.
+ *     Showing mock products to real visitors would be misleading.
+ */
+export function renderSection(
+  section: ThemeSection,
+  colors: ThemeConfig['colors'],
+  realProducts?: StorefrontProduct[],
+): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
   const bg = colors.background;
   const txt = colors.text;
   const subtleBg = hexToRgba(primary, 0.04);
   const cardShadow = '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)';
+  const isLiveContext = realProducts !== undefined;
 
   switch (section.type) {
     case 'header':
@@ -262,29 +299,57 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
     case 'product-grid': {
       const cols = section.props.columns || 4;
       const gridCols = cols === 2 ? 'grid-cols-2' : cols === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2 md:grid-cols-4';
+
+      // Live storefront: use real products (or show empty state). Editor: use samples.
+      const displayProducts = isLiveContext
+        ? (realProducts as StorefrontProduct[]).slice(0, cols * 2).map(p => ({
+            id: p.id,
+            name: p.name,
+            priceLabel: formatPrice(p.price_cents, p.currency),
+            img: p.thumbnail || null,
+            tag: '',
+          }))
+        : sampleProducts.slice(0, cols * 2).map((p, i) => ({
+            id: `sample-${i}`,
+            name: p.name,
+            priceLabel: `${p.price} XOF`,
+            img: p.img,
+            tag: p.tag,
+          }));
+
+      const showEmptyState = isLiveContext && displayProducts.length === 0;
+
       return (
         <div className="px-6 py-8" style={{ background: bg }}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Nos produits'}</h3>
-            <span className="text-sm font-medium cursor-pointer" style={{ color: primary }}>Voir tout →</span>
+            {!showEmptyState && <span className="text-sm font-medium cursor-pointer" style={{ color: primary }}>Voir tout →</span>}
           </div>
-          <div className={`grid ${gridCols} gap-4`}>
-            {sampleProducts.slice(0, cols * 2).map((p, i) => (
-              <div key={i} className="group rounded-2xl overflow-hidden transition-all hover:-translate-y-1" style={{ boxShadow: cardShadow, background: bg, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
-                <div className="relative aspect-square overflow-hidden" style={{ background: hexToRgba(primary, 0.03) }}>
-                  <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
-                  {p.tag && <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-bold text-white" style={{ background: p.tag === 'Promo' ? '#ef4444' : primary }}>{p.tag}</span>}
-                </div>
-                <div className="p-3">
-                  <p className="text-sm font-semibold truncate" style={{ color: txt }}>{p.name}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-sm font-bold" style={{ color: primary }}>{p.price} XOF</p>
-                    <div className="flex items-center gap-0.5 text-xs" style={{ color: '#f59e0b' }}>★ 4.8</div>
+          {showEmptyState ? (
+            <div className="text-center py-12 rounded-2xl" style={{ background: subtleBg }}>
+              <p className="text-sm" style={{ color: hexToRgba(txt, 0.5) }}>Aucun produit disponible pour le moment.</p>
+            </div>
+          ) : (
+            <div className={`grid ${gridCols} gap-4`}>
+              {displayProducts.map((p) => (
+                <div key={p.id} className="group rounded-2xl overflow-hidden transition-all hover:-translate-y-1" style={{ boxShadow: cardShadow, background: bg, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
+                  <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
+                    {p.img
+                      ? <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
+                      : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
+                    {p.tag && <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-bold text-white" style={{ background: p.tag === 'Promo' ? '#ef4444' : primary }}>{p.tag}</span>}
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-semibold truncate" style={{ color: txt }}>{p.name}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-sm font-bold" style={{ color: primary }}>{p.priceLabel}</p>
+                      {!isLiveContext && <div className="flex items-center gap-0.5 text-xs" style={{ color: '#f59e0b' }}>★ 4.8</div>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       );
     }
@@ -306,7 +371,21 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
       );
 
     case 'countdown': {
-      const units = [{ label: 'Jours', value: '07' }, { label: 'Heures', value: '14' }, { label: 'Minutes', value: '32' }, { label: 'Secondes', value: '45' }];
+      const endDate = section.props.endDate;
+      let units = [{ label: 'Jours', value: '07' }, { label: 'Heures', value: '14' }, { label: 'Minutes', value: '32' }, { label: 'Secondes', value: '45' }];
+      if (isLiveContext && endDate) {
+        const diff = Math.max(0, new Date(endDate).getTime() - Date.now());
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        units = [
+          { label: 'Jours', value: String(days).padStart(2, '0') },
+          { label: 'Heures', value: String(hours).padStart(2, '0') },
+          { label: 'Minutes', value: String(minutes).padStart(2, '0') },
+          { label: 'Secondes', value: String(seconds).padStart(2, '0') },
+        ];
+      }
       return (
         <div className="px-6 py-8 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
@@ -326,7 +405,12 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
       );
     }
 
-    case 'filters-list':
+    case 'filters-list': {
+      const displayProducts = isLiveContext
+        ? (realProducts as StorefrontProduct[]).slice(0, 6).map(p => ({ id: p.id, name: p.name, priceLabel: formatPrice(p.price_cents, p.currency), img: p.thumbnail }))
+        : sampleProducts.slice(0, 6).map((p, i) => ({ id: `sample-${i}`, name: p.name, priceLabel: `${p.price} XOF`, img: p.img }));
+      const showEmptyState = isLiveContext && displayProducts.length === 0;
+
       return (
         <div className="px-6 py-6 flex gap-6" style={{ background: bg }}>
           <div className="w-56 shrink-0 space-y-3">
@@ -344,28 +428,42 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
               ))}
             </div>
           </div>
-          <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-3">
-            {sampleProducts.slice(0, 6).map((p, i) => (
-              <div key={i} className="group rounded-xl overflow-hidden transition-all hover:shadow-lg" style={{ boxShadow: cardShadow, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
-                <div className="relative aspect-square overflow-hidden" style={{ background: hexToRgba(primary, 0.03) }}>
-                  <img src={p.img} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
+          {showEmptyState ? (
+            <div className="flex-1 flex items-center justify-center rounded-xl" style={{ background: subtleBg, color: hexToRgba(txt, 0.5) }}>
+              <p className="text-sm">Aucun produit disponible.</p>
+            </div>
+          ) : (
+            <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-3">
+              {displayProducts.map((p) => (
+                <div key={p.id} className="group rounded-xl overflow-hidden transition-all hover:shadow-lg" style={{ boxShadow: cardShadow, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
+                  <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
+                    {p.img
+                      ? <img src={p.img} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
+                      : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
+                  </div>
+                  <div className="p-2">
+                    <p className="text-xs font-semibold truncate" style={{ color: txt }}>{p.name}</p>
+                    <p className="text-xs font-bold" style={{ color: primary }}>{p.priceLabel}</p>
+                  </div>
                 </div>
-                <div className="p-2">
-                  <p className="text-xs font-semibold truncate" style={{ color: txt }}>{p.name}</p>
-                  <p className="text-xs font-bold" style={{ color: primary }}>{p.price} XOF</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       );
+    }
 
-    case 'product-detail':
+    case 'product-detail': {
+      // Fall back to the first real product's image when available; else sample image.
+      const fallbackImg = isLiveContext ? (realProducts as StorefrontProduct[])[0]?.thumbnail : sampleProducts[0].img;
+      const image = section.props.image || fallbackImg || sampleProducts[0].img;
       return (
         <div className="px-6 py-8" style={{ background: bg }}>
           <div className="flex gap-6 max-w-4xl mx-auto">
-            <div className="w-1/2 aspect-square rounded-2xl overflow-hidden" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03) }}>
-              <img src={sampleProducts[0].img} alt="" className="w-full h-full object-cover" />
+            <div className="w-1/2 aspect-square rounded-2xl overflow-hidden flex items-center justify-center" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03) }}>
+              {image
+                ? <img src={image} alt="" className="w-full h-full object-cover" />
+                : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
             </div>
             <div className="flex-1 flex flex-col justify-center">
               <div className="flex items-center gap-2 mb-2">
@@ -387,6 +485,7 @@ export function renderSection(section: ThemeSection, colors: ThemeConfig['colors
           </div>
         </div>
       );
+    }
 
     case 'payments':
       return (

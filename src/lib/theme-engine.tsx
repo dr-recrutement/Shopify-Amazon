@@ -12,9 +12,18 @@ export interface ThemeConfig {
   colors: { primary: string; secondary: string; accent: string; background: string; text: string };
   fonts: { heading: string; body: string };
   spacing: 'compact' | 'comfortable' | 'spacious';
+  radius: 'sharp' | 'soft' | 'round';
+  shadow: 'none' | 'subtle' | 'bold';
   sections: ThemeSection[];
   isPublished: boolean;
 }
+
+export const RADIUS_MAP: Record<ThemeConfig['radius'], string> = { sharp: '4px', soft: '16px', round: '28px' };
+export const SHADOW_MAP: Record<ThemeConfig['shadow'], string> = {
+  none: 'none',
+  subtle: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03)',
+  bold: '0 8px 24px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08)',
+};
 
 export interface StorefrontProduct {
   id: string;
@@ -84,7 +93,7 @@ export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 
 export function getSectionDefaults(type: ThemeSection['type']): Record<string, any> {
   const d: Record<string, Record<string, any>> = {
     header: { logo: true, nav: ['Accueil', 'Boutique', 'Contact'], megaMenu: false },
-    hero: { title: 'Nouveau titre', subtitle: 'Sous-titre descriptif', cta: 'Découvrir', image: '' },
+    hero: { title: 'Nouveau titre', subtitle: 'Sous-titre descriptif', cta: 'Découvrir', image: '', layout: 'centered' },
     'product-grid': { columns: 4, title: 'Nos produits' },
     'category-grid': { title: 'Catégories' },
     countdown: { title: 'Offre limitée', endDate: '2026-12-31' },
@@ -108,10 +117,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 
   if (siteType === 'landing') {
     return {
-      siteType, colors: baseColors, fonts: baseFonts, spacing: 'comfortable', isPublished: false,
+      siteType, colors: baseColors, fonts: baseFonts, spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
       sections: [
         { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Produit', 'Contact'] } },
-        { id: 's2', type: 'hero', visible: true, props: { title: 'Mon produit phare', subtitle: 'Une description percutante qui captive vos visiteurs', cta: 'Acheter maintenant', image: '' } },
+        { id: 's2', type: 'hero', visible: true, props: { title: 'Mon produit phare', subtitle: 'Une description percutante qui captive vos visiteurs', cta: 'Acheter maintenant', image: '', layout: 'centered' } },
         { id: 's3', type: 'countdown', visible: true, props: { title: 'Offre de lancement', endDate: '2026-12-31' } },
         { id: 's4', type: 'testimonials', visible: true, props: {} },
         { id: 's5', type: 'payments', visible: true, props: {} },
@@ -122,10 +131,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   }
   if (siteType === 'ecommerce') {
     return {
-      siteType, colors: baseColors, fonts: baseFonts, spacing: 'comfortable', isPublished: false,
+      siteType, colors: baseColors, fonts: baseFonts, spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
       sections: [
         { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Boutique', 'Best Seller', 'À propos', 'Contact'], megaMenu: true } },
-        { id: 's2', type: 'hero', visible: true, props: { title: 'Bienvenue', subtitle: 'Découvrez nos produits', cta: 'Shop Now', image: '' } },
+        { id: 's2', type: 'hero', visible: true, props: { title: 'Bienvenue', subtitle: 'Découvrez nos produits', cta: 'Shop Now', image: '', layout: 'centered' } },
         { id: 's3', type: 'category-grid', visible: true, props: { title: 'Catégories' } },
         { id: 's4', type: 'countdown', visible: true, props: { title: 'Promo flash', endDate: '2026-12-31' } },
         { id: 's5', type: 'filters-list', visible: true, props: { filters: ['Marque', 'Prix', 'Couleur', 'Taille'] } },
@@ -141,10 +150,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   }
   if (siteType === 'business') {
     return {
-      siteType, colors: baseColors, fonts: baseFonts, spacing: 'spacious', isPublished: false,
+      siteType, colors: baseColors, fonts: baseFonts, spacing: 'spacious', radius: 'soft', shadow: 'subtle', isPublished: false,
       sections: [
         { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Services', 'À propos', 'Contact'] } },
-        { id: 's2', type: 'hero', visible: true, props: { title: 'Notre entreprise', subtitle: 'Au service de votre réussite', cta: 'Nous contacter', image: '' } },
+        { id: 's2', type: 'hero', visible: true, props: { title: 'Notre entreprise', subtitle: 'Au service de votre réussite', cta: 'Nous contacter', image: '', layout: 'centered' } },
         { id: 's3', type: 'about', visible: true, props: { title: 'À propos de nous', text: 'Notre histoire, notre mission, nos valeurs.' } },
         { id: 's4', type: 'testimonials', visible: true, props: {} },
         { id: 's5', type: 'newsletter', visible: true, props: { title: 'Restez connecté', placeholder: 'Votre email' } },
@@ -153,10 +162,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     };
   }
   return {
-    siteType: 'marketplace', colors: baseColors, fonts: baseFonts, spacing: 'comfortable', isPublished: false,
+    siteType: 'marketplace', colors: baseColors, fonts: baseFonts, spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
     sections: [
       { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Shop', 'Best Seller', 'À propos', 'Contact'], megaMenu: true } },
-      { id: 's2', type: 'hero', visible: true, props: { title: "Tout l'Afrique, une marketplace", subtitle: 'Des milliers de produits', cta: 'Parcourir', image: '' } },
+      { id: 's2', type: 'hero', visible: true, props: { title: "Tout l'Afrique, une marketplace", subtitle: 'Des milliers de produits', cta: 'Parcourir', image: '', layout: 'centered' } },
       { id: 's3', type: 'category-grid', visible: true, props: { title: 'Browse Categories' } },
       { id: 's4', type: 'countdown', visible: true, props: { title: 'Offres du jour', endDate: '2026-12-31' } },
       { id: 's5', type: 'product-grid', visible: true, props: { columns: 4, title: 'Produits populaires' } },
@@ -227,18 +236,23 @@ function hexToRgba(hex: string, alpha: number): string {
  *   - array (incl. []) → live public storefront context: always show real data, and show
  *     an explicit "no products yet" empty state instead of fake products when empty.
  *     Showing mock products to real visitors would be misleading.
+ * @param radius - design token from ThemeConfig.radius, defaults to 'soft' if not passed.
+ * @param shadow - design token from ThemeConfig.shadow, defaults to 'subtle' if not passed.
  */
 export function renderSection(
   section: ThemeSection,
   colors: ThemeConfig['colors'],
   realProducts?: StorefrontProduct[],
+  radius: ThemeConfig['radius'] = 'soft',
+  shadow: ThemeConfig['shadow'] = 'subtle',
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
   const bg = colors.background;
   const txt = colors.text;
   const subtleBg = hexToRgba(primary, 0.04);
-  const cardShadow = '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)';
+  const r = RADIUS_MAP[radius];
+  const cardShadow = SHADOW_MAP[shadow];
   const isLiveContext = realProducts !== undefined;
 
   switch (section.type) {
@@ -257,7 +271,7 @@ export function renderSection(
           </div>
           <div className="flex items-center gap-2">
             {section.props.megaMenu && (
-              <span className="text-xs px-3 py-1.5 rounded-lg font-medium text-white transition-transform hover:scale-105" style={{ background: primary }}>Catégories ▾</span>
+              <span className="text-xs px-3 py-1.5 font-medium text-white transition-transform hover:scale-105" style={{ background: primary, borderRadius: r }}>Catégories ▾</span>
             )}
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: subtleBg }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={primary} strokeWidth="2">
@@ -270,6 +284,44 @@ export function renderSection(
 
     case 'hero': {
       const img = section.props.image;
+      const layout = section.props.layout || 'centered'; // 'centered' | 'split' | 'fullbleed'
+
+      if (layout === 'split') {
+        return (
+          <div className="grid md:grid-cols-2 items-center" style={{ background: bg }}>
+            <div className="px-8 py-16 md:py-24 order-2 md:order-1">
+              <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: hexToRgba(primary, 0.1), color: primary }}>
+                ✨ Nouvelle collection 2026
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-3" style={{ color: txt, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+                {section.props.title || 'Hero'}
+              </h1>
+              <p className="text-lg mb-6" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.subtitle || ''}</p>
+              <div className="flex gap-3">
+                <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 active:scale-95" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
+                  {section.props.cta || 'Découvrir'}
+                </div>
+              </div>
+            </div>
+            <div className="order-1 md:order-2 aspect-[4/3] md:aspect-auto md:h-full min-h-[240px]" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(135deg, ${hexToRgba(primary, 0.15)}, ${hexToRgba(secondary, 0.1)})` }} />
+          </div>
+        );
+      }
+
+      if (layout === 'fullbleed') {
+        return (
+          <div className="relative min-h-[420px] md:min-h-[520px] flex items-end" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(160deg, ${primary}, ${secondary})` }}>
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent 65%)' }} />
+            <div className="relative z-10 px-8 md:px-10 pb-12 md:pb-16 text-white max-w-2xl">
+              <h1 className="text-3xl md:text-5xl font-bold mb-3" style={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}>{section.props.title || 'Hero'}</h1>
+              <p className="text-base md:text-lg mb-6 text-white/80">{section.props.subtitle || ''}</p>
+              <div className="inline-block px-6 py-3 text-sm font-semibold bg-white" style={{ color: txt, borderRadius: r }}>{section.props.cta || 'Découvrir'}</div>
+            </div>
+          </div>
+        );
+      }
+
+      // layout === 'centered' (par défaut)
       return (
         <div className="relative overflow-hidden" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(135deg, ${hexToRgba(primary, 0.1)}, ${hexToRgba(secondary, 0.06)})` }}>
           <div className="px-8 py-16 text-center relative z-10">
@@ -283,10 +335,10 @@ export function renderSection(
               {section.props.subtitle || ''}
             </p>
             <div className="flex gap-3 justify-center">
-              <div className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold transition-transform hover:scale-105 active:scale-95" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
+              <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 active:scale-95" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
                 {section.props.cta || 'Découvrir'}
               </div>
-              <div className="inline-block px-6 py-3 rounded-xl text-sm font-semibold transition-colors" style={{ border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt }}>
+              <div className="inline-block px-6 py-3 text-sm font-semibold transition-colors" style={{ border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}>
                 En savoir plus
               </div>
             </div>
@@ -326,13 +378,13 @@ export function renderSection(
             {!showEmptyState && <span className="text-sm font-medium cursor-pointer" style={{ color: primary }}>Voir tout →</span>}
           </div>
           {showEmptyState ? (
-            <div className="text-center py-12 rounded-2xl" style={{ background: subtleBg }}>
+            <div className="text-center py-12" style={{ background: subtleBg, borderRadius: r }}>
               <p className="text-sm" style={{ color: hexToRgba(txt, 0.5) }}>Aucun produit disponible pour le moment.</p>
             </div>
           ) : (
             <div className={`grid ${gridCols} gap-4`}>
               {displayProducts.map((p) => (
-                <div key={p.id} className="group rounded-2xl overflow-hidden transition-all hover:-translate-y-1" style={{ boxShadow: cardShadow, background: bg, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
+                <div key={p.id} className="group overflow-hidden transition-all hover:-translate-y-1" style={{ boxShadow: cardShadow, background: bg, border: `1px solid ${hexToRgba(txt, 0.06)}`, borderRadius: r }}>
                   <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
                     {p.img
                       ? <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
@@ -360,8 +412,8 @@ export function renderSection(
           <h3 className="text-xl font-bold mb-4" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Catégories'}</h3>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
             {sampleCategories.map((c, i) => (
-              <div key={i} className="group flex flex-col items-center justify-center p-4 rounded-2xl transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}` }}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-2 transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow }}>{c.icon}</div>
+              <div key={i} className="group flex flex-col items-center justify-center p-4 transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
+                <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>{c.icon}</div>
                 <p className="text-sm font-semibold" style={{ color: txt }}>{c.name}</p>
                 <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{c.count} articles</p>
               </div>
@@ -395,7 +447,7 @@ export function renderSection(
             <div className="flex justify-center gap-3">
               {units.map(u => (
                 <div key={u.label} className="text-center">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold font-mono text-white" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)' }}>{u.value}</div>
+                  <div className="w-14 h-14 flex items-center justify-center text-2xl font-bold font-mono text-white" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)', borderRadius: r }}>{u.value}</div>
                   <p className="text-xs text-white/60 mt-1">{u.label}</p>
                 </div>
               ))}
@@ -414,14 +466,14 @@ export function renderSection(
       return (
         <div className="px-6 py-6 flex gap-6" style={{ background: bg }}>
           <div className="w-56 shrink-0 space-y-3">
-            <div className="p-3 rounded-xl" style={{ background: subtleBg }}>
+            <div className="p-3" style={{ background: subtleBg, borderRadius: r }}>
               <p className="text-xs font-bold uppercase mb-2" style={{ color: hexToRgba(txt, 0.4) }}>Filtres</p>
               {(section.props.filters || []).map((f: string) => (
                 <div key={f} className="mb-2">
                   <p className="text-sm font-medium mb-1" style={{ color: txt }}>{f}</p>
                   <div className="flex flex-wrap gap-1">
                     {['Tous', 'A', 'B', 'C'].map((v, i) => (
-                      <span key={v} className="text-xs px-2 py-0.5 rounded-md cursor-pointer transition-colors" style={i === 0 ? { background: primary, color: 'white' } : { background: hexToRgba(txt, 0.04), color: txt }}>{v}</span>
+                      <span key={v} className="text-xs px-2 py-0.5 cursor-pointer transition-colors" style={i === 0 ? { background: primary, color: 'white', borderRadius: r } : { background: hexToRgba(txt, 0.04), color: txt, borderRadius: r }}>{v}</span>
                     ))}
                   </div>
                 </div>
@@ -429,13 +481,13 @@ export function renderSection(
             </div>
           </div>
           {showEmptyState ? (
-            <div className="flex-1 flex items-center justify-center rounded-xl" style={{ background: subtleBg, color: hexToRgba(txt, 0.5) }}>
+            <div className="flex-1 flex items-center justify-center" style={{ background: subtleBg, color: hexToRgba(txt, 0.5), borderRadius: r }}>
               <p className="text-sm">Aucun produit disponible.</p>
             </div>
           ) : (
             <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-3">
               {displayProducts.map((p) => (
-                <div key={p.id} className="group rounded-xl overflow-hidden transition-all hover:shadow-lg" style={{ boxShadow: cardShadow, border: `1px solid ${hexToRgba(txt, 0.06)}` }}>
+                <div key={p.id} className="group overflow-hidden transition-all hover:shadow-lg" style={{ boxShadow: cardShadow, border: `1px solid ${hexToRgba(txt, 0.06)}`, borderRadius: r }}>
                   <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
                     {p.img
                       ? <img src={p.img} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
@@ -459,8 +511,8 @@ export function renderSection(
       const image = section.props.image || fallbackImg || sampleProducts[0].img;
       return (
         <div className="px-6 py-8" style={{ background: bg }}>
-          <div className="flex gap-6 max-w-4xl mx-auto">
-            <div className="w-1/2 aspect-square rounded-2xl overflow-hidden flex items-center justify-center" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03) }}>
+          <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto">
+            <div className="w-full md:w-1/2 aspect-square overflow-hidden flex items-center justify-center" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03), borderRadius: r }}>
               {image
                 ? <img src={image} alt="" className="w-full h-full object-cover" />
                 : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
@@ -475,11 +527,11 @@ export function renderSection(
               <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.description || 'Description du produit'}</p>
               <div className="flex gap-3 mb-4">
                 {['S', 'M', 'L', 'XL'].map((s, i) => (
-                  <div key={s} className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium cursor-pointer transition-all" style={i === 1 ? { background: primary, color: 'white' } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt }}>{s}</div>
+                  <div key={s} className="w-10 h-10 flex items-center justify-center text-sm font-medium cursor-pointer transition-all" style={i === 1 ? { background: primary, color: 'white', borderRadius: r } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}>{s}</div>
                 ))}
               </div>
               <div className="flex gap-3">
-                <div className="flex-1 px-5 py-3 rounded-xl text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>Ajouter au panier</div>
+                <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
               </div>
             </div>
           </div>
@@ -493,7 +545,7 @@ export function renderSection(
           <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: hexToRgba(txt, 0.4) }}>Paiements compatibles</p>
           <div className="flex flex-wrap justify-center gap-3">
             {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal', 'Wave'].map(p => (
-              <span key={p} className="text-sm px-4 py-2 rounded-xl font-medium transition-all hover:scale-105" style={{ background: subtleBg, color: txt, border: `1px solid ${hexToRgba(primary, 0.08)}` }}>{p}</span>
+              <span key={p} className="text-sm px-4 py-2 font-medium transition-all hover:scale-105" style={{ background: subtleBg, color: txt, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>{p}</span>
             ))}
           </div>
         </div>
@@ -505,7 +557,7 @@ export function renderSection(
           <h3 className="text-xl font-bold text-center mb-6" style={{ color: txt, letterSpacing: '-0.02em' }}>Ils nous font confiance</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {sampleTestimonials.map((t, i) => (
-              <div key={i} className="p-5 rounded-2xl transition-all hover:shadow-lg" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}` }}>
+              <div key={i} className="p-5 transition-all hover:shadow-lg" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>{t.name[0]}</div>
                   <div>
@@ -543,8 +595,8 @@ export function renderSection(
             <h3 className="text-xl font-bold mb-1" style={{ color: txt }}>{section.props.title || 'Restez connecté'}</h3>
             <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.5) }}>Recevez nos offres exclusives et nouveautés</p>
             <div className="flex gap-2 max-w-sm mx-auto">
-              <input type="email" placeholder={section.props.placeholder || 'Votre email'} className="flex-1 px-4 py-2.5 rounded-xl text-sm focus:outline-none" style={{ border: `1.5px solid ${hexToRgba(txt, 0.1)}`, background: bg, color: txt }} />
-              <div className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold cursor-pointer transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>S'inscrire</div>
+              <input type="email" placeholder={section.props.placeholder || 'Votre email'} className="flex-1 px-4 py-2.5 text-sm focus:outline-none" style={{ border: `1.5px solid ${hexToRgba(txt, 0.1)}`, background: bg, color: txt, borderRadius: r }} />
+              <div className="px-5 py-2.5 text-white text-sm font-semibold cursor-pointer transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r }}>S'inscrire</div>
             </div>
           </div>
         </div>
@@ -560,7 +612,7 @@ export function renderSection(
               { q: 'Comment payer?', a: 'Mobile Money, carte bancaire, ou paiement à la livraison.' },
               { q: 'Puis-je retourner un produit?', a: 'Oui, sous 14 jours après réception.' },
             ].map((f, i) => (
-              <div key={i} className="p-4 rounded-xl transition-all" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}` }}>
+              <div key={i} className="p-4 transition-all" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
                 <p className="text-sm font-semibold mb-1" style={{ color: txt }}>{f.q}</p>
                 <p className="text-sm" style={{ color: hexToRgba(txt, 0.6) }}>{f.a}</p>
               </div>
@@ -621,6 +673,9 @@ export function renderSection(
       return null;
   }
 }
+
+// ============ Theme Store — vrais designs multiples ============
+
 export interface ThemeVariant {
   key: string;
   label: string;
@@ -636,12 +691,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'ecommerce-modern-minimal', label: 'Ecommerce — Moderne & Minimal', siteType: 'ecommerce',
     build: () => ({
-      siteType: 'ecommerce', spacing: 'spacious', isPublished: false,
+      siteType: 'ecommerce', spacing: 'spacious', radius: 'soft', shadow: 'none', isPublished: false,
       colors: { primary: '#111114', secondary: '#6b7280', accent: '#111114', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Inter', body: 'Inter' },
       sections: [
         v('s1', 'header', { megaMenu: false }),
-        v('s2', 'hero', { title: 'Simplicité et élégance', subtitle: 'Une sélection soignée, sans superflu', cta: 'Découvrir' }),
+        v('s2', 'hero', { layout: 'split', title: 'Simplicité et élégance', subtitle: 'Une sélection soignée, sans superflu', cta: 'Découvrir' }),
         v('s3', 'product-grid', { columns: 3, title: 'Sélection du moment' }),
         v('s4', 'testimonials'),
         v('s5', 'newsletter'),
@@ -652,12 +707,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'ecommerce-bold-vibrant', label: 'Ecommerce — Bold & Vibrant', siteType: 'ecommerce',
     build: () => ({
-      siteType: 'ecommerce', spacing: 'comfortable', isPublished: false,
+      siteType: 'ecommerce', spacing: 'comfortable', radius: 'round', shadow: 'bold', isPublished: false,
       colors: { primary: '#F2632C', secondary: '#eab308', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Poppins', body: 'Inter' },
       sections: [
         v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { title: 'Les meilleures offres sont ici', subtitle: 'Promotions exclusives toute la semaine', cta: 'Voir les promos' }),
+        v('s2', 'hero', { layout: 'centered', title: 'Les meilleures offres sont ici', subtitle: 'Promotions exclusives toute la semaine', cta: 'Voir les promos' }),
         v('s3', 'countdown', { title: 'Vente flash' }),
         v('s4', 'category-grid'),
         v('s5', 'filters-list'),
@@ -673,13 +728,13 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'ecommerce-luxury-dark', label: 'Ecommerce — Luxury Dark', siteType: 'ecommerce',
     build: () => ({
-      siteType: 'ecommerce', spacing: 'spacious', isPublished: false,
+      siteType: 'ecommerce', spacing: 'spacious', radius: 'sharp', shadow: 'subtle', isPublished: false,
       colors: { primary: '#c9a24a', secondary: '#8a8a8a', accent: '#c9a24a', background: '#0f1115', text: '#f4f4f5' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Playfair Display', body: 'Inter' },
       sections: [
         v('s1', 'header'),
-        v('s2', 'hero', { title: 'Le luxe redéfini', subtitle: 'Une expérience shopping exclusive', cta: 'Explorer la collection' }),
-        v('s3', 'product-grid', { columns: 3, title: 'Pièces d\'exception' }),
+        v('s2', 'hero', { layout: 'fullbleed', title: 'Le luxe redéfini', subtitle: 'Une expérience shopping exclusive', cta: 'Explorer la collection' }),
+        v('s3', 'product-grid', { columns: 3, title: "Pièces d'exception" }),
         v('s4', 'product-detail'),
         v('s5', 'testimonials'),
         v('s6', 'payments'),
@@ -692,12 +747,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'landing-launch-classic', label: 'Landing — Launch Classic', siteType: 'landing',
     build: () => ({
-      siteType: 'landing', spacing: 'comfortable', isPublished: false,
+      siteType: 'landing', spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
       colors: { primary: '#2563eb', secondary: '#0ea5e9', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Inter', body: 'Inter' },
       sections: [
         v('s1', 'header'),
-        v('s2', 'hero', { title: 'Lancez votre produit avec impact', subtitle: 'Une page qui convertit dès la première visite', cta: 'Je réserve le mien' }),
+        v('s2', 'hero', { layout: 'centered', title: 'Lancez votre produit avec impact', subtitle: 'Une page qui convertit dès la première visite', cta: 'Je réserve le mien' }),
         v('s3', 'countdown', { title: 'Offre de lancement' }),
         v('s4', 'testimonials'),
         v('s5', 'faq'),
@@ -709,12 +764,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'landing-bold-cta', label: 'Landing — Bold CTA', siteType: 'landing',
     build: () => ({
-      siteType: 'landing', spacing: 'spacious', isPublished: false,
+      siteType: 'landing', spacing: 'spacious', radius: 'round', shadow: 'bold', isPublished: false,
       colors: { primary: '#f43f5e', secondary: '#fb7185', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Poppins', body: 'Inter' },
       sections: [
         v('s1', 'header'),
-        v('s2', 'hero', { title: 'Ne ratez pas cette opportunité', subtitle: 'Rejoignez des milliers de clients satisfaits', cta: 'Commencer maintenant' }),
+        v('s2', 'hero', { layout: 'fullbleed', title: 'Ne ratez pas cette opportunité', subtitle: 'Rejoignez des milliers de clients satisfaits', cta: 'Commencer maintenant' }),
         v('s3', 'about'),
         v('s4', 'testimonials'),
         v('s5', 'payments'),
@@ -728,12 +783,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'business-corporate-trust', label: 'Vitrine — Corporate Trust', siteType: 'business',
     build: () => ({
-      siteType: 'business', spacing: 'spacious', isPublished: false,
+      siteType: 'business', spacing: 'spacious', radius: 'sharp', shadow: 'subtle', isPublished: false,
       colors: { primary: '#0f172a', secondary: '#2563eb', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Playfair Display', body: 'Inter' },
       sections: [
         v('s1', 'header'),
-        v('s2', 'hero', { title: 'Votre partenaire de confiance', subtitle: 'Des solutions professionnelles pour votre réussite', cta: 'Nous contacter' }),
+        v('s2', 'hero', { layout: 'split', title: 'Votre partenaire de confiance', subtitle: 'Des solutions professionnelles pour votre réussite', cta: 'Nous contacter' }),
         v('s3', 'about'),
         v('s4', 'testimonials'),
         v('s5', 'faq'),
@@ -744,12 +799,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'business-creative-studio', label: 'Vitrine — Creative Studio', siteType: 'business',
     build: () => ({
-      siteType: 'business', spacing: 'comfortable', isPublished: false,
+      siteType: 'business', spacing: 'comfortable', radius: 'round', shadow: 'bold', isPublished: false,
       colors: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Poppins', body: 'Inter' },
       sections: [
         v('s1', 'header'),
-        v('s2', 'hero', { title: 'Créativité sans limites', subtitle: 'Nous donnons vie à vos idées', cta: 'Voir nos projets' }),
+        v('s2', 'hero', { layout: 'fullbleed', title: 'Créativité sans limites', subtitle: 'Nous donnons vie à vos idées', cta: 'Voir nos projets' }),
         v('s3', 'about'),
         v('s4', 'testimonials'),
         v('s5', 'newsletter'),
@@ -763,12 +818,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'marketplace-classic', label: 'Marketplace — Classic', siteType: 'marketplace',
     build: () => ({
-      siteType: 'marketplace', spacing: 'comfortable', isPublished: false,
+      siteType: 'marketplace', spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
       colors: { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Inter', body: 'Inter' },
       sections: [
         v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { title: "Tout ce dont vous avez besoin, ici", subtitle: 'Des milliers de vendeurs, un seul endroit', cta: 'Parcourir' }),
+        v('s2', 'hero', { layout: 'centered', title: "Tout ce dont vous avez besoin, ici", subtitle: 'Des milliers de vendeurs, un seul endroit', cta: 'Parcourir' }),
         v('s3', 'category-grid'),
         v('s4', 'product-grid', { columns: 4 }),
         v('s5', 'testimonials'),
@@ -782,12 +837,12 @@ export const THEME_VARIANTS: ThemeVariant[] = [
   {
     key: 'marketplace-premium', label: 'Marketplace — Premium', siteType: 'marketplace',
     build: () => ({
-      siteType: 'marketplace', spacing: 'spacious', isPublished: false,
+      siteType: 'marketplace', spacing: 'spacious', radius: 'sharp', shadow: 'bold', isPublished: false,
       colors: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' },
-      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      fonts: { heading: 'Playfair Display', body: 'Inter' },
       sections: [
         v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { title: "L'excellence, sélectionnée pour vous", subtitle: 'Vendeurs vérifiés, produits premium', cta: 'Explorer' }),
+        v('s2', 'hero', { layout: 'fullbleed', title: "L'excellence, sélectionnée pour vous", subtitle: 'Vendeurs vérifiés, produits premium', cta: 'Explorer' }),
         v('s3', 'category-grid'),
         v('s4', 'countdown'),
         v('s5', 'product-grid', { columns: 4 }),

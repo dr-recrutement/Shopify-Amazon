@@ -402,3 +402,19 @@ export default function OnlineStore() {
     </div>
   );
 }
+// Import à ajouter
+import { getThemeVariant } from '../../lib/theme-engine';
+
+// StoreTheme : ajoute le champ variant_key
+type StoreTheme = { id: string; name: string; category: string; price_cents: number; is_premium: boolean; description: string | null; variant_key: string | null };
+
+// applyTheme : remplace le contenu
+const applyTheme = (st: StoreTheme) => {
+  if (!purchasedThemeIds.includes(st.id) && st.is_premium) return;
+  const variant = st.variant_key ? getThemeVariant(st.variant_key) : null;
+  const newTheme = variant || defaultThemeForType(st.category as SiteType); // fallback si pas de variant_key
+  setTheme(newTheme);
+  persistTheme(newTheme, false);
+  setSavedMsg(`Thème "${st.name}" appliqué!`);
+  setTimeout(() => setSavedMsg(''), 3000);
+};

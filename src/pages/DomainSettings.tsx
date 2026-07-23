@@ -44,12 +44,12 @@ export default function DomainSettings() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ domain }),
       });
-      const data = await res.json();
+      const data: { error?: string; dns?: { target: string } } = await res.json();
       if (!res.ok) {
         setError(data.error || 'Une erreur est survenue.');
         return;
       }
-      setDnsInstructions({ target: data.dns.target });
+      setDnsInstructions({ target: data.dns!.target });
       setNewDomain('');
       await loadDomains();
     } catch {

@@ -18,6 +18,18 @@ interface Env {
   SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
+interface SupabaseUser {
+  id: string;
+  email?: string;
+  [key: string]: unknown;
+}
+
+interface TenantRow {
+  id: string;
+  plan: string;
+  [key: string]: unknown;
+}
+
 const ALLOWED_PLAN_CODES = ['pro', 'premium', 'entreprise'];
 
 function json(data: unknown, status = 200) {
@@ -58,7 +70,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     },
   });
   if (!userRes.ok) return json({ error: 'Session invalide.' }, 401);
-  const user = await userRes.json();
+  const user = (await userRes.json()) as SupabaseUser;
 
   // 2) Récupérer le tenant du user + son plan
   const tenantRes = await fetch(
@@ -70,7 +82,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       },
     }
   );
-  const tenants = await tenantRes.json();
+  const tenants = (await tenantRes.json()) as TenantRow[];
   const tenant = tenants?.[0];
   if (!tenant) return json({ error: 'Boutique introuvable.' }, 404);
 

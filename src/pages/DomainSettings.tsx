@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useAuth, useTenant } from '../../lib/hooks';
-import { supabase } from '../../lib/supabase';
-import { planAllowsCustomDomain } from '../../lib/plans';
+import { useAuth, useTenant } from '../lib/hooks';
+import { supabase } from '../lib/supabase';
+import { planAllowsCustomDomain } from '../lib/plans';
 
 interface DomainRow {
   id: string;

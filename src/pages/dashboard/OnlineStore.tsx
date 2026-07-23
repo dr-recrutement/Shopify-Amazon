@@ -3,9 +3,9 @@ import { useTenant } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant } from '../../lib/theme-engine';
 
-type StoreTheme = { id: string; name: string; category: string; price_cents: number; is_premium: boolean; description: string | null };
+type StoreTheme = { id: string; name: string; category: string; price_cents: number; is_premium: boolean; description: string | null; variant_key: string | null };
 
 const AI_TIPS = [
   { condition: (t: ThemeConfig) => t.sections.length < 4, tip: 'Ajoutez un bloc "Témoignages" ou "Newsletter" pour engager vos visiteurs.' },
@@ -42,11 +42,12 @@ export default function OnlineStore() {
     if (!tenant) return;
     const { data: config } = await supabase.from('theme_configs').select('*').eq('tenant_id', tenant.id).maybeSingle();
     if (config) {
+      const base = defaultThemeForType((config.site_type as SiteType) || 'ecommerce');
       setTheme({
+        ...base,
         siteType: config.site_type,
         sections: config.sections || [],
-        colors: config.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-        fonts: { heading: 'Montserrat', body: 'Montserrat' },
+        colors: config.colors || base.colors,
         spacing: config.spacing || 'comfortable',
         isPublished: config.is_published || false,
       });
@@ -128,7 +129,8 @@ export default function OnlineStore() {
 
   const applyTheme = (st: StoreTheme) => {
     if (!purchasedThemeIds.includes(st.id) && st.is_premium) return;
-    const newTheme = defaultThemeForType(st.category as SiteType);
+    const variant = st.variant_key ? getThemeVariant(st.variant_key) : null;
+    const newTheme = variant || defaultThemeForType(st.category as SiteType); // fallback si pas de variant_key
     setTheme(newTheme);
     persistTheme(newTheme, false);
     setSavedMsg(`Thème "${st.name}" appliqué!`);
@@ -402,19 +404,3 @@ export default function OnlineStore() {
     </div>
   );
 }
-// Import à ajouter
-import { getThemeVariant } from '../../lib/theme-engine';
-
-// StoreTheme : ajoute le champ variant_key
-type StoreTheme = { id: string; name: string; category: string; price_cents: number; is_premium: boolean; description: string | null; variant_key: string | null };
-
-// applyTheme : remplace le contenu
-const applyTheme = (st: StoreTheme) => {
-  if (!purchasedThemeIds.includes(st.id) && st.is_premium) return;
-  const variant = st.variant_key ? getThemeVariant(st.variant_key) : null;
-  const newTheme = variant || defaultThemeForType(st.category as SiteType); // fallback si pas de variant_key
-  setTheme(newTheme);
-  persistTheme(newTheme, false);
-  setSavedMsg(`Thème "${st.name}" appliqué!`);
-  setTimeout(() => setSavedMsg(''), 3000);
-};

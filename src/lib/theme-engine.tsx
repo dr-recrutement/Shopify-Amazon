@@ -858,3 +858,130 @@ export function getThemeVariant(key: string): ThemeConfig | null {
   const found = THEME_VARIANTS.find(t => t.key === key);
   return found ? found.build() : null;
 }
+// ============ Variantes de thèmes (design distincts par catégorie) ============
+// Chaque clé correspond à la colonne `variant_key` de la table Supabase
+// `theme_store_themes`. Quand un marchand "applique" un thème acheté,
+// on charge la variante précise au lieu de retomber sur le layout par défaut.
+
+export const THEME_VARIANTS: Record<string, () => ThemeConfig> = {
+  'ecommerce-modern': () => defaultThemeForType('ecommerce'),
+
+  'ecommerce-minimal': () => ({
+    siteType: 'ecommerce',
+    colors: { primary: '#111114', secondary: '#6b7280', accent: '#111114', background: '#FFFFFF', text: '#111114' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'compact',
+    isPublished: false,
+    sections: [
+      { id: 'em1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Boutique', 'Contact'] } },
+      { id: 'em2', type: 'hero', visible: true, props: { title: 'Simplicité et style', subtitle: 'Une sélection épurée, pensée pour vous', cta: 'Voir la collection', image: '' } },
+      { id: 'em3', type: 'product-grid', visible: true, props: { columns: 3, title: 'Sélection' } },
+      { id: 'em4', type: 'payments', visible: true, props: {} },
+      { id: 'em5', type: 'footer', visible: true, props: {} },
+    ],
+  }),
+
+  'ecommerce-fashion': () => ({
+    siteType: 'ecommerce',
+    colors: { primary: '#f43f5e', secondary: '#eab308', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'comfortable',
+    isPublished: false,
+    sections: [
+      { id: 'ef1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Nouveautés', 'Collections', 'Contact'], megaMenu: true } },
+      { id: 'ef2', type: 'hero', visible: true, props: { title: 'La mode qui vous ressemble', subtitle: 'Nouvelle collection disponible dès maintenant', cta: 'Découvrir', image: '' } },
+      { id: 'ef3', type: 'category-grid', visible: true, props: { title: 'Nos univers' } },
+      { id: 'ef4', type: 'product-grid', visible: true, props: { columns: 3, title: 'Tendances du moment' } },
+      { id: 'ef5', type: 'testimonials', visible: true, props: {} },
+      { id: 'ef6', type: 'newsletter', visible: true, props: { title: 'Ne manquez aucune sortie', placeholder: 'Votre email' } },
+      { id: 'ef7', type: 'social-bar', visible: true, props: {} },
+      { id: 'ef8', type: 'footer', visible: true, props: {} },
+    ],
+  }),
+
+  'ecommerce-artisan': () => ({
+    siteType: 'ecommerce',
+    colors: { primary: '#eab308', secondary: '#059669', accent: '#eab308', background: '#FFFBEB', text: '#422006' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'comfortable',
+    isPublished: false,
+    sections: [
+      { id: 'ea1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Boutique', 'Notre histoire', 'Contact'] } },
+      { id: 'ea2', type: 'hero', visible: true, props: { title: 'Un savoir-faire authentique', subtitle: 'Pièces artisanales, faites avec passion', cta: 'Voir la boutique', image: '' } },
+      { id: 'ea3', type: 'product-grid', visible: true, props: { columns: 3, title: 'Nos créations' } },
+      { id: 'ea4', type: 'about', visible: true, props: { title: 'Notre histoire', text: 'Chaque pièce raconte une histoire, transmise de génération en génération.' } },
+      { id: 'ea5', type: 'testimonials', visible: true, props: {} },
+      { id: 'ea6', type: 'payments', visible: true, props: {} },
+      { id: 'ea7', type: 'footer', visible: true, props: {} },
+    ],
+  }),
+
+  'business-classic': () => defaultThemeForType('business'),
+
+  'business-bold': () => ({
+    siteType: 'business',
+    colors: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'spacious',
+    isPublished: false,
+    sections: [
+      { id: 'bb1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Services', 'À propos', 'Contact'] } },
+      { id: 'bb2', type: 'hero', visible: true, props: { title: 'Nous construisons votre succès', subtitle: 'Une expertise reconnue, des résultats concrets', cta: 'Discutons de votre projet', image: '' } },
+      { id: 'bb3', type: 'about', visible: true, props: { title: 'Qui sommes-nous', text: 'Une équipe passionnée au service de vos ambitions.' } },
+      { id: 'bb4', type: 'testimonials', visible: true, props: {} },
+      { id: 'bb5', type: 'faq', visible: true, props: {} },
+      { id: 'bb6', type: 'newsletter', visible: true, props: { title: 'Restons en contact', placeholder: 'Votre email' } },
+      { id: 'bb7', type: 'footer', visible: true, props: {} },
+    ],
+  }),
+
+  'landing-classic': () => defaultThemeForType('landing'),
+
+  'landing-vivid': () => ({
+    siteType: 'landing',
+    colors: { primary: '#f43f5e', secondary: '#eab308', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'comfortable',
+    isPublished: false,
+    sections: [
+      { id: 'lv1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Produit', 'Contact'] } },
+      { id: 'lv2', type: 'hero', visible: true, props: { title: 'Le produit qui change tout', subtitle: 'Découvrez pourquoi tout le monde en parle', cta: 'Je le veux', image: '' } },
+      { id: 'lv3', type: 'countdown', visible: true, props: { title: 'Offre de lancement', endDate: '2026-12-31' } },
+      { id: 'lv4', type: 'testimonials', visible: true, props: {} },
+      { id: 'lv5', type: 'faq', visible: true, props: {} },
+      { id: 'lv6', type: 'payments', visible: true, props: {} },
+      { id: 'lv7', type: 'newsletter', visible: true, props: { title: 'Restez connecté', placeholder: 'Votre email' } },
+      { id: 'lv8', type: 'footer', visible: true, props: {} },
+    ],
+  }),
+
+  'marketplace-classic': () => defaultThemeForType('marketplace'),
+
+  'marketplace-dense': () => ({
+    siteType: 'marketplace',
+    colors: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    spacing: 'compact',
+    isPublished: false,
+    sections: [
+      { id: 'md1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Shop', 'Best Seller', 'Contact'], megaMenu: true } },
+      { id: 'md2', type: 'hero', visible: true, props: { title: 'Des milliers de produits, un seul endroit', subtitle: 'Comparez, choisissez, achetez', cta: 'Parcourir', image: '' } },
+      { id: 'md3', type: 'category-grid', visible: true, props: { title: 'Catégories' } },
+      { id: 'md4', type: 'filters-list', visible: true, props: { filters: ['Marque', 'Prix', 'Couleur', 'Taille'] } },
+      { id: 'md5', type: 'countdown', visible: true, props: { title: 'Offres du jour', endDate: '2026-12-31' } },
+      { id: 'md6', type: 'payments', visible: true, props: {} },
+      { id: 'md7', type: 'footer', visible: true, props: {} },
+      { id: 'md8', type: 'social-bar', visible: true, props: {} },
+      { id: 'md9', type: 'chat-float', visible: true, props: {} },
+    ],
+  }),
+};
+
+export function getThemeVariant(key: string): ThemeConfig | null {
+  const factory = THEME_VARIANTS[key];
+  return factory ? factory() : null;
+}
+
+export function listThemeVariantKeys(): string[] {
+  return Object.keys(THEME_VARIANTS);
+}

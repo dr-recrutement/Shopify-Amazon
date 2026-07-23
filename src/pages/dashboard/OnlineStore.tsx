@@ -5,7 +5,15 @@ import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant } from '../../lib/theme-engine';
 
-type StoreTheme = { id: string; name: string; category: string; price_cents: number; is_premium: boolean; description: string | null; variant_key: string | null };
+type StoreTheme = {
+  id: string;
+  name: string;
+  category: string;
+  price_cents: number;
+  is_premium: boolean;
+  description: string | null;
+  variant_key: string | null;
+};
 
 const AI_TIPS = [
   { condition: (t: ThemeConfig) => t.sections.length < 4, tip: 'Ajoutez un bloc "Témoignages" ou "Newsletter" pour engager vos visiteurs.' },
@@ -24,6 +32,22 @@ const PRESET_PALETTES = [
   { name: 'Nuit', c: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' } },
 ];
 
+// Hiérarchie des forfaits, du moins cher au plus cher.
+// ⚠️ Doit correspondre exactement aux codes de la table Supabase `plans`.
+const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, entreprise: 3 };
+
+interface EditorProduct {
+  id: string;
+  name: string;
+  price_cents: number;
+  currency: string;
+  thumbnail: string | null;
+}
+
+// Sections qui doivent recevoir les vrais produits — doit rester identique à
+// la liste utilisée dans Storefront.tsx pour que l'éditeur = ce que voit le client.
+const PRODUCT_AWARE_SECTIONS = new Set(['product-grid', 'filters-list', 'product-detail']);
+
 export default function OnlineStore() {
   const { tenant } = useTenant();
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
@@ -33,6 +57,7 @@ export default function OnlineStore() {
   const [panel, setPanel] = useState<'sections' | 'design' | 'themes' | 'ai' | 'edit'>('sections');
   const [storeThemes, setStoreThemes] = useState<StoreTheme[]>([]);
   const [purchasedThemeIds, setPurchasedThemeIds] = useState<string[]>([]);
+  const [products, setProducts] = useState<EditorProduct[]>([]);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,12 +67,11 @@ export default function OnlineStore() {
     if (!tenant) return;
     const { data: config } = await supabase.from('theme_configs').select('*').eq('tenant_id', tenant.id).maybeSingle();
     if (config) {
-      const base = defaultThemeForType((config.site_type as SiteType) || 'ecommerce');
       setTheme({
-        ...base,
         siteType: config.site_type,
         sections: config.sections || [],
-        colors: config.colors || base.colors,
+        colors: config.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
+        fonts: { heading: 'Montserrat', body: 'Montserrat' },
         spacing: config.spacing || 'comfortable',
         isPublished: config.is_published || false,
       });
@@ -55,6 +79,24 @@ export default function OnlineStore() {
     }
     const { data: themes } = await supabase.from('theme_store_themes').select('*').eq('is_published', true);
     setStoreThemes(themes || []);
+
+    // Charge les VRAIS produits du marchand pour que l'éditeur reflète
+    // exactement ce que ses clients verront (comme dans Shopify).
+    const { data: prods } = await supabase
+      .from('products')
+      .select('id,name,price_cents,currency,product_images(url,position)')
+      .eq('tenant_id', tenant.id)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+    const list: EditorProduct[] = (prods || []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      price_cents: p.price_cents,
+      currency: p.currency,
+      thumbnail: (p.product_images || []).sort((a: any, b: any) => a.position - b.position)[0]?.url || null,
+    }));
+    setProducts(list);
+
     setLoading(false);
   }, [tenant]);
 
@@ -113,9 +155,11 @@ export default function OnlineStore() {
 
   const purchaseTheme = async (st: StoreTheme) => {
     if (!tenant) return;
-    const planRank: any = { starter: 0, premium: 1, entreprise: 2 };
-    if (st.is_premium && planRank[tenant.plan] < 1) {
-      alert('Ce thème premium nécessite le plan Premium.');
+    // BUGFIX: 'pro' manquait dans la table de rang -> un marchand "pro" débloquait
+    // les thèmes premium gratuitement (undefined < 1 === false en JS, donc pas bloqué).
+    const currentRank = PLAN_RANK[tenant.plan] ?? -1;
+    if (st.is_premium && currentRank < PLAN_RANK.premium) {
+      alert('Ce thème premium nécessite le plan Premium ou supérieur.');
       return;
     }
     if (!purchasedThemeIds.includes(st.id)) {
@@ -129,8 +173,11 @@ export default function OnlineStore() {
 
   const applyTheme = (st: StoreTheme) => {
     if (!purchasedThemeIds.includes(st.id) && st.is_premium) return;
+    // Charge la vraie variante de design liée à ce thème acheté.
+    // Si aucune variante n'est configurée (variant_key vide), on retombe sur le
+    // layout par défaut du type de site (comportement précédent, en secours).
     const variant = st.variant_key ? getThemeVariant(st.variant_key) : null;
-    const newTheme = variant || defaultThemeForType(st.category as SiteType); // fallback si pas de variant_key
+    const newTheme = variant || defaultThemeForType(st.category as SiteType);
     setTheme(newTheme);
     persistTheme(newTheme, false);
     setSavedMsg(`Thème "${st.name}" appliqué!`);
@@ -309,6 +356,9 @@ export default function OnlineStore() {
                         )}
                       </div>
                       <p className="text-xs text-gray-500 mb-2">{st.description}</p>
+                      {!st.variant_key && (
+                        <p className="text-[10px] text-amber-600 mb-2">⚠️ Aucune variante de design liée — l'application retombera sur le layout par défaut.</p>
+                      )}
                       <div className="flex gap-1 mb-2">
                         {['#F2632C', '#16a34a', '#ffffff', '#111114'].map((c, i) => (
                           <div key={i} className="w-4 h-4 rounded-full border border-gray-200" style={{ background: c }} />
@@ -372,13 +422,18 @@ export default function OnlineStore() {
             <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background }}>
               {theme.sections.filter(s => s.visible).map(s => (
                 <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
-                  {renderSection(s, theme.colors)}
+                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined)}
                 </div>
               ))}
               {theme.sections.filter(s => s.visible).length === 0 && (
                 <div className="p-12 text-center text-gray-400 text-sm">Aucune section visible. Ajoutez des blocs depuis le panneau "Sections".</div>
               )}
             </div>
+            {products.length === 0 && theme.sections.some(s => s.visible && PRODUCT_AWARE_SECTIONS.has(s.type)) && (
+              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                Vous n'avez pas encore de produit actif. Ajoutez-en depuis l'onglet <strong>Produits</strong> pour qu'ils apparaissent ici et sur votre boutique publiée.
+              </div>
+            )}
 
             <div className="mt-4 flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-2 text-xs text-gray-500"><Layers size={14} /> {theme.sections.length} sections · {theme.sections.filter(s => s.visible).length} visibles</div>

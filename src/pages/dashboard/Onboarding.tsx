@@ -53,6 +53,7 @@ export default function Onboarding() {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [customCity, setCustomCity] = useState('');
+  const [region, setRegion] = useState('');
   const [currency, setCurrency] = useState('XOF');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +81,12 @@ export default function Onboarding() {
     const finalCity = city === AUTRE_LOCALITE ? customCity.trim() : city;
     if (!finalCity) {
       setError('Merci de renseigner une ville ou localité.');
+      return;
+    }
+
+    const trimmedRegion = region.trim();
+    if (!trimmedRegion) {
+      setError('Merci de renseigner une région.');
       return;
     }
 
@@ -113,6 +120,7 @@ export default function Onboarding() {
         country,
         country_code: countryCode,
         country_name: country,
+        region: trimmedRegion,
         city: finalCity,
         currency,
         plan: 'starter',
@@ -220,6 +228,8 @@ export default function Onboarding() {
                 />
               )}
             </div>
+
+            <Input label="Région" value={region} onChange={setRegion} placeholder="Ex: Abidjan, Littoral, Centre…" />
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Devise</label>

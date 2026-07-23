@@ -4,6 +4,9 @@ import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant } from '../../lib/theme-engine';
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type StoreTheme = {
   id: string;
@@ -35,6 +38,46 @@ const PRESET_PALETTES = [
 // Hiérarchie des forfaits, du moins cher au plus cher.
 // ⚠️ Doit correspondre exactement aux codes de la table Supabase `plans`.
 const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, entreprise: 3 };
+
+function SortableSectionRow({
+  section, selected, onSelect, onMoveUp, onMoveDown, onToggle, onRemove, label, icon,
+}: {
+  section: ThemeSection;
+  selected: boolean;
+  onSelect: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onToggle: () => void;
+  onRemove: () => void;
+  label: string;
+  icon: string;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-1 p-2 rounded-lg border transition-all ${selected ? 'border-brand-500 bg-brand-50' : 'border-gray-100 hover:border-gray-200'}`}
+    >
+      <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none p-0.5 text-gray-300 hover:text-gray-500">
+        <GripVertical size={12} />
+      </button>
+      <button onClick={onSelect} className="flex-1 text-left text-xs font-medium text-gray-700">
+        {icon} {label}
+      </button>
+      <button onClick={onMoveUp} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowUp size={12} /></button>
+      <button onClick={onMoveDown} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowDown size={12} /></button>
+      <button onClick={onToggle} className={`p-0.5 ${section.visible ? 'text-green-600' : 'text-gray-300'}`}>●</button>
+      <button onClick={onRemove} className="p-0.5 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
+    </div>
+  );
+}
 
 interface EditorProduct {
   id: string;
@@ -144,6 +187,20 @@ export default function OnlineStore() {
     setTheme({ ...theme, sections });
   };
 
+  const dndSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = theme.sections.findIndex(s => s.id === active.id);
+    const newIndex = theme.sections.findIndex(s => s.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+    setTheme({ ...theme, sections: arrayMove(theme.sections, oldIndex, newIndex) });
+  };
+
   const updateSectionProp = (sectionId: string, key: string, value: any) => {
     setTheme({ ...theme, sections: theme.sections.map(s => s.id === sectionId ? { ...s, props: { ...s.props, [key]: value } } : s) });
   };
@@ -235,23 +292,29 @@ export default function OnlineStore() {
           {panel === 'sections' && (
             <Card className="p-3">
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Sections ({theme.sections.length})</h3>
-              <div className="space-y-1 max-h-64 overflow-y-auto">
-                {theme.sections.map((s) => {
-                  const lib = SECTION_LIBRARY.find(l => l.type === s.type);
-                  return (
-                    <div key={s.id} className={`flex items-center gap-1 p-2 rounded-lg border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-100 hover:border-gray-200'}`}>
-                      <GripVertical size={12} className="text-gray-300" />
-                      <button onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className="flex-1 text-left text-xs font-medium text-gray-700">
-                        {lib?.icon} {lib?.label || s.type}
-                      </button>
-                      <button onClick={() => moveSection(s.id, -1)} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowUp size={12} /></button>
-                      <button onClick={() => moveSection(s.id, 1)} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowDown size={12} /></button>
-                      <button onClick={() => toggleSection(s.id)} className={`p-0.5 ${s.visible ? 'text-green-600' : 'text-gray-300'}`}>●</button>
-                      <button onClick={() => removeSection(s.id)} className="p-0.5 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
-                    </div>
-                  );
-                })}
-              </div>
+              <DndContext sensors={dndSensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={theme.sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                  <div className="space-y-1 max-h-64 overflow-y-auto">
+                    {theme.sections.map((s) => {
+                      const lib = SECTION_LIBRARY.find(l => l.type === s.type);
+                      return (
+                        <SortableSectionRow
+                          key={s.id}
+                          section={s}
+                          selected={selectedSection === s.id}
+                          onSelect={() => { setSelectedSection(s.id); setPanel('edit'); }}
+                          onMoveUp={() => moveSection(s.id, -1)}
+                          onMoveDown={() => moveSection(s.id, 1)}
+                          onToggle={() => toggleSection(s.id)}
+                          onRemove={() => removeSection(s.id)}
+                          label={lib?.label || s.type}
+                          icon={lib?.icon || ''}
+                        />
+                      );
+                    })}
+                  </div>
+                </SortableContext>
+              </DndContext>
               <div className="mt-3 pt-3 border-t border-gray-100">
                 <p className="text-xs font-semibold text-gray-500 mb-2">Ajouter un bloc</p>
                 <div className="grid grid-cols-2 gap-1 max-h-40 overflow-y-auto">

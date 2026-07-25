@@ -21,8 +21,8 @@ function CustomDomainResolver({ hostname }: { hostname: string }) {
       const { data } = await supabase
         .from('domains')
         .select('tenant_id')
-        .eq('domain', hostname)
-        .eq('status', 'active')
+        .eq('domain_name', hostname)
+        .eq('dns_status', 'verified')
         .maybeSingle();
       if (cancelled) return;
       if (data) {

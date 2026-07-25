@@ -152,16 +152,40 @@ export default function Settings() {
     setTimeout(() => setSavedMsg(''), 3000);
   };
 
+  const [domainError, setDomainError] = useState<string | null>(null);
+  const [domainDns, setDomainDns] = useState<{ target: string } | null>(null);
+  const [domainBusy, setDomainBusy] = useState(false);
+
   const addDomain = async () => {
     if (!tenant || !newDomain) return;
-    await supabase.from('domains').insert({ tenant_id: tenant.id, domain_name: newDomain, type: 'custom', dns_status: 'pending', ssl_status: 'pending' });
-    setNewDomain('');
-    setDomainModal(false);
-    loadDomains();
+    setDomainError(null);
+    setDomainBusy(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session.session?.access_token;
+      const res = await fetch('/api/domains/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ domain: newDomain }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setDomainError(data.error || 'Une erreur est survenue.'); return; }
+      setDomainDns({ target: data.dns.target });
+      setNewDomain('');
+      loadDomains();
+    } catch {
+      setDomainError('Erreur réseau, veuillez réessayer.');
+    } finally {
+      setDomainBusy(false);
+    }
   };
 
-  const verifyDomain = async (id: string) => {
-    await supabase.from('domains').update({ dns_status: 'verified', ssl_status: 'active', verified_at: new Date().toISOString() }).eq('id', id);
+  const verifyDomain = async (domainName: string) => {
+    const { data: session } = await supabase.auth.getSession();
+    const token = session.session?.access_token;
+    await fetch(`/api/domains/status?domain=${encodeURIComponent(domainName)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     loadDomains();
   };
 
@@ -328,12 +352,13 @@ export default function Settings() {
                     <div>
                       <p className="text-sm font-medium text-gray-900">{d.domain_name}</p>
                       <div className="flex gap-2 mt-1">
-                        <Badge color={d.dns_status === 'verified' ? 'green' : 'orange'}>DNS: {d.dns_status}</Badge>
+                        <Badge color={d.dns_status === 'verified' ? 'green' : d.dns_status === 'failed' ? 'red' : 'orange'}>DNS: {d.dns_status}</Badge>
                         <Badge color={d.ssl_status === 'active' ? 'green' : 'gray'}>SSL: {d.ssl_status}</Badge>
                       </div>
+                      {d.last_error && <p className="text-xs text-red-600 mt-1">{d.last_error}</p>}
                     </div>
                     <div className="flex gap-1">
-                      {d.dns_status !== 'verified' && <Button size="sm" variant="secondary" onClick={() => verifyDomain(d.id)}>Vérifier</Button>}
+                      {d.dns_status !== 'verified' && <Button size="sm" variant="secondary" onClick={() => verifyDomain(d.domain_name)}>Vérifier</Button>}
                       <button onClick={() => removeDomain(d.id)} className="p-1.5 text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
                     </div>
                   </div>
@@ -342,6 +367,7 @@ export default function Settings() {
             )}
           </div>
         );
+
 
       case 'security':
         return (
@@ -561,14 +587,26 @@ export default function Settings() {
       </div>
 
       {/* Domain modal */}
-      <Modal open={domainModal} onClose={() => setDomainModal(false)} title="Ajouter un domaine">
+      <Modal open={domainModal} onClose={() => { setDomainModal(false); setDomainError(null); setDomainDns(null); }} title="Ajouter un domaine">
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">Nom de domaine</label>
             <input value={newDomain} onChange={e => setNewDomain(e.target.value)} placeholder="maboutique.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
           </div>
-          <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">Vous devrez configurer vos enregistrements DNS pointant vers nos serveurs. Les instructions seront envoyées après l'ajout.</div>
-          <div className="flex gap-2 justify-end"><Button variant="secondary" onClick={() => setDomainModal(false)}>Annuler</Button><Button onClick={addDomain} disabled={!newDomain}>Ajouter</Button></div>
+          {domainError && <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-xs text-red-700">{domainError}</div>}
+          {domainDns ? (
+            <div className="p-3 bg-green-50 border border-green-100 rounded-lg text-xs text-green-800 space-y-1">
+              <p className="font-semibold">Domaine ajouté ! Configurez chez votre registrar :</p>
+              <p>Type: <strong>CNAME</strong> — Cible: <strong>{domainDns.target}</strong></p>
+              <p>La vérification peut prendre quelques minutes à 24h.</p>
+            </div>
+          ) : (
+            <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">Vous devrez configurer vos enregistrements DNS pointant vers nos serveurs. Les instructions s'afficheront après l'ajout.</div>
+          )}
+          <div className="flex gap-2 justify-end">
+            <Button variant="secondary" onClick={() => { setDomainModal(false); setDomainError(null); setDomainDns(null); }}>Fermer</Button>
+            {!domainDns && <Button onClick={addDomain} disabled={!newDomain || domainBusy}>{domainBusy ? 'Connexion…' : 'Ajouter'}</Button>}
+          </div>
         </div>
       </Modal>
 

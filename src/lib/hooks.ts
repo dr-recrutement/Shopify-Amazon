@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 export interface Tenant {
   id: string;
   name: string;
+  slug: string;
   sector: string | null;
   country: string | null;
   currency: string;

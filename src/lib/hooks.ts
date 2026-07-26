@@ -66,3 +66,24 @@ export function useTenant() {
   useEffect(() => { if (!authLoading) loadTenant(); }, [authLoading, loadTenant]);
   return { tenant, loading: authLoading || loading, reload: loadTenant };
 }
+
+export function useIsSuperAdmin(user: AuthUser | null) {
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!user) { setIsSuperAdmin(false); setLoading(false); return; }
+    setLoading(true);
+    supabase
+      .from('super_admins')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) console.error('[useIsSuperAdmin] Erreur vérification:', error);
+        setIsSuperAdmin(!!data);
+        setLoading(false);
+      });
+  }, [user?.id]);
+  return { isSuperAdmin, loading };
+}

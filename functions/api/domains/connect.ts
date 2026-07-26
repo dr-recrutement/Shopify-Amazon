@@ -52,7 +52,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const tenant = tenants?.[0];
   if (!tenant) return json({ error: 'Boutique introuvable.' }, 404);
 
-  if (!ALLOWED_PLAN_CODES.includes(tenant.plan)) {
+  const adminRes = await fetch(`${env.SUPABASE_URL}/rest/v1/super_admins?select=id&user_id=eq.${user.id}&status=eq.active`, {
+    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+  });
+  const admins = await adminRes.json();
+  const isSuperAdmin = Array.isArray(admins) && admins.length > 0;
+
+  if (!isSuperAdmin && !ALLOWED_PLAN_CODES.includes(tenant.plan)) {
     return json({ error: "Votre forfait actuel ne permet pas d'attacher un domaine personnalisé." }, 403);
   }
 

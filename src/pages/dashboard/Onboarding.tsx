@@ -1,10 +1,18 @@
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useAuth } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Button, Input } from './ui';
 import { COUNTRIES, COUNTRIES_CITIES, COUNTRY_INFO, CURRENCIES } from '../../lib/constants';
 import { SITE_TYPES, SiteType, defaultThemeForType } from '../../lib/theme-engine';
-import { Shield } from 'lucide-react';
+import { Shield, Check } from 'lucide-react';
+
+interface PlanOption {
+  id: string;
+  code: string;
+  name: string;
+  price_usd: number;
+  features: string[];
+}
 
 const AUTRE_LOCALITE = '__autre__';
 
@@ -55,8 +63,22 @@ export default function Onboarding() {
   const [customCity, setCustomCity] = useState('');
   const [region, setRegion] = useState('');
   const [currency, setCurrency] = useState('XOF');
+  const [plans, setPlans] = useState<PlanOption[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<string>('starter');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error: plansErr } = await supabase
+        .from('plans')
+        .select('id,code,name,price_usd,features')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      if (plansErr) { console.error('[Onboarding] Erreur chargement plans:', plansErr); return; }
+      setPlans((data as any[] || []).map(p => ({ ...p, features: Array.isArray(p.features) ? p.features : [] })));
+    })();
+  }, []);
 
   const cities = country ? COUNTRIES_CITIES[country] || [] : [];
 
@@ -123,7 +145,7 @@ export default function Onboarding() {
         region: trimmedRegion,
         city: finalCity,
         currency,
-        plan: 'starter',
+        plan: selectedPlan,
         status: 'trial',
         theme_id: 'universal',
         trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -236,6 +258,34 @@ export default function Onboarding() {
               <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 bg-white">
                 {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
               </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Forfait</label>
+              <div className="grid grid-cols-1 gap-2">
+                {plans.map(p => (
+                  <button
+                    type="button"
+                    key={p.code}
+                    onClick={() => setSelectedPlan(p.code)}
+                    className={`text-left p-3 rounded-lg border-2 transition-all flex items-start justify-between gap-2 ${selectedPlan === p.code ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        {selectedPlan === p.code && <Check size={14} className="text-brand-600" />}
+                        <span className="text-sm font-semibold text-gray-900">{p.name}</span>
+                      </div>
+                      {p.features.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-0.5">{p.features.slice(0, 3).join(' · ')}</p>
+                      )}
+                    </div>
+                    <span className="text-sm font-bold text-brand-600 whitespace-nowrap">
+                      {p.price_usd === 0 ? 'Gratuit' : `${p.price_usd}$/mois`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">7 jours d'essai gratuit sur tous les forfaits.</p>
             </div>
 
             {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>}

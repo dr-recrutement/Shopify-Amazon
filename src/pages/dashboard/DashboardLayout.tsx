@@ -3,9 +3,9 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, ShoppingCart, Package, Users, TrendingUp, Tag, Megaphone,
   FileText, Globe, BarChart3, Store, Bot, Calculator, UserCog, FileBarChart,
-  Zap, Settings, Menu, X, LogOut,
+  Zap, Settings, Menu, X, LogOut, ShieldCheck,
 } from 'lucide-react';
-import { useAuth, useTenant } from '../../lib/hooks';
+import { useAuth, useTenant, useIsSuperAdmin } from '../../lib/hooks';
 
 interface NavItem { to: string; label: string; icon: ReactNode; }
 
@@ -60,7 +60,8 @@ function NavGroup({ items, title }: { items: NavItem[]; title?: string }) {
 
 export default function DashboardLayout() {
   const { tenant } = useTenant();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const { isSuperAdmin } = useIsSuperAdmin(user);
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -79,6 +80,12 @@ export default function DashboardLayout() {
         <NavGroup items={growth} title="Growth" />
         <NavGroup items={settings} title="Settings" />
         <NavGroup items={bottom} />
+        {isSuperAdmin && (
+          <NavGroup
+            title="Plateforme"
+            items={[{ to: '/admin', label: 'Super Admin', icon: <ShieldCheck size={18} /> }]}
+          />
+        )}
       </nav>
       <div className="p-3 border-t border-gray-100">
         <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 w-full">

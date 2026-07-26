@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth, useTenant } from './lib/hooks';
+import { useAuth, useTenant, useIsSuperAdmin } from './lib/hooks';
 import Login from './pages/dashboard/Login';
 import Onboarding from './pages/dashboard/Onboarding';
 import { supabase } from './lib/supabase';
@@ -26,7 +26,8 @@ import SuperAdminLayout, { SuperAdminOverview, SuperAdminTenants, SuperAdminThem
 export default function App() {
   const { user, loading: authLoading } = useAuth();
   const { tenant, loading: tenantLoading } = useTenant();
-  const loading = authLoading || tenantLoading;
+  const { isSuperAdmin, loading: adminLoading } = useIsSuperAdmin(user);
+  const loading = authLoading || tenantLoading || adminLoading;
 
   if (loading) {
     return (
@@ -45,9 +46,9 @@ export default function App() {
   }
 
   // Check if user is super admin.
-  // NOTE: relies on `role` set in app_metadata (server-side only — cannot be
-  // edited by the user themselves via the client SDK, unlike user_metadata).
-  const isSuperAdmin = user.app_metadata?.role === 'super_admin';
+  // NOTE: le statut réel est déterminé par la table Supabase `super_admins`
+  // (user_id, status='active'), pas par app_metadata — cette dernière n'était
+  // jamais renseignée nulle part dans ce projet.
   const isAdminRoute = window.location.pathname.startsWith('/admin');
 
   if (isAdminRoute) {

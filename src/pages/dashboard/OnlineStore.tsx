@@ -79,6 +79,12 @@ function SortableSectionRow({
   );
 }
 
+interface EditorCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
 interface EditorProduct {
   id: string;
   name: string;
@@ -101,6 +107,7 @@ export default function OnlineStore() {
   const [storeThemes, setStoreThemes] = useState<StoreTheme[]>([]);
   const [purchasedThemeIds, setPurchasedThemeIds] = useState<string[]>([]);
   const [products, setProducts] = useState<EditorProduct[]>([]);
+  const [categories, setCategories] = useState<EditorCategory[]>([]);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
   const [loading, setLoading] = useState(true);
@@ -142,6 +149,17 @@ export default function OnlineStore() {
     }));
     setProducts(list);
 
+    // Charge les vraies catégories du marchand (avec le nombre de produits actifs par catégorie).
+    const { data: cats } = await supabase.from('product_categories').select('id,name').eq('tenant_id', tenant.id);
+    const { data: assignments } = await supabase
+      .from('product_category_assignments')
+      .select('category_id, products!inner(status, tenant_id)')
+      .eq('products.tenant_id', tenant.id)
+      .eq('products.status', 'active');
+    const countByCategory: Record<string, number> = {};
+    (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
+    setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0 })));
+
     setLoading(false);
   }, [tenant]);
 
@@ -152,7 +170,7 @@ export default function OnlineStore() {
     setSaving(true);
     const payload = {
       tenant_id: tenant.id, site_type: newTheme.siteType, sections: newTheme.sections,
-      colors: newTheme.colors, spacing: newTheme.spacing, is_published: published,
+      colors: newTheme.colors, spacing: newTheme.spacing, radius: newTheme.radius, shadow: newTheme.shadow, is_published: published,
     };
     const { data: existing } = await supabase.from('theme_configs').select('id').eq('tenant_id', tenant.id).maybeSingle();
     if (existing) {
@@ -487,7 +505,7 @@ export default function OnlineStore() {
             <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background }}>
               {theme.sections.filter(s => s.visible).map(s => (
                 <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
-                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined)}
+                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined)}
                 </div>
               ))}
               {theme.sections.filter(s => s.visible).length === 0 && (

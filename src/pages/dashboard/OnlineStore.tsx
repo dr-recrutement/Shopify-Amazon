@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useTenant } from '../../lib/hooks';
+import { useTenant, useAuth, useIsSuperAdmin } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
@@ -100,6 +100,8 @@ const PRODUCT_AWARE_SECTIONS = new Set(['product-grid', 'filters-list', 'product
 
 export default function OnlineStore() {
   const { tenant } = useTenant();
+  const { user } = useAuth();
+  const { isSuperAdmin } = useIsSuperAdmin(user);
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [editMode, setEditMode] = useState<'desktop' | 'mobile'>('desktop');
   const [theme, setTheme] = useState<ThemeConfig>(() => defaultThemeForType('ecommerce'));
@@ -257,7 +259,7 @@ export default function OnlineStore() {
     // BUGFIX: 'pro' manquait dans la table de rang -> un marchand "pro" débloquait
     // les thèmes premium gratuitement (undefined < 1 === false en JS, donc pas bloqué).
     const currentRank = PLAN_RANK[tenant.plan] ?? -1;
-    if (st.is_premium && currentRank < PLAN_RANK.premium) {
+    if (!isSuperAdmin && st.is_premium && currentRank < PLAN_RANK.premium) {
       alert('Ce thème premium nécessite le plan Premium ou supérieur.');
       return;
     }

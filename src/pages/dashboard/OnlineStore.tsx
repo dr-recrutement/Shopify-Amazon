@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant } from '../../lib/theme-engine';
+import { PLATFORM_ROOT_DOMAIN } from '../../lib/subdomain';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -112,6 +113,8 @@ export default function OnlineStore() {
   const [savedMsg, setSavedMsg] = useState('');
   const [loading, setLoading] = useState(true);
   const [publishModal, setPublishModal] = useState(false);
+  const [justPublished, setJustPublished] = useState(false);
+  const [verifiedDomain, setVerifiedDomain] = useState<string | null>(null);
 
   const loadTheme = useCallback(async () => {
     if (!tenant) return;
@@ -169,8 +172,8 @@ export default function OnlineStore() {
 
   useEffect(() => { if (tenant) loadTheme(); }, [tenant, loadTheme]);
 
-  const persistTheme = async (newTheme: ThemeConfig, published: boolean) => {
-    if (!tenant) return;
+  const persistTheme = async (newTheme: ThemeConfig, published: boolean): Promise<boolean> => {
+    if (!tenant) return false;
     setSaving(true);
     const payload = {
       tenant_id: tenant.id, site_type: newTheme.siteType, sections: newTheme.sections,
@@ -185,10 +188,11 @@ export default function OnlineStore() {
       console.error('[OnlineStore] Erreur sauvegarde thème:', saveErr);
       setSavedMsg('');
       alert(`Erreur lors de la sauvegarde : ${saveErr.message}`);
-      return;
+      return false;
     }
     setSavedMsg(published ? 'Boutique publiée!' : 'Brouillon sauvegardé!');
     setTimeout(() => setSavedMsg(''), 3000);
+    return true;
   };
 
   const setSiteType = (t: SiteType) => setTheme({ ...theme, siteType: t });
@@ -235,7 +239,17 @@ export default function OnlineStore() {
 
   const updateColor = (key: keyof ThemeConfig['colors'], value: string) => setTheme({ ...theme, colors: { ...theme.colors, [key]: value } });
 
-  const publish = () => { const t = { ...theme, isPublished: true }; setTheme(t); persistTheme(t, true); setPublishModal(false); };
+  const publish = async () => {
+    const t = { ...theme, isPublished: true };
+    setTheme(t);
+    const ok = await persistTheme(t, true);
+    if (!ok) return;
+    if (tenant) {
+      const { data: dom } = await supabase.from('domains').select('domain_name').eq('tenant_id', tenant.id).eq('dns_status', 'verified').maybeSingle();
+      setVerifiedDomain(dom?.domain_name || null);
+    }
+    setJustPublished(true);
+  };
   const saveDraft = () => { const t = { ...theme, isPublished: false }; setTheme(t); persistTheme(t, false); };
 
   const purchaseTheme = async (st: StoreTheme) => {
@@ -535,17 +549,42 @@ export default function OnlineStore() {
       </div>
 
       {/* Publish confirmation modal */}
-      <Modal open={publishModal} onClose={() => setPublishModal(false)} title="Publier votre boutique">
-        <div className="space-y-4">
-          <div className="p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-green-700 font-medium">Votre boutique sera mise en ligne immédiatement.</p>
-            <p className="text-xs text-green-600 mt-1">Tous les changements seront visibles par vos clients.</p>
+      <Modal open={publishModal} onClose={() => { setPublishModal(false); setJustPublished(false); }} title={justPublished ? 'Boutique en ligne !' : 'Publier votre boutique'}>
+        {justPublished ? (
+          <div className="space-y-4">
+            <div className="p-4 bg-green-50 rounded-lg text-center">
+              <p className="text-sm text-green-700 font-medium mb-2">🎉 Votre boutique est maintenant en ligne !</p>
+              <a
+                href={`https://${verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-sm font-semibold text-brand-600 underline break-all"
+              >
+                {verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}
+              </a>
+              {!verifiedDomain && (
+                <p className="text-xs text-green-600 mt-2">Vous pouvez connecter votre propre domaine depuis Paramètres → Domaines.</p>
+              )}
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button variant="secondary" onClick={() => { setPublishModal(false); setJustPublished(false); }}>Fermer</Button>
+              <Button onClick={() => window.open(`https://${verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}`, '_blank')}>
+                <Eye size={16} /> Voir ma boutique
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button variant="secondary" onClick={() => setPublishModal(false)}>Annuler</Button>
-            <Button onClick={publish}><Eye size={16} /> Confirmer la publication</Button>
+        ) : (
+          <div className="space-y-4">
+            <div className="p-4 bg-green-50 rounded-lg">
+              <p className="text-sm text-green-700 font-medium">Votre boutique sera mise en ligne immédiatement.</p>
+              <p className="text-xs text-green-600 mt-1">Tous les changements seront visibles par vos clients.</p>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button variant="secondary" onClick={() => setPublishModal(false)}>Annuler</Button>
+              <Button onClick={publish} disabled={saving}>{saving ? 'Publication…' : <><Eye size={16} /> Confirmer la publication</>}</Button>
+            </div>
           </div>
-        </div>
+        )}
       </Modal>
     </div>
   );

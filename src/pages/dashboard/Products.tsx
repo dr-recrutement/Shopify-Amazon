@@ -824,6 +824,7 @@ function CategoriesTab({ tenantId }: { tenantId?: string }) {
     if (!tenantId) return;
     setLoading(true);
     const { data, error } = await supabase.from('product_categories').select('*').eq('tenant_id', tenantId).order('position', { ascending: true });
+    if (error) console.error('[Categories] Erreur chargement catégories:', error);
     if (!error) setCategories((data as ProductCategory[]) || []);
     setLoading(false);
   }, [tenantId]);

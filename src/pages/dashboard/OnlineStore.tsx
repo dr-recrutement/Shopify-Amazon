@@ -115,7 +115,8 @@ export default function OnlineStore() {
 
   const loadTheme = useCallback(async () => {
     if (!tenant) return;
-    const { data: config } = await supabase.from('theme_configs').select('*').eq('tenant_id', tenant.id).maybeSingle();
+    const { data: config, error: cfgErr } = await supabase.from('theme_configs').select('*').eq('tenant_id', tenant.id).maybeSingle();
+    if (cfgErr) console.error('[OnlineStore] Erreur chargement theme_configs:', cfgErr);
     if (config) {
       setTheme({
         siteType: config.site_type,
@@ -134,12 +135,13 @@ export default function OnlineStore() {
 
     // Charge les VRAIS produits du marchand pour que l'éditeur reflète
     // exactement ce que ses clients verront (comme dans Shopify).
-    const { data: prods } = await supabase
+    const { data: prods, error: prodErr } = await supabase
       .from('products')
       .select('id,name,price_cents,currency,product_images(url,position)')
       .eq('tenant_id', tenant.id)
       .eq('status', 'active')
       .order('created_at', { ascending: false });
+    if (prodErr) console.error('[OnlineStore] Erreur chargement produits:', prodErr);
     const list: EditorProduct[] = (prods || []).map((p: any) => ({
       id: p.id,
       name: p.name,
@@ -150,12 +152,14 @@ export default function OnlineStore() {
     setProducts(list);
 
     // Charge les vraies catégories du marchand (avec le nombre de produits actifs par catégorie).
-    const { data: cats } = await supabase.from('product_categories').select('id,name').eq('tenant_id', tenant.id);
-    const { data: assignments } = await supabase
+    const { data: cats, error: catErr } = await supabase.from('product_categories').select('id,name').eq('tenant_id', tenant.id);
+    if (catErr) console.error('[OnlineStore] Erreur chargement catégories:', catErr);
+    const { data: assignments, error: assignErr } = await supabase
       .from('product_category_assignments')
       .select('category_id, products!inner(status, tenant_id)')
       .eq('products.tenant_id', tenant.id)
       .eq('products.status', 'active');
+    if (assignErr) console.error('[OnlineStore] Erreur chargement assignations catégories:', assignErr);
     const countByCategory: Record<string, number> = {};
     (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
     setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0 })));
@@ -173,12 +177,16 @@ export default function OnlineStore() {
       colors: newTheme.colors, spacing: newTheme.spacing, radius: newTheme.radius, shadow: newTheme.shadow, is_published: published,
     };
     const { data: existing } = await supabase.from('theme_configs').select('id').eq('tenant_id', tenant.id).maybeSingle();
-    if (existing) {
-      await supabase.from('theme_configs').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', existing.id);
-    } else {
-      await supabase.from('theme_configs').insert(payload);
-    }
+    const { error: saveErr } = existing
+      ? await supabase.from('theme_configs').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', existing.id)
+      : await supabase.from('theme_configs').insert(payload);
     setSaving(false);
+    if (saveErr) {
+      console.error('[OnlineStore] Erreur sauvegarde thème:', saveErr);
+      setSavedMsg('');
+      alert(`Erreur lors de la sauvegarde : ${saveErr.message}`);
+      return;
+    }
     setSavedMsg(published ? 'Boutique publiée!' : 'Brouillon sauvegardé!');
     setTimeout(() => setSavedMsg(''), 3000);
   };

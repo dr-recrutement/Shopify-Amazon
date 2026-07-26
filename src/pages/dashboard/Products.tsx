@@ -537,9 +537,17 @@ function ProductModal({ tenantId, currency, editing, onClose, onSaved }: {
     // remove from storage
     try {
       const path = decodeURIComponent(img.url.split('/product-images/')[1] || '');
-      if (path) await supabase.storage.from('product-images').remove([path]);
-    } catch { /* ignore */ }
-    await supabase.from('product_images').delete().eq('id', img.id);
+      if (path) {
+        const { error: storageErr } = await supabase.storage.from('product-images').remove([path]);
+        if (storageErr) console.error('[Products] Erreur suppression fichier storage:', storageErr);
+      }
+    } catch (e) { console.error('[Products] Exception suppression fichier storage:', e); }
+    const { error: dbErr } = await supabase.from('product_images').delete().eq('id', img.id);
+    if (dbErr) {
+      console.error('[Products] Erreur suppression ligne product_images:', dbErr);
+      alert(`Impossible de supprimer cette image : ${dbErr.message}`);
+      return;
+    }
     setSavedImages((prev) => prev.filter((i) => i.id !== img.id));
   };
 

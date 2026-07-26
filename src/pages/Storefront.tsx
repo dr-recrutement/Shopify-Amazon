@@ -11,6 +11,12 @@ interface StoreProduct {
   thumbnail: string | null;
 }
 
+interface StoreCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
 // Sections qui doivent recevoir les vrais produits (pas seulement product-grid,
 // sinon filters-list et product-detail continuent d'afficher les produits d'exemple
 // aux vrais visiteurs).
@@ -28,6 +34,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
   const [notFound, setNotFound] = useState(false);
   const [theme, setTheme] = useState<any>(null);
   const [products, setProducts] = useState<StoreProduct[]>([]);
+  const [categories, setCategories] = useState<StoreCategory[]>([]);
 
   useEffect(() => {
     if (!slug && !tenantId) { setNotFound(true); setLoading(false); return; }
@@ -61,6 +68,18 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
         thumbnail: (p.product_images || []).sort((a: any, b: any) => a.position - b.position)[0]?.url || null,
       }));
       setProducts(list);
+
+      // Vraies catégories de la boutique (comptage produits actifs par catégorie).
+      const { data: cats } = await supabase.from('product_categories').select('id,name').eq('tenant_id', t.id);
+      const { data: assignments } = await supabase
+        .from('product_category_assignments')
+        .select('category_id, products!inner(status, tenant_id)')
+        .eq('products.tenant_id', t.id)
+        .eq('products.status', 'active');
+      const countByCategory: Record<string, number> = {};
+      (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
+      setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0 })));
+
       setLoading(false);
     })();
   }, [slug, tenantId]);
@@ -74,7 +93,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
   return (
     <div style={{ background: colors.background }}>
       {sections.filter(s => s.visible).map(s => (
-        <div key={s.id}>{renderSection(s, colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined)}</div>
+        <div key={s.id}>{renderSection(s, colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius || 'soft', theme.shadow || 'subtle', s.type === 'category-grid' ? categories : undefined)}</div>
       ))}
     </div>
   );

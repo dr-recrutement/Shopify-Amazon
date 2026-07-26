@@ -168,7 +168,7 @@ export default function Settings() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ domain: newDomain }),
       });
-      const data = await res.json();
+      const data: any = await res.json();
       if (!res.ok) { setDomainError(data.error || 'Une erreur est survenue.'); return; }
       setDomainDns({ target: data.dns.target });
       setNewDomain('');

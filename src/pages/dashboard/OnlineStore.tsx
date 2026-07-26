@@ -116,6 +116,8 @@ export default function OnlineStore() {
         colors: config.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
         fonts: { heading: 'Montserrat', body: 'Montserrat' },
         spacing: config.spacing || 'comfortable',
+        radius: config.radius || 'soft',
+        shadow: config.shadow || 'none',
         isPublished: config.is_published || false,
       });
       setPurchasedThemeIds(config.purchased_themes || []);
@@ -125,13 +127,12 @@ export default function OnlineStore() {
 
     // Charge les VRAIS produits du marchand pour que l'éditeur reflète
     // exactement ce que ses clients verront (comme dans Shopify).
-    const { data: prods, error: prodErr } = await supabase
+    const { data: prods } = await supabase
       .from('products')
       .select('id,name,price_cents,currency,product_images(url,position)')
       .eq('tenant_id', tenant.id)
       .eq('status', 'active')
       .order('created_at', { ascending: false });
-    if (prodErr) console.error('[OnlineStore] Erreur chargement produits:', prodErr);
     const list: EditorProduct[] = (prods || []).map((p: any) => ({
       id: p.id,
       name: p.name,

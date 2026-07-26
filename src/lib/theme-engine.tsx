@@ -239,12 +239,19 @@ function hexToRgba(hex: string, alpha: number): string {
  * @param radius - design token from ThemeConfig.radius, defaults to 'soft' if not passed.
  * @param shadow - design token from ThemeConfig.shadow, defaults to 'subtle' if not passed.
  */
+export interface StorefrontCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
 export function renderSection(
   section: ThemeSection,
   colors: ThemeConfig['colors'],
   realProducts?: StorefrontProduct[],
   radius: ThemeConfig['radius'] = 'soft',
   shadow: ThemeConfig['shadow'] = 'subtle',
+  realCategories?: StorefrontCategory[],
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
@@ -254,6 +261,7 @@ export function renderSection(
   const r = RADIUS_MAP[radius];
   const cardShadow = SHADOW_MAP[shadow];
   const isLiveContext = realProducts !== undefined;
+  const isLiveCategoryContext = realCategories !== undefined;
 
   switch (section.type) {
     case 'header':
@@ -406,21 +414,32 @@ export function renderSection(
       );
     }
 
-    case 'category-grid':
+    case 'category-grid': {
+      const displayCategories = isLiveCategoryContext
+        ? (realCategories as StorefrontCategory[])
+        : sampleCategories.map((c, i) => ({ id: `sample-${i}`, name: c.name, count: c.count, icon: c.icon }));
+      const showEmptyCats = isLiveCategoryContext && displayCategories.length === 0;
       return (
         <div className="px-6 py-8" style={{ background: bg }}>
           <h3 className="text-xl font-bold mb-4" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Catégories'}</h3>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {sampleCategories.map((c, i) => (
-              <div key={i} className="group flex flex-col items-center justify-center p-4 transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
-                <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>{c.icon}</div>
-                <p className="text-sm font-semibold" style={{ color: txt }}>{c.name}</p>
-                <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{c.count} articles</p>
-              </div>
-            ))}
-          </div>
+          {showEmptyCats ? (
+            <div className="text-center py-8 rounded-2xl" style={{ background: subtleBg }}>
+              <p className="text-sm" style={{ color: hexToRgba(txt, 0.5) }}>Aucune catégorie créée pour le moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {displayCategories.map((c: any, i: number) => (
+                <div key={c.id || i} className="group flex flex-col items-center justify-center p-4 transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
+                  <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>{c.icon || '🏷️'}</div>
+                  <p className="text-sm font-semibold" style={{ color: txt }}>{c.name}</p>
+                  <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{c.count} article{c.count > 1 ? 's' : ''}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       );
+    }
 
     case 'countdown': {
       const endDate = section.props.endDate;

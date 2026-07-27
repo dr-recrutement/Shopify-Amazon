@@ -1,88 +1,109 @@
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { Card, Button } from '../pages/dashboard/ui';
-import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Card, Button } from './dashboard/ui';
+import { Shield, Truck, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../lib/cart';
+import { formatPrice } from '../lib/theme-engine';
 
-export default function CheckoutPage() {
+export default function CheckoutPage({ tenantId }: { tenantId: string }) {
   const nav = useNavigate();
-  const [payment, setPayment] = useState('flutterwave');
-  const [shipping, setShipping] = useState('standard');
-  const fmt = (n: number) => n.toLocaleString('fr-FR');
-  const total = 66000;
-  const shippingCost = 1000;
+  const { items, totalCents, clearCart } = useCart();
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const currency = items[0]?.currency || 'XOF';
 
-  const placeOrder = () => nav('/order-tracking?order=LA-2024-1001');
+  const placeOrder = async () => {
+    setError(null);
+    if (!name.trim() || !phone.trim()) {
+      setError('Merci de renseigner votre nom et votre numéro de téléphone.');
+      return;
+    }
+    if (items.length === 0) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenantId,
+          items: items.map(i => ({ productId: i.productId, quantity: i.quantity })),
+          customer: { name, phone, email: email || undefined, address: address || undefined },
+        }),
+      });
+      const data: any = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Une erreur est survenue lors de la commande.');
+        return;
+      }
+      clearCart();
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        nav(`/order-confirmation/${data.orderId}?tenant_id=${tenantId}`);
+      }
+    } catch {
+      setError('Erreur réseau, veuillez réessayer.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="p-12 text-center">
+          <p className="text-gray-500">Votre panier est vide.</p>
+          <Link to="/" className="mt-3 inline-block text-orange-600 font-medium">Retour à la boutique</Link>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Checkout</h1>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Finaliser ma commande</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Informations de livraison</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <input placeholder="Prénom" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Nom" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Email" className="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Téléphone" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Pays" defaultValue="🇨🇮 Côte d'Ivoire" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Ville" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input placeholder="Landmark / Quartier" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-              </div>
-            </Card>
-            <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Mode de livraison</h3>
-              <div className="space-y-2">
-                {[{ id: 'standard', name: 'Standard', desc: '2-3 jours', price: 1000 }, { id: 'express', name: 'Express', desc: '24h', price: 2500 }, { id: 'pickup', name: 'Point de retrait', desc: 'Gratuit', price: 0 }].map(s => (
-                  <button key={s.id} onClick={() => setShipping(s.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${shipping === s.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
-                    <div><div className="font-medium text-sm">{s.name}</div><div className="text-xs text-gray-500">{s.desc}</div></div>
-                    <span className="font-medium text-sm">{s.price === 0 ? 'Gratuit' : `${fmt(s.price)} XOF`}</span>
-                  </button>
-                ))}
-              </div>
-            </Card>
-            <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Moyen de paiement</h3>
-              <div className="space-y-2">
-                {[
-                  { id: 'flutterwave', name: 'Flutterwave', desc: 'Mobile Money + cartes' },
-                  { id: 'orange', name: 'Orange Money', desc: 'Orange Money marchand' },
-                  { id: 'paystack', name: 'Paystack', desc: 'Cartes + Mobile Money' },
-                  { id: 'mtn', name: 'MTN MoMo', desc: 'MTN Mobile Money' },
-                ].map(p => (
-                  <button key={p.id} onClick={() => setPayment(p.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${payment === p.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
-                    <div><div className="font-medium text-sm">{p.name}</div><div className="text-xs text-gray-500">{p.desc}</div></div>
-                    {payment === p.id && <CheckCircle2 size={18} className="text-orange-600" />}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-3 text-xs text-gray-500 flex items-center gap-1"><Shield size={12} /> Paiement direct au vendeur. LiAfrikOS ne prélève aucune commission.</p>
+          <div className="lg:col-span-2 space-y-4">
+            <Card className="p-5 space-y-3">
+              <h3 className="font-semibold text-gray-900 mb-2">Vos coordonnées</h3>
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="Nom complet *" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Téléphone (Mobile Money) *" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email (optionnel)" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <textarea value={address} onChange={e => setAddress(e.target.value)} placeholder="Adresse de livraison" rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
             </Card>
           </div>
-          <div>
-            <Card className="p-5 sticky top-20">
-              <h3 className="font-semibold text-gray-900 mb-4">Récapitulatif</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Robe wax M</span><span>15 000 XOF</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Sac cuir x2</span><span>50 000 XOF</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Livraison</span><span>{fmt(shippingCost)} XOF</span></div>
-                <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-semibold text-lg">{fmt(total + shippingCost)} XOF</span></div>
+          <div className="space-y-4">
+            <Card className="p-5">
+              <h3 className="font-semibold text-gray-900 mb-3">Résumé</h3>
+              <div className="space-y-1 text-sm mb-3">
+                {items.map(i => (
+                  <div key={i.productId} className="flex justify-between text-gray-600">
+                    <span>{i.name} × {i.quantity}</span>
+                    <span>{formatPrice(i.priceCents * i.quantity, i.currency)}</span>
+                  </div>
+                ))}
               </div>
-              <Button onClick={placeOrder} className="mt-4 w-full">Confirmer la commande <ArrowRight size={16} /></Button>
-              <div className="mt-4 space-y-2 text-xs text-gray-500">
-                <div className="flex items-center gap-2"><Shield size={12} className="text-green-600" /> Paiement sécurisé</div>
-                <div className="flex items-center gap-2"><Truck size={12} className="text-blue-600" /> Suivi en temps réel</div>
-                <div className="flex items-center gap-2"><CreditCard size={12} className="text-orange-600" /> 0% commission</div>
+              <div className="pt-2 border-t border-gray-100 flex justify-between mb-4">
+                <span className="font-semibold">Total</span>
+                <span className="font-semibold text-lg">{formatPrice(totalCents, currency)}</span>
+              </div>
+              {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
+              <Button onClick={placeOrder} disabled={submitting} className="w-full">
+                {submitting ? 'Traitement…' : <>Payer maintenant <ArrowRight size={16} /></>}
+              </Button>
+              <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
+                <Shield size={12} /> Paiement sécurisé via Flutterwave
               </div>
             </Card>
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

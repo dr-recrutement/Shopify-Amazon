@@ -214,7 +214,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   SLL: 'Le', GMD: 'D', MRU: 'UM', SDG: 'SDG',
 };
 
-function formatPrice(amount: number, currency: string): string {
+export function formatPrice(amount: number, currency: string): string {
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
   return `${amount.toLocaleString('fr-FR')} ${symbol}`;
 }
@@ -245,6 +245,14 @@ export interface StorefrontCategory {
   count: number;
 }
 
+export interface AddToCartPayload {
+  productId: string;
+  name: string;
+  priceCents: number;
+  currency: string;
+  thumbnail: string | null;
+}
+
 export function renderSection(
   section: ThemeSection,
   colors: ThemeConfig['colors'],
@@ -252,6 +260,8 @@ export function renderSection(
   radius: ThemeConfig['radius'] = 'soft',
   shadow: ThemeConfig['shadow'] = 'subtle',
   realCategories?: StorefrontCategory[],
+  onAddToCart?: (item: AddToCartPayload) => void,
+  cartItemCount = 0,
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
@@ -281,11 +291,16 @@ export function renderSection(
             {section.props.megaMenu && (
               <span className="text-xs px-3 py-1.5 font-medium text-white transition-transform hover:scale-105" style={{ background: primary, borderRadius: r }}>Catégories ▾</span>
             )}
-            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: subtleBg }}>
+            <a href={onAddToCart ? '/cart' : undefined} className="relative w-8 h-8 rounded-full flex items-center justify-center" style={{ background: subtleBg, cursor: onAddToCart ? 'pointer' : 'default' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={primary} strokeWidth="2">
                 <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
-            </div>
+              {onAddToCart && cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: primary }}>
+                  {cartItemCount}
+                </span>
+              )}
+            </a>
           </div>
         </div>
       );
@@ -366,6 +381,8 @@ export function renderSection(
             id: p.id,
             name: p.name,
             priceLabel: formatPrice(p.price_cents, p.currency),
+            price_cents: p.price_cents,
+            currency: p.currency,
             img: p.thumbnail || null,
             tag: '',
           }))
@@ -373,6 +390,8 @@ export function renderSection(
             id: `sample-${i}`,
             name: p.name,
             priceLabel: `${p.price} XOF`,
+            price_cents: 0,
+            currency: 'XOF',
             img: p.img,
             tag: p.tag,
           }));
@@ -405,6 +424,15 @@ export function renderSection(
                       <p className="text-sm font-bold" style={{ color: primary }}>{p.priceLabel}</p>
                       {!isLiveContext && <div className="flex items-center gap-0.5 text-xs" style={{ color: '#f59e0b' }}>★ 4.8</div>}
                     </div>
+                    {isLiveContext && onAddToCart && (
+                      <button
+                        onClick={() => onAddToCart({ productId: p.id, name: p.name, priceCents: p.price_cents, currency: p.currency, thumbnail: p.img })}
+                        className="mt-2 w-full py-1.5 text-xs font-semibold text-white transition-transform hover:scale-105"
+                        style={{ background: primary, borderRadius: r }}
+                      >
+                        Ajouter au panier
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -526,7 +554,8 @@ export function renderSection(
 
     case 'product-detail': {
       // Fall back to the first real product's image when available; else sample image.
-      const fallbackImg = isLiveContext ? (realProducts as StorefrontProduct[])[0]?.thumbnail : sampleProducts[0].img;
+      const cartProduct = isLiveContext ? (realProducts as StorefrontProduct[])[0] : null;
+      const fallbackImg = isLiveContext ? cartProduct?.thumbnail : sampleProducts[0].img;
       const image = section.props.image || fallbackImg || sampleProducts[0].img;
       return (
         <div className="px-6 py-8" style={{ background: bg }}>
@@ -550,7 +579,17 @@ export function renderSection(
                 ))}
               </div>
               <div className="flex gap-3">
-                <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
+                {isLiveContext && onAddToCart && cartProduct ? (
+                  <button
+                    onClick={() => onAddToCart({ productId: cartProduct.id, name: cartProduct.name, priceCents: cartProduct.price_cents, currency: cartProduct.currency, thumbnail: cartProduct.thumbnail })}
+                    className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105"
+                    style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}
+                  >
+                    Ajouter au panier
+                  </button>
+                ) : (
+                  <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
+                )}
               </div>
             </div>
           </div>

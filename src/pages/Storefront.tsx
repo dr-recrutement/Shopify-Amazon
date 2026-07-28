@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { renderSection } from '../lib/theme-engine';
 import type { ThemeSection } from '../lib/theme-engine';
+import { useCart } from '../lib/cart';
 
 interface StoreProduct {
   id: string;
@@ -30,6 +32,7 @@ interface StorefrontProps {
 }
 
 export default function Storefront({ slug, tenantId }: StorefrontProps) {
+  const { addItem, totalItems } = useCart();
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [theme, setTheme] = useState<any>(null);
@@ -93,8 +96,28 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
   return (
     <div style={{ background: colors.background }}>
       {sections.filter(s => s.visible).map(s => (
-        <div key={s.id}>{renderSection(s, colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius || 'soft', theme.shadow || 'subtle', s.type === 'category-grid' ? categories : undefined)}</div>
+        <div key={s.id}>
+          {renderSection(
+            s,
+            colors,
+            PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined,
+            theme.radius || 'soft',
+            theme.shadow || 'subtle',
+            s.type === 'category-grid' ? categories : undefined,
+            addItem,
+            totalItems
+          )}
+        </div>
       ))}
+      {totalItems > 0 && (
+        <Link
+          to="/cart"
+          className="fixed bottom-4 right-4 z-40 flex items-center gap-2 px-4 py-3 rounded-full text-white text-sm font-semibold shadow-lg"
+          style={{ background: colors.primary }}
+        >
+          🛒 Panier ({totalItems})
+        </Link>
+      )}
     </div>
   );
 }

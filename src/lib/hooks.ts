@@ -59,8 +59,17 @@ export function useTenant() {
   const [loading, setLoading] = useState(true);
   const loadTenant = useCallback(async () => {
     if (!user) { setTenant(null); setLoading(false); return; }
-    const { data } = await supabase.from('tenants').select('*').eq('owner_id', user.id).maybeSingle();
-    setTenant(data as Tenant | null);
+    // .order + .limit(1) au lieu de .maybeSingle() : tolère un éventuel doublon
+    // de tenant pour le même compte (créé par erreur lors de tests précédents)
+    // au lieu de planter silencieusement et renvoyer l'utilisateur vers Onboarding.
+    const { data, error } = await supabase
+      .from('tenants')
+      .select('*')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: true })
+      .limit(1);
+    if (error) console.error('[useTenant] Erreur chargement tenant:', error);
+    setTenant((data?.[0] as Tenant) || null);
     setLoading(false);
   }, [user]);
   useEffect(() => { if (!authLoading) loadTenant(); }, [authLoading, loadTenant]);

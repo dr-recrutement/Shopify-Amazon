@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth, useTenant, useIsSuperAdmin } from './lib/hooks';
 import Login from './pages/dashboard/Login';
+import LandingPage from './pages/LandingPage';
 import Onboarding from './pages/dashboard/Onboarding';
 import { supabase } from './lib/supabase';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
@@ -40,6 +41,7 @@ export default function App() {
   if (!user) {
     return (
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Login />} />
       </Routes>
     );

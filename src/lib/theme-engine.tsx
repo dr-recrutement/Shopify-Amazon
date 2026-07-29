@@ -265,8 +265,13 @@ export function renderSection(
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
-  const bg = colors.background;
-  const txt = colors.text;
+  // Personnalisation par section : si le marchand a défini une couleur de fond ou
+  // de texte spécifique pour CETTE section (via section.props.__bgOverride /
+  // __textOverride), elle prend le pas sur les couleurs globales du thème.
+  // Comme bg/txt sont déjà utilisées dans les 15 sections ci-dessous, ce seul
+  // changement propage la personnalisation partout sans dupliquer le code.
+  const bg = section.props.__bgOverride || colors.background;
+  const txt = section.props.__textOverride || colors.text;
   const subtleBg = hexToRgba(primary, 0.04);
   const r = RADIUS_MAP[radius];
   const cardShadow = SHADOW_MAP[shadow];

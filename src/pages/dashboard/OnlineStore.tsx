@@ -396,6 +396,29 @@ export default function OnlineStore() {
               ) : (
                 <p className="text-xs text-gray-400">Cette section utilise des données automatiques de votre boutique.</p>
               )}
+
+              <div className="pt-3 border-t border-gray-100 space-y-2">
+                <p className="text-xs font-semibold text-gray-500">Style de cette section</p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Fond personnalisé</label>
+                  <div className="flex gap-2">
+                    <input type="color" value={selectedSec.props.__bgOverride || theme.colors.background} onChange={e => updateSectionProp(selectedSec.id, '__bgOverride', e.target.value)} className="w-10 h-8 rounded border border-gray-200 cursor-pointer" />
+                    {selectedSec.props.__bgOverride && (
+                      <button onClick={() => updateSectionProp(selectedSec.id, '__bgOverride', undefined)} className="text-xs text-gray-400 hover:text-red-600">Réinitialiser</button>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Texte personnalisé</label>
+                  <div className="flex gap-2">
+                    <input type="color" value={selectedSec.props.__textOverride || theme.colors.text} onChange={e => updateSectionProp(selectedSec.id, '__textOverride', e.target.value)} className="w-10 h-8 rounded border border-gray-200 cursor-pointer" />
+                    {selectedSec.props.__textOverride && (
+                      <button onClick={() => updateSectionProp(selectedSec.id, '__textOverride', undefined)} className="text-xs text-gray-400 hover:text-red-600">Réinitialiser</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="pt-2 border-t border-gray-100">
                 <Button size="sm" variant="secondary" className="w-full" onClick={() => setPanel('sections')}>← Retour</Button>
               </div>

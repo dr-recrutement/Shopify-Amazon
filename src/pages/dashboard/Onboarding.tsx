@@ -94,6 +94,15 @@ export default function Onboarding() {
     e.preventDefault();
     if (!user) return;
 
+    // Garde-fou : si un tenant existe déjà pour ce compte (ex: la boutique a bien
+    // été créée mais l'utilisateur a été renvoyé ici par erreur), on ne le
+    // recrée pas en double — on recharge simplement la page.
+    const { data: existingTenant } = await supabase.from('tenants').select('id').eq('owner_id', user.id).limit(1);
+    if (existingTenant && existingTenant.length > 0) {
+      window.location.reload();
+      return;
+    }
+
     const trimmedName = name.trim();
     if (!trimmedName) {
       setError('Merci de renseigner le nom de la boutique.');

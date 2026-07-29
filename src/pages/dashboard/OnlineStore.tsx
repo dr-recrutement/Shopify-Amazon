@@ -388,6 +388,22 @@ export default function OnlineStore() {
                       <input type="number" min={2} max={4} value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, Math.min(4, Math.max(2, parseInt(e.target.value) || 2)))} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
                     ) : f.type === 'date' ? (
                       <input type="date" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
+                    ) : f.type === 'boolean' ? (
+                      <button
+                        type="button"
+                        onClick={() => updateSectionProp(selectedSec.id, f.key, !(selectedSec.props[f.key] !== false))}
+                        className={`w-full py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedSec.props[f.key] !== false ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}
+                      >
+                        {selectedSec.props[f.key] !== false ? 'Activé' : 'Désactivé'}
+                      </button>
+                    ) : f.type === 'list' ? (
+                      <input
+                        type="text"
+                        value={Array.isArray(selectedSec.props[f.key]) ? selectedSec.props[f.key].join(', ') : (selectedSec.props[f.key] || '')}
+                        onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                        placeholder="Accueil, Boutique, Contact"
+                        className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+                      />
                     ) : (
                       <input type="text" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
                     )}

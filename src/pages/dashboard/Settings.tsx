@@ -180,13 +180,24 @@ export default function Settings() {
     }
   };
 
+  const [dnsTargets, setDnsTargets] = useState<Record<string, { type: string; name: string; target: string }>>({});
+  const [dnsExpanded, setDnsExpanded] = useState<string | null>(null);
+
   const verifyDomain = async (domainName: string) => {
     const { data: session } = await supabase.auth.getSession();
     const token = session.session?.access_token;
-    await fetch(`/api/domains/status?domain=${encodeURIComponent(domainName)}`, {
+    const res = await fetch(`/api/domains/status?domain=${encodeURIComponent(domainName)}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    const data: any = await res.json();
+    if (data?.dns) setDnsTargets(prev => ({ ...prev, [domainName]: data.dns }));
     loadDomains();
+  };
+
+  const toggleDnsInstructions = async (domainName: string) => {
+    if (dnsExpanded === domainName) { setDnsExpanded(null); return; }
+    if (!dnsTargets[domainName]) await verifyDomain(domainName);
+    setDnsExpanded(domainName);
   };
 
   const removeDomain = async (id: string) => {
@@ -348,19 +359,37 @@ export default function Settings() {
             ) : (
               <div className="space-y-2">
                 {domains.map(d => (
-                  <div key={d.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{d.domain_name}</p>
-                      <div className="flex gap-2 mt-1">
-                        <Badge color={d.dns_status === 'verified' ? 'green' : d.dns_status === 'failed' ? 'red' : 'orange'}>DNS: {d.dns_status}</Badge>
-                        <Badge color={d.ssl_status === 'active' ? 'green' : 'gray'}>SSL: {d.ssl_status}</Badge>
+                  <div key={d.id} className="p-3 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{d.domain_name}</p>
+                        <div className="flex gap-2 mt-1">
+                          <Badge color={d.dns_status === 'verified' ? 'green' : d.dns_status === 'failed' ? 'red' : 'orange'}>DNS: {d.dns_status}</Badge>
+                          <Badge color={d.ssl_status === 'active' ? 'green' : 'gray'}>SSL: {d.ssl_status}</Badge>
+                        </div>
+                        {d.last_error && <p className="text-xs text-red-600 mt-1">{d.last_error}</p>}
                       </div>
-                      {d.last_error && <p className="text-xs text-red-600 mt-1">{d.last_error}</p>}
+                      <div className="flex gap-1">
+                        {d.dns_status !== 'verified' && (
+                          <>
+                            <Button size="sm" variant="secondary" onClick={() => toggleDnsInstructions(d.domain_name)}>
+                              {dnsExpanded === d.domain_name ? 'Masquer DNS' : 'Voir DNS'}
+                            </Button>
+                            <Button size="sm" variant="secondary" onClick={() => verifyDomain(d.domain_name)}>Vérifier</Button>
+                          </>
+                        )}
+                        <button onClick={() => removeDomain(d.id)} className="p-1.5 text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      {d.dns_status !== 'verified' && <Button size="sm" variant="secondary" onClick={() => verifyDomain(d.domain_name)}>Vérifier</Button>}
-                      <button onClick={() => removeDomain(d.id)} className="p-1.5 text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
-                    </div>
+                    {dnsExpanded === d.domain_name && dnsTargets[d.domain_name] && (
+                      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800 space-y-1">
+                        <p className="font-semibold">Configurez chez votre registrar :</p>
+                        <p>Type: <strong>{dnsTargets[d.domain_name].type}</strong></p>
+                        <p>Nom: <strong>{d.domain_name}</strong></p>
+                        <p>Valeur/Cible: <strong>{dnsTargets[d.domain_name].target}</strong></p>
+                        <p className="pt-1">La vérification peut prendre de quelques minutes à 24h selon votre registrar.</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

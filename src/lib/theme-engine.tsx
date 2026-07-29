@@ -58,7 +58,12 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
   { type: 'chat-float', label: 'Chat flottant', icon: '💬' },
 ];
 
-export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' }[]> = {
+export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' | 'boolean' | 'list' }[]> = {
+  header: [
+    { key: 'logo', label: 'Afficher le logo', type: 'boolean' },
+    { key: 'nav', label: 'Liens du menu (séparés par des virgules)', type: 'list' },
+    { key: 'megaMenu', label: 'Méga-menu catégories', type: 'boolean' },
+  ],
   hero: [
     { key: 'title', label: 'Titre', type: 'text' },
     { key: 'subtitle', label: 'Sous-titre', type: 'textarea' },

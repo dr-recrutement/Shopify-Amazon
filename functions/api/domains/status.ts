@@ -61,5 +61,9 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     });
   }
 
-  return json({ status: newStatus, cloudflare: cfData.result });
+  return json({
+    status: newStatus,
+    cloudflare: cfData.result,
+    dns: { type: 'CNAME', name: domainName, target: `${env.CF_PAGES_PROJECT_NAME}.pages.dev` },
+  });
 };

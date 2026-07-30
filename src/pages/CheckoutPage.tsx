@@ -12,9 +12,39 @@ export default function CheckoutPage({ tenantId }: { tenantId: string }) {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountCents: number } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [checkingPromo, setCheckingPromo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const currency = items[0]?.currency || 'XOF';
+
+  const applyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setCheckingPromo(true);
+    setPromoError(null);
+    try {
+      const res = await fetch('/api/discounts/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantId, code: promoCode.trim(), subtotalCents: totalCents }),
+      });
+      const data: any = await res.json();
+      if (!res.ok) {
+        setPromoError(data.error || 'Code invalide.');
+        setAppliedPromo(null);
+        return;
+      }
+      setAppliedPromo({ code: data.code, discountCents: data.discountCents });
+    } catch {
+      setPromoError('Erreur réseau, veuillez réessayer.');
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
+  const finalTotalCents = Math.max(0, totalCents - (appliedPromo?.discountCents || 0));
 
   const placeOrder = async () => {
     setError(null);
@@ -33,6 +63,7 @@ export default function CheckoutPage({ tenantId }: { tenantId: string }) {
           tenantId,
           items: items.map(i => ({ productId: i.productId, quantity: i.quantity })),
           customer: { name, phone, email: email || undefined, address: address || undefined },
+          promoCode: appliedPromo?.code || undefined,
         }),
       });
       const data: any = await res.json();
@@ -89,9 +120,44 @@ export default function CheckoutPage({ tenantId }: { tenantId: string }) {
                   </div>
                 ))}
               </div>
-              <div className="pt-2 border-t border-gray-100 flex justify-between mb-4">
-                <span className="font-semibold">Total</span>
-                <span className="font-semibold text-lg">{formatPrice(totalCents, currency)}</span>
+
+              <div className="pt-2 border-t border-gray-100 mb-3">
+                {!appliedPromo ? (
+                  <div className="flex gap-2">
+                    <input
+                      value={promoCode}
+                      onChange={e => setPromoCode(e.target.value)}
+                      placeholder="Code promo"
+                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded-lg text-sm"
+                    />
+                    <Button variant="secondary" onClick={applyPromo} disabled={checkingPromo || !promoCode.trim()}>
+                      {checkingPromo ? '...' : 'Appliquer'}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between text-sm bg-green-50 text-green-700 px-3 py-2 rounded-lg">
+                    <span>Code "{appliedPromo.code}" appliqué</span>
+                    <button onClick={() => { setAppliedPromo(null); setPromoCode(''); }} className="text-xs underline">Retirer</button>
+                  </div>
+                )}
+                {promoError && <p className="text-xs text-red-600 mt-1">{promoError}</p>}
+              </div>
+
+              <div className="pt-2 border-t border-gray-100 space-y-1 mb-4">
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span>Sous-total</span>
+                  <span>{formatPrice(totalCents, currency)}</span>
+                </div>
+                {appliedPromo && (
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span>Réduction</span>
+                    <span>−{formatPrice(appliedPromo.discountCents, currency)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between pt-1">
+                  <span className="font-semibold">Total</span>
+                  <span className="font-semibold text-lg">{formatPrice(finalTotalCents, currency)}</span>
+                </div>
               </div>
               {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
               <Button onClick={placeOrder} disabled={submitting} className="w-full">

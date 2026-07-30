@@ -23,7 +23,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   let body: any;
   try { body = await request.json(); } catch { return json({ error: 'Corps de requête invalide.' }, 400); }
 
-  const { tenantId, items, customer } = body || {};
+  const { tenantId, items, customer, promoCode } = body || {};
   if (!tenantId || !Array.isArray(items) || items.length === 0) {
     return json({ error: 'Panier invalide.' }, 400);
   }
@@ -64,7 +64,36 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const currency = realProducts[0].currency;
-  const totalCents = orderItems.reduce((s: number, i: any) => s + i.price_cents * i.quantity, 0);
+  const subtotalCents = orderItems.reduce((s: number, i: any) => s + i.price_cents * i.quantity, 0);
+
+  // 1.5) Re-valide le code promo CÔTÉ SERVEUR — ne jamais faire confiance à une
+  // réduction calculée dans le navigateur (facilement manipulable).
+  let discountCents = 0;
+  let discountRow: any = null;
+  if (promoCode) {
+    const discRes = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/discount_codes?select=*&tenant_id=eq.${tenantId}&code=eq.${encodeURIComponent(String(promoCode).trim().toUpperCase())}&is_active=eq.true`,
+      { headers: sbHeaders }
+    );
+    const discRows = await discRes.json();
+    const discount = discRows?.[0];
+    const now = new Date();
+    const valid =
+      discount &&
+      (!discount.starts_at || new Date(discount.starts_at) <= now) &&
+      (!discount.ends_at || new Date(discount.ends_at) >= now) &&
+      (discount.max_uses == null || discount.used_count < discount.max_uses) &&
+      (!discount.min_amount_cents || subtotalCents >= discount.min_amount_cents);
+    if (valid) {
+      discountRow = discount;
+      discountCents =
+        discount.discount_type === 'percentage'
+          ? Math.round((subtotalCents * discount.value) / 100)
+          : Math.min(Math.round(discount.value), subtotalCents);
+    }
+  }
+
+  const totalCents = Math.max(0, subtotalCents - discountCents);
 
   // 2) Cherche la passerelle Flutterwave active DE CE MARCHAND précis.
   const gwRes = await fetch(
@@ -107,6 +136,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!itemsRes.ok) {
     const errText = await itemsRes.text();
     return json({ error: "Erreur lors de l'enregistrement des articles.", details: errText }, 500);
+  }
+
+  // 4.5) Incrémente le compteur d'utilisation du code promo (uniquement s'il a servi).
+  if (discountRow) {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/discount_codes?id=eq.${discountRow.id}`, {
+      method: 'PATCH',
+      headers: sbHeaders,
+      body: JSON.stringify({ used_count: (discountRow.used_count || 0) + 1 }),
+    });
   }
 
   if (!paymentConfigured) {

@@ -98,6 +98,44 @@ interface EditorProduct {
 // la liste utilisée dans Storefront.tsx pour que l'éditeur = ce que voit le client.
 const PRODUCT_AWARE_SECTIONS = new Set(['product-grid', 'filters-list', 'product-detail']);
 
+const RADIUS_PX: Record<string, number> = { sharp: 1, soft: 5, round: 10 };
+
+function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
+  const variant = variantKey ? getThemeVariant(variantKey) : null;
+  if (!variant) {
+    return (
+      <div className="w-full h-24 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] text-gray-400">
+        Aperçu indisponible
+      </div>
+    );
+  }
+  const { primary, secondary, background, text } = variant.colors;
+  const rx = RADIUS_PX[variant.radius] ?? 5;
+  return (
+    <svg viewBox="0 0 200 100" className="w-full h-24 rounded-lg border border-gray-100" style={{ background }}>
+      {/* header */}
+      <rect x="0" y="0" width="200" height="14" fill={background} stroke={text} strokeOpacity="0.08" />
+      <circle cx="12" cy="7" r="3" fill={primary} />
+      <rect x="150" y="4" width="8" height="6" rx="2" fill={text} opacity="0.15" />
+      <rect x="164" y="4" width="8" height="6" rx="2" fill={text} opacity="0.15" />
+      {/* hero */}
+      <rect x="0" y="14" width="200" height="34" fill={primary} opacity="0.12" />
+      <rect x="70" y="24" width="60" height="6" rx={rx / 2} fill={text} opacity="0.6" />
+      <rect x="80" y="34" width="40" height="8" rx={rx} fill={primary} />
+      {/* product cards */}
+      {[0, 1, 2, 3].map(i => (
+        <g key={i}>
+          <rect x={6 + i * 48} y="54" width="42" height="30" rx={rx} fill={background} stroke={text} strokeOpacity="0.1" />
+          <rect x={6 + i * 48} y="54" width="42" height="18" rx={rx} fill={secondary} opacity="0.25" />
+          <rect x={10 + i * 48} y="76" width="30" height="4" rx="1" fill={text} opacity="0.4" />
+        </g>
+      ))}
+      {/* footer */}
+      <rect x="0" y="90" width="200" height="10" fill={text} opacity="0.85" />
+    </svg>
+  );
+}
+
 export default function OnlineStore() {
   const { tenant } = useTenant();
   const { user } = useAuth();
@@ -505,16 +543,14 @@ export default function OnlineStore() {
                       {!st.variant_key && (
                         <p className="text-[10px] text-amber-600 mb-2">⚠️ Aucune variante de design liée — l'application retombera sur le layout par défaut.</p>
                       )}
-                      <div className="flex gap-1 mb-2">
-                        {['#F2632C', '#16a34a', '#ffffff', '#111114'].map((c, i) => (
-                          <div key={i} className="w-4 h-4 rounded-full border border-gray-200" style={{ background: c }} />
-                        ))}
+                      <ThemePreviewSVG variantKey={st.variant_key} />
+                      <div className="mt-2">
+                        {owned ? (
+                          <Button size="sm" variant="secondary" onClick={() => applyTheme(st)} className="w-full">Appliquer</Button>
+                        ) : (
+                          <Button size="sm" onClick={() => purchaseTheme(st)} className="w-full">Acheter</Button>
+                        )}
                       </div>
-                      {owned ? (
-                        <Button size="sm" variant="secondary" onClick={() => applyTheme(st)} className="w-full">Appliquer</Button>
-                      ) : (
-                        <Button size="sm" onClick={() => purchaseTheme(st)} className="w-full">Acheter</Button>
-                      )}
                     </div>
                   );
                 })}

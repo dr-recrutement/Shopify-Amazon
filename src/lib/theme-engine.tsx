@@ -926,3 +926,33 @@ export function getThemeVariant(key: string): ThemeConfig | null {
   const found = THEME_VARIANTS.find(t => t.key === key);
   return found ? found.build() : null;
 }
+
+/**
+ * Mini-aperçu visuel généré en direct à partir des vraies couleurs/styles du
+ * thème — pas une capture d'écran statique à maintenir, donc toujours exact.
+ */
+export function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
+  const theme = variantKey ? getThemeVariant(variantKey) : null;
+  const c = theme?.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' };
+  const radiusPx = theme ? (theme.radius === 'sharp' ? 2 : theme.radius === 'round' ? 14 : 7) : 6;
+
+  return (
+    <svg viewBox="0 0 200 110" className="w-full rounded-lg border border-gray-100" style={{ background: c.background }}>
+      {/* Header */}
+      <rect x="0" y="0" width="200" height="16" fill={c.primary} opacity="0.1" />
+      <circle cx="12" cy="8" r="3.5" fill={c.primary} />
+      <rect x="22" y="5.5" width="26" height="5" rx="1.5" fill={c.text} opacity="0.4" />
+      <rect x="152" y="5.5" width="36" height="5" rx="1.5" fill={c.text} opacity="0.2" />
+
+      {/* Hero */}
+      <rect x="8" y="22" width="184" height="30" rx={radiusPx} fill={c.primary} opacity="0.08" />
+      <rect x="16" y="30" width="80" height="6" rx="2" fill={c.text} opacity="0.7" />
+      <rect x="16" y="40" width="46" height="5" rx="2" fill={c.secondary} />
+
+      {/* Grille produits */}
+      {[0, 1, 2, 3].map(i => (
+        <rect key={i} x={8 + i * 46} y="58" width="40" height="40" rx={radiusPx} fill={c.primary} opacity={i % 2 === 0 ? 0.16 : 0.26} />
+      ))}
+    </svg>
+  );
+}

@@ -3,7 +3,7 @@ import { useTenant, useAuth, useIsSuperAdmin } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant, FONT_OPTIONS, googleFontsHref } from '../../lib/theme-engine';
 import { PLATFORM_ROOT_DOMAIN } from '../../lib/subdomain';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
@@ -84,6 +84,7 @@ interface EditorCategory {
   id: string;
   name: string;
   count: number;
+  imageUrl?: string | null;
 }
 
 interface EditorProduct {
@@ -165,7 +166,7 @@ export default function OnlineStore() {
         siteType: config.site_type,
         sections: config.sections || [],
         colors: config.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-        fonts: { heading: 'Montserrat', body: 'Montserrat' },
+        fonts: config.fonts || { heading: 'Montserrat', body: 'Montserrat' },
         spacing: config.spacing || 'comfortable',
         radius: config.radius || 'soft',
         shadow: config.shadow || 'none',
@@ -195,7 +196,7 @@ export default function OnlineStore() {
     setProducts(list);
 
     // Charge les vraies catégories du marchand (avec le nombre de produits actifs par catégorie).
-    const { data: cats, error: catErr } = await supabase.from('product_categories').select('id,name').eq('tenant_id', tenant.id);
+    const { data: cats, error: catErr } = await supabase.from('product_categories').select('id,name,image_url').eq('tenant_id', tenant.id);
     if (catErr) console.error('[OnlineStore] Erreur chargement catégories:', catErr);
     const { data: assignments, error: assignErr } = await supabase
       .from('product_category_assignments')
@@ -205,19 +206,33 @@ export default function OnlineStore() {
     if (assignErr) console.error('[OnlineStore] Erreur chargement assignations catégories:', assignErr);
     const countByCategory: Record<string, number> = {};
     (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
-    setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0 })));
+    setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0, imageUrl: c.image_url })));
 
     setLoading(false);
   }, [tenant]);
 
   useEffect(() => { if (tenant) loadTheme(); }, [tenant, loadTheme]);
 
+  // Charge dynamiquement les polices Google Fonts choisies, pour que l'aperçu
+  // reflète vraiment le rendu final (pas juste la police système par défaut).
+  useEffect(() => {
+    const linkId = 'liafrik-preview-fonts';
+    let link = document.getElementById(linkId) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = linkId;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    link.href = googleFontsHref(theme.fonts);
+  }, [theme.fonts.heading, theme.fonts.body]);
+
   const persistTheme = async (newTheme: ThemeConfig, published: boolean): Promise<boolean> => {
     if (!tenant) return false;
     setSaving(true);
     const payload = {
       tenant_id: tenant.id, site_type: newTheme.siteType, sections: newTheme.sections,
-      colors: newTheme.colors, spacing: newTheme.spacing, radius: newTheme.radius, shadow: newTheme.shadow, is_published: published,
+      colors: newTheme.colors, spacing: newTheme.spacing, radius: newTheme.radius, shadow: newTheme.shadow, fonts: newTheme.fonts, is_published: published,
     };
     const { data: existing } = await supabase.from('theme_configs').select('id').eq('tenant_id', tenant.id).maybeSingle();
     const { error: saveErr } = existing
@@ -488,7 +503,31 @@ export default function OnlineStore() {
 
           {panel === 'design' && (
             <Card className="p-3 space-y-3">
-              <h3 className="text-sm font-semibold text-gray-900">Couleurs</h3>
+              <h3 className="text-sm font-semibold text-gray-900">Polices</h3>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Titres</label>
+                <select
+                  value={theme.fonts.heading}
+                  onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+                  style={{ fontFamily: theme.fonts.heading }}
+                >
+                  {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Texte courant</label>
+                <select
+                  value={theme.fonts.body}
+                  onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+                  style={{ fontFamily: theme.fonts.body }}
+                >
+                  {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                </select>
+              </div>
+
+              <h3 className="text-sm font-semibold text-gray-900 pt-2 border-t border-gray-100">Couleurs</h3>
               {([['primary', 'Primaire'], ['secondary', 'Secondaire'], ['accent', 'Accent'], ['background', 'Fond'], ['text', 'Texte']] as const).map(([key, label]) => (
                 <div key={key}>
                   <label className="block text-xs font-medium text-gray-700 mb-1">{label}</label>
@@ -601,7 +640,7 @@ export default function OnlineStore() {
               </div>
             </div>
 
-            <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background }}>
+            <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background, fontFamily: theme.fonts.body }}>
               {theme.sections.filter(s => s.visible).map(s => (
                 <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
                   {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined)}

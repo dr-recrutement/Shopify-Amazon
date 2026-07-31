@@ -933,6 +933,7 @@ function CategoryModal({ tenantId, editing, parents, onClose, onSaved }: {
 }) {
   const [name, setName] = useState(editing?.name || '');
   const [description, setDescription] = useState(editing?.description || '');
+  const [imageUrl, setImageUrl] = useState((editing as any)?.image_url || '');
   const [parentId, setParentId] = useState<string>(editing?.parent_category_id || '');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -948,6 +949,7 @@ function CategoryModal({ tenantId, editing, parents, onClose, onSaved }: {
         tenant_id: tenantId,
         name: name.trim(),
         description: description.trim() || null,
+        image_url: imageUrl.trim() || null,
         slug: slugify(name),
         parent_category_id: parentId || null,
       };
@@ -967,6 +969,7 @@ function CategoryModal({ tenantId, editing, parents, onClose, onSaved }: {
             tenant_id: tenantId,
             name: name.trim(),
             description: description.trim() || null,
+            image_url: imageUrl.trim() || null,
             slug: slugify(name),
           };
           if (editing) {
@@ -1015,6 +1018,7 @@ function CategoryModal({ tenantId, editing, parents, onClose, onSaved }: {
         </div>
 
         <Input label="Nom *" value={name} onChange={setName} placeholder="Ex: Pagnes" />
+        <Input label="Image (URL)" value={imageUrl} onChange={setImageUrl} placeholder="https://…" />
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Description courte…"

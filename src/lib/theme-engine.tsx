@@ -19,6 +19,20 @@ export interface ThemeConfig {
 }
 
 export const RADIUS_MAP: Record<ThemeConfig['radius'], string> = { sharp: '4px', soft: '16px', round: '28px' };
+
+// Polices disponibles pour la personnalisation (titre + corps de texte),
+// chargées dynamiquement depuis Google Fonts.
+export const FONT_OPTIONS = [
+  'Montserrat', 'Poppins', 'Inter', 'Playfair Display', 'Roboto',
+  'Lato', 'Nunito', 'Raleway', 'Open Sans', 'Space Grotesk',
+] as const;
+
+export function googleFontsHref(fonts: { heading: string; body: string }): string {
+  const families = Array.from(new Set([fonts.heading, fonts.body]))
+    .map(f => `family=${encodeURIComponent(f)}:wght@400;500;600;700`)
+    .join('&');
+  return `https://fonts.googleapis.com/css2?${families}&display=swap`;
+}
 export const SHADOW_MAP: Record<ThemeConfig['shadow'], string> = {
   none: 'none',
   subtle: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03)',
@@ -248,6 +262,7 @@ export interface StorefrontCategory {
   id: string;
   name: string;
   count: number;
+  imageUrl?: string | null;
 }
 
 export interface AddToCartPayload {
@@ -468,7 +483,9 @@ export function renderSection(
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
               {displayCategories.map((c: any, i: number) => (
                 <div key={c.id || i} className="group flex flex-col items-center justify-center p-4 transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
-                  <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>{c.icon || '🏷️'}</div>
+                  <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 overflow-hidden transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>
+                    {c.imageUrl ? <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /> : (c.icon || '🏷️')}
+                  </div>
                   <p className="text-sm font-semibold" style={{ color: txt }}>{c.name}</p>
                   <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{c.count} article{c.count > 1 ? 's' : ''}</p>
                 </div>

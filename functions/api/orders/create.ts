@@ -147,6 +147,53 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     });
   }
 
+  // 4.6) Envoie l'email de confirmation AVEC LA CLÉ RESEND DU MARCHAND (pas une
+  // clé plateforme) — échec silencieux volontaire : un email raté ne doit jamais
+  // empêcher la commande d'aboutir.
+  if (customer.email) {
+    try {
+      const emailRes = await fetch(
+        `${env.SUPABASE_URL}/rest/v1/vendor_email_settings?select=*&tenant_id=eq.${tenantId}&is_active=eq.true`,
+        { headers: sbHeaders }
+      );
+      const emailRows = await emailRes.json();
+      const emailCfg = emailRows?.[0];
+      if (emailCfg?.api_key_encrypted) {
+        const resendKey = atob(emailCfg.api_key_encrypted);
+        const itemsHtml = orderItems
+          .map((i: any) => `<tr><td style="padding:4px 0">${i.product_name} × ${i.quantity}</td><td style="text-align:right">${i.price_cents * i.quantity} ${currency}</td></tr>`)
+          .join('');
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: `${emailCfg.from_name} <${emailCfg.from_email}>`,
+            to: customer.email,
+            subject: `Confirmation de votre commande #${order.id.slice(0, 8)}`,
+            html: `
+              <div style="font-family:sans-serif;max-width:480px;margin:auto">
+                <h2>Merci pour votre commande, ${customer.name} !</h2>
+                <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
+                <p style="font-weight:bold;text-align:right;margin-top:12px">Total : ${totalCents} ${currency}</p>
+                <p style="color:#666;font-size:13px">Numéro de commande : ${order.id}</p>
+              </div>
+            `,
+          }),
+        });
+      }
+    } catch (e) {
+      console.error('[orders/create] Erreur envoi email confirmation:', e);
+    }
+  }
+
+  // Marque la session panier comme "convertie" si elle existait (fin du suivi abandon).
+  if (customer.email) {
+    fetch(
+      `${env.SUPABASE_URL}/rest/v1/cart_sessions?tenant_id=eq.${tenantId}&customer_email=eq.${encodeURIComponent(customer.email)}&status=eq.active`,
+      { method: 'PATCH', headers: sbHeaders, body: JSON.stringify({ status: 'converted' }) }
+    ).catch(() => { /* non-bloquant */ });
+  }
+
   if (!paymentConfigured) {
     return json({
       success: true,

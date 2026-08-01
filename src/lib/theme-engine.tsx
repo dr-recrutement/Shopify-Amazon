@@ -273,6 +273,13 @@ export interface AddToCartPayload {
   thumbnail: string | null;
 }
 
+export interface StorefrontReview {
+  id: string;
+  customerName: string;
+  rating: number;
+  comment: string | null;
+}
+
 export function renderSection(
   section: ThemeSection,
   colors: ThemeConfig['colors'],
@@ -282,6 +289,7 @@ export function renderSection(
   realCategories?: StorefrontCategory[],
   onAddToCart?: (item: AddToCartPayload) => void,
   cartItemCount = 0,
+  realReviews?: StorefrontReview[],
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
@@ -297,6 +305,7 @@ export function renderSection(
   const cardShadow = SHADOW_MAP[shadow];
   const isLiveContext = realProducts !== undefined;
   const isLiveCategoryContext = realCategories !== undefined;
+  const isLiveReviewContext = realReviews !== undefined;
 
   switch (section.type) {
     case 'header':
@@ -636,27 +645,36 @@ export function renderSection(
         </div>
       );
 
-    case 'testimonials':
+    case 'testimonials': {
+      const displayReviews = isLiveReviewContext
+        ? (realReviews as StorefrontReview[]).map(r => ({ name: r.customerName, role: 'Client vérifié', rating: r.rating, text: r.comment || '' }))
+        : sampleTestimonials;
+      const showEmptyReviews = isLiveReviewContext && displayReviews.length === 0;
       return (
         <div className="px-6 py-10" style={{ background: bg }}>
           <h3 className="text-xl font-bold text-center mb-6" style={{ color: txt, letterSpacing: '-0.02em' }}>Ils nous font confiance</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            {sampleTestimonials.map((t, i) => (
-              <div key={i} className="p-5 transition-all hover:shadow-lg" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>{t.name[0]}</div>
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: txt }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{t.role}</p>
+          {showEmptyReviews ? (
+            <p className="text-center text-sm" style={{ color: hexToRgba(txt, 0.4) }}>Aucun avis client pour le moment.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {displayReviews.map((t, i) => (
+                <div key={i} className="p-5 transition-all hover:shadow-lg" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>{t.name[0]}</div>
+                    <div>
+                      <p className="text-sm font-semibold" style={{ color: txt }}>{t.name}</p>
+                      <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{t.role}</p>
+                    </div>
                   </div>
+                  <div className="flex gap-0.5 mb-2 text-sm" style={{ color: '#f59e0b' }}>{'★'.repeat(t.rating)}<span style={{ color: hexToRgba(txt, 0.15) }}>{'★'.repeat(5 - t.rating)}</span></div>
+                  {t.text && <p className="text-sm" style={{ color: hexToRgba(txt, 0.7) }}>"{t.text}"</p>}
                 </div>
-                <div className="flex gap-0.5 mb-2 text-sm" style={{ color: '#f59e0b' }}>{'★'.repeat(t.rating)}<span style={{ color: hexToRgba(txt, 0.15) }}>{'★'.repeat(5 - t.rating)}</span></div>
-                <p className="text-sm" style={{ color: hexToRgba(txt, 0.7) }}>"{t.text}"</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       );
+    }
 
     case 'about':
       return (

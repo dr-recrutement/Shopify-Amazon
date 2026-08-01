@@ -22,21 +22,21 @@ export const translations: Dict = {
   'hero.badge': { fr: '0% de commission — pour toujours', en: '0% commission — forever' },
   'hero.title1': { fr: 'Votre boutique en ligne,', en: 'Your online store,' },
   'hero.title2': { fr: 'à votre image.', en: 'in your image.' },
-  'hero.title3': { fr: 'Partout en Afrique.', en: 'Everywhere in Africa.' },
+  'hero.title3': { fr: 'Où que vous soyez.', en: 'Wherever you are.' },
   'hero.subtitle': {
-    fr: "La plateforme SaaS e-commerce panafricaine, conçue au Cameroun par LIYAH GROUP — Mobile Money natif, IA intégrée, 0% commission.",
-    en: "The pan-African e-commerce SaaS platform, built in Cameroon by LIYAH GROUP — native Mobile Money, built-in AI, 0% commission."
+    fr: "OS, la plateforme e-commerce développée par LiAfrik — Dubaï & Afrique. Paiements locaux et internationaux, IA intégrée, 0% commission.",
+    en: "OS, the e-commerce platform built by LiAfrik — Dubai & Africa. Local and international payments, built-in AI, 0% commission."
   },
   'hero.cta.start': { fr: 'Créer ma boutique', en: 'Create my store' },
   'hero.cta.pricing': { fr: 'Voir les tarifs', en: 'See pricing' },
   'hero.trial': { fr: '7 jours d\'essai gratuit inclus — sans carte bancaire', en: '7-day free trial included — no credit card' },
   'footer.tagline': {
-    fr: 'La plateforme SaaS e-commerce panafricaine. Votre boutique en ligne, à votre image. Partout en Afrique.',
-    en: 'The pan-African e-commerce SaaS platform. Your online store, in your image. Everywhere in Africa.'
+    fr: 'OS, la plateforme e-commerce par LiAfrik. Votre boutique en ligne, à votre image, où que vous soyez.',
+    en: 'OS, the e-commerce platform by LiAfrik. Your online store, in your image, wherever you are.'
   },
   'footer.origin': {
-    fr: 'Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP — pour toute l\'Afrique',
-    en: 'Designed and developed in Cameroon 🇨🇲 by LIYAH GROUP — for all of Africa'
+    fr: 'Développé par LiAfrik — Dubaï 🇦🇪 & Afrique 🌍',
+    en: 'Built by LiAfrik — Dubai 🇦🇪 & Africa 🌍'
   },
 };
 

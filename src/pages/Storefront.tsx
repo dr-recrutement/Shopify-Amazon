@@ -40,6 +40,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categories, setCategories] = useState<StoreCategory[]>([]);
+  const [reviews, setReviews] = useState<{ id: string; customerName: string; rating: number; comment: string | null }[]>([]);
 
   useEffect(() => {
     if (!slug && !tenantId) { setNotFound(true); setLoading(false); return; }
@@ -97,6 +98,15 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
       (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
       setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0, imageUrl: c.image_url })));
 
+      const { data: reviewRows } = await supabase
+        .from('product_reviews')
+        .select('id,customer_name,rating,comment')
+        .eq('tenant_id', t.id)
+        .eq('is_approved', true)
+        .order('created_at', { ascending: false })
+        .limit(9);
+      setReviews((reviewRows || []).map((r: any) => ({ id: r.id, customerName: r.customer_name, rating: r.rating, comment: r.comment })));
+
       setLoading(false);
     })();
   }, [slug, tenantId]);
@@ -144,7 +154,8 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
             theme.shadow || 'subtle',
             s.type === 'category-grid' ? categories : undefined,
             addItem,
-            totalItems
+            totalItems,
+            s.type === 'testimonials' ? reviews : undefined
           )}
         </div>
       ))}

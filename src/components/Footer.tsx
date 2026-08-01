@@ -46,9 +46,9 @@ export function Footer() {
               {t('footer.tagline')}
             </p>
             <div className="mt-6 space-y-2 text-sm">
-              <div className="flex items-center gap-2 text-gray-400"><Mail size={14} /> info@liafrik.com</div>
-              <div className="flex items-center gap-2 text-gray-400"><Phone size={14} /> +237 6 00 00 00 00</div>
-              <div className="flex items-center gap-2 text-gray-400"><MapPin size={14} /> Yaoundé, Cameroun 🇨🇲</div>
+              <div className="flex items-center gap-2 text-gray-400"><Mail size={14} /> support@liafrik.com</div>
+              <div className="flex items-center gap-2 text-gray-400"><Mail size={14} /> cs@liafrik.com</div>
+              <div className="flex items-center gap-2 text-gray-400"><MapPin size={14} /> Dubai, UAE 🇦🇪 &amp; Afrique 🌍</div>
             </div>
           </div>
           {cols.map(col => (

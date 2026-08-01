@@ -62,7 +62,7 @@ const features = [
   { icon: ShoppingBag, title: 'Boutique en ligne complète', desc: 'Catalogue, variantes, stock, collections — tout ce dont vous avez besoin pour vendre en ligne.' },
   { icon: Bot, title: 'IA agentique intégrée', desc: 'Descriptions produits, logos, bannières, publicités, vidéos TikTok, chatbot 24/7 — générés par IA.' },
   { icon: CreditCard, title: 'Mobile Money natif', desc: 'Flutterwave, Paystack, Orange Money, MTN MoMo, CinetPay, Stripe, PayPal — connectez vos propres comptes.' },
-  { icon: Globe, title: '54 pays africains', desc: 'Multi-devises, multi-langues (FR/EN), marchés régionaux ou panafricains, livraison informelle.' },
+  { icon: Globe, title: 'International, multi-devises', desc: 'Devises africaines, USD, EUR, GBP et plus — vendez localement ou à l\'international, dans la langue de vos clients.' },
   { icon: Palette, title: 'Moteur de thème universel', desc: 'Éditeur visuel drag & drop, bibliothèque de blocs modulaires, landing page, e-commerce, vitrine, marketplace.' },
   { icon: BarChart3, title: 'Analytics & comptabilité', desc: 'Ventes, prévisions de stock, rapports financiers, assistant comptable IA, export PDF/Excel.' },
   { icon: MessageCircle, title: 'Boîte de réception unifiée', desc: 'WhatsApp Business, Messenger, Telegram, chat interne — tous vos canaux dans une seule boîte.' },
@@ -77,7 +77,7 @@ const testimonials = [
 
 const stats = [
   { value: 12000, suffix: '+', label: 'Boutiques actives' },
-  { value: 54, suffix: '', label: 'Pays couverts' },
+  { value: 29, suffix: '+', label: 'Devises supportées' },
   { value: 8, suffix: 'M+', label: 'Vendeurs accompagnés' },
   { value: 0, suffix: '%', label: 'Commission sur ventes' },
 ];
@@ -93,12 +93,12 @@ const paymentLogos = [
 ];
 
 const faqs = [
-  { q: 'LiAfrikOS prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Orange Money, etc.).' },
+  { q: 'OS prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Stripe, PayPal, Mobile Money, etc.).' },
   { q: 'Combien de temps pour créer ma boutique ?', a: 'Moins de 10 minutes. Notre onboarding guidé vous accompagne : compte, nom, localisation, thème, premier produit, moyen de paiement, plan — puis votre boutique est en ligne.' },
-  { q: 'Puis-je vendre dans plusieurs pays africains ?', a: 'Oui. Le module Markets couvre les 54 pays africains avec leurs devises locales. Activez les marchés que vous souhaitez desservir.' },
-  { q: "L'IA est-elle vraiment incluse ?", a: 'Oui. Génération de descriptions, logos, bannières, publicités Facebook/Instagram, vidéos TikTok, chatbot client, assistant comptable — selon votre plan (20 à illimité par mois).' },
+  { q: 'Puis-je vendre à l\'international ?', a: 'Oui. OS gère les devises internationales (USD, EUR, GBP...) autant que les devises africaines, avec des passerelles de paiement adaptées à chaque marché.' },
+  { q: "L'IA est-elle vraiment incluse ?", a: 'Oui. Génération de descriptions, logos, bannières, publicités, vidéos courtes, chatbot client, assistant comptable — selon votre plan (20 à illimité par mois).' },
   { q: 'Quels moyens de paiement sont supportés ?', a: 'Flutterwave, Paystack, Orange Money, MTN MoMo, CinetPay, Stripe, PayPal, plus un champ générique pour toute autre passerelle. Vous connectez vos propres identifiants API.' },
-  { q: 'Pourquoi LiAfrikOS est-il différent ?', a: "Parce qu'il est conçu et développé au Cameroun par LIYAH GROUP, pour les réalités africaines — pas adapté après coup. Mobile Money natif, connexions faibles optimisées, adressage local." },
+  { q: "Où est basé LiAfrik ?", a: "LiAfrik est basé à Dubaï, avec des équipes en Afrique. Cette double implantation nous permet de combiner exigence internationale et connaissance fine des réalités africaines." },
 ];
 
 export default function LandingPage() {
@@ -174,22 +174,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why LiAfrikOS - mission */}
+      {/* Why OS - mission */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
-              🇨🇲 Conçu au Cameroun — pour toute l'Afrique
+              🇦🇪 Dubaï &amp; 🌍 Afrique — pensé pour le commerce mondial
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Pourquoi LiAfrikOS ?</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Pourquoi OS ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-              LiAfrikOS n'est pas une adaptation d'un outil étranger — c'est pensé et construit depuis l'Afrique, pour l'Afrique, dès sa fondation. Mobile Money natif, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce africain.
+              OS est développé par <strong>LiAfrik</strong>, avec des équipes à Dubaï et en Afrique. Cette double implantation nous permet de construire une plateforme e-commerce au niveau des standards internationaux, tout en restant profondément adaptée aux réalités locales — paiements mobiles natifs, multi-devises, multilinguisme.
             </p>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { icon: CreditCard, title: '0% de commission, à vie', desc: 'L\'argent va directement dans votre compte' },
-                { icon: Smartphone, title: 'Mobile Money natif', desc: 'Orange, MTN, Flutterwave, Paystack, CinetPay' },
-                { icon: Globe, title: 'Bilingue FR/EN', desc: 'Interface et contenu traduits' },
+                { icon: Smartphone, title: 'Paiements locaux & internationaux', desc: 'Mobile Money, Stripe, PayPal, Flutterwave, Paystack' },
+                { icon: Globe, title: 'Multilingue', desc: 'Interface et contenu traduits, FR/EN et plus à venir' },
               ].map((c, i) => (
                 <Section key={c.title} delay={i * 80}>
                   <div className="p-5 bg-white rounded-xl border border-gray-100 text-left">
@@ -208,8 +208,8 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre en Afrique</h2>
-            <p className="mt-4 text-gray-600">Une suite complète, pensée pour les réalités africaines — mobile money, connexions faibles, multilinguisme, livraison informelle.</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre, où que vous soyez</h2>
+            <p className="mt-4 text-gray-600">Une suite complète pour le commerce en ligne — paiements locaux et internationaux, multi-devises, multilinguisme, livraison flexible.</p>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f, i) => (
@@ -236,7 +236,7 @@ export default function LandingPage() {
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { name: 'Starter', price: 9, features: ['15 produits', 'Sous-domaine LiAfrikOS', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
+              { name: 'Starter', price: 9, features: ['15 produits', 'Sous-domaine gratuit (.liafrik.com)', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
               { name: 'Premium', price: 19, popular: true, features: ['1000 produits', 'Domaine personnalisé', '5 staff', '200 générations IA/mois', 'Vidéos TikTok IA', 'Chatbot IA', 'Assistant comptable IA', 'Marketplace + badge vérifié'] },
               { name: 'Entreprise', price: 69, features: ['Produits illimités', 'Staff illimité', 'IA illimitée', 'Vidéos IA illimitées', 'API développeur', 'Support dédié + WhatsApp'] },
             ].map((p, i) => (
@@ -271,7 +271,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Ils vendent déjà avec LiAfrikOS</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 tracking-tight">Ils vendent déjà avec OS</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((tm, i) => (
@@ -349,11 +349,11 @@ export default function LandingPage() {
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
-          <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs africains. 7 jours d'essai gratuit, sans carte bancaire.</p>
+          <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs, en Afrique et partout ailleurs. 7 jours d'essai gratuit, sans carte bancaire.</p>
           <Link to="/register" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 transition-all hover:scale-[1.02] active:scale-95 shadow-xl">
             Créer ma boutique gratuitement <ArrowRight size={18} />
           </Link>
-          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP</p>
+          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Développé par LiAfrik — Dubaï 🇦🇪 &amp; Afrique 🌍</p>
         </div>
       </section>
 

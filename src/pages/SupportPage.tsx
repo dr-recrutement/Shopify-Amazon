@@ -11,7 +11,8 @@ export default function SupportPage() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-tight">Support</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2 tracking-tight">Support</h1>
+        <p className="text-sm text-gray-500 mb-6 flex items-center gap-1"><Mail size={14} /> support@liafrik.com · cs@liafrik.com</p>
         <div className="flex gap-2 mb-6">
           <button onClick={() => setTab('help')} className={`px-4 py-2 rounded-lg text-sm font-medium ${tab === 'help' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200'}`}>Centre d'aide</button>
           <button onClick={() => setTab('ticket')} className={`px-4 py-2 rounded-lg text-sm font-medium ${tab === 'ticket' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200'}`}>Mes tickets</button>

@@ -7,6 +7,7 @@ import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import { CartProvider } from './lib/cart'
+import { LanguageProvider } from './lib/i18n'
 import { getHostContext } from './lib/subdomain'
 import { supabase } from './lib/supabase'
 import './index.css'
@@ -99,6 +100,8 @@ function Root() {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Root />
+    <LanguageProvider>
+      <Root />
+    </LanguageProvider>
   </React.StrictMode>,
 )

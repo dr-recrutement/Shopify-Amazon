@@ -1,12 +1,47 @@
+import { useEffect, useState } from 'react';
 import { Card, Button } from './dashboard/ui';
-import { Trash2, ShoppingBag, ArrowRight, Shield, Truck } from 'lucide-react';
+import { Trash2, ShoppingBag, ArrowRight, Shield, Truck, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../lib/cart';
 import { formatPrice } from '../lib/theme-engine';
+import { supabase } from '../lib/supabase';
 
-export default function CartPage({ tenantId: _tenantId }: { tenantId: string }) {
-  const { items, totalCents, updateQuantity, removeItem } = useCart();
+interface SuggestedProduct {
+  id: string;
+  name: string;
+  price_cents: number;
+  currency: string;
+  thumbnail: string | null;
+}
+
+export default function CartPage({ tenantId }: { tenantId: string }) {
+  const { items, totalCents, updateQuantity, removeItem, addItem } = useCart();
+  const [suggestions, setSuggestions] = useState<SuggestedProduct[]>([]);
   const currency = items[0]?.currency || 'XOF';
+  const inCartIds = new Set(items.map(i => i.productId));
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('id,name,price_cents,currency,product_images(url,position)')
+        .eq('tenant_id', tenantId)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(12);
+      const list: SuggestedProduct[] = (data || [])
+        .map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          price_cents: p.price_cents,
+          currency: p.currency,
+          thumbnail: (p.product_images || []).sort((a: any, b: any) => a.position - b.position)[0]?.url || null,
+        }))
+        .filter(p => !inCartIds.has(p.id))
+        .slice(0, 4);
+      setSuggestions(list);
+    })();
+  }, [tenantId, items.length]);
 
   if (items.length === 0) {
     return (
@@ -55,6 +90,31 @@ export default function CartPage({ tenantId: _tenantId }: { tenantId: string }) 
                 </button>
               </Card>
             ))}
+
+            {suggestions.length > 0 && (
+              <div className="pt-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Vous pourriez aussi aimer</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {suggestions.map(p => (
+                    <Card key={p.id} className="p-3">
+                      <div className="w-full aspect-square rounded-lg overflow-hidden bg-gray-100 mb-2 flex items-center justify-center">
+                        {p.thumbnail
+                          ? <img src={p.thumbnail} alt={p.name} className="w-full h-full object-cover" />
+                          : <span className="text-xs text-gray-300">Pas d'image</span>}
+                      </div>
+                      <p className="text-xs font-medium text-gray-900 truncate">{p.name}</p>
+                      <p className="text-xs text-brand-600 font-bold mb-2">{formatPrice(p.price_cents, p.currency)}</p>
+                      <button
+                        onClick={() => addItem({ productId: p.id, name: p.name, priceCents: p.price_cents, currency: p.currency, thumbnail: p.thumbnail })}
+                        className="w-full flex items-center justify-center gap-1 text-xs font-medium text-brand-600 border border-brand-200 rounded-lg py-1.5 hover:bg-brand-50"
+                      >
+                        <Plus size={12} /> Ajouter
+                      </button>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="space-y-4">
             <Card className="p-5">

@@ -105,7 +105,28 @@ export default function CheckoutPage({ tenantId }: { tenantId: string }) {
               <h3 className="font-semibold text-gray-900 mb-2">Vos coordonnées</h3>
               <input value={name} onChange={e => setName(e.target.value)} placeholder="Nom complet *" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
               <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Téléphone (Mobile Money) *" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email (optionnel)" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onBlur={() => {
+                  if (email.includes('@') && items.length > 0) {
+                    fetch('/api/cart-sessions/track', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        tenantId,
+                        customerEmail: email,
+                        customerPhone: phone || undefined,
+                        items: items.map(i => ({ name: i.name, quantity: i.quantity })),
+                        totalCents: finalTotalCents,
+                        currency,
+                      }),
+                    }).catch(() => { /* suivi non-bloquant */ });
+                  }
+                }}
+                placeholder="Email (optionnel)"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
               <textarea value={address} onChange={e => setAddress(e.target.value)} placeholder="Adresse de livraison" rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
             </Card>
           </div>

@@ -9,6 +9,7 @@ const RUBRICS = [
   { id: 'store', label: 'Boutique', icon: Store },
   { id: 'account', label: 'Compte', icon: User },
   { id: 'payments', label: 'Paiements', icon: CreditCard },
+  { id: 'email', label: 'Emails', icon: Mail },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'shipping', label: 'Livraison', icon: MapPin },
   { id: 'domains', label: 'Domaines', icon: Globe },
@@ -102,6 +103,11 @@ export default function Settings() {
   const [gateways, setGateways] = useState<any[]>([]);
   const [gatewayModal, setGatewayModal] = useState<string | null>(null);
   const [gatewayForm, setGatewayForm] = useState({ apiKey: '', apiSecret: '' });
+  // Email transactionnel (Resend, configuré par le marchand lui-même)
+  const [emailSettings, setEmailSettings] = useState<any>(null);
+  const [emailModal, setEmailModal] = useState(false);
+  const [resendForm, setResendForm] = useState({ apiKey: '', fromEmail: '', fromName: '' });
+  const [resendSaving, setResendSaving] = useState(false);
 
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 768);
@@ -127,7 +133,42 @@ export default function Settings() {
     setGateways(data || []);
   }, [tenant]);
 
-  useEffect(() => { loadDomains(); loadGateways(); }, [loadDomains, loadGateways]);
+  const loadEmailSettings = useCallback(async () => {
+    if (!tenant) return;
+    const { data } = await supabase.from('vendor_email_settings').select('*').eq('tenant_id', tenant.id).maybeSingle();
+    setEmailSettings(data);
+    if (data) setResendForm({ apiKey: '', fromEmail: data.from_email, fromName: data.from_name });
+  }, [tenant]);
+
+  useEffect(() => { loadDomains(); loadGateways(); loadEmailSettings(); }, [loadDomains, loadGateways, loadEmailSettings]);
+
+  const saveEmailSettings = async () => {
+    if (!tenant) return;
+    if (!resendForm.fromEmail.trim() || (!emailSettings && !resendForm.apiKey.trim())) return;
+    setResendSaving(true);
+    const payload: any = {
+      tenant_id: tenant.id,
+      provider: 'resend',
+      from_email: resendForm.fromEmail.trim(),
+      from_name: resendForm.fromName.trim() || 'Boutique',
+      is_active: true,
+    };
+    if (resendForm.apiKey.trim()) payload.api_key_encrypted = btoa(resendForm.apiKey.trim());
+    if (emailSettings) {
+      await supabase.from('vendor_email_settings').update(payload).eq('id', emailSettings.id);
+    } else {
+      await supabase.from('vendor_email_settings').insert(payload);
+    }
+    setResendSaving(false);
+    setEmailModal(false);
+    loadEmailSettings();
+  };
+
+  const toggleEmailActive = async () => {
+    if (!emailSettings) return;
+    await supabase.from('vendor_email_settings').update({ is_active: !emailSettings.is_active }).eq('id', emailSettings.id);
+    loadEmailSettings();
+  };
 
   const saveStore = async () => {
     if (!tenant) return;
@@ -310,7 +351,39 @@ export default function Settings() {
           </div>
         );
 
-      case 'notifications':
+      case 'email':
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">
+              Configurez votre propre compte <strong>Resend</strong> pour envoyer automatiquement les emails de confirmation de commande à vos clients, depuis votre propre adresse.
+            </p>
+            {!emailSettings ? (
+              <div className="p-4 border border-dashed border-gray-300 rounded-lg text-center">
+                <Mail size={24} className="mx-auto text-gray-300 mb-2" />
+                <p className="text-sm text-gray-500 mb-3">Aucun service d'email configuré. Vos clients ne recevront pas de confirmation par email.</p>
+                <Button size="sm" onClick={() => setEmailModal(true)}>Configurer Resend</Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900">{emailSettings.from_name}</span>
+                    <Badge color={emailSettings.is_active ? 'green' : 'gray'}>{emailSettings.is_active ? 'Actif' : 'Inactif'}</Badge>
+                  </div>
+                  <p className="text-xs text-gray-400">{emailSettings.from_email}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={toggleEmailActive} className="p-1.5 text-gray-400 hover:text-brand-600">{emailSettings.is_active ? <EyeOff size={14} /> : <Eye size={14} />}</button>
+                  <Button size="sm" variant="secondary" onClick={() => setEmailModal(true)}>Modifier</Button>
+                </div>
+              </div>
+            )}
+            <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+              Pas encore de compte Resend ? Créez-en un gratuitement sur <strong>resend.com</strong>, vérifiez votre domaine d'envoi, puis récupérez votre clé API.
+            </div>
+          </div>
+        );
+
         return (
           <div className="space-y-3">
             {([['newOrders', 'Nouvelles commandes'], ['stockAlerts', 'Ruptures de stock'], ['newCustomers', 'Nouveaux clients'], ['promotions', 'Promotions'], ['weeklyReports', 'Rapports hebdomadaires']] as const).map(([key, label]) => (
@@ -651,6 +724,46 @@ export default function Settings() {
             <input type="password" value={gatewayForm.apiSecret} onChange={e => setGatewayForm({ ...gatewayForm, apiSecret: e.target.value })} placeholder="Votre clé secrète" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
           </div>
           <div className="flex gap-2 justify-end"><Button variant="secondary" onClick={() => setGatewayModal(null)}>Annuler</Button><Button onClick={saveGateway} disabled={!gatewayForm.apiKey}>Enregistrer</Button></div>
+        </div>
+      </Modal>
+
+      <Modal open={emailModal} onClose={() => setEmailModal(false)} title="Configurer l'envoi d'emails">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Clé API Resend</label>
+            <input
+              type="password"
+              value={resendForm.apiKey}
+              onChange={e => setResendForm({ ...resendForm, apiKey: e.target.value })}
+              placeholder={emailSettings ? 'Laisser vide pour conserver la clé actuelle' : 're_xxxxxxxx'}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Email d'envoi</label>
+            <input
+              value={resendForm.fromEmail}
+              onChange={e => setResendForm({ ...resendForm, fromEmail: e.target.value })}
+              placeholder="commandes@maboutique.com"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+            />
+            <p className="text-xs text-gray-400 mt-1">Doit correspondre à un domaine vérifié dans votre compte Resend.</p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Nom affiché</label>
+            <input
+              value={resendForm.fromName}
+              onChange={e => setResendForm({ ...resendForm, fromName: e.target.value })}
+              placeholder="Ma Boutique"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
+            />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button variant="secondary" onClick={() => setEmailModal(false)}>Annuler</Button>
+            <Button onClick={saveEmailSettings} disabled={resendSaving || !resendForm.fromEmail.trim() || (!emailSettings && !resendForm.apiKey.trim())}>
+              {resendSaving ? 'Sauvegarde…' : 'Enregistrer'}
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

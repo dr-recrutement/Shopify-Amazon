@@ -150,6 +150,7 @@ export default function OnlineStore() {
   const [purchasedThemeIds, setPurchasedThemeIds] = useState<string[]>([]);
   const [products, setProducts] = useState<EditorProduct[]>([]);
   const [categories, setCategories] = useState<EditorCategory[]>([]);
+  const [reviews, setReviews] = useState<{ id: string; customerName: string; rating: number; comment: string | null }[]>([]);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
   const [loading, setLoading] = useState(true);
@@ -207,6 +208,15 @@ export default function OnlineStore() {
     const countByCategory: Record<string, number> = {};
     (assignments || []).forEach((a: any) => { countByCategory[a.category_id] = (countByCategory[a.category_id] || 0) + 1; });
     setCategories((cats || []).map((c: any) => ({ id: c.id, name: c.name, count: countByCategory[c.id] || 0, imageUrl: c.image_url })));
+
+    const { data: reviewRows } = await supabase
+      .from('product_reviews')
+      .select('id,customer_name,rating,comment')
+      .eq('tenant_id', tenant.id)
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false })
+      .limit(9);
+    setReviews((reviewRows || []).map((r: any) => ({ id: r.id, customerName: r.customer_name, rating: r.rating, comment: r.comment })));
 
     setLoading(false);
   }, [tenant]);
@@ -643,7 +653,7 @@ export default function OnlineStore() {
             <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background, fontFamily: theme.fonts.body }}>
               {theme.sections.filter(s => s.visible).map(s => (
                 <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
-                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined)}
+                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined, undefined, 0, s.type === 'testimonials' ? reviews : undefined)}
                 </div>
               ))}
               {theme.sections.filter(s => s.visible).length === 0 && (

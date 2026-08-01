@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth, useTenant, useIsSuperAdmin } from './lib/hooks';
 import Login from './pages/dashboard/Login';
 import LandingPage from './pages/LandingPage';
+import HelpPage from './pages/HelpPage';
+import SupportPage from './pages/SupportPage';
 import Onboarding from './pages/dashboard/Onboarding';
 import { supabase } from './lib/supabase';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
@@ -42,6 +44,8 @@ export default function App() {
     return (
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/support" element={<SupportPage />} />
         <Route path="*" element={<Login />} />
       </Routes>
     );
@@ -99,6 +103,8 @@ export default function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="agentic" element={<Agentic />} />
       </Route>
+      <Route path="/help" element={<HelpPage />} />
+      <Route path="/support" element={<SupportPage />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );

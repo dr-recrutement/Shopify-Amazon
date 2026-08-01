@@ -17,8 +17,8 @@ const FAQS = [
   { cat: 'Boutique & Produits', q: 'Puis-je vendre sans stock ?', a: 'Oui. Vous pouvez prendre des commandes et les expédier ensuite, ou utiliser le modèle de précommande. Le module Markets permet aussi de gérer la disponibilité par région.' },
   { cat: 'Paiements & Mobile Money', q: 'Comment configurer Flutterwave ?', a: 'Dashboard > Paramètres > Payments > Ajouter une passerelle. Sélectionnez Flutterwave, entrez votre clé API secrète et votre clé publique. Les paiements arrivent directement sur votre compte Flutterwave.' },
   { cat: 'Paiements & Mobile Money', q: 'Combien de temps pour recevoir mon argent ?', a: 'Cela dépend de la passerelle. Flutterwave et Paystack virent en 24-48h. Orange Money et MTN MoMo sont instantanés. Stripe prend 2-7 jours selon votre pays.' },
-  { cat: 'Paiements & Mobile Money', q: 'LiAfrikOS prend-il une commission ?', a: 'Non. Jamais. Aucune commission sur vos ventes, quel que soit votre plan. L\'argent va directement dans votre compte.' },
-  { cat: 'Livraison & Logistique', q: 'Comment gérer la livraison ?', a: 'LiAfrikOS supporte la livraison flexible : moto-taxi, coursier, transporteur, point relais. Configurez vos zones et frais dans Paramètres > Shipping.' },
+  { cat: 'Paiements & Mobile Money', q: 'OS prend-il une commission ?', a: 'Non. Jamais. Aucune commission sur vos ventes, quel que soit votre plan. L\'argent va directement dans votre compte.' },
+  { cat: 'Livraison & Logistique', q: 'Comment gérer la livraison ?', a: 'OS supporte la livraison flexible : moto-taxi, coursier, transporteur, point relais. Configurez vos zones et frais dans Paramètres > Shipping.' },
   { cat: 'Compte & Paramètres', q: 'Comment changer ma devise ?', a: 'Paramètres > General > Devise principale. La devise est initialement déduite de votre pays à l\'onboarding. Vous pouvez la changer, avec conversion indicative de vos prix.' },
   { cat: 'Compte & Paramètres', q: 'Puis-je avoir plusieurs boutiques ?', a: 'Oui, avec les plans Premium et Entreprise. Chaque boutique a son propre sous-domaine, son panier isolé et son thème.' },
   { cat: 'Marketing & Croissance', q: 'Comment utiliser le chatbot IA ?', a: 'Dashboard > Agentic > Chatbot vendeur. Activez-le, configurez vos FAQ, et le chatbot répondra vos clients 24/7 sur WhatsApp, Messenger et Telegram.' },
@@ -82,7 +82,8 @@ export default function HelpPage() {
           <div className="p-6 bg-orange-50 rounded-2xl">
             <Mail className="text-orange-600 mb-3" size={24} />
             <h3 className="font-semibold text-gray-900">Email</h3>
-            <p className="text-sm text-gray-600 mt-1">info@liafrik.com</p>
+            <p className="text-sm text-gray-600 mt-1">support@liafrik.com</p>
+            <p className="text-sm text-gray-600">cs@liafrik.com</p>
             <p className="text-xs text-gray-500 mt-1">Réponse sous 24h</p>
           </div>
           <div className="p-6 bg-green-50 rounded-2xl">

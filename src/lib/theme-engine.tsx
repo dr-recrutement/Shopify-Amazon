@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
 
 export interface ThemeSection {
@@ -39,12 +41,21 @@ export const SHADOW_MAP: Record<ThemeConfig['shadow'], string> = {
   bold: '0 8px 24px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08)',
 };
 
+export interface ProductVariant {
+  id: string;
+  name: string;
+  value: string;
+  priceCents: number | null;
+  stock: number;
+}
+
 export interface StorefrontProduct {
   id: string;
   name: string;
   price_cents: number;
   currency: string;
   thumbnail: string | null;
+  variants?: ProductVariant[];
 }
 
 export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
@@ -271,6 +282,8 @@ export interface AddToCartPayload {
   priceCents: number;
   currency: string;
   thumbnail: string | null;
+  variantId?: string;
+  variantLabel?: string;
 }
 
 export interface StorefrontReview {
@@ -278,6 +291,111 @@ export interface StorefrontReview {
   customerName: string;
   rating: number;
   comment: string | null;
+}
+
+function ProductDetailBlock({
+  section, colors, image, cartProduct, r, onAddToCart,
+}: {
+  section: ThemeSection;
+  colors: ThemeConfig['colors'];
+  image: string | null;
+  cartProduct: StorefrontProduct | null;
+  r: string;
+  onAddToCart?: (item: AddToCartPayload) => void;
+}) {
+  const primary = colors.primary;
+  const secondary = colors.secondary;
+  const txt = colors.text;
+
+  // Regroupe les variantes par nom (ex: "Taille" -> ["S","M","L"], "Couleur" -> ["Rouge","Bleu"])
+  const variantGroups: Record<string, ProductVariant[]> = {};
+  (cartProduct?.variants || []).forEach(v => {
+    if (!variantGroups[v.name]) variantGroups[v.name] = [];
+    variantGroups[v.name].push(v);
+  });
+  const groupNames = Object.keys(variantGroups);
+
+  const [selected, setSelected] = useState<Record<string, string>>({});
+
+  const hasVariants = groupNames.length > 0;
+  const matchedVariant = hasVariants
+    ? groupNames.length === 1
+      ? variantGroups[groupNames[0]].find(v => v.value === selected[groupNames[0]])
+      : undefined
+    : undefined;
+
+  const effectivePriceCents = matchedVariant?.priceCents ?? cartProduct?.price_cents ?? 0;
+  const outOfStock = hasVariants && matchedVariant && matchedVariant.stock <= 0;
+  const needsSelection = hasVariants && groupNames.some(g => !selected[g]);
+
+  return (
+    <div className="px-6 py-8" style={{ background: colors.background }}>
+      <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto">
+        <div className="w-full md:w-1/2 aspect-square overflow-hidden flex items-center justify-center" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03), borderRadius: r }}>
+          {image
+            ? <img src={image} alt="" className="w-full h-full object-cover" />
+            : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
+        </div>
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs px-2 py-0.5 rounded-md font-bold text-white" style={{ background: outOfStock ? '#ef4444' : '#16a34a' }}>{outOfStock ? 'Épuisé' : 'En stock'}</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: txt, letterSpacing: '-0.02em' }}>{cartProduct?.name || section.props.title || 'Nom du produit'}</h2>
+          <p className="text-3xl font-bold mb-3" style={{ color: primary }}>
+            {cartProduct ? formatPrice(effectivePriceCents, cartProduct.currency) : (section.props.price || '25 000 XOF')}
+          </p>
+          <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.description || 'Description du produit'}</p>
+
+          {hasVariants ? (
+            groupNames.map(g => (
+              <div key={g} className="mb-4">
+                <p className="text-xs font-semibold mb-2" style={{ color: hexToRgba(txt, 0.6) }}>{g}</p>
+                <div className="flex flex-wrap gap-2">
+                  {variantGroups[g].map(v => (
+                    <button
+                      key={v.id}
+                      onClick={() => setSelected({ ...selected, [g]: v.value })}
+                      disabled={v.stock <= 0}
+                      className="px-3 h-10 flex items-center justify-center text-sm font-medium cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                      style={selected[g] === v.value ? { background: primary, color: 'white', borderRadius: r } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}
+                    >
+                      {v.value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : null}
+
+          <div className="flex gap-3">
+            {onAddToCart && cartProduct ? (
+              <button
+                onClick={() => {
+                  if (needsSelection) return;
+                  onAddToCart({
+                    productId: cartProduct.id,
+                    name: cartProduct.name,
+                    priceCents: effectivePriceCents,
+                    currency: cartProduct.currency,
+                    thumbnail: cartProduct.thumbnail,
+                    variantId: matchedVariant?.id,
+                    variantLabel: hasVariants ? Object.values(selected).join(' / ') : undefined,
+                  });
+                }}
+                disabled={needsSelection || outOfStock}
+                className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}
+              >
+                {outOfStock ? 'Épuisé' : needsSelection ? 'Choisissez une option' : 'Ajouter au panier'}
+              </button>
+            ) : (
+              <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function renderSection(
@@ -594,42 +712,14 @@ export function renderSection(
       const fallbackImg = isLiveContext ? cartProduct?.thumbnail : sampleProducts[0].img;
       const image = section.props.image || fallbackImg || sampleProducts[0].img;
       return (
-        <div className="px-6 py-8" style={{ background: bg }}>
-          <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto">
-            <div className="w-full md:w-1/2 aspect-square overflow-hidden flex items-center justify-center" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: hexToRgba(primary, 0.03), borderRadius: r }}>
-              {image
-                ? <img src={image} alt="" className="w-full h-full object-cover" />
-                : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
-            </div>
-            <div className="flex-1 flex flex-col justify-center">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs px-2 py-0.5 rounded-md font-bold text-white" style={{ background: '#16a34a' }}>En stock</span>
-                <div className="flex items-center gap-0.5 text-xs" style={{ color: '#f59e0b' }}>★★★★★ <span className="text-gray-400 ml-1">(124 avis)</span></div>
-              </div>
-              <h2 className="text-2xl font-bold mb-2" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Nom du produit'}</h2>
-              <p className="text-3xl font-bold mb-3" style={{ color: primary }}>{section.props.price || '25 000 XOF'}</p>
-              <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.description || 'Description du produit'}</p>
-              <div className="flex gap-3 mb-4">
-                {['S', 'M', 'L', 'XL'].map((s, i) => (
-                  <div key={s} className="w-10 h-10 flex items-center justify-center text-sm font-medium cursor-pointer transition-all" style={i === 1 ? { background: primary, color: 'white', borderRadius: r } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}>{s}</div>
-                ))}
-              </div>
-              <div className="flex gap-3">
-                {isLiveContext && onAddToCart && cartProduct ? (
-                  <button
-                    onClick={() => onAddToCart({ productId: cartProduct.id, name: cartProduct.name, priceCents: cartProduct.price_cents, currency: cartProduct.currency, thumbnail: cartProduct.thumbnail })}
-                    className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105"
-                    style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}
-                  >
-                    Ajouter au panier
-                  </button>
-                ) : (
-                  <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProductDetailBlock
+          section={section}
+          colors={colors}
+          image={image}
+          cartProduct={isLiveContext ? cartProduct : null}
+          r={r}
+          onAddToCart={isLiveContext ? onAddToCart : undefined}
+        />
       );
     }
 

@@ -7,6 +7,8 @@ export interface CartItem {
   currency: string;
   thumbnail: string | null;
   quantity: number;
+  variantId?: string;
+  variantLabel?: string;
 }
 
 export interface AddToCartInput {
@@ -15,6 +17,8 @@ export interface AddToCartInput {
   priceCents: number;
   currency: string;
   thumbnail: string | null;
+  variantId?: string;
+  variantLabel?: string;
 }
 
 interface CartContextValue {
@@ -22,8 +26,8 @@ interface CartContextValue {
   totalCents: number;
   totalItems: number;
   addItem: (item: AddToCartInput, qty?: number) => void;
-  updateQuantity: (productId: string, qty: number) => void;
-  removeItem: (productId: string) => void;
+  updateQuantity: (productId: string, qty: number, variantId?: string) => void;
+  removeItem: (productId: string, variantId?: string) => void;
   clearCart: () => void;
 }
 
@@ -58,23 +62,24 @@ export function CartProvider({ tenantId, children }: { tenantId: string; childre
 
   const addItem: CartContextValue['addItem'] = (item, qty = 1) => {
     setItems(prev => {
-      const existing = prev.find(i => i.productId === item.productId);
+      const existing = prev.find(i => i.productId === item.productId && i.variantId === item.variantId);
       if (existing) {
-        return prev.map(i => (i.productId === item.productId ? { ...i, quantity: i.quantity + qty } : i));
+        return prev.map(i => (i.productId === item.productId && i.variantId === item.variantId ? { ...i, quantity: i.quantity + qty } : i));
       }
       return [...prev, { ...item, quantity: qty }];
     });
   };
 
-  const updateQuantity = (productId: string, qty: number) => {
+  const updateQuantity = (productId: string, qty: number, variantId?: string) => {
     setItems(prev =>
       qty <= 0
-        ? prev.filter(i => i.productId !== productId)
-        : prev.map(i => (i.productId === productId ? { ...i, quantity: qty } : i))
+        ? prev.filter(i => !(i.productId === productId && i.variantId === variantId))
+        : prev.map(i => (i.productId === productId && i.variantId === variantId ? { ...i, quantity: qty } : i))
     );
   };
 
-  const removeItem = (productId: string) => setItems(prev => prev.filter(i => i.productId !== productId));
+  const removeItem = (productId: string, variantId?: string) =>
+    setItems(prev => prev.filter(i => !(i.productId === productId && i.variantId === variantId)));
   const clearCart = () => setItems([]);
 
   const totalCents = items.reduce((s, i) => s + i.priceCents * i.quantity, 0);

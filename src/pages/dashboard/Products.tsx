@@ -462,6 +462,7 @@ function ProductModal({ tenantId, currency, editing, onClose, onSaved }: {
   const [pending, setPending] = useState<PendingImage[]>([]);   // new images (not yet saved to DB)
   const [savedImages, setSavedImages] = useState<ProductImage[]>([]); // existing DB images
   const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [variants, setVariants] = useState<{ id?: string; name: string; value: string; priceCents: string; stock: string; sku: string }[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -475,6 +476,14 @@ function ProductModal({ tenantId, currency, editing, onClose, onSaved }: {
       if (editing) {
         const { data: imgs } = await supabase.from('product_images').select('*').eq('product_id', editing.id).order('position', { ascending: true });
         setSavedImages((imgs as ProductImage[]) || []);
+        const { data: vars, error: varErr } = await supabase.from('product_variants').select('*').eq('product_id', editing.id).order('created_at', { ascending: true });
+        if (varErr) console.error('[Products] Erreur chargement variantes:', varErr);
+        setVariants((vars || []).map((v: any) => ({
+          id: v.id, name: v.name, value: v.value,
+          priceCents: v.price_cents != null ? String(v.price_cents) : '',
+          stock: v.stock != null ? String(v.stock) : '0',
+          sku: v.sku || '',
+        })));
       }
     })();
   }, [tenantId, editing]);
@@ -648,6 +657,22 @@ function ProductModal({ tenantId, currency, editing, onClose, onSaved }: {
         if (catErr) throw catErr;
       }
 
+      // Variantes : on remplace tout (simple et sûr pour une petite liste)
+      await supabase.from('product_variants').delete().eq('product_id', productId);
+      const validVariants = variants.filter(v => v.name.trim() && v.value.trim());
+      if (validVariants.length) {
+        const rows = validVariants.map(v => ({
+          product_id: productId,
+          name: v.name.trim(),
+          value: v.value.trim(),
+          price_cents: v.priceCents.trim() ? Math.round(Number(v.priceCents)) : null,
+          stock: Math.max(0, Math.round(Number(v.stock) || 0)),
+          sku: v.sku.trim() || null,
+        }));
+        const { error: varErr } = await supabase.from('product_variants').insert(rows);
+        if (varErr) throw varErr;
+      }
+
       onSaved();
     } catch (e: any) {
       setErr(e.message || 'Erreur lors de l’enregistrement');
@@ -676,6 +701,60 @@ function ProductModal({ tenantId, currency, editing, onClose, onSaved }: {
         <div className="grid grid-cols-2 gap-3">
           <Input label="Stock" type="number" value={form.stock} onChange={(v) => set('stock', v)} placeholder="0" />
           <Input label="SKU (optionnel)" value={form.sku} onChange={(v) => set('sku', v)} placeholder="REF-001" />
+        </div>
+
+        {/* Variantes (taille, couleur, etc.) */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-xs font-medium text-gray-700">Variantes (taille, couleur…)</label>
+            <button
+              type="button"
+              onClick={() => setVariants([...variants, { name: '', value: '', priceCents: '', stock: '0', sku: '' }])}
+              className="text-xs text-brand-600 font-medium hover:underline"
+            >
+              + Ajouter une variante
+            </button>
+          </div>
+          {variants.length === 0 ? (
+            <p className="text-xs text-gray-400">Aucune variante — le produit se vend tel quel.</p>
+          ) : (
+            <div className="space-y-2">
+              {variants.map((v, i) => (
+                <div key={i} className="grid grid-cols-12 gap-1.5 items-center p-2 bg-gray-50 rounded-lg">
+                  <input
+                    value={v.name}
+                    onChange={e => setVariants(variants.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
+                    placeholder="Taille"
+                    className="col-span-3 px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  />
+                  <input
+                    value={v.value}
+                    onChange={e => setVariants(variants.map((x, j) => j === i ? { ...x, value: e.target.value } : x))}
+                    placeholder="M"
+                    className="col-span-3 px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  />
+                  <input
+                    value={v.priceCents}
+                    onChange={e => setVariants(variants.map((x, j) => j === i ? { ...x, priceCents: e.target.value } : x))}
+                    placeholder="Prix (opt.)"
+                    type="number"
+                    className="col-span-3 px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  />
+                  <input
+                    value={v.stock}
+                    onChange={e => setVariants(variants.map((x, j) => j === i ? { ...x, stock: e.target.value } : x))}
+                    placeholder="Stock"
+                    type="number"
+                    className="col-span-2 px-2 py-1.5 border border-gray-200 rounded text-xs"
+                  />
+                  <button type="button" onClick={() => setVariants(variants.filter((_, j) => j !== i))} className="col-span-1 text-gray-400 hover:text-red-600 flex justify-center">
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+              <p className="text-xs text-gray-400">Ex: Nom "Taille", Valeur "M". Prix laissé vide = prix du produit. Créez une ligne par combinaison (Taille=M, Couleur=Rouge…).</p>
+            </div>
+          )}
         </div>
 
         {/* Category multi-select */}

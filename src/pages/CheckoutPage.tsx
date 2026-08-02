@@ -61,7 +61,7 @@ export default function CheckoutPage({ tenantId }: { tenantId: string }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tenantId,
-          items: items.map(i => ({ productId: i.productId, quantity: i.quantity })),
+          items: items.map(i => ({ productId: i.productId, quantity: i.quantity, variantId: i.variantId })),
           customer: { name, phone, email: email || undefined, address: address || undefined },
           promoCode: appliedPromo?.code || undefined,
         }),

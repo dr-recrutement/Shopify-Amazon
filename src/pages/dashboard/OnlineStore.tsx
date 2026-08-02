@@ -93,6 +93,7 @@ interface EditorProduct {
   price_cents: number;
   currency: string;
   thumbnail: string | null;
+  variants?: { id: string; name: string; value: string; priceCents: number | null; stock: number }[];
 }
 
 // Sections qui doivent recevoir les vrais produits — doit rester identique à
@@ -182,7 +183,7 @@ export default function OnlineStore() {
     // exactement ce que ses clients verront (comme dans Shopify).
     const { data: prods, error: prodErr } = await supabase
       .from('products')
-      .select('id,name,price_cents,currency,product_images(url,position)')
+      .select('id,name,price_cents,currency,product_images(url,position),product_variants(id,name,value,price_cents,stock)')
       .eq('tenant_id', tenant.id)
       .eq('status', 'active')
       .order('created_at', { ascending: false });
@@ -193,6 +194,7 @@ export default function OnlineStore() {
       price_cents: p.price_cents,
       currency: p.currency,
       thumbnail: (p.product_images || []).sort((a: any, b: any) => a.position - b.position)[0]?.url || null,
+      variants: (p.product_variants || []).map((v: any) => ({ id: v.id, name: v.name, value: v.value, priceCents: v.price_cents, stock: v.stock })),
     }));
     setProducts(list);
 

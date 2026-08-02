@@ -41,7 +41,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   // aux prix envoyés par le navigateur (facilement manipulables).
   const productIds = items.map((i: any) => i.productId);
   const prodRes = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/products?select=id,name,price_cents,currency,tenant_id&id=in.(${productIds.join(',')})&tenant_id=eq.${tenantId}&status=eq.active`,
+    `${env.SUPABASE_URL}/rest/v1/products?select=id,name,price_cents,currency,tenant_id,stock&id=in.(${productIds.join(',')})&tenant_id=eq.${tenantId}&status=eq.active`,
     { headers: sbHeaders }
   );
   const realProducts: any[] = await prodRes.json();
@@ -50,17 +50,33 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return json({ error: 'Aucun produit valide trouvé pour cette boutique.' }, 400);
   }
 
+  // 1.5) Re-vérifie les VARIANTES (prix éventuellement différent, stock) — même
+  // logique anti-triche : jamais confiance au prix/variante envoyés par le client.
+  const variantIds = items.map((i: any) => i.variantId).filter(Boolean);
+  let realVariants: any[] = [];
+  if (variantIds.length > 0) {
+    const varRes = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/product_variants?select=id,product_id,price_cents,stock&id=in.(${variantIds.join(',')})`,
+      { headers: sbHeaders }
+    );
+    realVariants = await varRes.json();
+  }
+
   const orderItems = items
     .map((i: any) => {
       const p = realProducts.find(rp => rp.id === i.productId);
       if (!p) return null;
       const qty = Math.max(1, parseInt(i.quantity) || 1);
-      return { product_id: p.id, product_name: p.name, price_cents: p.price_cents, quantity: qty };
+      const variant = i.variantId ? realVariants.find(v => v.id === i.variantId && v.product_id === p.id) : null;
+      if (i.variantId && !variant) return null; // variante invalide/inexistante
+      if (variant && variant.stock < qty) return null; // stock insuffisant
+      const priceCents = variant?.price_cents ?? p.price_cents;
+      return { product_id: p.id, variant_id: variant?.id || null, product_name: p.name, price_cents: priceCents, quantity: qty };
     })
     .filter(Boolean);
 
   if (orderItems.length === 0) {
-    return json({ error: 'Aucun article valide dans le panier.' }, 400);
+    return json({ error: 'Aucun article valide dans le panier (vérifiez le stock disponible).' }, 400);
   }
 
   const currency = realProducts[0].currency;
@@ -136,6 +152,27 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!itemsRes.ok) {
     const errText = await itemsRes.text();
     return json({ error: "Erreur lors de l'enregistrement des articles.", details: errText }, 500);
+  }
+
+  // 4.4) Décrémente le stock — de la variante si l'article en a une, sinon du produit.
+  for (const item of orderItems as any[]) {
+    if (item.variant_id) {
+      const variant = realVariants.find(v => v.id === item.variant_id);
+      if (variant) {
+        await fetch(`${env.SUPABASE_URL}/rest/v1/product_variants?id=eq.${item.variant_id}`, {
+          method: 'PATCH', headers: sbHeaders,
+          body: JSON.stringify({ stock: Math.max(0, variant.stock - item.quantity) }),
+        });
+      }
+    } else {
+      const product = realProducts.find(p => p.id === item.product_id);
+      if (product && typeof product.stock === 'number') {
+        await fetch(`${env.SUPABASE_URL}/rest/v1/products?id=eq.${item.product_id}`, {
+          method: 'PATCH', headers: sbHeaders,
+          body: JSON.stringify({ stock: Math.max(0, product.stock - item.quantity) }),
+        });
+      }
+    }
   }
 
   // 4.5) Incrémente le compteur d'utilisation du code promo (uniquement s'il a servi).

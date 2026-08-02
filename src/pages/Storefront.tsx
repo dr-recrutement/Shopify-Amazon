@@ -11,6 +11,7 @@ interface StoreProduct {
   price_cents: number;
   currency: string;
   thumbnail: string | null;
+  variants?: { id: string; name: string; value: string; priceCents: number | null; stock: number }[];
 }
 
 interface StoreCategory {
@@ -73,7 +74,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
 
       const { data: prods } = await supabase
         .from('products')
-        .select('id,name,price_cents,currency,product_images(url,position)')
+        .select('id,name,price_cents,currency,product_images(url,position),product_variants(id,name,value,price_cents,stock)')
         .eq('tenant_id', t.id)
         .eq('status', 'active')
         .order('created_at', { ascending: false });
@@ -84,6 +85,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
         price_cents: p.price_cents,
         currency: p.currency,
         thumbnail: (p.product_images || []).sort((a: any, b: any) => a.position - b.position)[0]?.url || null,
+        variants: (p.product_variants || []).map((v: any) => ({ id: v.id, name: v.name, value: v.value, priceCents: v.price_cents, stock: v.stock })),
       }));
       setProducts(list);
 

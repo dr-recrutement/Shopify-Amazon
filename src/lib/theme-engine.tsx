@@ -4,9 +4,27 @@ export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
 
 export interface ThemeSection {
   id: string;
-  type: 'header' | 'hero' | 'product-grid' | 'category-grid' | 'countdown' | 'filters-list' | 'product-detail' | 'payments' | 'testimonials' | 'about' | 'footer' | 'social-bar' | 'chat-float' | 'newsletter' | 'faq';
+  type: 'header' | 'hero' | 'product-grid' | 'category-grid' | 'countdown' | 'filters-list' | 'product-detail' | 'payments' | 'testimonials' | 'about' | 'footer' | 'social-bar' | 'chat-float' | 'newsletter' | 'faq' | 'custom-blocks';
   visible: boolean;
   props: Record<string, any>;
+}
+
+// ============ Bloc libre : liberté de composition à l'intérieur d'une section ============
+export type FreeBlockType = 'text' | 'image' | 'button' | 'spacer';
+
+export interface FreeBlock {
+  id: string;
+  type: FreeBlockType;
+  props: Record<string, any>;
+}
+
+export function getFreeBlockDefaults(type: FreeBlockType): Record<string, any> {
+  switch (type) {
+    case 'text': return { text: 'Votre texte ici', size: 'md', align: 'left' };
+    case 'image': return { url: '', alt: '' };
+    case 'button': return { label: 'Cliquez ici', url: '#', style: 'primary' };
+    case 'spacer': return { height: 32 };
+  }
 }
 
 export interface ThemeConfig {
@@ -81,6 +99,7 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
   { type: 'footer', label: 'Footer', icon: '▭' },
   { type: 'social-bar', label: 'Barre sociale', icon: '◎' },
   { type: 'chat-float', label: 'Chat flottant', icon: '💬' },
+  { type: 'custom-blocks', label: 'Bloc libre', icon: '🧩' },
 ];
 
 export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' | 'boolean' | 'list' }[]> = {
@@ -137,6 +156,7 @@ export function getSectionDefaults(type: ThemeSection['type']): Record<string, a
     footer: {},
     'social-bar': {},
     'chat-float': {},
+    'custom-blocks': { blocks: [{ id: `b${Date.now()}`, type: 'text', props: getFreeBlockDefaults('text') }] },
   };
   return d[type] || {};
 }
@@ -861,6 +881,52 @@ export function renderSection(
           <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-xs text-white font-bold">2</div>
         </div>
       );
+
+    case 'custom-blocks': {
+      const blocks: FreeBlock[] = section.props.blocks || [];
+      return (
+        <div className="px-6 py-8" style={{ background: bg }}>
+          <div className="max-w-2xl mx-auto space-y-4">
+            {blocks.map(b => {
+              if (b.type === 'text') {
+                const sizeClass = b.props.size === 'lg' ? 'text-2xl font-bold' : b.props.size === 'sm' ? 'text-sm' : 'text-base';
+                const alignClass = b.props.align === 'center' ? 'text-center' : b.props.align === 'right' ? 'text-right' : 'text-left';
+                return <p key={b.id} className={`${sizeClass} ${alignClass}`} style={{ color: txt }}>{b.props.text}</p>;
+              }
+              if (b.type === 'image') {
+                return b.props.url ? (
+                  <img key={b.id} src={b.props.url} alt={b.props.alt || ''} className="w-full object-cover" style={{ borderRadius: r }} />
+                ) : (
+                  <div key={b.id} className="w-full aspect-video flex items-center justify-center text-xs" style={{ background: hexToRgba(primary, 0.05), color: hexToRgba(txt, 0.3), borderRadius: r }}>Pas d'image</div>
+                );
+              }
+              if (b.type === 'button') {
+                const isPrimary = b.props.style !== 'outline';
+                return (
+                  <a
+                    key={b.id}
+                    href={b.props.url || '#'}
+                    className="inline-block px-6 py-3 text-sm font-semibold transition-transform hover:scale-105"
+                    style={isPrimary
+                      ? { background: `linear-gradient(135deg, ${primary}, ${secondary})`, color: 'white', borderRadius: r }
+                      : { border: `1.5px solid ${hexToRgba(txt, 0.2)}`, color: txt, borderRadius: r }}
+                  >
+                    {b.props.label}
+                  </a>
+                );
+              }
+              if (b.type === 'spacer') {
+                return <div key={b.id} style={{ height: b.props.height || 32 }} />;
+              }
+              return null;
+            })}
+            {blocks.length === 0 && (
+              <p className="text-center text-sm" style={{ color: hexToRgba(txt, 0.4) }}>Section vide — ajoutez des blocs depuis l'éditeur.</p>
+            )}
+          </div>
+        </div>
+      );
+    }
 
     default:
       return null;

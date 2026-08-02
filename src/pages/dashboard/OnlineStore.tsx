@@ -3,7 +3,7 @@ import { useTenant, useAuth, useIsSuperAdmin } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
 import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant, FONT_OPTIONS, googleFontsHref } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant, FONT_OPTIONS, googleFontsHref, FreeBlock, FreeBlockType, getFreeBlockDefaults } from '../../lib/theme-engine';
 import { PLATFORM_ROOT_DOMAIN } from '../../lib/subdomain';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
@@ -39,6 +39,115 @@ const PRESET_PALETTES = [
 // Hiérarchie des forfaits, du moins cher au plus cher.
 // ⚠️ Doit correspondre exactement aux codes de la table Supabase `plans`.
 const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, entreprise: 3 };
+
+const FREE_BLOCK_LABELS: Record<FreeBlockType, { label: string; icon: string }> = {
+  text: { label: 'Texte', icon: '📝' },
+  image: { label: 'Image', icon: '🖼️' },
+  button: { label: 'Bouton', icon: '🔘' },
+  spacer: { label: 'Espacement', icon: '↕️' },
+};
+
+function SortableBlockRow({ block, onUpdate, onRemove }: { block: FreeBlock; onUpdate: (props: Record<string, any>) => void; onRemove: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+  const meta = FREE_BLOCK_LABELS[block.type];
+
+  return (
+    <div ref={setNodeRef} style={style} className="p-2.5 rounded-lg border border-gray-100 bg-white space-y-2">
+      <div className="flex items-center gap-1.5">
+        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none p-0.5 text-gray-300 hover:text-gray-500">
+          <GripVertical size={12} />
+        </button>
+        <span className="text-xs font-medium text-gray-600 flex-1">{meta.icon} {meta.label}</span>
+        <button onClick={onRemove} className="p-0.5 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
+      </div>
+
+      {block.type === 'text' && (
+        <>
+          <textarea rows={2} value={block.props.text || ''} onChange={e => onUpdate({ ...block.props, text: e.target.value })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+          <div className="flex gap-1">
+            {(['sm', 'md', 'lg'] as const).map(s => (
+              <button key={s} onClick={() => onUpdate({ ...block.props, size: s })} className={`flex-1 py-1 rounded text-xs ${block.props.size === s ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{s}</button>
+            ))}
+            {(['left', 'center', 'right'] as const).map(a => (
+              <button key={a} onClick={() => onUpdate({ ...block.props, align: a })} className={`flex-1 py-1 rounded text-xs ${block.props.align === a ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{a[0].toUpperCase()}</button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {block.type === 'image' && (
+        <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="URL de l'image" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+      )}
+
+      {block.type === 'button' && (
+        <>
+          <input value={block.props.label || ''} onChange={e => onUpdate({ ...block.props, label: e.target.value })} placeholder="Texte du bouton" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+          <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="Lien (https://…)" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+          <div className="flex gap-1">
+            <button onClick={() => onUpdate({ ...block.props, style: 'primary' })} className={`flex-1 py-1 rounded text-xs ${block.props.style !== 'outline' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Plein</button>
+            <button onClick={() => onUpdate({ ...block.props, style: 'outline' })} className={`flex-1 py-1 rounded text-xs ${block.props.style === 'outline' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Contour</button>
+          </div>
+        </>
+      )}
+
+      {block.type === 'spacer' && (
+        <input type="number" min={4} max={200} value={block.props.height || 32} onChange={e => onUpdate({ ...block.props, height: parseInt(e.target.value) || 32 })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+      )}
+    </div>
+  );
+}
+
+function FreeBlocksEditor({ section, onUpdateProp }: { section: ThemeSection; onUpdateProp: (key: string, value: any) => void }) {
+  const blocks: FreeBlock[] = section.props.blocks || [];
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+  );
+
+  const addBlock = (type: FreeBlockType) => {
+    const newBlock: FreeBlock = { id: `b${Date.now()}`, type, props: getFreeBlockDefaults(type) };
+    onUpdateProp('blocks', [...blocks, newBlock]);
+  };
+  const updateBlock = (id: string, props: Record<string, any>) => {
+    onUpdateProp('blocks', blocks.map(b => (b.id === id ? { ...b, props } : b)));
+  };
+  const removeBlock = (id: string) => onUpdateProp('blocks', blocks.filter(b => b.id !== id));
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = blocks.findIndex(b => b.id === active.id);
+    const newIndex = blocks.findIndex(b => b.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+    onUpdateProp('blocks', arrayMove(blocks, oldIndex, newIndex));
+  };
+
+  return (
+    <div className="space-y-3">
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {blocks.map(b => (
+              <SortableBlockRow key={b.id} block={b} onUpdate={(props) => updateBlock(b.id, props)} onRemove={() => removeBlock(b.id)} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+      {blocks.length === 0 && <p className="text-xs text-gray-400">Aucun bloc — ajoutez-en un ci-dessous.</p>}
+      <div className="pt-2 border-t border-gray-100">
+        <p className="text-xs font-semibold text-gray-500 mb-2">Ajouter un bloc</p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {(Object.keys(FREE_BLOCK_LABELS) as FreeBlockType[]).map(t => (
+            <button key={t} onClick={() => addBlock(t)} className="text-left p-1.5 rounded text-xs hover:bg-gray-50 border border-gray-100 transition-colors hover:border-brand-200">
+              {FREE_BLOCK_LABELS[t].icon} {FREE_BLOCK_LABELS[t].label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function SortableSectionRow({
   section, selected, onSelect, onMoveUp, onMoveDown, onToggle, onRemove, label, icon,
@@ -443,7 +552,9 @@ export default function OnlineStore() {
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-1"><Edit3 size={14} /> Édition</h3>
                 <span className="text-xs text-gray-400">{SECTION_LIBRARY.find(l => l.type === selectedSec.type)?.label}</span>
               </div>
-              {editableFields.length > 0 ? (
+              {selectedSec.type === 'custom-blocks' ? (
+                <FreeBlocksEditor section={selectedSec} onUpdateProp={(key, value) => updateSectionProp(selectedSec.id, key, value)} />
+              ) : editableFields.length > 0 ? (
                 editableFields.map(f => (
                   <div key={f.key}>
                     <label className="block text-xs font-medium text-gray-700 mb-1">{f.label}</label>

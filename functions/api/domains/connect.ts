@@ -16,7 +16,7 @@ interface Env {
   SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
-const ALLOWED_PLAN_CODES = ['pro', 'premium', 'entreprise'];
+const ALLOWED_PLAN_CODES = ['free', 'starter', 'pro', 'premium', 'entreprise', 'enterprise'];
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });

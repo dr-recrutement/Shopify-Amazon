@@ -126,6 +126,35 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
 
   return (
     <div style={{ background: colors.background, fontFamily: fonts.body }}>
+      {/* Scroll Transitions Global Styles */}
+      {theme.scroll_animation && theme.scroll_animation !== 'none' && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          .scroll-anim-slide {
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+          }
+          .scroll-anim-fade {
+            animation: fadeIn 0.8s ease both;
+          }
+          .scroll-anim-zoom {
+            animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+          }
+        `}} />
+      )}
+
+      {/* Live Custom CSS override inject */}
+      {theme.custom_css && <style dangerouslySetInnerHTML={{ __html: theme.custom_css }} />}
       {products.length > 0 && (
         <div className="sticky top-0 z-30 px-4 py-2" style={{ background: colors.background, borderBottom: `1px solid rgba(0,0,0,0.06)` }}>
           <div className="max-w-lg mx-auto relative">
@@ -147,7 +176,7 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
         </div>
       )}
       {sections.filter(s => s.visible).map(s => (
-        <div key={s.id}>
+        <div key={s.id} className={theme.scroll_animation && theme.scroll_animation !== 'none' ? `scroll-anim-${theme.scroll_animation}` : ''}>
           {renderSection(
             s,
             colors,
@@ -157,7 +186,8 @@ export default function Storefront({ slug, tenantId }: StorefrontProps) {
             s.type === 'category-grid' ? categories : undefined,
             addItem,
             totalItems,
-            s.type === 'testimonials' ? reviews : undefined
+            s.type === 'testimonials' ? reviews : undefined,
+            theme.scroll_animation
           )}
         </div>
       ))}

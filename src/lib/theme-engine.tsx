@@ -18,6 +18,148 @@ export interface FreeBlock {
   props: Record<string, any>;
 }
 
+export function ChatFloatWidget({
+  colors,
+  radius,
+  whatsappNumber,
+  welcomeMsg,
+}: {
+  colors: ThemeConfig['colors'];
+  radius: string;
+  whatsappNumber?: string;
+  welcomeMsg?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [chatType, setChatType] = useState<'none' | 'whatsapp' | 'liafrik'>('none');
+  const [messages, setMessages] = useState<{ sender: 'user' | 'agent'; text: string; time: string }[]>([
+    { sender: 'agent', text: welcomeMsg || 'Bonjour ! Comment puis-je vous aider aujourd’hui ?', time: 'À l’instant' },
+  ]);
+  const [input, setInput] = useState('');
+
+  const primary = colors.primary;
+  const secondary = colors.secondary;
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    const userText = input;
+    setInput('');
+    setMessages(prev => [...prev, { sender: 'user', text: userText, time: 'À l’instant' }]);
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        sender: 'agent',
+        text: "Merci pour votre message ! Notre équipe commerciale LiAfrik ou le gérant de la boutique vous répondra sous peu par e-mail ou WhatsApp.",
+        time: 'À l’instant',
+      }]);
+    }, 1000);
+  };
+
+  const startWhatsApp = () => {
+    const num = whatsappNumber || '2250700000000';
+    const text = encodeURIComponent("Bonjour ! Je vous contacte depuis votre boutique en ligne LiAfrik.");
+    window.open(`https://wa.me/${num}?text=${text}`, '_blank');
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[999] font-sans">
+      {open ? (
+        <div className="w-80 h-96 bg-white shadow-2xl flex flex-col mb-4 overflow-hidden border border-gray-100 transition-all duration-300 transform scale-100 origin-bottom-right" style={{ borderRadius: radius }}>
+          {/* Header */}
+          <div className="p-4 text-white flex items-center justify-between" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-ping" />
+              <p className="font-bold text-sm tracking-tight">Support Client & Chat</p>
+            </div>
+            <button onClick={() => { setOpen(false); setChatType('none'); }} className="text-white hover:opacity-80 text-lg">×</button>
+          </div>
+
+          {chatType === 'none' ? (
+            <div className="flex-1 p-6 flex flex-col justify-center gap-3 bg-gray-50">
+              <p className="text-xs text-gray-500 text-center mb-2">Choisissez votre canal de discussion préféré :</p>
+
+              <button
+                onClick={() => {
+                  if (whatsappNumber) {
+                    startWhatsApp();
+                  } else {
+                    setChatType('whatsapp');
+                  }
+                }}
+                className="w-full py-3 px-4 bg-[#25D366] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+              >
+                <span>💬</span> WhatsApp Direct
+              </button>
+
+              <button
+                onClick={() => setChatType('liafrik')}
+                className="w-full py-3 px-4 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+                style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}
+              >
+                <span>🚀</span> Live Chat LiAfrik
+              </button>
+            </div>
+          ) : chatType === 'whatsapp' ? (
+            <div className="flex-1 p-6 flex flex-col justify-between bg-gray-50">
+              <div className="space-y-3 text-center">
+                <span className="text-4xl">📞</span>
+                <p className="font-bold text-sm text-gray-800">Discuter sur WhatsApp</p>
+                <p className="text-xs text-gray-500">Vous allez être redirigé vers l'application officielle WhatsApp pour échanger directement avec le marchand.</p>
+              </div>
+              <button
+                onClick={startWhatsApp}
+                className="w-full py-3 px-4 bg-[#25D366] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2"
+              >
+                Ouvrir WhatsApp
+              </button>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col justify-between bg-gray-50 overflow-hidden">
+              {/* Messages area */}
+              <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs flex flex-col">
+                {messages.map((m, i) => (
+                  <div key={i} className={`max-w-[80%] p-2.5 rounded-xl ${m.sender === 'user' ? 'bg-indigo-50 text-gray-800 self-end ml-auto' : 'bg-white text-gray-800 self-start mr-auto shadow-sm'}`}>
+                    <p>{m.text}</p>
+                    <span className="text-[9px] text-gray-400 block text-right mt-1">{m.time}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Input bar */}
+              <div className="p-2 bg-white border-t border-gray-100 flex gap-2 items-center">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleSend()}
+                  placeholder="Écrivez votre message..."
+                  className="flex-1 bg-gray-50 rounded-lg px-3 py-2 text-xs focus:outline-none border border-gray-200"
+                />
+                <button
+                  onClick={handleSend}
+                  className="p-2 text-white rounded-lg flex items-center justify-center"
+                  style={{ background: primary }}
+                >
+                  ➤
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl cursor-pointer shadow-2xl transition-all duration-300 hover:scale-110 relative animate-bounce"
+        style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}
+      >
+        💬
+        <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-[10px] font-bold flex items-center justify-center border-2 border-white animate-pulse">
+          1
+        </span>
+      </button>
+    </div>
+  );
+}
+
 export function getFreeBlockDefaults(type: FreeBlockType): Record<string, any> {
   switch (type) {
     case 'text': return { text: 'Votre texte ici', size: 'md', align: 'left' };
@@ -36,6 +178,8 @@ export interface ThemeConfig {
   shadow: 'none' | 'subtle' | 'bold';
   sections: ThemeSection[];
   isPublished: boolean;
+  scrollAnimation?: 'none' | 'fade' | 'slide' | 'zoom';
+  customCss?: string;
 }
 
 export const RADIUS_MAP: Record<ThemeConfig['radius'], string> = { sharp: '4px', soft: '16px', round: '28px' };
@@ -102,7 +246,7 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
   { type: 'custom-blocks', label: 'Bloc libre', icon: '🧩' },
 ];
 
-export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' | 'boolean' | 'list' }[]> = {
+export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'date' | 'boolean' | 'list' | 'select'; options?: string[] }[]> = {
   header: [
     { key: 'logo', label: 'Afficher le logo', type: 'boolean' },
     { key: 'nav', label: 'Liens du menu (séparés par des virgules)', type: 'list' },
@@ -113,6 +257,7 @@ export const EDITABLE_PROPS: Record<string, { key: string; label: string; type: 
     { key: 'subtitle', label: 'Sous-titre', type: 'textarea' },
     { key: 'cta', label: 'Bouton (CTA)', type: 'text' },
     { key: 'image', label: 'Image URL', type: 'text' },
+    { key: 'layout', label: 'Disposition', type: 'select', options: ['centered', 'split', 'fullbleed'] },
   ],
   'product-grid': [
     { key: 'title', label: 'Titre', type: 'text' },
@@ -428,6 +573,7 @@ export function renderSection(
   onAddToCart?: (item: AddToCartPayload) => void,
   cartItemCount = 0,
   realReviews?: StorefrontReview[],
+  themeScrollAnimation?: ThemeConfig['scrollAnimation'],
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
@@ -444,6 +590,11 @@ export function renderSection(
   const isLiveContext = realProducts !== undefined;
   const isLiveCategoryContext = realCategories !== undefined;
   const isLiveReviewContext = realReviews !== undefined;
+
+  // Inject scroll animation class
+  const animationClass = themeScrollAnimation && themeScrollAnimation !== 'none'
+    ? `scroll-anim-${themeScrollAnimation}`
+    : '';
 
   switch (section.type) {
     case 'header':
@@ -874,12 +1025,12 @@ export function renderSection(
 
     case 'chat-float':
       return (
-        <div className="fixed bottom-4 right-4 z-30">
-          <div className="w-14 h-14 rounded-full flex items-center justify-center text-white text-xl cursor-pointer transition-all hover:scale-110" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 20px ${hexToRgba(primary, 0.4)}` }}>
-            💬
-          </div>
-          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-xs text-white font-bold">2</div>
-        </div>
+        <ChatFloatWidget
+          colors={colors}
+          radius={r}
+          whatsappNumber={section.props.whatsappNumber}
+          welcomeMsg={section.props.welcomeMsg}
+        />
       );
 
     case 'custom-blocks': {
@@ -1108,6 +1259,118 @@ export const THEME_VARIANTS: ThemeVariant[] = [
         v('s6', 'testimonials'),
         v('s7', 'payments'),
         v('s8', 'footer'),
+      ],
+    }),
+  },
+  // ---- 🌟 PREMIUM AFRICAN & INTERNATIONAL THEMES 🌟 ----
+  {
+    key: 'premium-afrik-art-wax',
+    label: '✨ Afrik Art & Wax (Premium)',
+    siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce',
+      spacing: 'comfortable',
+      radius: 'soft',
+      shadow: 'subtle',
+      isPublished: false,
+      scrollAnimation: 'slide',
+      colors: {
+        primary: '#D97706', // Ocre chaud / Or d'Afrique
+        secondary: '#9D174D', // Rouge Wax profond / Hibiscus
+        accent: '#065F46', // Vert Émeraude forêt
+        background: '#FFFDF9', // Ivoire / Sable chaud
+        text: '#1F2937',
+      },
+      fonts: { heading: 'Space Grotesk', body: 'Space Grotesk' },
+      sections: [
+        v('s1', 'header', { logo: true, nav: ['Collection Wax', 'Robes', 'Accessoires', 'À Propos', 'Contact'], megaMenu: true }),
+        v('s2', 'hero', {
+          layout: 'split',
+          title: 'L’Art du Wax Africain Moderne',
+          subtitle: 'Une fusion unique de motifs ancestraux et de coupes haute couture contemporaines pour illuminer votre style.',
+          cta: 'Découvrir la Collection',
+          image: 'https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&w=800',
+        }),
+        v('s3', 'category-grid', { title: 'Sélections d’Afrique' }),
+        v('s4', 'countdown', { title: 'Vente Privée d’Exception - Éditions Limitées', endDate: '2026-12-31' }),
+        v('s5', 'product-grid', { columns: 4, title: 'Créations Exclusives' }),
+        v('s6', 'testimonials'),
+        v('s7', 'payments'),
+        v('s8', 'chat-float', { whatsappNumber: '2250700000000', welcomeMsg: 'Bienvenue chez Afrik Art ! Discutons sur WhatsApp pour des conseils personnalisés.' }),
+        v('s9', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'premium-lagos-beauty',
+    label: '✨ Lagos Beauty & Cosmetics (Premium)',
+    siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce',
+      spacing: 'comfortable',
+      radius: 'round',
+      shadow: 'bold',
+      isPublished: false,
+      scrollAnimation: 'fade',
+      colors: {
+        primary: '#BE185D', // Rose fuchsia élégant
+        secondary: '#F472B6', // Rose pastel doux
+        accent: '#10B981', // Menthe rafraîchissante
+        background: '#FFFFFF',
+        text: '#111827',
+      },
+      fonts: { heading: 'Poppins', body: 'Inter' },
+      sections: [
+        v('s1', 'header', { logo: true, nav: ['Nouveautés', 'Maquillage', 'Soins de la Peau', 'Blog', 'Contact'], megaMenu: false }),
+        v('s2', 'hero', {
+          layout: 'fullbleed',
+          title: 'Sublimez Votre Éclat Naturel',
+          subtitle: 'Des formules de cosmétiques premium spécialement conçues pour sublimer toutes les teintes de peau avec des ingrédients naturels.',
+          cta: 'Acheter Maintenant',
+          image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&w=1200',
+        }),
+        v('s3', 'product-grid', { columns: 3, title: 'Nos Best-Sellers Éclat' }),
+        v('s4', 'about', { title: 'Inspiré par Lagos, Formulé pour le Monde', text: 'Chaque produit célèbre la diversité de la beauté en mariant la science moderne aux huiles précieuses africaines comme le karité et l’argan.' }),
+        v('s5', 'testimonials'),
+        v('s6', 'newsletter'),
+        v('s7', 'chat-float', { whatsappNumber: '2348000000000', welcomeMsg: 'Hello Glow Getter! Discutez avec nos experts beauté sur WhatsApp.' }),
+        v('s8', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'premium-dakar-tech',
+    label: '✨ Dakar Tech & Mobile (Premium)',
+    siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce',
+      spacing: 'compact',
+      radius: 'sharp',
+      shadow: 'subtle',
+      isPublished: false,
+      scrollAnimation: 'zoom',
+      colors: {
+        primary: '#1E3A8A', // Bleu Royal Tech
+        secondary: '#06B6D4', // Cyan Électrique
+        accent: '#F59E0B', // Ambre Énergie
+        background: '#0F172A', // Mode Sombre Élégant (Ardoise)
+        text: '#F8FAFC',
+      },
+      fonts: { heading: 'Inter', body: 'Inter' },
+      sections: [
+        v('s1', 'header', { logo: true, nav: ['Smartphones', 'Tablettes', 'Accessoires', 'Garantie Dakar', 'Support'], megaMenu: true }),
+        v('s2', 'hero', {
+          layout: 'centered',
+          title: 'Le Futur de la Tech à Portée de Main',
+          subtitle: 'Découvrez les smartphones de dernière génération au meilleur prix du marché, avec livraison express et garantie 24 mois.',
+          cta: 'Découvrir les Offres',
+          image: 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&w=800',
+        }),
+        v('s3', 'countdown', { title: 'Offre Limitée : Tech d’Exception à -40%', endDate: '2026-12-31' }),
+        v('s4', 'product-grid', { columns: 4, title: 'Smartphones & Mobiles Populaires' }),
+        v('s5', 'payments'),
+        v('s6', 'chat-float', { whatsappNumber: '2217700000000', welcomeMsg: 'Assalamou alaykoum ! Un conseiller Dakar Tech est là pour vous guider.' }),
+        v('s7', 'footer'),
       ],
     }),
   },

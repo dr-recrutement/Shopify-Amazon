@@ -19,10 +19,10 @@ function atLeast(plan: string | null | undefined, minimum: PlanId): boolean {
 }
 
 /**
- * Domaine personnalisé (ex: maboutique.com) : réservé à partir du forfait Pro.
+ * Domaine personnalisé (ex: maboutique.com) : disponible sur tous les plans.
  */
 export function planAllowsCustomDomain(plan?: string | null): boolean {
-  return atLeast(plan, 'pro');
+  return true;
 }
 
 /**

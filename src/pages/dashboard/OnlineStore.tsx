@@ -36,6 +36,13 @@ const PRESET_PALETTES = [
   { name: 'Nuit', c: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' } },
 ];
 
+export const SCROLL_ANIMATIONS = [
+  { id: 'none', label: 'Aucune' },
+  { id: 'fade', label: 'Fondu doux (Fade)' },
+  { id: 'slide', label: 'Glissement élégant (Slide Up)' },
+  { id: 'zoom', label: 'Zoom discret (Zoom In)' },
+] as const;
+
 // Hiérarchie des forfaits, du moins cher au plus cher.
 // ⚠️ Doit correspondre exactement aux codes de la table Supabase `plans`.
 const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, entreprise: 3 };
@@ -282,6 +289,8 @@ export default function OnlineStore() {
         radius: config.radius || 'soft',
         shadow: config.shadow || 'none',
         isPublished: config.is_published || false,
+        scrollAnimation: config.scroll_animation || 'none',
+        customCss: config.custom_css || '',
       });
       setPurchasedThemeIds(config.purchased_themes || []);
     }
@@ -354,6 +363,7 @@ export default function OnlineStore() {
     const payload = {
       tenant_id: tenant.id, site_type: newTheme.siteType, sections: newTheme.sections,
       colors: newTheme.colors, spacing: newTheme.spacing, radius: newTheme.radius, shadow: newTheme.shadow, fonts: newTheme.fonts, is_published: published,
+      scroll_animation: newTheme.scrollAnimation, custom_css: newTheme.customCss,
     };
     const { data: existing } = await supabase.from('theme_configs').select('id').eq('tenant_id', tenant.id).maybeSingle();
     const { error: saveErr } = existing
@@ -580,6 +590,14 @@ export default function OnlineStore() {
                         placeholder="Accueil, Boutique, Contact"
                         className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
                       />
+                    ) : f.type === 'select' ? (
+                      <select
+                        value={selectedSec.props[f.key] || ''}
+                        onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)}
+                        className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 bg-white"
+                      >
+                        {(f.options || []).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      </select>
                     ) : (
                       <input type="text" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
                     )}
@@ -668,6 +686,29 @@ export default function OnlineStore() {
                   ))}
                 </div>
               </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Animation au défilement (Scroll)</label>
+                <select
+                  value={theme.scrollAnimation || 'none'}
+                  onChange={e => setTheme({ ...theme, scrollAnimation: e.target.value as any })}
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 bg-white text-gray-700 font-medium"
+                >
+                  {SCROLL_ANIMATIONS.map(sa => <option key={sa.id} value={sa.id}>{sa.label}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Code CSS Personnalisé (Style overrides)</label>
+                <textarea
+                  rows={3}
+                  value={theme.customCss || ''}
+                  onChange={e => setTheme({ ...theme, customCss: e.target.value })}
+                  placeholder="/* Ex: .hero { border: 4px solid red; } */"
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:border-brand-400 bg-white text-gray-700"
+                />
+              </div>
+
               <div className="pt-2 border-t border-gray-100">
                 <p className="text-xs font-semibold text-gray-500 mb-2">Palettes prédéfinies</p>
                 <div className="grid grid-cols-2 gap-1">
@@ -764,9 +805,12 @@ export default function OnlineStore() {
             </div>
 
             <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background, fontFamily: theme.fonts.body }}>
+              {/* Inject Custom CSS live override inside preview canvas */}
+              {theme.customCss && <style dangerouslySetInnerHTML={{ __html: theme.customCss }} />}
+
               {theme.sections.filter(s => s.visible).map(s => (
                 <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
-                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined, undefined, 0, s.type === 'testimonials' ? reviews : undefined)}
+                  {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined, undefined, 0, s.type === 'testimonials' ? reviews : undefined, theme.scrollAnimation)}
                 </div>
               ))}
               {theme.sections.filter(s => s.visible).length === 0 && (

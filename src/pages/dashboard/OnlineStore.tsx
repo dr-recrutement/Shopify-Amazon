@@ -643,82 +643,153 @@ export default function OnlineStore() {
           )}
 
           {panel === 'design' && (
-            <Card className="p-3 space-y-3">
-              <h3 className="text-sm font-semibold text-gray-900">Polices</h3>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Titres</label>
-                <select
-                  value={theme.fonts.heading}
-                  onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
-                  style={{ fontFamily: theme.fonts.heading }}
-                >
-                  {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Texte courant</label>
-                <select
-                  value={theme.fonts.body}
-                  onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
-                  style={{ fontFamily: theme.fonts.body }}
-                >
-                  {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
-                </select>
+            <Card className="p-3 space-y-4">
+              <div className="flex items-center gap-1.5 pb-2 border-b border-gray-100">
+                <Palette size={16} className="text-brand-500" />
+                <h3 className="text-sm font-bold text-gray-900">Éditeur de Styles Globaux</h3>
               </div>
 
-              <h3 className="text-sm font-semibold text-gray-900 pt-2 border-t border-gray-100">Couleurs</h3>
-              {([['primary', 'Primaire'], ['secondary', 'Secondaire'], ['accent', 'Accent'], ['background', 'Fond'], ['text', 'Texte']] as const).map(([key, label]) => (
-                <div key={key}>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">{label}</label>
-                  <div className="flex gap-2">
-                    <input type="color" value={theme.colors[key]} onChange={e => updateColor(key, e.target.value)} className="w-10 h-8 rounded border border-gray-200 cursor-pointer" />
-                    <input value={theme.colors[key]} onChange={e => updateColor(key, e.target.value)} className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs font-mono focus:outline-none focus:border-brand-400" />
-                  </div>
+              {/* Typography Section */}
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Polices & Typographies</p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Titres & En-têtes</label>
+                  <select
+                    value={theme.fonts.heading}
+                    onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
+                    className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 font-medium"
+                    style={{ fontFamily: theme.fonts.heading }}
+                  >
+                    {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                  </select>
                 </div>
-              ))}
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Espacement</label>
-                <div className="flex gap-1">
-                  {(['compact', 'comfortable', 'spacious'] as const).map(s => (
-                    <button key={s} onClick={() => setTheme({ ...theme, spacing: s })} className={`flex-1 py-1.5 rounded text-xs capitalize transition-colors ${theme.spacing === s ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>{s}</button>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Corps de texte</label>
+                  <select
+                    value={theme.fonts.body}
+                    onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
+                    className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400"
+                    style={{ fontFamily: theme.fonts.body }}
+                  >
+                    {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Color Settings */}
+              <div className="space-y-2 pt-2 border-t border-gray-50">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Palette de Couleurs</p>
+                <div className="grid grid-cols-1 gap-2.5">
+                  {([['primary', 'Primaire'], ['secondary', 'Secondaire'], ['accent', 'Accent'], ['background', 'Fond de site'], ['text', 'Texte de base']] as const).map(([key, label]) => (
+                    <div key={key} className="flex items-center justify-between gap-2 p-1.5 rounded-lg border border-gray-100 bg-gray-50/50">
+                      <span className="text-xs font-medium text-gray-600">{label}</span>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="color"
+                          value={theme.colors[key]}
+                          onChange={e => updateColor(key, e.target.value)}
+                          className="w-7 h-7 rounded-md border border-gray-200 cursor-pointer flex-shrink-0"
+                        />
+                        <input
+                          value={theme.colors[key]}
+                          onChange={e => updateColor(key, e.target.value)}
+                          className="w-16 px-1.5 py-1 border border-gray-200 rounded text-[10px] font-mono text-gray-700 bg-white"
+                        />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Animation au défilement (Scroll)</label>
+              {/* Sizing & Borders */}
+              <div className="space-y-2 pt-2 border-t border-gray-50">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Bordures & Espacement</p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Arrondi des boutons & cartes</label>
+                  <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+                    {([['sharp', 'Droit'], ['soft', 'Adouci'], ['round', 'Arrondi']] as const).map(([rCode, rLabel]) => (
+                      <button
+                        key={rCode}
+                        onClick={() => setTheme({ ...theme, radius: rCode })}
+                        className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${theme.radius === rCode ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      >
+                        {rLabel}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Espacement vertical</label>
+                  <div className="flex gap-1">
+                    {(['compact', 'comfortable', 'spacious'] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setTheme({ ...theme, spacing: s })}
+                        className={`flex-1 py-1.5 rounded text-[10px] font-bold capitalize transition-colors ${theme.spacing === s ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                      >
+                        {s === 'compact' ? 'Compact' : s === 'comfortable' ? 'Confort' : 'Aéré'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Ombres portées</label>
+                  <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+                    {([['none', 'Sans'], ['subtle', 'Légère'], ['bold', 'Prononcée']] as const).map(([shCode, shLabel]) => (
+                      <button
+                        key={shCode}
+                        onClick={() => setTheme({ ...theme, shadow: shCode })}
+                        className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${theme.shadow === shCode ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
+                      >
+                        {shLabel}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Dynamic Scroll Animations */}
+              <div className="space-y-1.5 pt-2 border-t border-gray-50">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Effets & Transitions</p>
+                <label className="block text-xs font-medium text-gray-600">Animation au scroll</label>
                 <select
                   value={theme.scrollAnimation || 'none'}
                   onChange={e => setTheme({ ...theme, scrollAnimation: e.target.value as any })}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 bg-white text-gray-700 font-medium"
+                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 bg-white font-medium text-gray-700"
                 >
                   {SCROLL_ANIMATIONS.map(sa => <option key={sa.id} value={sa.id}>{sa.label}</option>)}
                 </select>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Code CSS Personnalisé (Style overrides)</label>
+              {/* Advanced Inject Custom CSS Override */}
+              <div className="space-y-1.5 pt-2 border-t border-gray-50">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">CSS Personnalisé (Style overrides)</p>
                 <textarea
-                  rows={3}
+                  rows={4}
                   value={theme.customCss || ''}
                   onChange={e => setTheme({ ...theme, customCss: e.target.value })}
-                  placeholder="/* Ex: .hero { border: 4px solid red; } */"
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:border-brand-400 bg-white text-gray-700"
+                  placeholder="/* Saisissez votre code CSS ici. Exemple : \n.hero { border: 2px solid #F2632C; } */"
+                  className="w-full px-2 py-2 border border-gray-200 rounded-xl text-[11px] font-mono focus:outline-none focus:border-brand-400 bg-white text-gray-800 leading-normal"
                 />
               </div>
 
+              {/* Presets */}
               <div className="pt-2 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 mb-2">Palettes prédéfinies</p>
-                <div className="grid grid-cols-2 gap-1">
+                <p className="text-xs font-semibold text-gray-500 mb-2">Palettes recommandées par l'assistant</p>
+                <div className="grid grid-cols-2 gap-1.5">
                   {PRESET_PALETTES.map(p => (
-                    <button key={p.name} onClick={() => setTheme({ ...theme, colors: p.c })} className="flex items-center gap-1.5 p-1.5 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                    <button
+                      key={p.name}
+                      onClick={() => setTheme({ ...theme, colors: p.c })}
+                      className="flex items-center justify-between p-2 rounded-xl border border-gray-100 hover:border-brand-300 bg-white transition-all shadow-sm"
+                    >
+                      <span className="text-[10px] font-bold text-gray-700">{p.name}</span>
                       <div className="flex gap-0.5">
-                        <div className="w-3 h-3 rounded-full" style={{ background: p.c.primary }} />
-                        <div className="w-3 h-3 rounded-full" style={{ background: p.c.secondary }} />
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.c.primary }} />
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.c.secondary }} />
                       </div>
-                      <span className="text-xs">{p.name}</span>
                     </button>
                   ))}
                 </div>
@@ -727,31 +798,96 @@ export default function OnlineStore() {
           )}
 
           {panel === 'themes' && (
-            <Card className="p-3">
-              <h3 className="text-sm font-semibold text-gray-900 mb-2">Boutique de thèmes</h3>
-              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+            <Card className="p-3 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1">
+                  <Store size={16} className="text-brand-500" /> Boutique de Thèmes
+                </h3>
+                <span className="text-xs text-brand-600 font-semibold bg-brand-50 px-2 py-1 rounded-full">
+                  {storeThemes.length} disponibles
+                </span>
+              </div>
+              <p className="text-xs text-gray-500">
+                Sélectionnez un thème haut de gamme pour transformer instantanément l'identité visuelle et le style de votre boutique en ligne.
+              </p>
+
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
                 {storeThemes.map(st => {
                   const owned = purchasedThemeIds.includes(st.id) || !st.is_premium;
+                  const themeConfig = st.variant_key ? getThemeVariant(st.variant_key) : null;
+                  const primaryColor = themeConfig?.colors?.primary || '#F2632C';
+                  const secondaryColor = themeConfig?.colors?.secondary || '#16a34a';
+
                   return (
-                    <div key={st.id} className={`p-3 rounded-xl border-2 transition-all ${owned ? 'border-green-200 bg-green-50/30' : 'border-gray-200 hover:border-brand-200'}`}>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-semibold text-gray-900">{st.name}</p>
+                    <div
+                      key={st.id}
+                      className={`group relative p-3 rounded-2xl border transition-all ${
+                        owned
+                          ? 'border-emerald-200 bg-emerald-50/20 hover:border-emerald-300'
+                          : 'border-gray-200 hover:border-brand-300 bg-white shadow-sm hover:shadow-md'
+                      }`}
+                    >
+                      {/* Premium Header Tag */}
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-xs font-bold text-gray-900 group-hover:text-brand-600 transition-colors">
+                          {st.name}
+                        </p>
                         {st.is_premium ? (
-                          <span className="text-xs px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full font-medium">{(st.price_cents / 100).toLocaleString('fr-FR')} $</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-brand-100 text-brand-800 rounded-full font-bold">
+                            {(st.price_cents / 100).toLocaleString('fr-FR')} USD
+                          </span>
                         ) : (
-                          <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">Gratuit</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold">
+                            Gratuit
+                          </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500 mb-2">{st.description}</p>
-                      {!st.variant_key && (
-                        <p className="text-[10px] text-amber-600 mb-2">⚠️ Aucune variante de design liée — l'application retombera sur le layout par défaut.</p>
-                      )}
-                      <ThemePreviewSVG variantKey={st.variant_key} />
-                      <div className="mt-2">
+
+                      <p className="text-[11px] text-gray-500 leading-relaxed mb-2.5">
+                        {st.description}
+                      </p>
+
+                      {/* Dynamic Color Indicators */}
+                      <div className="flex items-center gap-1 mb-2">
+                        <span className="text-[10px] text-gray-400 mr-1 font-medium">Palette :</span>
+                        <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: primaryColor }} title="Couleur principale" />
+                        <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: secondaryColor }} title="Couleur secondaire" />
+                        {themeConfig?.colors?.background && (
+                          <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: themeConfig.colors.background }} title="Couleur de fond" />
+                        )}
+                        <span className="text-[10px] text-gray-500 font-mono ml-auto capitalize">
+                          {themeConfig?.fonts?.heading || 'Montserrat'}
+                        </span>
+                      </div>
+
+                      {/* Theme Thumbnail Preview Card */}
+                      <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50 p-1.5 group-hover:border-brand-200 transition-all">
+                        <ThemePreviewSVG variantKey={st.variant_key} />
+                        <div className="absolute inset-0 bg-gray-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl">
+                          <span className="text-xs text-white font-bold bg-gray-900/90 px-3 py-1.5 rounded-lg shadow-md border border-white/20">
+                            Aperçu {st.name}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3">
                         {owned ? (
-                          <Button size="sm" variant="secondary" onClick={() => applyTheme(st)} className="w-full">Appliquer</Button>
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            onClick={() => applyTheme(st)}
+                            className="w-full text-xs font-bold py-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg"
+                          >
+                            <Palette size={13} className="inline mr-1" /> Appliquer le thème
+                          </Button>
                         ) : (
-                          <Button size="sm" onClick={() => purchaseTheme(st)} className="w-full">Acheter</Button>
+                          <Button
+                            size="sm"
+                            onClick={() => purchaseTheme(st)}
+                            className="w-full text-xs font-bold py-2 bg-brand-500 hover:bg-brand-600 text-white shadow-sm rounded-lg"
+                          >
+                            Activer l'accès Premium
+                          </Button>
                         )}
                       </div>
                     </div>

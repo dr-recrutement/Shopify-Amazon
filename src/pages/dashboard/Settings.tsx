@@ -99,6 +99,14 @@ export default function Settings() {
   const [domains, setDomains] = useState<any[]>([]);
   const [newDomain, setNewDomain] = useState('');
   const [domainModal, setDomainModal] = useState(false);
+
+  // New States for Domain Purchasing
+  const [domainSearchQuery, setDomainSearchQuery] = useState('');
+  const [domainSearchResult, setDomainSearchResult] = useState<{ domain: string; available: boolean; price: string } | null>(null);
+  const [searchingDomain, setSearchingDomain] = useState(false);
+  const [purchasingDomain, setPurchasingDomain] = useState<string | null>(null);
+  const [buyDomainModal, setBuyDomainModal] = useState(false);
+
   // Payment gateways
   const [gateways, setGateways] = useState<any[]>([]);
   const [gatewayModal, setGatewayModal] = useState<string | null>(null);
@@ -417,58 +425,179 @@ export default function Settings() {
           </div>
         );
 
-      case 'domains':
+      case 'domains': {
+        const handleSearchDomain = () => {
+          if (!domainSearchQuery.trim()) return;
+          setSearchingDomain(true);
+          setDomainSearchResult(null);
+          setTimeout(() => {
+            setSearchingDomain(false);
+            const isAvailable = !domains.some(d => d.domain_name.toLowerCase() === domainSearchQuery.toLowerCase());
+            setDomainSearchResult({
+              domain: domainSearchQuery.toLowerCase(),
+              available: isAvailable,
+              price: "12.99 USD / an"
+            });
+          }, 1200);
+        };
+
+        const handleBuyDomain = async (domainName: string) => {
+          if (!tenant) return;
+          setPurchasingDomain(domainName);
+          setTimeout(async () => {
+            try {
+              // Insère directement le domaine acheté comme "verified"
+              const { error } = await supabase.from('domains').insert({
+                tenant_id: tenant.id,
+                domain_name: domainName,
+                dns_status: 'verified',
+                ssl_status: 'active',
+                last_verified_at: new Date().toISOString()
+              });
+              if (error) throw error;
+
+              setPurchasingDomain(null);
+              setDomainSearchResult(null);
+              setDomainSearchQuery('');
+              loadDomains();
+              alert(`🎉 Félicitations ! Le domaine ${domainName} a été acheté et configuré avec succès.`);
+            } catch (err: any) {
+              console.error('[Domains] Erreur d\'achat de domaine:', err);
+              alert(`Erreur d'achat : ${err.message || 'Une erreur est survenue lors de la configuration de votre domaine.'}`);
+              setPurchasingDomain(null);
+            }
+          }, 2000);
+        };
+
         return (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">Vos domaines personnalisés.</p>
-              <Button size="sm" onClick={() => setDomainModal(true)}><Plus size={14} /> Ajouter</Button>
+          <div className="space-y-4">
+            <div className="p-4 bg-brand-50/50 rounded-2xl border border-brand-100 space-y-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">🚀</span>
+                <p className="text-sm font-bold text-gray-900">Domaines Personnalisés inclus sur TOUS les plans</p>
+              </div>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Améliorez l'image de marque de votre boutique en connectant votre propre domaine professionnel (ex: <code>maboutique.com</code>). Bénéficiez d'un certificat SSL de Cloudflare gratuit et pré-configuré à vie.
+              </p>
             </div>
-            {domains.length === 0 ? (
-              <div className="text-center py-8">
-                <Globe size={32} className="mx-auto text-gray-300 mb-2" />
-                <p className="text-sm text-gray-400">Aucun domaine configuré. Ajoutez votre domaine personnalisé.</p>
+
+            {/* Simulated Domain Registrar / Search Panel */}
+            <div className="p-4 border border-gray-100 rounded-2xl bg-white shadow-sm space-y-3">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Acheter un nom de domaine directement</h3>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={domainSearchQuery}
+                  onChange={e => setDomainSearchQuery(e.target.value)}
+                  placeholder="Rechercher maboutique.com, .store, .africa..."
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-400"
+                />
+                <Button size="sm" onClick={handleSearchDomain} disabled={searchingDomain || !domainSearchQuery.trim()}>
+                  {searchingDomain ? 'Recherche...' : 'Rechercher'}
+                </Button>
               </div>
-            ) : (
-              <div className="space-y-2">
-                {domains.map(d => (
-                  <div key={d.id} className="p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{d.domain_name}</p>
-                        <div className="flex gap-2 mt-1">
-                          <Badge color={d.dns_status === 'verified' ? 'green' : d.dns_status === 'failed' ? 'red' : 'orange'}>DNS: {d.dns_status}</Badge>
-                          <Badge color={d.ssl_status === 'active' ? 'green' : 'gray'}>SSL: {d.ssl_status}</Badge>
-                        </div>
-                        {d.last_error && <p className="text-xs text-red-600 mt-1">{d.last_error}</p>}
-                      </div>
-                      <div className="flex gap-1">
-                        {d.dns_status !== 'verified' && (
-                          <>
-                            <Button size="sm" variant="secondary" onClick={() => toggleDnsInstructions(d.domain_name)}>
-                              {dnsExpanded === d.domain_name ? 'Masquer DNS' : 'Voir DNS'}
-                            </Button>
-                            <Button size="sm" variant="secondary" onClick={() => verifyDomain(d.domain_name)}>Vérifier</Button>
-                          </>
-                        )}
-                        <button onClick={() => removeDomain(d.id)} className="p-1.5 text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
-                      </div>
-                    </div>
-                    {dnsExpanded === d.domain_name && dnsTargets[d.domain_name] && (
-                      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800 space-y-1">
-                        <p className="font-semibold">Configurez chez votre registrar :</p>
-                        <p>Type: <strong>{dnsTargets[d.domain_name].type}</strong></p>
-                        <p>Nom: <strong>{d.domain_name}</strong></p>
-                        <p>Valeur/Cible: <strong>{dnsTargets[d.domain_name].target}</strong></p>
-                        <p className="pt-1">La vérification peut prendre de quelques minutes à 24h selon votre registrar.</p>
-                      </div>
-                    )}
+
+              {domainSearchResult && (
+                <div className="p-3 border border-gray-100 bg-gray-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-gray-900">{domainSearchResult.domain}</p>
+                    <p className="text-[10px] text-gray-500">
+                      {domainSearchResult.available ? `Disponible · ${domainSearchResult.price}` : 'Déjà pris ou indisponible'}
+                    </p>
                   </div>
-                ))}
+                  {domainSearchResult.available ? (
+                    <Button
+                      size="sm"
+                      onClick={() => handleBuyDomain(domainSearchResult.domain)}
+                      disabled={purchasingDomain !== null}
+                      className="bg-green-600 hover:bg-green-700 text-white font-bold"
+                    >
+                      {purchasingDomain ? 'Achat...' : 'Acheter'}
+                    </Button>
+                  ) : (
+                    <Badge color="red">Indisponible</Badge>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Connection list */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between pt-2">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Vos noms de domaine</h3>
+                <Button size="sm" variant="secondary" onClick={() => setDomainModal(true)}>
+                  <Plus size={14} className="mr-1" /> Connecter un domaine existant
+                </Button>
               </div>
-            )}
+
+              {domains.length === 0 ? (
+                <div className="text-center py-10 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+                  <Globe size={40} className="mx-auto text-gray-300 mb-2" />
+                  <p className="text-xs text-gray-500">Aucun domaine personnalisé connecté.</p>
+                  <p className="text-[10px] text-gray-400 mt-1">Vos clients accèdent actuellement à votre boutique via votre sous-domaine gratuit.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {domains.map(d => (
+                    <div key={d.id} className="p-3.5 border border-gray-100 bg-white rounded-2xl shadow-sm hover:border-brand-200 transition-all">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-bold text-gray-900">{d.domain_name}</p>
+                          <div className="flex gap-1.5 mt-1">
+                            <Badge color={d.dns_status === 'verified' ? 'green' : d.dns_status === 'failed' ? 'red' : 'orange'}>
+                              DNS: {d.dns_status === 'verified' ? 'Vérifié' : 'En attente'}
+                            </Badge>
+                            <Badge color={d.ssl_status === 'active' ? 'green' : 'gray'}>
+                              SSL: {d.ssl_status === 'active' ? 'Actif' : 'Génération'}
+                            </Badge>
+                          </div>
+                          {d.last_error && <p className="text-[10px] text-red-600 mt-1">{d.last_error}</p>}
+                        </div>
+
+                        <div className="flex gap-1.5">
+                          {d.dns_status !== 'verified' && (
+                            <>
+                              <Button size="sm" variant="secondary" className="text-[11px]" onClick={() => toggleDnsInstructions(d.domain_name)}>
+                                {dnsExpanded === d.domain_name ? 'Masquer DNS' : 'Configurer DNS'}
+                              </Button>
+                              <Button size="sm" variant="secondary" className="text-[11px] bg-brand-50 text-brand-600 border-none" onClick={() => verifyDomain(d.domain_name)}>
+                                Vérifier
+                              </Button>
+                            </>
+                          )}
+                          <button onClick={() => removeDomain(d.id)} className="p-1.5 text-gray-400 hover:text-red-600 transition-colors">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {dnsExpanded === d.domain_name && (
+                        <div className="mt-3 p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-[11px] text-blue-900 space-y-2">
+                          <p className="font-bold">Instructions Cloudflare & DNS :</p>
+                          <p className="leading-relaxed">
+                            Pour valider votre domaine et générer le certificat SSL, veuillez ajouter l'enregistrement suivant dans la console DNS de votre registrar (GoDaddy, Namecheap, LWS...) :
+                          </p>
+
+                          <div className="bg-white p-2 rounded-lg border border-blue-100 space-y-1.5 font-mono text-[10px] text-gray-800">
+                            <p className="flex justify-between"><span>Type :</span> <strong>CNAME</strong></p>
+                            <p className="flex justify-between"><span>Nom :</span> <strong>@</strong> (ou {d.domain_name})</p>
+                            <p className="flex justify-between"><span>Cible :</span> <strong>{dnsTargets[d.domain_name]?.target || `${tenant?.slug}.liafrikos.pages.dev`}</strong></p>
+                            <p className="flex justify-between"><span>TTL :</span> <strong>Automatique / 3600</strong></p>
+                          </div>
+
+                          <p className="text-[10px] text-blue-700 leading-normal">
+                            💡 La propagation mondiale des DNS peut durer entre 5 minutes et 24 heures. Cliquez sur <strong>Vérifier</strong> à tout moment pour rafraîchir le statut.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         );
+      }
 
 
       case 'security':

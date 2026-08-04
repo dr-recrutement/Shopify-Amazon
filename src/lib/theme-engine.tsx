@@ -9,7 +9,6 @@ export interface ThemeSection {
   props: Record<string, any>;
 }
 
-// ============ Bloc libre : liberté de composition à l'intérieur d'une section ============
 export type FreeBlockType = 'text' | 'image' | 'button' | 'spacer';
 
 export interface FreeBlock {
@@ -31,32 +30,120 @@ export function ChatFloatWidget({
 }) {
   const [open, setOpen] = useState(false);
   const [chatType, setChatType] = useState<'none' | 'whatsapp' | 'liafrik'>('none');
-  const [messages, setMessages] = useState<{ sender: 'user' | 'agent'; text: string; time: string }[]>([
-    { sender: 'agent', text: welcomeMsg || 'Bonjour ! Comment puis-je vous aider aujourd’hui ?', time: 'À l’instant' },
-  ]);
+  const [messages, setMessages] = useState<{ sender: 'user' | 'agent'; text: string; time: string }[]>([]);
   const [input, setInput] = useState('');
+  const [sessionId, setSessionId] = useState<string>('');
 
   const primary = colors.primary;
   const secondary = colors.secondary;
 
+  // Initialize session and sync with localStorage
+  import('react').then(({ useEffect }) => {
+    useEffect(() => {
+      let activeSessId = localStorage.getItem('os_chat_session_id') || '';
+      if (!activeSessId) {
+        activeSessId = `os_sess_${Math.random().toString(36).substring(2, 9)}`;
+        localStorage.setItem('os_chat_session_id', activeSessId);
+      }
+      setSessionId(activeSessId);
+
+      const storedMsgs = localStorage.getItem(`os_chat_messages_${activeSessId}`);
+      if (storedMsgs) {
+        setMessages(JSON.parse(storedMsgs));
+      } else {
+        const initial = [
+          { sender: 'agent' as const, text: welcomeMsg || 'Bonjour ! Comment puis-je vous aider aujourd’hui ?', time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }
+        ];
+        setMessages(initial);
+        localStorage.setItem(`os_chat_messages_${activeSessId}`, JSON.stringify(initial));
+
+        // Register session globally
+        const registry = JSON.parse(localStorage.getItem('os_active_chat_sessions') || '[]');
+        if (!registry.some((s: any) => s.id === activeSessId)) {
+          registry.push({
+            id: activeSessId,
+            customerName: `Client de ${window.location.hostname}`,
+            currentPage: window.location.pathname,
+            lastMessage: initial[0].text,
+            updatedAt: new Date().toISOString(),
+          });
+          localStorage.setItem('os_active_chat_sessions', JSON.stringify(registry));
+        }
+      }
+    }, [welcomeMsg]);
+
+    // Live update checker for replies from merchant dashboard
+    useEffect(() => {
+      if (!sessionId) return;
+      const interval = setInterval(() => {
+        const storedMsgs = localStorage.getItem(`os_chat_messages_${sessionId}`);
+        if (storedMsgs) {
+          const parsed = JSON.parse(storedMsgs);
+          if (parsed.length !== messages.length) {
+            setMessages(parsed);
+          }
+        }
+      }, 800);
+      return () => clearInterval(interval);
+    }, [sessionId, messages.length]);
+  });
+
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || !sessionId) return;
     const userText = input;
     setInput('');
-    setMessages(prev => [...prev, { sender: 'user', text: userText, time: 'À l’instant' }]);
 
+    const timeStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const updated = [...messages, { sender: 'user' as const, text: userText, time: timeStr }];
+    setMessages(updated);
+    localStorage.setItem(`os_chat_messages_${sessionId}`, JSON.stringify(updated));
+
+    // Update session list registry
+    const registry = JSON.parse(localStorage.getItem('os_active_chat_sessions') || '[]');
+    const idx = registry.findIndex((s: any) => s.id === sessionId);
+    if (idx !== -1) {
+      registry[idx].lastMessage = userText;
+      registry[idx].updatedAt = new Date().toISOString();
+      registry[idx].currentPage = window.location.pathname;
+    } else {
+      registry.push({
+        id: sessionId,
+        customerName: `Client de ${window.location.hostname}`,
+        currentPage: window.location.pathname,
+        lastMessage: userText,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+    localStorage.setItem('os_active_chat_sessions', JSON.stringify(registry));
+
+    // Automated fallback response if no quick reply is given by merchant within 1.5 seconds
     setTimeout(() => {
-      setMessages(prev => [...prev, {
-        sender: 'agent',
-        text: "Merci pour votre message ! Notre équipe commerciale LiAfrik ou le gérant de la boutique vous répondra sous peu par e-mail ou WhatsApp.",
-        time: 'À l’instant',
-      }]);
-    }, 1000);
+      const currentMsgs = JSON.parse(localStorage.getItem(`os_chat_messages_${sessionId}`) || '[]');
+      // Only reply if last message was from the user (i.e. merchant didn't reply yet)
+      if (currentMsgs.length > 0 && currentMsgs[currentMsgs.length - 1].sender === 'user') {
+        const replyTime = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        const finalMsgs = [...currentMsgs, {
+          sender: 'agent' as const,
+          text: "Votre message a bien été transmis au gérant de la boutique. Nous vous répondons très rapidement !",
+          time: replyTime,
+        }];
+        setMessages(finalMsgs);
+        localStorage.setItem(`os_chat_messages_${sessionId}`, JSON.stringify(finalMsgs));
+
+        const reg = JSON.parse(localStorage.getItem('os_active_chat_sessions') || '[]');
+        const sIdx = reg.findIndex((s: any) => s.id === sessionId);
+        if (sIdx !== -1) {
+          reg[sIdx].lastMessage = "En attente d'agent...";
+          reg[sIdx].updatedAt = new Date().toISOString();
+          localStorage.setItem('os_active_chat_sessions', JSON.stringify(reg));
+        }
+      }
+    }, 1500);
   };
 
   const startWhatsApp = () => {
     const num = whatsappNumber || '2250700000000';
-    const text = encodeURIComponent("Bonjour ! Je vous contacte depuis votre boutique en ligne LiAfrik.");
+    const text = encodeURIComponent("Bonjour ! Je vous contacte depuis votre boutique en ligne Os.");
     window.open(`https://wa.me/${num}?text=${text}`, '_blank');
   };
 
@@ -85,7 +172,7 @@ export function ChatFloatWidget({
                     setChatType('whatsapp');
                   }
                 }}
-                className="w-full py-3 px-4 bg-[#25D366] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+                className="w-full py-3 px-4 bg-[#25D366] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm animate-pulse"
               >
                 <span>💬</span> WhatsApp Direct
               </button>
@@ -95,7 +182,7 @@ export function ChatFloatWidget({
                 className="w-full py-3 px-4 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
                 style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}
               >
-                <span>🚀</span> Live Chat LiAfrik
+                <span>🚀</span> Live Chat Privé
               </button>
             </div>
           ) : chatType === 'whatsapp' ? (
@@ -114,7 +201,6 @@ export function ChatFloatWidget({
             </div>
           ) : (
             <div className="flex-1 flex flex-col justify-between bg-gray-50 overflow-hidden">
-              {/* Messages area */}
               <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs flex flex-col">
                 {messages.map((m, i) => (
                   <div key={i} className={`max-w-[80%] p-2.5 rounded-xl ${m.sender === 'user' ? 'bg-indigo-50 text-gray-800 self-end ml-auto' : 'bg-white text-gray-800 self-start mr-auto shadow-sm'}`}>
@@ -123,7 +209,6 @@ export function ChatFloatWidget({
                   </div>
                 ))}
               </div>
-              {/* Input bar */}
               <div className="p-2 bg-white border-t border-gray-100 flex gap-2 items-center">
                 <input
                   type="text"
@@ -184,11 +269,9 @@ export interface ThemeConfig {
 
 export const RADIUS_MAP: Record<ThemeConfig['radius'], string> = { sharp: '4px', soft: '16px', round: '28px' };
 
-// Polices disponibles pour la personnalisation (titre + corps de texte),
-// chargées dynamiquement depuis Google Fonts.
 export const FONT_OPTIONS = [
   'Montserrat', 'Poppins', 'Inter', 'Playfair Display', 'Roboto',
-  'Lato', 'Nunito', 'Raleway', 'Open Sans', 'Space Grotesk',
+  'Lato', 'Raleway', 'Open Sans', 'Space Grotesk',
 ] as const;
 
 export function googleFontsHref(fonts: { heading: string; body: string }): string {
@@ -306,8 +389,9 @@ export function getSectionDefaults(type: ThemeSection['type']): Record<string, a
   return d[type] || {};
 }
 
+// Default colors: Ocean Blue (#0369A1) as the principal theme color
 export function defaultThemeForType(siteType: SiteType): ThemeConfig {
-  const baseColors = { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' };
+  const baseColors = { primary: '#0369A1', secondary: '#0284C7', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' };
   const baseFonts = { heading: 'Montserrat', body: 'Montserrat' };
 
   if (siteType === 'landing') {
@@ -329,7 +413,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       siteType, colors: baseColors, fonts: baseFonts, spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
       sections: [
         { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Boutique', 'Best Seller', 'À propos', 'Contact'], megaMenu: true } },
-        { id: 's2', type: 'hero', visible: true, props: { title: 'Bienvenue', subtitle: 'Découvrez nos produits', cta: 'Shop Now', image: '', layout: 'centered' } },
+        { id: 's2', type: 'hero', visible: true, props: { title: 'Bienvenue sur notre boutique', subtitle: 'Découvrez des sélections d\'exception pour sublimer votre quotidien.', cta: 'Acheter maintenant', image: '', layout: 'centered' } },
         { id: 's3', type: 'category-grid', visible: true, props: { title: 'Catégories' } },
         { id: 's4', type: 'countdown', visible: true, props: { title: 'Promo flash', endDate: '2026-12-31' } },
         { id: 's5', type: 'filters-list', visible: true, props: { filters: ['Marque', 'Prix', 'Couleur', 'Taille'] } },
@@ -360,8 +444,8 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     siteType: 'marketplace', colors: baseColors, fonts: baseFonts, spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
     sections: [
       { id: 's1', type: 'header', visible: true, props: { logo: true, nav: ['Accueil', 'Shop', 'Best Seller', 'À propos', 'Contact'], megaMenu: true } },
-      { id: 's2', type: 'hero', visible: true, props: { title: "Tout l'Afrique, une marketplace", subtitle: 'Des milliers de produits', cta: 'Parcourir', image: '', layout: 'centered' } },
-      { id: 's3', type: 'category-grid', visible: true, props: { title: 'Browse Categories' } },
+      { id: 's2', type: 'hero', visible: true, props: { title: "Tout l'Afrique, une marketplace", subtitle: 'Des milliers de vendeurs réunit au même endroit.', cta: 'Parcourir', image: '', layout: 'centered' } },
+      { id: 's3', type: 'category-grid', visible: true, props: { title: 'Catégories Populaires' } },
       { id: 's4', type: 'countdown', visible: true, props: { title: 'Offres du jour', endDate: '2026-12-31' } },
       { id: 's5', type: 'product-grid', visible: true, props: { columns: 4, title: 'Produits populaires' } },
       { id: 's6', type: 'testimonials', visible: true, props: {} },
@@ -373,17 +457,11 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   };
 }
 
-// ============ Modern section renderers ============
-
 const sampleProducts = [
   { name: 'Robe Wax Premium', price: '25 000', img: 'https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&w=400', tag: 'Nouveau' },
   { name: 'Sac cuir artisanal', price: '45 000', img: 'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&w=400', tag: '' },
   { name: 'Montre classique', price: '60 000', img: 'https://images.pexels.com/photos/9978722/pexels-photo-9978722.jpeg?auto=compress&w=400', tag: 'Best' },
   { name: 'Chaussures stylish', price: '35 000', img: 'https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg?auto=compress&w=400', tag: '' },
-  { name: 'Lunettes soleil', price: '15 000', img: 'https://images.pexels.com/photos/701877/pexels-photo-701877.jpeg?auto=compress&w=400', tag: 'Promo' },
-  { name: 'Parfum élégance', price: '30 000', img: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&w=400', tag: '' },
-  { name: 'Casque audio Pro', price: '50 000', img: 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&w=400', tag: 'Nouveau' },
-  { name: 'Montre connectée', price: '75 000', img: 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&w=400', tag: '' },
 ];
 
 const sampleCategories = [
@@ -391,22 +469,16 @@ const sampleCategories = [
   { name: 'Électronique', icon: '📱', count: 156 },
   { name: 'Maison', icon: '🏠', count: 89 },
   { name: 'Beauté', icon: '💄', count: 134 },
-  { name: 'Sport', icon: '⚽', count: 67 },
-  { name: 'Accessoires', icon: '⌚', count: 192 },
 ];
 
 const sampleTestimonials = [
   { name: 'Awa K.', text: 'Service impeccable, livraison rapide à Abidjan!', rating: 5, role: 'Cliente' },
   { name: 'Mamadou S.', text: 'Produits de qualité, je recommande vivement.', rating: 5, role: 'Client' },
-  { name: 'Fatou D.', text: 'Boutique sérieuse, paiement Mobile Money facile.', rating: 4, role: 'Cliente' },
 ];
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   XOF: 'FCFA', XAF: 'FCFA', NGN: '₦', GHS: '₵', GNF: 'FG', CDF: 'FC',
-  USD: '$', EUR: '€', GBP: '£', MAD: 'DH', DZD: 'DA', TND: 'DT', EGP: 'E£',
-  KES: 'KSh', TZS: 'TSh', UGX: 'USh', RWF: 'FRw', ETB: 'Br', ZAR: 'R',
-  ZWL: 'Z$', ZMW: 'ZK', MGA: 'Ar', MUR: '₨', CVE: '$', LRD: 'L$',
-  SLL: 'Le', GMD: 'D', MRU: 'UM', SDG: 'SDG',
+  USD: '$', EUR: '€', GBP: '£', MAD: 'DH', KES: 'KSh', ZAR: 'R',
 };
 
 export function formatPrice(amount: number, currency: string): string {
@@ -419,43 +491,6 @@ function hexToRgba(hex: string, alpha: number): string {
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r},${g},${b},${alpha})`;
-}
-
-/**
- * Renders a single section.
- *
- * @param realProducts - IMPORTANT: distinguish two contexts by whether this argument is
- *   `undefined` vs an (possibly empty) array:
- *   - `undefined`  → editor/preview context (dashboard): show sample/mock data so the
- *     merchant can visualize the layout even before adding real products.
- *   - array (incl. []) → live public storefront context: always show real data, and show
- *     an explicit "no products yet" empty state instead of fake products when empty.
- *     Showing mock products to real visitors would be misleading.
- * @param radius - design token from ThemeConfig.radius, defaults to 'soft' if not passed.
- * @param shadow - design token from ThemeConfig.shadow, defaults to 'subtle' if not passed.
- */
-export interface StorefrontCategory {
-  id: string;
-  name: string;
-  count: number;
-  imageUrl?: string | null;
-}
-
-export interface AddToCartPayload {
-  productId: string;
-  name: string;
-  priceCents: number;
-  currency: string;
-  thumbnail: string | null;
-  variantId?: string;
-  variantLabel?: string;
-}
-
-export interface StorefrontReview {
-  id: string;
-  customerName: string;
-  rating: number;
-  comment: string | null;
 }
 
 function ProductDetailBlock({
@@ -472,7 +507,6 @@ function ProductDetailBlock({
   const secondary = colors.secondary;
   const txt = colors.text;
 
-  // Regroupe les variantes par nom (ex: "Taille" -> ["S","M","L"], "Couleur" -> ["Rouge","Bleu"])
   const variantGroups: Record<string, ProductVariant[]> = {};
   (cartProduct?.variants || []).forEach(v => {
     if (!variantGroups[v.name]) variantGroups[v.name] = [];
@@ -501,12 +535,12 @@ function ProductDetailBlock({
             ? <img src={image} alt="" className="w-full h-full object-cover" />
             : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
         </div>
-        <div className="flex-1 flex flex-col justify-center">
+        <div className="flex-1 flex flex-col justify-center font-sans">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs px-2 py-0.5 rounded-md font-bold text-white" style={{ background: outOfStock ? '#ef4444' : '#16a34a' }}>{outOfStock ? 'Épuisé' : 'En stock'}</span>
           </div>
           <h2 className="text-2xl font-bold mb-2" style={{ color: txt, letterSpacing: '-0.02em' }}>{cartProduct?.name || section.props.title || 'Nom du produit'}</h2>
-          <p className="text-3xl font-bold mb-3" style={{ color: primary }}>
+          <p className="text-3xl font-bold mb-3" style={{ color: 'var(--theme-primary, ' + primary + ')' }}>
             {cartProduct ? formatPrice(effectivePriceCents, cartProduct.currency) : (section.props.price || '25 000 XOF')}
           </p>
           <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.description || 'Description du produit'}</p>
@@ -521,8 +555,8 @@ function ProductDetailBlock({
                       key={v.id}
                       onClick={() => setSelected({ ...selected, [g]: v.value })}
                       disabled={v.stock <= 0}
-                      className="px-3 h-10 flex items-center justify-center text-sm font-medium cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                      style={selected[g] === v.value ? { background: primary, color: 'white', borderRadius: r } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}
+                      className="px-3 h-10 flex items-center justify-center text-sm font-medium cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed font-sans"
+                      style={selected[g] === v.value ? { background: 'var(--theme-primary, ' + primary + ')', color: 'white', borderRadius: r } : { border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}
                     >
                       {v.value}
                     </button>
@@ -548,19 +582,43 @@ function ProductDetailBlock({
                   });
                 }}
                 disabled={needsSelection || outOfStock}
-                className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-                style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}
+                className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 font-sans cursor-pointer"
+                style={{ background: `linear-gradient(135deg, var(--theme-primary, ${primary}), var(--theme-secondary, ${secondary}))`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}
               >
                 {outOfStock ? 'Épuisé' : needsSelection ? 'Choisissez une option' : 'Ajouter au panier'}
               </button>
             ) : (
-              <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
+              <div className="flex-1 px-5 py-3 text-white text-sm font-semibold text-center font-sans" style={{ background: `linear-gradient(135deg, var(--theme-primary, ${primary}), var(--theme-secondary, ${secondary}))`, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}`, borderRadius: r }}>Ajouter au panier</div>
             )}
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+export interface AddToCartPayload {
+  productId: string;
+  name: string;
+  priceCents: number;
+  currency: string;
+  thumbnail: string | null;
+  variantId?: string;
+  variantLabel?: string;
+}
+
+export interface StorefrontCategory {
+  id: string;
+  name: string;
+  count: number;
+  imageUrl?: string | null;
+}
+
+export interface StorefrontReview {
+  id: string;
+  customerName: string;
+  rating: number;
+  comment: string | null;
 }
 
 export function renderSection(
@@ -577,11 +635,6 @@ export function renderSection(
 ): React.ReactNode {
   const primary = colors.primary;
   const secondary = colors.secondary;
-  // Personnalisation par section : si le marchand a défini une couleur de fond ou
-  // de texte spécifique pour CETTE section (via section.props.__bgOverride /
-  // __textOverride), elle prend le pas sur les couleurs globales du thème.
-  // Comme bg/txt sont déjà utilisées dans les 15 sections ci-dessous, ce seul
-  // changement propage la personnalisation partout sans dupliquer le code.
   const bg = section.props.__bgOverride || colors.background;
   const txt = section.props.__textOverride || colors.text;
   const subtleBg = hexToRgba(primary, 0.04);
@@ -591,35 +644,39 @@ export function renderSection(
   const isLiveCategoryContext = realCategories !== undefined;
   const isLiveReviewContext = realReviews !== undefined;
 
-  // Inject scroll animation class
-  const animationClass = themeScrollAnimation && themeScrollAnimation !== 'none'
-    ? `scroll-anim-${themeScrollAnimation}`
-    : '';
+  // Render CSS variable dictionary for full Shopify color customization compliance
+  const cssVars = {
+    '--theme-primary': colors.primary,
+    '--theme-secondary': colors.secondary,
+    '--theme-accent': colors.accent,
+    '--theme-bg': bg,
+    '--theme-text': txt,
+  } as React.CSSProperties;
 
   switch (section.type) {
     case 'header':
       return (
-        <div className="flex items-center justify-between px-6 py-3" style={{ borderBottom: `2px solid ${hexToRgba(primary, 0.1)}`, background: bg }}>
+        <div className="flex items-center justify-between px-6 py-3 border-b-2" style={{ ...cssVars, borderBottomColor: hexToRgba(primary, 0.1), background: 'var(--theme-bg)' }}>
           <div className="flex items-center gap-2">
             {section.props.logo !== false && (
-              <span className="font-bold text-base" style={{ color: primary, letterSpacing: '-0.02em' }}>Ma Boutique</span>
+              <span className="font-bold text-base tracking-tight font-sans" style={{ color: 'var(--theme-primary)' }}>Os Boutique</span>
             )}
           </div>
-          <div className="hidden md:flex items-center gap-5 text-sm font-medium" style={{ color: txt }}>
+          <div className="hidden md:flex items-center gap-5 text-sm font-medium font-sans" style={{ color: 'var(--theme-text)' }}>
             {(section.props.nav || []).map((n: string) => (
               <span key={n} className="hover:opacity-60 transition-opacity cursor-pointer">{n}</span>
             ))}
           </div>
           <div className="flex items-center gap-2">
             {section.props.megaMenu && (
-              <span className="text-xs px-3 py-1.5 font-medium text-white transition-transform hover:scale-105" style={{ background: primary, borderRadius: r }}>Catégories ▾</span>
+              <span className="text-xs px-3 py-1.5 font-medium text-white transition-transform hover:scale-105 font-sans cursor-pointer" style={{ background: 'var(--theme-primary)', borderRadius: r }}>Catégories ▾</span>
             )}
-            <a href={onAddToCart ? '/cart' : undefined} className="relative w-8 h-8 rounded-full flex items-center justify-center" style={{ background: subtleBg, cursor: onAddToCart ? 'pointer' : 'default' }}>
+            <a href={onAddToCart ? '/cart' : undefined} className="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer" style={{ background: subtleBg }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={primary} strokeWidth="2">
                 <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
               {onAddToCart && cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: primary }}>
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: 'var(--theme-primary)' }}>
                   {cartItemCount}
                 </span>
               )}
@@ -630,21 +687,21 @@ export function renderSection(
 
     case 'hero': {
       const img = section.props.image;
-      const layout = section.props.layout || 'centered'; // 'centered' | 'split' | 'fullbleed'
+      const layout = section.props.layout || 'centered';
 
       if (layout === 'split') {
         return (
-          <div className="grid md:grid-cols-2 items-center" style={{ background: bg }}>
+          <div className="grid md:grid-cols-2 items-center font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
             <div className="px-8 py-16 md:py-24 order-2 md:order-1">
-              <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: hexToRgba(primary, 0.1), color: primary }}>
-                ✨ Nouvelle collection 2026
+              <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: hexToRgba(primary, 0.1), color: 'var(--theme-primary)' }}>
+                ✨ Nouvelle collection Os
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-3" style={{ color: txt, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+              <h1 className="text-4xl md:text-5xl font-bold mb-3 tracking-tight leading-tight" style={{ color: 'var(--theme-text)' }}>
                 {section.props.title || 'Hero'}
               </h1>
-              <p className="text-lg mb-6" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.subtitle || ''}</p>
+              <p className="text-lg mb-6 text-gray-500">{section.props.subtitle || ''}</p>
               <div className="flex gap-3">
-                <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 active:scale-95" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
+                <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 cursor-pointer" style={{ background: `linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
                   {section.props.cta || 'Découvrir'}
                 </div>
               </div>
@@ -656,40 +713,35 @@ export function renderSection(
 
       if (layout === 'fullbleed') {
         return (
-          <div className="relative min-h-[420px] md:min-h-[520px] flex items-end" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(160deg, ${primary}, ${secondary})` }}>
+          <div className="relative min-h-[420px] md:min-h-[520px] flex items-end font-sans" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(160deg, ${primary}, ${secondary})` }}>
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent 65%)' }} />
             <div className="relative z-10 px-8 md:px-10 pb-12 md:pb-16 text-white max-w-2xl">
-              <h1 className="text-3xl md:text-5xl font-bold mb-3" style={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}>{section.props.title || 'Hero'}</h1>
+              <h1 className="text-3xl md:text-5xl font-bold mb-3 tracking-tight leading-tight">{section.props.title || 'Hero'}</h1>
               <p className="text-base md:text-lg mb-6 text-white/80">{section.props.subtitle || ''}</p>
-              <div className="inline-block px-6 py-3 text-sm font-semibold bg-white" style={{ color: txt, borderRadius: r }}>{section.props.cta || 'Découvrir'}</div>
+              <div className="inline-block px-6 py-3 text-sm font-semibold bg-white text-gray-900 cursor-pointer" style={{ borderRadius: r }}>{section.props.cta || 'Découvrir'}</div>
             </div>
           </div>
         );
       }
 
-      // layout === 'centered' (par défaut)
       return (
-        <div className="relative overflow-hidden" style={{ background: img ? `url(${img}) center/cover` : `linear-gradient(135deg, ${hexToRgba(primary, 0.1)}, ${hexToRgba(secondary, 0.06)})` }}>
+        <div className="relative overflow-hidden font-sans" style={{ ...cssVars, background: img ? `url(${img}) center/cover` : `linear-gradient(135deg, ${hexToRgba(primary, 0.1)}, ${hexToRgba(secondary, 0.06)})` }}>
           <div className="px-8 py-16 text-center relative z-10">
-            <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: hexToRgba(primary, 0.1), color: primary }}>
-              ✨ Nouvelle collection 2026
+            <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: hexToRgba(primary, 0.1), color: 'var(--theme-primary)' }}>
+              ✨ Exclusivités d'Afrique & d'Ailleurs
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3" style={{ color: txt, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight leading-tight" style={{ color: 'var(--theme-text)' }}>
               {section.props.title || 'Hero'}
             </h1>
-            <p className="text-lg mb-6 max-w-xl mx-auto" style={{ color: hexToRgba(txt, 0.6) }}>
+            <p className="text-lg mb-6 max-w-xl mx-auto text-gray-600">
               {section.props.subtitle || ''}
             </p>
             <div className="flex gap-3 justify-center">
-              <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 active:scale-95" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
+              <div className="inline-block px-6 py-3 text-white text-sm font-semibold transition-transform hover:scale-105 cursor-pointer" style={{ background: `linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))`, borderRadius: r, boxShadow: `0 4px 14px ${hexToRgba(primary, 0.35)}` }}>
                 {section.props.cta || 'Découvrir'}
-              </div>
-              <div className="inline-block px-6 py-3 text-sm font-semibold transition-colors" style={{ border: `1.5px solid ${hexToRgba(txt, 0.15)}`, color: txt, borderRadius: r }}>
-                En savoir plus
               </div>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-24" style={{ background: `linear-gradient(to top, ${bg}, transparent)` }} />
         </div>
       );
     }
@@ -698,9 +750,8 @@ export function renderSection(
       const cols = section.props.columns || 4;
       const gridCols = cols === 2 ? 'grid-cols-2' : cols === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2 md:grid-cols-4';
 
-      // Live storefront: use real products (or show empty state). Editor: use samples.
       const displayProducts = isLiveContext
-        ? (realProducts as StorefrontProduct[]).slice(0, cols * 2).map(p => ({
+        ? (realProducts as StorefrontProduct[]).map(p => ({
             id: p.id,
             name: p.name,
             priceLabel: formatPrice(p.price_cents, p.currency),
@@ -709,11 +760,11 @@ export function renderSection(
             img: p.thumbnail || null,
             tag: '',
           }))
-        : sampleProducts.slice(0, cols * 2).map((p, i) => ({
+        : sampleProducts.map((p, i) => ({
             id: `sample-${i}`,
             name: p.name,
             priceLabel: `${p.price} XOF`,
-            price_cents: 0,
+            price_cents: 2500000,
             currency: 'XOF',
             img: p.img,
             tag: p.tag,
@@ -722,36 +773,35 @@ export function renderSection(
       const showEmptyState = isLiveContext && displayProducts.length === 0;
 
       return (
-        <div className="px-6 py-8" style={{ background: bg }}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Nos produits'}</h3>
-            {!showEmptyState && <span className="text-sm font-medium cursor-pointer" style={{ color: primary }}>Voir tout →</span>}
+        <div className="px-6 py-8 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-extrabold tracking-tight" style={{ color: 'var(--theme-text)' }}>{section.props.title || 'Nos produits'}</h3>
+            {!showEmptyState && <span className="text-sm font-semibold cursor-pointer" style={{ color: 'var(--theme-primary)' }}>Voir tout →</span>}
           </div>
           {showEmptyState ? (
             <div className="text-center py-12" style={{ background: subtleBg, borderRadius: r }}>
-              <p className="text-sm" style={{ color: hexToRgba(txt, 0.5) }}>Aucun produit disponible pour le moment.</p>
+              <p className="text-sm text-gray-400">Aucun produit disponible pour le moment.</p>
             </div>
           ) : (
-            <div className={`grid ${gridCols} gap-4`}>
+            <div className={`grid ${gridCols} gap-6`}>
               {displayProducts.map((p) => (
-                <div key={p.id} className="group overflow-hidden transition-all hover:-translate-y-1" style={{ boxShadow: cardShadow, background: bg, border: `1px solid ${hexToRgba(txt, 0.06)}`, borderRadius: r }}>
+                <div key={p.id} className="group overflow-hidden transition-all hover:-translate-y-1 bg-white border border-gray-100" style={{ boxShadow: cardShadow, borderRadius: r }}>
                   <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
                     {p.img
                       ? <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
-                      : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
-                    {p.tag && <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-bold text-white" style={{ background: p.tag === 'Promo' ? '#ef4444' : primary }}>{p.tag}</span>}
+                      : <span className="text-xs text-gray-300">Pas d'image</span>}
+                    {p.tag && <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-bold text-white" style={{ background: 'var(--theme-primary)' }}>{p.tag}</span>}
                   </div>
                   <div className="p-3">
-                    <p className="text-sm font-semibold truncate" style={{ color: txt }}>{p.name}</p>
+                    <p className="text-sm font-semibold truncate text-gray-900">{p.name}</p>
                     <div className="flex items-center justify-between mt-1">
-                      <p className="text-sm font-bold" style={{ color: primary }}>{p.priceLabel}</p>
-                      {!isLiveContext && <div className="flex items-center gap-0.5 text-xs" style={{ color: '#f59e0b' }}>★ 4.8</div>}
+                      <p className="text-sm font-bold" style={{ color: 'var(--theme-primary)' }}>{p.priceLabel}</p>
                     </div>
-                    {isLiveContext && onAddToCart && (
+                    {onAddToCart && (
                       <button
                         onClick={() => onAddToCart({ productId: p.id, name: p.name, priceCents: p.price_cents, currency: p.currency, thumbnail: p.img })}
-                        className="mt-2 w-full py-1.5 text-xs font-semibold text-white transition-transform hover:scale-105"
-                        style={{ background: primary, borderRadius: r }}
+                        className="mt-3 w-full py-2 text-xs font-bold text-white transition-all cursor-pointer shadow-sm hover:opacity-90"
+                        style={{ background: 'var(--theme-primary)', borderRadius: r }}
                       >
                         Ajouter au panier
                       </button>
@@ -768,24 +818,26 @@ export function renderSection(
     case 'category-grid': {
       const displayCategories = isLiveCategoryContext
         ? (realCategories as StorefrontCategory[])
-        : sampleCategories.map((c, i) => ({ id: `sample-${i}`, name: c.name, count: c.count, icon: c.icon }));
+        : sampleCategories;
       const showEmptyCats = isLiveCategoryContext && displayCategories.length === 0;
       return (
-        <div className="px-6 py-8" style={{ background: bg }}>
-          <h3 className="text-xl font-bold mb-4" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'Catégories'}</h3>
+        <div className="px-6 py-8 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <h3 className="text-xl font-extrabold tracking-tight mb-6" style={{ color: 'var(--theme-text)' }}>{section.props.title || 'Catégories'}</h3>
           {showEmptyCats ? (
             <div className="text-center py-8 rounded-2xl" style={{ background: subtleBg }}>
-              <p className="text-sm" style={{ color: hexToRgba(txt, 0.5) }}>Aucune catégorie créée pour le moment.</p>
+              <p className="text-sm text-gray-400">Aucune catégorie créée pour le moment.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {displayCategories.map((c: any, i: number) => (
-                <div key={c.id || i} className="group flex flex-col items-center justify-center p-4 transition-all hover:-translate-y-1 cursor-pointer" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
-                  <div className="w-12 h-12 flex items-center justify-center text-2xl mb-2 overflow-hidden transition-transform group-hover:scale-110" style={{ background: 'white', boxShadow: cardShadow, borderRadius: r }}>
+                <div key={c.id || i} className="group flex items-center gap-3 p-4 transition-all hover:shadow-md cursor-pointer border border-gray-100 bg-white" style={{ borderRadius: r }}>
+                  <div className="w-12 h-12 flex items-center justify-center text-xl shrink-0 overflow-hidden bg-gray-50" style={{ borderRadius: r }}>
                     {c.imageUrl ? <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /> : (c.icon || '🏷️')}
                   </div>
-                  <p className="text-sm font-semibold" style={{ color: txt }}>{c.name}</p>
-                  <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{c.count} article{c.count > 1 ? 's' : ''}</p>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">{c.name}</p>
+                    <p className="text-[11px] text-gray-400">{c.count} article{c.count > 1 ? 's' : ''}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -811,16 +863,16 @@ export function renderSection(
         ];
       }
       return (
-        <div className="px-6 py-8 text-center relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>
+        <div className="px-6 py-10 text-center relative overflow-hidden font-sans" style={{ ...cssVars, background: `linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))` }}>
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
           <div className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-1">{section.props.title || 'Promo'}</h3>
-            <p className="text-white/70 text-sm mb-4">Profitez de -30% avant la fin!</p>
-            <div className="flex justify-center gap-3">
+            <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{section.props.title || 'Promo Limitée'}</h3>
+            <p className="text-white/80 text-sm mb-6 max-w-sm mx-auto">Profitez de tarifs d'exception sur toute notre gamme.</p>
+            <div className="flex justify-center gap-4">
               {units.map(u => (
                 <div key={u.label} className="text-center">
-                  <div className="w-14 h-14 flex items-center justify-center text-2xl font-bold font-mono text-white" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)', borderRadius: r }}>{u.value}</div>
-                  <p className="text-xs text-white/60 mt-1">{u.label}</p>
+                  <div className="w-14 h-14 flex items-center justify-center text-2xl font-bold font-mono text-white shadow-sm" style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)', borderRadius: r }}>{u.value}</div>
+                  <p className="text-[10px] text-white/70 font-semibold uppercase tracking-wider mt-1.5">{u.label}</p>
                 </div>
               ))}
             </div>
@@ -831,21 +883,21 @@ export function renderSection(
 
     case 'filters-list': {
       const displayProducts = isLiveContext
-        ? (realProducts as StorefrontProduct[]).slice(0, 6).map(p => ({ id: p.id, name: p.name, priceLabel: formatPrice(p.price_cents, p.currency), img: p.thumbnail }))
-        : sampleProducts.slice(0, 6).map((p, i) => ({ id: `sample-${i}`, name: p.name, priceLabel: `${p.price} XOF`, img: p.img }));
+        ? (realProducts as StorefrontProduct[]).slice(0, 3).map(p => ({ id: p.id, name: p.name, priceLabel: formatPrice(p.price_cents, p.currency), img: p.thumbnail }))
+        : sampleProducts.slice(0, 3).map((p, i) => ({ id: `sample-${i}`, name: p.name, priceLabel: `${p.price} XOF`, img: p.img }));
       const showEmptyState = isLiveContext && displayProducts.length === 0;
 
       return (
-        <div className="px-6 py-6 flex gap-6" style={{ background: bg }}>
-          <div className="w-56 shrink-0 space-y-3">
-            <div className="p-3" style={{ background: subtleBg, borderRadius: r }}>
-              <p className="text-xs font-bold uppercase mb-2" style={{ color: hexToRgba(txt, 0.4) }}>Filtres</p>
+        <div className="px-6 py-8 flex flex-col md:flex-row gap-6 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <div className="w-full md:w-56 shrink-0 space-y-4">
+            <div className="p-4 border border-gray-100 bg-gray-50/50" style={{ borderRadius: r }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Filtres de tri</p>
               {(section.props.filters || []).map((f: string) => (
-                <div key={f} className="mb-2">
-                  <p className="text-sm font-medium mb-1" style={{ color: txt }}>{f}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {['Tous', 'A', 'B', 'C'].map((v, i) => (
-                      <span key={v} className="text-xs px-2 py-0.5 cursor-pointer transition-colors" style={i === 0 ? { background: primary, color: 'white', borderRadius: r } : { background: hexToRgba(txt, 0.04), color: txt, borderRadius: r }}>{v}</span>
+                <div key={f} className="mb-3">
+                  <p className="text-xs font-bold text-gray-700 mb-1.5">{f}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['Tous', 'A', 'B'].map((v, i) => (
+                      <span key={v} className="text-[11px] px-2.5 py-1 font-semibold cursor-pointer transition-colors" style={i === 0 ? { background: 'var(--theme-primary)', color: 'white', borderRadius: r } : { background: 'white', color: 'var(--theme-text)', border: '1px solid #f3f4f6', borderRadius: r }}>{v}</span>
                     ))}
                   </div>
                 </div>
@@ -853,21 +905,21 @@ export function renderSection(
             </div>
           </div>
           {showEmptyState ? (
-            <div className="flex-1 flex items-center justify-center" style={{ background: subtleBg, color: hexToRgba(txt, 0.5), borderRadius: r }}>
-              <p className="text-sm">Aucun produit disponible.</p>
+            <div className="flex-1 flex items-center justify-center py-12 border border-dashed border-gray-100 rounded-2xl">
+              <p className="text-sm text-gray-400">Aucun produit disponible.</p>
             </div>
           ) : (
-            <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
               {displayProducts.map((p) => (
-                <div key={p.id} className="group overflow-hidden transition-all hover:shadow-lg" style={{ boxShadow: cardShadow, border: `1px solid ${hexToRgba(txt, 0.06)}`, borderRadius: r }}>
-                  <div className="relative aspect-square overflow-hidden flex items-center justify-center" style={{ background: hexToRgba(primary, 0.03) }}>
+                <div key={p.id} className="group overflow-hidden bg-white border border-gray-100" style={{ boxShadow: cardShadow, borderRadius: r }}>
+                  <div className="relative aspect-square overflow-hidden flex items-center justify-center bg-gray-50">
                     {p.img
                       ? <img src={p.img} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
-                      : <span className="text-xs" style={{ color: hexToRgba(txt, 0.3) }}>Pas d'image</span>}
+                      : <span className="text-xs text-gray-300">Pas d'image</span>}
                   </div>
-                  <div className="p-2">
-                    <p className="text-xs font-semibold truncate" style={{ color: txt }}>{p.name}</p>
-                    <p className="text-xs font-bold" style={{ color: primary }}>{p.priceLabel}</p>
+                  <div className="p-3">
+                    <p className="text-xs font-semibold truncate text-gray-900">{p.name}</p>
+                    <p className="text-xs font-bold mt-1" style={{ color: 'var(--theme-primary)' }}>{p.priceLabel}</p>
                   </div>
                 </div>
               ))}
@@ -878,7 +930,6 @@ export function renderSection(
     }
 
     case 'product-detail': {
-      // Fall back to the first real product's image when available; else sample image.
       const cartProduct = isLiveContext ? (realProducts as StorefrontProduct[])[0] : null;
       const fallbackImg = isLiveContext ? cartProduct?.thumbnail : sampleProducts[0].img;
       const image = section.props.image || fallbackImg || sampleProducts[0].img;
@@ -896,11 +947,11 @@ export function renderSection(
 
     case 'payments':
       return (
-        <div className="px-6 py-6 text-center" style={{ background: bg, borderTop: `1px solid ${hexToRgba(txt, 0.06)}`, borderBottom: `1px solid ${hexToRgba(txt, 0.06)}` }}>
-          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: hexToRgba(txt, 0.4) }}>Paiements compatibles</p>
+        <div className="px-6 py-6 text-center font-sans" style={{ ...cssVars, background: 'var(--theme-bg)', borderTop: `1px solid ${hexToRgba(txt, 0.06)}`, borderBottom: `1px solid ${hexToRgba(txt, 0.06)}` }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">Moyens de paiement acceptés</p>
           <div className="flex flex-wrap justify-center gap-3">
-            {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal', 'Wave'].map(p => (
-              <span key={p} className="text-sm px-4 py-2 font-medium transition-all hover:scale-105" style={{ background: subtleBg, color: txt, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>{p}</span>
+            {['Flutterwave', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Wave', 'Stripe'].map(p => (
+              <span key={p} className="text-xs px-4 py-2 font-semibold transition-transform hover:scale-105 shadow-sm border border-gray-100 bg-white text-gray-700" style={{ borderRadius: r }}>{p}</span>
             ))}
           </div>
         </div>
@@ -909,26 +960,26 @@ export function renderSection(
     case 'testimonials': {
       const displayReviews = isLiveReviewContext
         ? (realReviews as StorefrontReview[]).map(r => ({ name: r.customerName, role: 'Client vérifié', rating: r.rating, text: r.comment || '' }))
-        : sampleTestimonials;
+        : sampleTestimonials.map(t => ({ name: t.name, role: t.role, rating: t.rating, text: t.text }));
       const showEmptyReviews = isLiveReviewContext && displayReviews.length === 0;
       return (
-        <div className="px-6 py-10" style={{ background: bg }}>
-          <h3 className="text-xl font-bold text-center mb-6" style={{ color: txt, letterSpacing: '-0.02em' }}>Ils nous font confiance</h3>
+        <div className="px-6 py-10 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <h3 className="text-xl font-extrabold text-center mb-8 tracking-tight" style={{ color: 'var(--theme-text)' }}>Ils adorent Os Boutique</h3>
           {showEmptyReviews ? (
-            <p className="text-center text-sm" style={{ color: hexToRgba(txt, 0.4) }}>Aucun avis client pour le moment.</p>
+            <p className="text-center text-sm text-gray-400">Aucun avis client pour le moment.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {displayReviews.map((t, i) => (
-                <div key={i} className="p-5 transition-all hover:shadow-lg" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
+                <div key={i} className="p-5 transition-all hover:shadow-md bg-white border border-gray-100" style={{ borderRadius: r }}>
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}>{t.name[0]}</div>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))` }}>{t.name[0]}</div>
                     <div>
-                      <p className="text-sm font-semibold" style={{ color: txt }}>{t.name}</p>
-                      <p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{t.role}</p>
+                      <p className="text-sm font-bold text-gray-900">{t.name}</p>
+                      <p className="text-xs text-gray-400">{t.role}</p>
                     </div>
                   </div>
-                  <div className="flex gap-0.5 mb-2 text-sm" style={{ color: '#f59e0b' }}>{'★'.repeat(t.rating)}<span style={{ color: hexToRgba(txt, 0.15) }}>{'★'.repeat(5 - t.rating)}</span></div>
-                  {t.text && <p className="text-sm" style={{ color: hexToRgba(txt, 0.7) }}>"{t.text}"</p>}
+                  <div className="flex gap-0.5 mb-2 text-sm" style={{ color: '#eab308' }}>{'★'.repeat(t.rating)}</div>
+                  {t.text && <p className="text-xs text-gray-600 leading-relaxed">"{t.text}"</p>}
                 </div>
               ))}
             </div>
@@ -939,28 +990,23 @@ export function renderSection(
 
     case 'about':
       return (
-        <div className="px-6 py-10" style={{ background: bg }}>
+        <div className="px-6 py-10 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
           <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-3" style={{ color: txt, letterSpacing: '-0.02em' }}>{section.props.title || 'À propos de nous'}</h3>
-            <p className="text-base" style={{ color: hexToRgba(txt, 0.6) }}>{section.props.text || 'Notre histoire, notre mission, nos valeurs.'}</p>
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              {[{ n: '10K+', l: 'Clients' }, { n: '500+', l: 'Produits' }, { n: '15', l: 'Pays' }].map(s => (
-                <div key={s.l}><p className="text-2xl font-bold" style={{ color: primary }}>{s.n}</p><p className="text-xs" style={{ color: hexToRgba(txt, 0.4) }}>{s.l}</p></div>
-              ))}
-            </div>
+            <h3 className="text-2xl font-bold mb-3 tracking-tight" style={{ color: 'var(--theme-text)' }}>{section.props.title || 'À propos de nous'}</h3>
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xl mx-auto">{section.props.text || 'Notre histoire, notre mission, nos valeurs d\'excellence.'}</p>
           </div>
         </div>
       );
 
     case 'newsletter':
       return (
-        <div className="px-6 py-10 text-center" style={{ background: `linear-gradient(135deg, ${hexToRgba(primary, 0.06)}, ${hexToRgba(secondary, 0.04)})` }}>
+        <div className="px-6 py-10 text-center font-sans" style={{ ...cssVars, background: `linear-gradient(135deg, ${hexToRgba(primary, 0.05)}, ${hexToRgba(secondary, 0.03)})` }}>
           <div className="max-w-md mx-auto">
-            <h3 className="text-xl font-bold mb-1" style={{ color: txt }}>{section.props.title || 'Restez connecté'}</h3>
-            <p className="text-sm mb-4" style={{ color: hexToRgba(txt, 0.5) }}>Recevez nos offres exclusives et nouveautés</p>
+            <h3 className="text-xl font-extrabold mb-1 tracking-tight" style={{ color: 'var(--theme-text)' }}>{section.props.title || 'Inscrivez-vous à la Newsletter'}</h3>
+            <p className="text-xs text-gray-400 mb-4">Soyez informés de toutes les ventes privées et nouvelles collections d'exception.</p>
             <div className="flex gap-2 max-w-sm mx-auto">
-              <input type="email" placeholder={section.props.placeholder || 'Votre email'} className="flex-1 px-4 py-2.5 text-sm focus:outline-none" style={{ border: `1.5px solid ${hexToRgba(txt, 0.1)}`, background: bg, color: txt, borderRadius: r }} />
-              <div className="px-5 py-2.5 text-white text-sm font-semibold cursor-pointer transition-transform hover:scale-105" style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})`, borderRadius: r }}>S'inscrire</div>
+              <input type="email" placeholder={section.props.placeholder || 'Votre email'} className="flex-1 px-4 py-2 text-xs focus:outline-none bg-white border border-gray-100" style={{ borderRadius: r }} />
+              <div className="px-5 py-2 text-white text-xs font-bold cursor-pointer hover:opacity-90 flex items-center justify-center shadow-md shrink-0" style={{ background: 'var(--theme-primary)', borderRadius: r }}>S'abonner</div>
             </div>
           </div>
         </div>
@@ -968,17 +1014,16 @@ export function renderSection(
 
     case 'faq':
       return (
-        <div className="px-6 py-10" style={{ background: bg }}>
-          <h3 className="text-xl font-bold text-center mb-6" style={{ color: txt }}>Questions fréquentes</h3>
-          <div className="max-w-2xl mx-auto space-y-3">
+        <div className="px-6 py-10 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <h3 className="text-xl font-extrabold text-center mb-6 tracking-tight" style={{ color: 'var(--theme-text)' }}>Questions Fréquentes</h3>
+          <div className="max-w-xl mx-auto space-y-3">
             {[
-              { q: 'Quels sont les délais de livraison?', a: 'Livraison sous 24-72h selon votre région.' },
-              { q: 'Comment payer?', a: 'Mobile Money, carte bancaire, ou paiement à la livraison.' },
-              { q: 'Puis-je retourner un produit?', a: 'Oui, sous 14 jours après réception.' },
+              { q: 'Quels sont les délais de livraison?', a: 'Livraison express sous 24-48h selon votre région d\'Afrique.' },
+              { q: 'Comment s\'effectue le paiement?', a: 'Par Mobile Money direct (Orange, MTN, Wave) ou carte bancaire.' },
             ].map((f, i) => (
-              <div key={i} className="p-4 transition-all" style={{ background: subtleBg, border: `1px solid ${hexToRgba(primary, 0.08)}`, borderRadius: r }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: txt }}>{f.q}</p>
-                <p className="text-sm" style={{ color: hexToRgba(txt, 0.6) }}>{f.a}</p>
+              <div key={i} className="p-4 bg-white border border-gray-100" style={{ borderRadius: r }}>
+                <p className="text-xs font-bold text-gray-900 mb-1">{f.q}</p>
+                <p className="text-xs text-gray-500 leading-relaxed">{f.a}</p>
               </div>
             ))}
           </div>
@@ -987,38 +1032,35 @@ export function renderSection(
 
     case 'footer':
       return (
-        <div className="px-6 py-8" style={{ background: '#0f1623', color: 'rgba(255,255,255,0.7)' }}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <div className="px-6 py-8 font-sans" style={{ background: '#0F172A', color: 'rgba(255,255,255,0.7)' }}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div>
-              <span className="font-bold text-white text-sm">Ma Boutique</span>
-              <p className="text-xs text-white/40 mt-2">Votre boutique de confiance en Afrique.</p>
+              <span className="font-extrabold text-white text-sm">Os Store</span>
+              <p className="text-[10px] text-white/40 mt-1">L'e-commerce d'excellence nouvelle génération.</p>
             </div>
             {[
-              { title: 'Boutique', links: ['Nouveautés', 'Best Sellers', 'Promotions'] },
-              { title: 'Aide', links: ['Contact', 'Livraison', 'Retours'] },
-              { title: 'Légal', links: ['CGV', 'Confidentialité', 'Mentions légales'] },
+              { title: 'Boutique', links: ['Nouveautés', 'Promotions'] },
+              { title: 'Aide', links: ['Contact', 'Retours'] },
             ].map(col => (
               <div key={col.title}>
-                <p className="text-xs font-bold uppercase text-white/40 mb-2">{col.title}</p>
+                <p className="text-[10px] font-bold uppercase text-white/40 mb-2">{col.title}</p>
                 {col.links.map(l => <p key={l} className="text-xs text-white/60 hover:text-white cursor-pointer transition-colors mb-1">{l}</p>)}
               </div>
             ))}
           </div>
           <div className="max-w-4xl mx-auto mt-6 pt-4 flex justify-between items-center" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-            <p className="text-xs text-white/30">© 2026 Ma Boutique. Tous droits réservés.</p>
-            <div className="flex gap-2">{['f', 'ig', 'tw', 'yt'].map(s => <div key={s} className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-xs text-white/40 cursor-pointer hover:bg-white/10 transition-colors">{s}</div>)}</div>
+            <p className="text-[10px] text-white/30">© 2026 Os Corp. Tous droits réservés.</p>
           </div>
         </div>
       );
 
     case 'social-bar':
       return (
-        <div className="fixed right-3 top-1/2 -translate-y-1/2 space-y-2 z-30">
+        <div className="fixed right-3 top-1/2 -translate-y-1/2 space-y-2 z-30 font-sans">
           {[
-            { bg: '#1877F2', icon: 'f' }, { bg: '#E4405F', icon: 'ig' },
-            { bg: '#1DA1F2', icon: 'tw' }, { bg: '#FF0000', icon: 'yt' },
+            { bg: '#1877F2', icon: 'FB' }, { bg: '#E4405F', icon: 'IG' },
           ].map(s => (
-            <div key={s.icon} className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-all hover:scale-110" style={{ background: s.bg, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>{s.icon}</div>
+            <div key={s.icon} className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[10px] font-bold cursor-pointer transition-transform hover:scale-110 shadow-lg" style={{ background: s.bg }}>{s.icon}</div>
           ))}
         </div>
       );
@@ -1036,19 +1078,19 @@ export function renderSection(
     case 'custom-blocks': {
       const blocks: FreeBlock[] = section.props.blocks || [];
       return (
-        <div className="px-6 py-8" style={{ background: bg }}>
-          <div className="max-w-2xl mx-auto space-y-4">
+        <div className="px-6 py-8 font-sans" style={{ ...cssVars, background: 'var(--theme-bg)' }}>
+          <div className="max-w-xl mx-auto space-y-4">
             {blocks.map(b => {
               if (b.type === 'text') {
                 const sizeClass = b.props.size === 'lg' ? 'text-2xl font-bold' : b.props.size === 'sm' ? 'text-sm' : 'text-base';
                 const alignClass = b.props.align === 'center' ? 'text-center' : b.props.align === 'right' ? 'text-right' : 'text-left';
-                return <p key={b.id} className={`${sizeClass} ${alignClass}`} style={{ color: txt }}>{b.props.text}</p>;
+                return <p key={b.id} className={`${sizeClass} ${alignClass}`} style={{ color: 'var(--theme-text)' }}>{b.props.text}</p>;
               }
               if (b.type === 'image') {
                 return b.props.url ? (
                   <img key={b.id} src={b.props.url} alt={b.props.alt || ''} className="w-full object-cover" style={{ borderRadius: r }} />
                 ) : (
-                  <div key={b.id} className="w-full aspect-video flex items-center justify-center text-xs" style={{ background: hexToRgba(primary, 0.05), color: hexToRgba(txt, 0.3), borderRadius: r }}>Pas d'image</div>
+                  <div key={b.id} className="w-full aspect-video flex items-center justify-center text-xs text-gray-300 bg-gray-50" style={{ borderRadius: r }}>Pas d'image</div>
                 );
               }
               if (b.type === 'button') {
@@ -1057,10 +1099,10 @@ export function renderSection(
                   <a
                     key={b.id}
                     href={b.props.url || '#'}
-                    className="inline-block px-6 py-3 text-sm font-semibold transition-transform hover:scale-105"
+                    className="inline-block px-6 py-2 text-xs font-bold transition-transform hover:scale-105 cursor-pointer shadow-sm"
                     style={isPrimary
-                      ? { background: `linear-gradient(135deg, ${primary}, ${secondary})`, color: 'white', borderRadius: r }
-                      : { border: `1.5px solid ${hexToRgba(txt, 0.2)}`, color: txt, borderRadius: r }}
+                      ? { background: 'var(--theme-primary)', color: 'white', borderRadius: r }
+                      : { border: `1.5px solid ${hexToRgba(txt, 0.2)}`, color: 'var(--theme-text)', borderRadius: r }}
                   >
                     {b.props.label}
                   </a>
@@ -1071,9 +1113,6 @@ export function renderSection(
               }
               return null;
             })}
-            {blocks.length === 0 && (
-              <p className="text-center text-sm" style={{ color: hexToRgba(txt, 0.4) }}>Section vide — ajoutez des blocs depuis l'éditeur.</p>
-            )}
           </div>
         </div>
       );
@@ -1084,8 +1123,7 @@ export function renderSection(
   }
 }
 
-// ============ Theme Store — vrais designs multiples ============
-
+// Pre-configured Premium & Beautiful Themes
 export interface ThemeVariant {
   key: string;
   label: string;
@@ -1097,175 +1135,64 @@ const v = (id: string, type: ThemeSection['type'], props: Record<string, any> = 
   ({ id, type, visible: true, props: { ...getSectionDefaults(type), ...props } });
 
 export const THEME_VARIANTS: ThemeVariant[] = [
-  // ---- ECOMMERCE ----
   {
-    key: 'ecommerce-modern-minimal', label: 'Ecommerce — Moderne & Minimal', siteType: 'ecommerce',
+    key: 'ocean-blue-default',
+    label: '🌊 Ocean Blue (Default Standard Theme)',
+    siteType: 'ecommerce',
     build: () => ({
-      siteType: 'ecommerce', spacing: 'spacious', radius: 'soft', shadow: 'none', isPublished: false,
-      colors: { primary: '#111114', secondary: '#6b7280', accent: '#111114', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Inter', body: 'Inter' },
+      siteType: 'ecommerce',
+      spacing: 'comfortable',
+      radius: 'soft',
+      shadow: 'subtle',
+      isPublished: false,
+      colors: {
+        primary: '#0369A1', // Ocean Blue
+        secondary: '#0284C7',
+        accent: '#3B82F6',
+        background: '#FFFFFF',
+        text: '#0F172A',
+      },
+      fonts: { heading: 'Montserrat', body: 'Montserrat' },
+      sections: [
+        v('s1', 'header', { megaMenu: true }),
+        v('s2', 'hero', { layout: 'centered', title: 'Découvrez l’élégance de l’Eau', subtitle: 'Une collection d\'exception inspirée par l\'océan et la pureté.', cta: 'Découvrir la gamme' }),
+        v('s3', 'product-grid', { columns: 4, title: 'Tendances d’Aujourd’hui' }),
+        v('s4', 'testimonials'),
+        v('s5', 'footer'),
+      ],
+    }),
+  },
+  {
+    key: 'coral-alternative',
+    label: '✨ Coral & Peach (Alternate Beautiful Theme)',
+    siteType: 'ecommerce',
+    build: () => ({
+      siteType: 'ecommerce',
+      spacing: 'comfortable',
+      radius: 'round',
+      shadow: 'subtle',
+      isPublished: false,
+      colors: {
+        primary: '#FF6B35', // Gorgeous Coral
+        secondary: '#F7B267',
+        accent: '#E76F51',
+        background: '#FFFDF9',
+        text: '#1D1E2C',
+      },
+      fonts: { heading: 'Poppins', body: 'Inter' },
       sections: [
         v('s1', 'header', { megaMenu: false }),
-        v('s2', 'hero', { layout: 'split', title: 'Simplicité et élégance', subtitle: 'Une sélection soignée, sans superflu', cta: 'Découvrir' }),
-        v('s3', 'product-grid', { columns: 3, title: 'Sélection du moment' }),
-        v('s4', 'testimonials'),
-        v('s5', 'newsletter'),
+        v('s2', 'hero', { layout: 'split', title: 'La Chaleur du Corail', subtitle: 'Éveillez vos sens avec nos nouveautés pleines de vie et de peps.', cta: 'Parcourir' }),
+        v('s3', 'category-grid'),
+        v('s4', 'product-grid', { columns: 3 }),
+        v('s5', 'testimonials'),
         v('s6', 'footer'),
       ],
     }),
   },
-  {
-    key: 'ecommerce-bold-vibrant', label: 'Ecommerce — Bold & Vibrant', siteType: 'ecommerce',
-    build: () => ({
-      siteType: 'ecommerce', spacing: 'comfortable', radius: 'round', shadow: 'bold', isPublished: false,
-      colors: { primary: '#F2632C', secondary: '#eab308', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Poppins', body: 'Inter' },
-      sections: [
-        v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { layout: 'centered', title: 'Les meilleures offres sont ici', subtitle: 'Promotions exclusives toute la semaine', cta: 'Voir les promos' }),
-        v('s3', 'countdown', { title: 'Vente flash' }),
-        v('s4', 'category-grid'),
-        v('s5', 'filters-list'),
-        v('s6', 'product-grid', { columns: 4 }),
-        v('s7', 'testimonials'),
-        v('s8', 'payments'),
-        v('s9', 'social-bar'),
-        v('s10', 'chat-float'),
-        v('s11', 'footer'),
-      ],
-    }),
-  },
-  {
-    key: 'ecommerce-luxury-dark', label: 'Ecommerce — Luxury Dark', siteType: 'ecommerce',
-    build: () => ({
-      siteType: 'ecommerce', spacing: 'spacious', radius: 'sharp', shadow: 'subtle', isPublished: false,
-      colors: { primary: '#c9a24a', secondary: '#8a8a8a', accent: '#c9a24a', background: '#0f1115', text: '#f4f4f5' },
-      fonts: { heading: 'Playfair Display', body: 'Inter' },
-      sections: [
-        v('s1', 'header'),
-        v('s2', 'hero', { layout: 'fullbleed', title: 'Le luxe redéfini', subtitle: 'Une expérience shopping exclusive', cta: 'Explorer la collection' }),
-        v('s3', 'product-grid', { columns: 3, title: "Pièces d'exception" }),
-        v('s4', 'product-detail'),
-        v('s5', 'testimonials'),
-        v('s6', 'payments'),
-        v('s7', 'footer'),
-      ],
-    }),
-  },
-
-  // ---- LANDING ----
-  {
-    key: 'landing-launch-classic', label: 'Landing — Launch Classic', siteType: 'landing',
-    build: () => ({
-      siteType: 'landing', spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
-      colors: { primary: '#2563eb', secondary: '#0ea5e9', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
-      fonts: { heading: 'Inter', body: 'Inter' },
-      sections: [
-        v('s1', 'header'),
-        v('s2', 'hero', { layout: 'centered', title: 'Lancez votre produit avec impact', subtitle: 'Une page qui convertit dès la première visite', cta: 'Je réserve le mien' }),
-        v('s3', 'countdown', { title: 'Offre de lancement' }),
-        v('s4', 'testimonials'),
-        v('s5', 'faq'),
-        v('s6', 'newsletter'),
-        v('s7', 'footer'),
-      ],
-    }),
-  },
-  {
-    key: 'landing-bold-cta', label: 'Landing — Bold CTA', siteType: 'landing',
-    build: () => ({
-      siteType: 'landing', spacing: 'spacious', radius: 'round', shadow: 'bold', isPublished: false,
-      colors: { primary: '#f43f5e', secondary: '#fb7185', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' },
-      fonts: { heading: 'Poppins', body: 'Inter' },
-      sections: [
-        v('s1', 'header'),
-        v('s2', 'hero', { layout: 'fullbleed', title: 'Ne ratez pas cette opportunité', subtitle: 'Rejoignez des milliers de clients satisfaits', cta: 'Commencer maintenant' }),
-        v('s3', 'about'),
-        v('s4', 'testimonials'),
-        v('s5', 'payments'),
-        v('s6', 'chat-float'),
-        v('s7', 'footer'),
-      ],
-    }),
-  },
-
-  // ---- BUSINESS ----
-  {
-    key: 'business-corporate-trust', label: 'Vitrine — Corporate Trust', siteType: 'business',
-    build: () => ({
-      siteType: 'business', spacing: 'spacious', radius: 'sharp', shadow: 'subtle', isPublished: false,
-      colors: { primary: '#0f172a', secondary: '#2563eb', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' },
-      fonts: { heading: 'Playfair Display', body: 'Inter' },
-      sections: [
-        v('s1', 'header'),
-        v('s2', 'hero', { layout: 'split', title: 'Votre partenaire de confiance', subtitle: 'Des solutions professionnelles pour votre réussite', cta: 'Nous contacter' }),
-        v('s3', 'about'),
-        v('s4', 'testimonials'),
-        v('s5', 'faq'),
-        v('s6', 'footer'),
-      ],
-    }),
-  },
-  {
-    key: 'business-creative-studio', label: 'Vitrine — Creative Studio', siteType: 'business',
-    build: () => ({
-      siteType: 'business', spacing: 'comfortable', radius: 'round', shadow: 'bold', isPublished: false,
-      colors: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' },
-      fonts: { heading: 'Poppins', body: 'Inter' },
-      sections: [
-        v('s1', 'header'),
-        v('s2', 'hero', { layout: 'fullbleed', title: 'Créativité sans limites', subtitle: 'Nous donnons vie à vos idées', cta: 'Voir nos projets' }),
-        v('s3', 'about'),
-        v('s4', 'testimonials'),
-        v('s5', 'newsletter'),
-        v('s6', 'social-bar'),
-        v('s7', 'footer'),
-      ],
-    }),
-  },
-
-  // ---- MARKETPLACE ----
-  {
-    key: 'marketplace-classic', label: 'Marketplace — Classic', siteType: 'marketplace',
-    build: () => ({
-      siteType: 'marketplace', spacing: 'comfortable', radius: 'soft', shadow: 'subtle', isPublished: false,
-      colors: { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
-      fonts: { heading: 'Inter', body: 'Inter' },
-      sections: [
-        v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { layout: 'centered', title: "Tout ce dont vous avez besoin, ici", subtitle: 'Des milliers de vendeurs, un seul endroit', cta: 'Parcourir' }),
-        v('s3', 'category-grid'),
-        v('s4', 'product-grid', { columns: 4 }),
-        v('s5', 'testimonials'),
-        v('s6', 'payments'),
-        v('s7', 'social-bar'),
-        v('s8', 'chat-float'),
-        v('s9', 'footer'),
-      ],
-    }),
-  },
-  {
-    key: 'marketplace-premium', label: 'Marketplace — Premium', siteType: 'marketplace',
-    build: () => ({
-      siteType: 'marketplace', spacing: 'spacious', radius: 'sharp', shadow: 'bold', isPublished: false,
-      colors: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' },
-      fonts: { heading: 'Playfair Display', body: 'Inter' },
-      sections: [
-        v('s1', 'header', { megaMenu: true }),
-        v('s2', 'hero', { layout: 'fullbleed', title: "L'excellence, sélectionnée pour vous", subtitle: 'Vendeurs vérifiés, produits premium', cta: 'Explorer' }),
-        v('s3', 'category-grid'),
-        v('s4', 'countdown'),
-        v('s5', 'product-grid', { columns: 4 }),
-        v('s6', 'testimonials'),
-        v('s7', 'payments'),
-        v('s8', 'footer'),
-      ],
-    }),
-  },
-  // ---- 🌟 PREMIUM AFRICAN & INTERNATIONAL THEMES 🌟 ----
   {
     key: 'premium-afrik-art-wax',
-    label: '✨ Afrik Art & Wax (Premium)',
+    label: '✨ Afrik Art & Wax (Premium Edition)',
     siteType: 'ecommerce',
     build: () => ({
       siteType: 'ecommerce',
@@ -1275,10 +1202,10 @@ export const THEME_VARIANTS: ThemeVariant[] = [
       isPublished: false,
       scrollAnimation: 'slide',
       colors: {
-        primary: '#D97706', // Ocre chaud / Or d'Afrique
-        secondary: '#9D174D', // Rouge Wax profond / Hibiscus
-        accent: '#065F46', // Vert Émeraude forêt
-        background: '#FFFDF9', // Ivoire / Sable chaud
+        primary: '#D97706',
+        secondary: '#9D174D',
+        accent: '#065F46',
+        background: '#FFFDF9',
         text: '#1F2937',
       },
       fonts: { heading: 'Space Grotesk', body: 'Space Grotesk' },
@@ -1313,9 +1240,9 @@ export const THEME_VARIANTS: ThemeVariant[] = [
       isPublished: false,
       scrollAnimation: 'fade',
       colors: {
-        primary: '#BE185D', // Rose fuchsia élégant
-        secondary: '#F472B6', // Rose pastel doux
-        accent: '#10B981', // Menthe rafraîchissante
+        primary: '#BE185D',
+        secondary: '#F472B6',
+        accent: '#10B981',
         background: '#FFFFFF',
         text: '#111827',
       },
@@ -1338,42 +1265,6 @@ export const THEME_VARIANTS: ThemeVariant[] = [
       ],
     }),
   },
-  {
-    key: 'premium-dakar-tech',
-    label: '✨ Dakar Tech & Mobile (Premium)',
-    siteType: 'ecommerce',
-    build: () => ({
-      siteType: 'ecommerce',
-      spacing: 'compact',
-      radius: 'sharp',
-      shadow: 'subtle',
-      isPublished: false,
-      scrollAnimation: 'zoom',
-      colors: {
-        primary: '#1E3A8A', // Bleu Royal Tech
-        secondary: '#06B6D4', // Cyan Électrique
-        accent: '#F59E0B', // Ambre Énergie
-        background: '#0F172A', // Mode Sombre Élégant (Ardoise)
-        text: '#F8FAFC',
-      },
-      fonts: { heading: 'Inter', body: 'Inter' },
-      sections: [
-        v('s1', 'header', { logo: true, nav: ['Smartphones', 'Tablettes', 'Accessoires', 'Garantie Dakar', 'Support'], megaMenu: true }),
-        v('s2', 'hero', {
-          layout: 'centered',
-          title: 'Le Futur de la Tech à Portée de Main',
-          subtitle: 'Découvrez les smartphones de dernière génération au meilleur prix du marché, avec livraison express et garantie 24 mois.',
-          cta: 'Découvrir les Offres',
-          image: 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&w=800',
-        }),
-        v('s3', 'countdown', { title: 'Offre Limitée : Tech d’Exception à -40%', endDate: '2026-12-31' }),
-        v('s4', 'product-grid', { columns: 4, title: 'Smartphones & Mobiles Populaires' }),
-        v('s5', 'payments'),
-        v('s6', 'chat-float', { whatsappNumber: '2217700000000', welcomeMsg: 'Assalamou alaykoum ! Un conseiller Dakar Tech est là pour vous guider.' }),
-        v('s7', 'footer'),
-      ],
-    }),
-  },
 ];
 
 export function getThemeVariant(key: string): ThemeConfig | null {
@@ -1381,29 +1272,22 @@ export function getThemeVariant(key: string): ThemeConfig | null {
   return found ? found.build() : null;
 }
 
-/**
- * Mini-aperçu visuel généré en direct à partir des vraies couleurs/styles du
- * thème — pas une capture d'écran statique à maintenir, donc toujours exact.
- */
 export function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
   const theme = variantKey ? getThemeVariant(variantKey) : null;
-  const c = theme?.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' };
+  const c = theme?.colors || { primary: '#0369A1', secondary: '#0284C7', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' };
   const radiusPx = theme ? (theme.radius === 'sharp' ? 2 : theme.radius === 'round' ? 14 : 7) : 6;
 
   return (
     <svg viewBox="0 0 200 110" className="w-full rounded-lg border border-gray-100" style={{ background: c.background }}>
-      {/* Header */}
       <rect x="0" y="0" width="200" height="16" fill={c.primary} opacity="0.1" />
       <circle cx="12" cy="8" r="3.5" fill={c.primary} />
       <rect x="22" y="5.5" width="26" height="5" rx="1.5" fill={c.text} opacity="0.4" />
       <rect x="152" y="5.5" width="36" height="5" rx="1.5" fill={c.text} opacity="0.2" />
 
-      {/* Hero */}
       <rect x="8" y="22" width="184" height="30" rx={radiusPx} fill={c.primary} opacity="0.08" />
       <rect x="16" y="30" width="80" height="6" rx="2" fill={c.text} opacity="0.7" />
       <rect x="16" y="40" width="46" height="5" rx="2" fill={c.secondary} />
 
-      {/* Grille produits */}
       {[0, 1, 2, 3].map(i => (
         <rect key={i} x={8 + i * 46} y="58" width="40" height="40" rx={radiusPx} fill={c.primary} opacity={i % 2 === 0 ? 0.16 : 0.26} />
       ))}

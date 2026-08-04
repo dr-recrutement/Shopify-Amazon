@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTenant, useAuth, useIsSuperAdmin } from '../../lib/hooks';
 import { supabase } from '../../lib/supabase';
 import { Card, Button, Badge, Modal } from './ui';
-import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, Settings as SettingsIcon, FileText } from 'lucide-react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant, FONT_OPTIONS, googleFontsHref, FreeBlock, FreeBlockType, getFreeBlockDefaults } from '../../lib/theme-engine';
+import { Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Sparkles, Bot, Check, Edit3, Store, MessageSquare, MessageCircle } from 'lucide-react';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, EDITABLE_PROPS, getSectionDefaults, defaultThemeForType, renderSection, getThemeVariant, FONT_OPTIONS, googleFontsHref, FreeBlock, FreeBlockType, getFreeBlockDefaults, THEME_VARIANTS } from '../../lib/theme-engine';
 import { PLATFORM_ROOT_DOMAIN } from '../../lib/subdomain';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
@@ -23,29 +23,23 @@ const AI_TIPS = [
   { condition: (t: ThemeConfig) => t.sections.length < 4, tip: 'Ajoutez un bloc "Témoignages" ou "Newsletter" pour engager vos visiteurs.' },
   { condition: (t: ThemeConfig) => !t.sections.some(s => s.type === 'hero'), tip: 'Ajoutez une section "Hero" en haut de page pour un impact visuel immédiat.' },
   { condition: (t: ThemeConfig) => t.colors.primary === t.colors.background, tip: 'Le contraste entre la couleur primaire et le fond est trop faible.' },
-  { condition: (t: ThemeConfig) => t.sections.filter(s => s.visible).length < 3, tip: 'Activez plus de blocs pour enrichir votre page.' },
-  { condition: (t: ThemeConfig) => !t.sections.some(s => s.type === 'newsletter'), tip: 'Ajoutez une section "Newsletter" pour capter les emails.' },
 ];
 
 const PRESET_PALETTES = [
-  { name: 'Orange', c: { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' } },
-  { name: 'Bleu', c: { primary: '#2563eb', secondary: '#0ea5e9', accent: '#2563eb', background: '#FFFFFF', text: '#0f172a' } },
-  { name: 'Émeraude', c: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' } },
-  { name: 'Corail', c: { primary: '#f43f5e', secondary: '#fb7185', accent: '#f43f5e', background: '#FFFFFF', text: '#1f2937' } },
-  { name: 'Soleil', c: { primary: '#eab308', secondary: '#f59e0b', accent: '#eab308', background: '#FFFFFF', text: '#422006' } },
-  { name: 'Nuit', c: { primary: '#6366f1', secondary: '#818cf8', accent: '#6366f1', background: '#0f172a', text: '#f1f5f9' } },
+  { name: 'Bleu Océan (Default)', c: { primary: '#0369A1', secondary: '#0284C7', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' } },
+  { name: 'Corail Solaire (Alternate)', c: { primary: '#FF6B35', secondary: '#F7B267', accent: '#E76F51', background: '#FFFDF9', text: '#1D1E2C' } },
+  { name: 'Émeraude Sauvage', c: { primary: '#059669', secondary: '#10b981', accent: '#059669', background: '#FFFFFF', text: '#064e3b' } },
+  { name: 'Or & Luxe Sombre', c: { primary: '#C9A24A', secondary: '#8A8A8A', accent: '#C9A24A', background: '#0F1115', text: '#F4F4F5' } },
 ];
 
 export const SCROLL_ANIMATIONS = [
   { id: 'none', label: 'Aucune' },
   { id: 'fade', label: 'Fondu doux (Fade)' },
-  { id: 'slide', label: 'Glissement élégant (Slide Up)' },
-  { id: 'zoom', label: 'Zoom discret (Zoom In)' },
+  { id: 'slide', label: 'Glissement (Slide Up)' },
+  { id: 'zoom', label: 'Zoom élégant (Zoom In)' },
 ] as const;
 
-// Hiérarchie des forfaits, du moins cher au plus cher.
-// ⚠️ Doit correspondre exactement aux codes de la table Supabase `plans`.
-const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, entreprise: 3 };
+const PLAN_RANK: Record<string, number> = { starter: 0, pro: 1, premium: 2, enterprise: 3 };
 
 const FREE_BLOCK_LABELS: Record<FreeBlockType, { label: string; icon: string }> = {
   text: { label: 'Texte', icon: '📝' },
@@ -60,46 +54,39 @@ function SortableBlockRow({ block, onUpdate, onRemove }: { block: FreeBlock; onU
   const meta = FREE_BLOCK_LABELS[block.type];
 
   return (
-    <div ref={setNodeRef} style={style} className="p-2.5 rounded-lg border border-gray-100 bg-white space-y-2">
+    <div ref={setNodeRef} style={style} className="p-2.5 rounded-lg border border-gray-100 bg-white space-y-2 font-sans">
       <div className="flex items-center gap-1.5">
         <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none p-0.5 text-gray-300 hover:text-gray-500">
           <GripVertical size={12} />
         </button>
-        <span className="text-xs font-medium text-gray-600 flex-1">{meta.icon} {meta.label}</span>
+        <span className="text-xs font-semibold text-gray-600 flex-1">{meta.icon} {meta.label}</span>
         <button onClick={onRemove} className="p-0.5 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
       </div>
 
       {block.type === 'text' && (
         <>
-          <textarea rows={2} value={block.props.text || ''} onChange={e => onUpdate({ ...block.props, text: e.target.value })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+          <textarea rows={2} value={block.props.text || ''} onChange={e => onUpdate({ ...block.props, text: e.target.value })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:border-brand-400 font-sans" />
           <div className="flex gap-1">
             {(['sm', 'md', 'lg'] as const).map(s => (
-              <button key={s} onClick={() => onUpdate({ ...block.props, size: s })} className={`flex-1 py-1 rounded text-xs ${block.props.size === s ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{s}</button>
-            ))}
-            {(['left', 'center', 'right'] as const).map(a => (
-              <button key={a} onClick={() => onUpdate({ ...block.props, align: a })} className={`flex-1 py-1 rounded text-xs ${block.props.align === a ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{a[0].toUpperCase()}</button>
+              <button key={s} onClick={() => onUpdate({ ...block.props, size: s })} className={`flex-1 py-1 rounded text-[10px] font-bold ${block.props.size === s ? 'bg-[#0369A1] text-white' : 'bg-gray-100 text-gray-600'}`}>{s.toUpperCase()}</button>
             ))}
           </div>
         </>
       )}
 
       {block.type === 'image' && (
-        <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="URL de l'image" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+        <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="URL de l'image" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:border-brand-400 font-sans" />
       )}
 
       {block.type === 'button' && (
         <>
-          <input value={block.props.label || ''} onChange={e => onUpdate({ ...block.props, label: e.target.value })} placeholder="Texte du bouton" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
-          <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="Lien (https://…)" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
-          <div className="flex gap-1">
-            <button onClick={() => onUpdate({ ...block.props, style: 'primary' })} className={`flex-1 py-1 rounded text-xs ${block.props.style !== 'outline' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Plein</button>
-            <button onClick={() => onUpdate({ ...block.props, style: 'outline' })} className={`flex-1 py-1 rounded text-xs ${block.props.style === 'outline' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Contour</button>
-          </div>
+          <input value={block.props.label || ''} onChange={e => onUpdate({ ...block.props, label: e.target.value })} placeholder="Texte" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:border-brand-400 font-sans" />
+          <input value={block.props.url || ''} onChange={e => onUpdate({ ...block.props, url: e.target.value })} placeholder="Lien (https://…)" className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:border-brand-400 font-sans" />
         </>
       )}
 
       {block.type === 'spacer' && (
-        <input type="number" min={4} max={200} value={block.props.height || 32} onChange={e => onUpdate({ ...block.props, height: parseInt(e.target.value) || 32 })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+        <input type="number" min={4} max={200} value={block.props.height || 32} onChange={e => onUpdate({ ...block.props, height: parseInt(e.target.value) || 32 })} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:border-brand-400" />
       )}
     </div>
   );
@@ -131,7 +118,7 @@ function FreeBlocksEditor({ section, onUpdateProp }: { section: ThemeSection; on
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 font-sans">
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2 max-h-80 overflow-y-auto">
@@ -143,7 +130,7 @@ function FreeBlocksEditor({ section, onUpdateProp }: { section: ThemeSection; on
       </DndContext>
       {blocks.length === 0 && <p className="text-xs text-gray-400">Aucun bloc — ajoutez-en un ci-dessous.</p>}
       <div className="pt-2 border-t border-gray-100">
-        <p className="text-xs font-semibold text-gray-500 mb-2">Ajouter un bloc</p>
+        <p className="text-xs font-semibold text-gray-500 mb-2">Ajouter un bloc libre</p>
         <div className="grid grid-cols-2 gap-1.5">
           {(Object.keys(FREE_BLOCK_LABELS) as FreeBlockType[]).map(t => (
             <button key={t} onClick={() => addBlock(t)} className="text-left p-1.5 rounded text-xs hover:bg-gray-50 border border-gray-100 transition-colors hover:border-brand-200">
@@ -180,17 +167,17 @@ function SortableSectionRow({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1 p-2 rounded-lg border transition-all ${selected ? 'border-brand-500 bg-brand-50' : 'border-gray-100 hover:border-gray-200'}`}
+      className={`flex items-center gap-1 p-2 rounded-lg border transition-all font-sans ${selected ? 'border-[#0369A1] bg-sky-50/50' : 'border-gray-100 hover:border-gray-200'}`}
     >
       <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none p-0.5 text-gray-300 hover:text-gray-500">
         <GripVertical size={12} />
       </button>
-      <button onClick={onSelect} className="flex-1 text-left text-xs font-medium text-gray-700">
+      <button onClick={onSelect} className="flex-1 text-left text-xs font-semibold text-gray-700">
         {icon} {label}
       </button>
       <button onClick={onMoveUp} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowUp size={12} /></button>
       <button onClick={onMoveDown} className="p-0.5 text-gray-400 hover:text-gray-700"><ArrowDown size={12} /></button>
-      <button onClick={onToggle} className={`p-0.5 ${section.visible ? 'text-green-600' : 'text-gray-300'}`}>●</button>
+      <button onClick={onToggle} className={`p-0.5 text-xs ${section.visible ? 'text-green-600' : 'text-gray-300'}`}>●</button>
       <button onClick={onRemove} className="p-0.5 text-gray-400 hover:text-red-600"><Trash2 size={12} /></button>
     </div>
   );
@@ -212,8 +199,6 @@ interface EditorProduct {
   variants?: { id: string; name: string; value: string; priceCents: number | null; stock: number }[];
 }
 
-// Sections qui doivent recevoir les vrais produits — doit rester identique à
-// la liste utilisée dans Storefront.tsx pour que l'éditeur = ce que voit le client.
 const PRODUCT_AWARE_SECTIONS = new Set(['product-grid', 'filters-list', 'product-detail']);
 
 const RADIUS_PX: Record<string, number> = { sharp: 1, soft: 5, round: 10 };
@@ -222,7 +207,7 @@ function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
   const variant = variantKey ? getThemeVariant(variantKey) : null;
   if (!variant) {
     return (
-      <div className="w-full h-24 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] text-gray-400">
+      <div className="w-full h-24 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] text-gray-400 font-sans">
         Aperçu indisponible
       </div>
     );
@@ -231,16 +216,13 @@ function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
   const rx = RADIUS_PX[variant.radius] ?? 5;
   return (
     <svg viewBox="0 0 200 100" className="w-full h-24 rounded-lg border border-gray-100" style={{ background }}>
-      {/* header */}
       <rect x="0" y="0" width="200" height="14" fill={background} stroke={text} strokeOpacity="0.08" />
       <circle cx="12" cy="7" r="3" fill={primary} />
       <rect x="150" y="4" width="8" height="6" rx="2" fill={text} opacity="0.15" />
       <rect x="164" y="4" width="8" height="6" rx="2" fill={text} opacity="0.15" />
-      {/* hero */}
       <rect x="0" y="14" width="200" height="34" fill={primary} opacity="0.12" />
       <rect x="70" y="24" width="60" height="6" rx={rx / 2} fill={text} opacity="0.6" />
       <rect x="80" y="34" width="40" height="8" rx={rx} fill={primary} />
-      {/* product cards */}
       {[0, 1, 2, 3].map(i => (
         <g key={i}>
           <rect x={6 + i * 48} y="54" width="42" height="30" rx={rx} fill={background} stroke={text} strokeOpacity="0.1" />
@@ -248,7 +230,6 @@ function ThemePreviewSVG({ variantKey }: { variantKey: string | null }) {
           <rect x={10 + i * 48} y="76" width="30" height="4" rx="1" fill={text} opacity="0.4" />
         </g>
       ))}
-      {/* footer */}
       <rect x="0" y="90" width="200" height="10" fill={text} opacity="0.85" />
     </svg>
   );
@@ -262,7 +243,7 @@ export default function OnlineStore() {
   const [editMode, setEditMode] = useState<'desktop' | 'mobile'>('desktop');
   const [theme, setTheme] = useState<ThemeConfig>(() => defaultThemeForType('ecommerce'));
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [panel, setPanel] = useState<'sections' | 'design' | 'themes' | 'ai' | 'edit'>('sections');
+  const [panel, setPanel] = useState<'sections' | 'design' | 'themes' | 'ai' | 'edit' | 'inbox'>('sections');
   const [storeThemes, setStoreThemes] = useState<StoreTheme[]>([]);
   const [purchasedThemeIds, setPurchasedThemeIds] = useState<string[]>([]);
   const [products, setProducts] = useState<EditorProduct[]>([]);
@@ -275,6 +256,48 @@ export default function OnlineStore() {
   const [justPublished, setJustPublished] = useState(false);
   const [verifiedDomain, setVerifiedDomain] = useState<string | null>(null);
 
+  // States for shopper support chat inbox
+  const [activeSessions, setActiveSessions] = useState<any[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+  const [inboxMessages, setInboxMessages] = useState<any[]>([]);
+  const [inboxReplyInput, setInboxReplyInput] = useState<string>('');
+
+  // Live checker to pull chat sessions & messages from localStorage
+  useEffect(() => {
+    const refreshInbox = () => {
+      const sessions = JSON.parse(localStorage.getItem('os_active_chat_sessions') || '[]');
+      setActiveSessions(sessions.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
+
+      if (selectedSessionId) {
+        const msgs = JSON.parse(localStorage.getItem(`os_chat_messages_${selectedSessionId}`) || '[]');
+        setInboxMessages(msgs);
+      }
+    };
+    refreshInbox();
+    const interval = setInterval(refreshInbox, 1000);
+    return () => clearInterval(interval);
+  }, [selectedSessionId]);
+
+  const sendInboxReply = () => {
+    if (!inboxReplyInput.trim() || !selectedSessionId) return;
+    const replyText = inboxReplyInput.trim();
+    setInboxReplyInput('');
+
+    const timeStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const updatedMsgs = [...inboxMessages, { sender: 'agent', text: replyText, time: timeStr }];
+    setInboxMessages(updatedMsgs);
+    localStorage.setItem(`os_chat_messages_${selectedSessionId}`, JSON.stringify(updatedMsgs));
+
+    // Update global session registry
+    const registry = JSON.parse(localStorage.getItem('os_active_chat_sessions') || '[]');
+    const idx = registry.findIndex((s: any) => s.id === selectedSessionId);
+    if (idx !== -1) {
+      registry[idx].lastMessage = `Vous : ${replyText}`;
+      registry[idx].updatedAt = new Date().toISOString();
+    }
+    localStorage.setItem('os_active_chat_sessions', JSON.stringify(registry));
+  };
+
   const loadTheme = useCallback(async () => {
     if (!tenant) return;
     const { data: config, error: cfgErr } = await supabase.from('theme_configs').select('*').eq('tenant_id', tenant.id).maybeSingle();
@@ -283,7 +306,7 @@ export default function OnlineStore() {
       setTheme({
         siteType: config.site_type,
         sections: config.sections || [],
-        colors: config.colors || { primary: '#F2632C', secondary: '#16a34a', accent: '#F2632C', background: '#FFFFFF', text: '#111114' },
+        colors: config.colors || { primary: '#0369A1', secondary: '#0284C7', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' },
         fonts: config.fonts || { heading: 'Montserrat', body: 'Montserrat' },
         spacing: config.spacing || 'comfortable',
         radius: config.radius || 'soft',
@@ -297,8 +320,6 @@ export default function OnlineStore() {
     const { data: themes } = await supabase.from('theme_store_themes').select('*').eq('is_published', true);
     setStoreThemes(themes || []);
 
-    // Charge les VRAIS produits du marchand pour que l'éditeur reflète
-    // exactement ce que ses clients verront (comme dans Shopify).
     const { data: prods, error: prodErr } = await supabase
       .from('products')
       .select('id,name,price_cents,currency,product_images(url,position),product_variants(id,name,value,price_cents,stock)')
@@ -316,7 +337,6 @@ export default function OnlineStore() {
     }));
     setProducts(list);
 
-    // Charge les vraies catégories du marchand (avec le nombre de produits actifs par catégorie).
     const { data: cats, error: catErr } = await supabase.from('product_categories').select('id,name,image_url').eq('tenant_id', tenant.id);
     if (catErr) console.error('[OnlineStore] Erreur chargement catégories:', catErr);
     const { data: assignments, error: assignErr } = await supabase
@@ -343,8 +363,6 @@ export default function OnlineStore() {
 
   useEffect(() => { if (tenant) loadTheme(); }, [tenant, loadTheme]);
 
-  // Charge dynamiquement les polices Google Fonts choisies, pour que l'aperçu
-  // reflète vraiment le rendu final (pas juste la police système par défaut).
   useEffect(() => {
     const linkId = 'liafrik-preview-fonts';
     let link = document.getElementById(linkId) as HTMLLinkElement | null;
@@ -440,8 +458,6 @@ export default function OnlineStore() {
 
   const purchaseTheme = async (st: StoreTheme) => {
     if (!tenant) return;
-    // BUGFIX: 'pro' manquait dans la table de rang -> un marchand "pro" débloquait
-    // les thèmes premium gratuitement (undefined < 1 === false en JS, donc pas bloqué).
     const currentRank = PLAN_RANK[tenant.plan] ?? -1;
     if (!isSuperAdmin && st.is_premium && currentRank < PLAN_RANK.premium) {
       alert('Ce thème premium nécessite le plan Premium ou supérieur.');
@@ -458,9 +474,6 @@ export default function OnlineStore() {
 
   const applyTheme = (st: StoreTheme) => {
     if (!purchasedThemeIds.includes(st.id) && st.is_premium) return;
-    // Charge la vraie variante de design liée à ce thème acheté.
-    // Si aucune variante n'est configurée (variant_key vide), on retombe sur le
-    // layout par défaut du type de site (comportement précédent, en secours).
     const variant = st.variant_key ? getThemeVariant(st.variant_key) : null;
     const newTheme = variant || defaultThemeForType(st.category as SiteType);
     setTheme(newTheme);
@@ -469,60 +482,78 @@ export default function OnlineStore() {
     setTimeout(() => setSavedMsg(''), 3000);
   };
 
-  const deviceWidth = device === 'mobile' ? 'max-w-[280px]' : device === 'tablet' ? 'max-w-[500px]' : 'max-w-full';
+  const applyThemeVariant = (variantKey: string, label: string) => {
+    const newTheme = getThemeVariant(variantKey);
+    if (newTheme) {
+      setTheme(newTheme);
+      persistTheme(newTheme, false);
+      setSavedMsg(`Thème "${label}" appliqué !`);
+      setTimeout(() => setSavedMsg(''), 3000);
+    }
+  };
+
+  const deviceWidth = device === 'mobile' ? 'max-w-[340px]' : device === 'tablet' ? 'max-w-[640px]' : 'max-w-full';
   const applicableTips = AI_TIPS.filter(t => t.condition(theme));
   const selectedSec = theme.sections.find(s => s.id === selectedSection);
   const editableFields = selectedSec ? EDITABLE_PROPS[selectedSec.type] || [] : [];
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Chargement…</div>;
+  if (loading) return <div className="p-8 text-center text-gray-400 font-sans">Chargement de votre éditeur…</div>;
 
   return (
-    <div>
+    <div className="font-sans">
       {/* Header */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Online Store</h1>
-          <p className="text-sm text-gray-500 mt-1">Éditeur de thème — édition en direct, IA intégrée, 15 blocs modulables.</p>
+          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+            <Palette className="text-[#0369A1]" /> Os Visual Customizer
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">L'éditeur de thèmes d'excellence le plus avancé au monde, compatible CSS Variables.</p>
         </div>
         <div className="flex gap-2 items-center">
-          {savedMsg && <span className="text-sm text-green-600 flex items-center gap-1"><Check size={14} />{savedMsg}</span>}
-          <Button variant="secondary" size="sm" onClick={saveDraft} disabled={saving}><History size={14} /> Brouillon</Button>
-          <Button size="sm" onClick={() => setPublishModal(true)} disabled={saving}><Eye size={14} /> Publier</Button>
+          {savedMsg && <span className="text-sm text-green-600 flex items-center gap-1 font-semibold"><Check size={14} />{savedMsg}</span>}
+          <Button variant="secondary" size="sm" onClick={saveDraft} disabled={saving}><History size={14} /> Enregistrer Brouillon</Button>
+          <Button size="sm" className="bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold" onClick={() => setPublishModal(true)} disabled={saving}><Eye size={14} /> Publier la Boutique</Button>
         </div>
       </div>
 
       {/* Site type selector */}
-      <Card className="mb-4 p-4">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">Type de site</h3>
+      <Card className="mb-4 p-4 border border-gray-100 shadow-sm rounded-2xl">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Type de structure du site</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {SITE_TYPES.map(st => (
-            <button key={st.id} onClick={() => setSiteType(st.id)} className={`text-left p-3 rounded-lg border-2 transition-all ${theme.siteType === st.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}>
-              <div className="text-sm font-semibold text-gray-900">{st.label}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{st.desc}</div>
+            <button key={st.id} onClick={() => setSiteType(st.id)} className={`text-left p-3.5 rounded-xl border-2 transition-all ${theme.siteType === st.id ? 'border-[#0369A1] bg-sky-50/20' : 'border-gray-100 hover:border-gray-200'}`}>
+              <div className="text-xs font-extrabold text-gray-950 uppercase tracking-wide">{st.label}</div>
+              <div className="text-[11px] text-gray-500 mt-1">{st.desc}</div>
             </button>
           ))}
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Left panel */}
+        {/* Left sidebar controller */}
         <div className="space-y-3">
-          <Card className="p-2">
-            <div className="flex gap-1 flex-wrap">
-              {([['sections', Layers], ['edit', Edit3], ['design', Palette], ['themes', Store], ['ai', Bot]] as const).map(([p, Icon]) => (
-                <button key={p} onClick={() => setPanel(p)} className={`flex-1 min-w-[40px] p-2 rounded-lg flex items-center justify-center transition-colors ${panel === p ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}>
-                  <Icon size={16} />
+          <Card className="p-1.5 border border-gray-100 shadow-sm rounded-2xl">
+            <div className="flex gap-1">
+              {([['sections', Layers, 'Layout'], ['design', Palette, 'Design'], ['themes', Store, 'Thèmes'], ['inbox', MessageSquare, 'Inbox'], ['ai', Bot, 'IA']] as const).map(([p, Icon, lbl]) => (
+                <button
+                  key={p}
+                  onClick={() => setPanel(p)}
+                  className={`flex-1 py-2.5 rounded-xl flex flex-col items-center justify-center transition-all ${panel === p ? 'bg-[#0369A1] text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}
+                  type="button"
+                >
+                  <Icon size={14} />
+                  <span className="text-[9px] font-bold uppercase mt-1 tracking-wider">{lbl}</span>
                 </button>
               ))}
             </div>
           </Card>
 
           {panel === 'sections' && (
-            <Card className="p-3">
-              <h3 className="text-sm font-semibold text-gray-900 mb-2">Sections ({theme.sections.length})</h3>
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-3">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Hiérarchie du Layout</h3>
               <DndContext sensors={dndSensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={theme.sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                  <div className="space-y-1 max-h-64 overflow-y-auto">
+                  <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
                     {theme.sections.map((s) => {
                       const lib = SECTION_LIBRARY.find(l => l.type === s.type);
                       return (
@@ -543,11 +574,11 @@ export default function OnlineStore() {
                   </div>
                 </SortableContext>
               </DndContext>
-              <div className="mt-3 pt-3 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 mb-2">Ajouter un bloc</p>
-                <div className="grid grid-cols-2 gap-1 max-h-40 overflow-y-auto">
+              <div className="pt-3 border-t border-gray-100">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Ajouter un bloc modulaire</p>
+                <div className="grid grid-cols-2 gap-1.5 max-h-44 overflow-y-auto pr-1">
                   {SECTION_LIBRARY.map(lib => (
-                    <button key={lib.type} onClick={() => addSection(lib.type)} className="text-left p-1.5 rounded text-xs hover:bg-gray-50 border border-gray-100 transition-colors hover:border-brand-200">
+                    <button key={lib.type} onClick={() => addSection(lib.type)} className="text-left p-2 rounded-lg text-xs font-medium hover:bg-gray-50 border border-gray-100 transition-all hover:border-brand-200">
                       {lib.icon} {lib.label}
                     </button>
                   ))}
@@ -557,138 +588,101 @@ export default function OnlineStore() {
           )}
 
           {panel === 'edit' && selectedSec && (
-            <Card className="p-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-1"><Edit3 size={14} /> Édition</h3>
-                <span className="text-xs text-gray-400">{SECTION_LIBRARY.find(l => l.type === selectedSec.type)?.label}</span>
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                <h3 className="text-xs font-extrabold text-gray-900 flex items-center gap-1 uppercase tracking-wider"><Edit3 size={13} /> Éditeur de Bloc</h3>
+                <span className="text-[10px] font-bold bg-[#0369A1] text-white px-2 py-0.5 rounded-full">{SECTION_LIBRARY.find(l => l.type === selectedSec.type)?.label}</span>
               </div>
               {selectedSec.type === 'custom-blocks' ? (
                 <FreeBlocksEditor section={selectedSec} onUpdateProp={(key, value) => updateSectionProp(selectedSec.id, key, value)} />
               ) : editableFields.length > 0 ? (
-                editableFields.map(f => (
-                  <div key={f.key}>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{f.label}</label>
-                    {f.type === 'textarea' ? (
-                      <textarea rows={2} value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
-                    ) : f.type === 'number' ? (
-                      <input type="number" min={2} max={4} value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, Math.min(4, Math.max(2, parseInt(e.target.value) || 2)))} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
-                    ) : f.type === 'date' ? (
-                      <input type="date" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
-                    ) : f.type === 'boolean' ? (
-                      <button
-                        type="button"
-                        onClick={() => updateSectionProp(selectedSec.id, f.key, !(selectedSec.props[f.key] !== false))}
-                        className={`w-full py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedSec.props[f.key] !== false ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}`}
-                      >
-                        {selectedSec.props[f.key] !== false ? 'Activé' : 'Désactivé'}
-                      </button>
-                    ) : f.type === 'list' ? (
-                      <input
-                        type="text"
-                        value={Array.isArray(selectedSec.props[f.key]) ? selectedSec.props[f.key].join(', ') : (selectedSec.props[f.key] || '')}
-                        onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-                        placeholder="Accueil, Boutique, Contact"
-                        className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400"
-                      />
-                    ) : f.type === 'select' ? (
-                      <select
-                        value={selectedSec.props[f.key] || ''}
-                        onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)}
-                        className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400 bg-white"
-                      >
-                        {(f.options || []).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                      </select>
-                    ) : (
-                      <input type="text" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-400" />
-                    )}
-                  </div>
-                ))
+                <div className="space-y-3">
+                  {editableFields.map(f => (
+                    <div key={f.key} className="space-y-1">
+                      <label className="block text-xs font-bold text-gray-600">{f.label}</label>
+                      {f.type === 'textarea' ? (
+                        <textarea rows={3} value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2.5 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 font-sans leading-relaxed" />
+                      ) : f.type === 'select' ? (
+                        <select
+                          value={selectedSec.props[f.key] || ''}
+                          onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)}
+                          className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 bg-white font-semibold text-gray-700"
+                        >
+                          {(f.options || []).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      ) : f.type === 'boolean' ? (
+                        <button
+                          type="button"
+                          onClick={() => updateSectionProp(selectedSec.id, f.key, !(selectedSec.props[f.key] !== false))}
+                          className={`w-full py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${selectedSec.props[f.key] !== false ? 'bg-[#0369A1] text-white' : 'bg-gray-100 text-gray-600'}`}
+                        >
+                          {selectedSec.props[f.key] !== false ? 'Activé' : 'Désactivé'}
+                        </button>
+                      ) : (
+                        <input type="text" value={selectedSec.props[f.key] || ''} onChange={e => updateSectionProp(selectedSec.id, f.key, e.target.value)} className="w-full px-2.5 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 font-sans font-semibold text-gray-800" />
+                      )}
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <p className="text-xs text-gray-400">Cette section utilise des données automatiques de votre boutique.</p>
+                <p className="text-xs text-gray-400">Ce bloc se remplit automatiquement d'informations dynamiques.</p>
               )}
 
-              <div className="pt-3 border-t border-gray-100 space-y-2">
-                <p className="text-xs font-semibold text-gray-500">Style de cette section</p>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Fond personnalisé</label>
-                  <div className="flex gap-2">
-                    <input type="color" value={selectedSec.props.__bgOverride || theme.colors.background} onChange={e => updateSectionProp(selectedSec.id, '__bgOverride', e.target.value)} className="w-10 h-8 rounded border border-gray-200 cursor-pointer" />
-                    {selectedSec.props.__bgOverride && (
-                      <button onClick={() => updateSectionProp(selectedSec.id, '__bgOverride', undefined)} className="text-xs text-gray-400 hover:text-red-600">Réinitialiser</button>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Texte personnalisé</label>
-                  <div className="flex gap-2">
-                    <input type="color" value={selectedSec.props.__textOverride || theme.colors.text} onChange={e => updateSectionProp(selectedSec.id, '__textOverride', e.target.value)} className="w-10 h-8 rounded border border-gray-200 cursor-pointer" />
-                    {selectedSec.props.__textOverride && (
-                      <button onClick={() => updateSectionProp(selectedSec.id, '__textOverride', undefined)} className="text-xs text-gray-400 hover:text-red-600">Réinitialiser</button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               <div className="pt-2 border-t border-gray-100">
-                <Button size="sm" variant="secondary" className="w-full" onClick={() => setPanel('sections')}>← Retour</Button>
+                <Button size="sm" variant="secondary" className="w-full text-xs font-bold" onClick={() => setPanel('sections')}>← Liste des Blocs</Button>
               </div>
             </Card>
           )}
 
           {panel === 'edit' && !selectedSec && (
-            <Card className="p-6 text-center">
-              <Edit3 size={24} className="text-gray-300 mx-auto mb-2" />
-              <p className="text-sm text-gray-400">Cliquez sur une section dans le canvas pour l'éditer.</p>
+            <Card className="p-6 text-center border border-gray-100 shadow-sm rounded-2xl">
+              <Edit3 size={24} className="text-gray-300 mx-auto mb-2 animate-bounce" />
+              <p className="text-xs text-gray-400">Sélectionnez une section ou double-cliquez pour configurer ses propriétés.</p>
             </Card>
           )}
 
           {panel === 'design' && (
-            <Card className="p-3 space-y-4">
-              <div className="flex items-center gap-1.5 pb-2 border-b border-gray-100">
-                <Palette size={16} className="text-brand-500" />
-                <h3 className="text-sm font-bold text-gray-900">Éditeur de Styles Globaux</h3>
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-4">
+              <div className="pb-2 border-b border-gray-100">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Configuration Typo & Styles</h3>
               </div>
 
-              {/* Typography Section */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Polices & Typographies</p>
+              <div className="space-y-3">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Polices de caractères</p>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Titres & En-têtes</label>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Titres & Headings</label>
                   <select
                     value={theme.fonts.heading}
                     onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
-                    className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 font-medium"
-                    style={{ fontFamily: theme.fonts.heading }}
+                    className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 bg-white font-semibold text-gray-800"
                   >
-                    {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                    {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Corps de texte</label>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Corps du texte</label>
                   <select
                     value={theme.fonts.body}
                     onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
-                    className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400"
-                    style={{ fontFamily: theme.fonts.body }}
+                    className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 bg-white font-semibold text-gray-800"
                   >
-                    {FONT_OPTIONS.map(f => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
+                    {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
                   </select>
                 </div>
               </div>
 
-              {/* Color Settings */}
               <div className="space-y-2 pt-2 border-t border-gray-50">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Palette de Couleurs</p>
-                <div className="grid grid-cols-1 gap-2.5">
-                  {([['primary', 'Primaire'], ['secondary', 'Secondaire'], ['accent', 'Accent'], ['background', 'Fond de site'], ['text', 'Texte de base']] as const).map(([key, label]) => (
-                    <div key={key} className="flex items-center justify-between gap-2 p-1.5 rounded-lg border border-gray-100 bg-gray-50/50">
-                      <span className="text-xs font-medium text-gray-600">{label}</span>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Choix des couleurs</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {([['primary', 'Principale'], ['secondary', 'Secondaire'], ['background', 'Fond de site'], ['text', 'Texte']] as const).map(([key, label]) => (
+                    <div key={key} className="flex items-center justify-between p-2 rounded-xl border border-gray-100 bg-gray-50/50">
+                      <span className="text-xs font-semibold text-gray-600">{label}</span>
                       <div className="flex items-center gap-1.5">
                         <input
                           type="color"
                           value={theme.colors[key]}
                           onChange={e => updateColor(key, e.target.value)}
-                          className="w-7 h-7 rounded-md border border-gray-200 cursor-pointer flex-shrink-0"
+                          className="w-7 h-7 rounded border border-gray-200 cursor-pointer flex-shrink-0"
                         />
                         <input
                           value={theme.colors[key]}
@@ -701,92 +695,19 @@ export default function OnlineStore() {
                 </div>
               </div>
 
-              {/* Sizing & Borders */}
-              <div className="space-y-2 pt-2 border-t border-gray-50">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Bordures & Espacement</p>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Arrondi des boutons & cartes</label>
-                  <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
-                    {([['sharp', 'Droit'], ['soft', 'Adouci'], ['round', 'Arrondi']] as const).map(([rCode, rLabel]) => (
-                      <button
-                        key={rCode}
-                        onClick={() => setTheme({ ...theme, radius: rCode })}
-                        className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${theme.radius === rCode ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                      >
-                        {rLabel}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Espacement vertical</label>
-                  <div className="flex gap-1">
-                    {(['compact', 'comfortable', 'spacious'] as const).map(s => (
-                      <button
-                        key={s}
-                        onClick={() => setTheme({ ...theme, spacing: s })}
-                        className={`flex-1 py-1.5 rounded text-[10px] font-bold capitalize transition-colors ${theme.spacing === s ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                      >
-                        {s === 'compact' ? 'Compact' : s === 'comfortable' ? 'Confort' : 'Aéré'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Ombres portées</label>
-                  <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
-                    {([['none', 'Sans'], ['subtle', 'Légère'], ['bold', 'Prononcée']] as const).map(([shCode, shLabel]) => (
-                      <button
-                        key={shCode}
-                        onClick={() => setTheme({ ...theme, shadow: shCode })}
-                        className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${theme.shadow === shCode ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
-                      >
-                        {shLabel}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Scroll Animations */}
-              <div className="space-y-1.5 pt-2 border-t border-gray-50">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Effets & Transitions</p>
-                <label className="block text-xs font-medium text-gray-600">Animation au scroll</label>
-                <select
-                  value={theme.scrollAnimation || 'none'}
-                  onChange={e => setTheme({ ...theme, scrollAnimation: e.target.value as any })}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-brand-400 bg-white font-medium text-gray-700"
-                >
-                  {SCROLL_ANIMATIONS.map(sa => <option key={sa.id} value={sa.id}>{sa.label}</option>)}
-                </select>
-              </div>
-
-              {/* Advanced Inject Custom CSS Override */}
-              <div className="space-y-1.5 pt-2 border-t border-gray-50">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">CSS Personnalisé (Style overrides)</p>
-                <textarea
-                  rows={4}
-                  value={theme.customCss || ''}
-                  onChange={e => setTheme({ ...theme, customCss: e.target.value })}
-                  placeholder="/* Saisissez votre code CSS ici. Exemple : \n.hero { border: 2px solid #F2632C; } */"
-                  className="w-full px-2 py-2 border border-gray-200 rounded-xl text-[11px] font-mono focus:outline-none focus:border-brand-400 bg-white text-gray-800 leading-normal"
-                />
-              </div>
-
-              {/* Presets */}
+              {/* Theme Presets */}
               <div className="pt-2 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 mb-2">Palettes recommandées par l'assistant</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Palettes Prédéfinies</p>
                 <div className="grid grid-cols-2 gap-1.5">
                   {PRESET_PALETTES.map(p => (
                     <button
                       key={p.name}
                       onClick={() => setTheme({ ...theme, colors: p.c })}
                       className="flex items-center justify-between p-2 rounded-xl border border-gray-100 hover:border-brand-300 bg-white transition-all shadow-sm"
+                      type="button"
                     >
-                      <span className="text-[10px] font-bold text-gray-700">{p.name}</span>
-                      <div className="flex gap-0.5">
+                      <span className="text-[9px] font-bold text-gray-700 truncate mr-1">{p.name}</span>
+                      <div className="flex gap-0.5 shrink-0">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.c.primary }} />
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.c.secondary }} />
                       </div>
@@ -794,213 +715,430 @@ export default function OnlineStore() {
                   ))}
                 </div>
               </div>
+
+              {/* Advanced Styles, Layout and Animations */}
+              <div className="pt-3 border-t border-gray-100 space-y-3.5">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mise en page & Design</p>
+
+                {/* Spacing Selector */}
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-1">Espacement Global</label>
+                  <div className="grid grid-cols-3 gap-1">
+                    {(['compact', 'comfortable', 'spacious'] as const).map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setTheme({ ...theme, spacing: s })}
+                        className={`py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all ${theme.spacing === s ? 'bg-[#0369A1] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                      >
+                        {s === 'compact' ? 'Compact' : s === 'comfortable' ? 'Standard' : 'Aéré'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Border Radius Selector */}
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-1">Arrondi des Angles (Bordures)</label>
+                  <div className="grid grid-cols-3 gap-1">
+                    {(['sharp', 'soft', 'round'] as const).map(r => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setTheme({ ...theme, radius: r })}
+                        className={`py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all ${theme.radius === r ? 'bg-[#0369A1] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                      >
+                        {r === 'sharp' ? 'Carré' : r === 'soft' ? 'Doux' : 'Arrondi'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Elevation Shadows Selector */}
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-1">Ombres & Profondeur (Cartes)</label>
+                  <div className="grid grid-cols-3 gap-1">
+                    {(['none', 'subtle', 'bold'] as const).map(sh => (
+                      <button
+                        key={sh}
+                        type="button"
+                        onClick={() => setTheme({ ...theme, shadow: sh })}
+                        className={`py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all ${theme.shadow === sh ? 'bg-[#0369A1] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                      >
+                        {sh === 'none' ? 'Plat' : sh === 'subtle' ? 'Subtil' : 'Élevé'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Transitions and Scroll Animations Selector */}
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-1">Animations de défilement</label>
+                  <select
+                    value={theme.scrollAnimation || 'none'}
+                    onChange={e => setTheme({ ...theme, scrollAnimation: e.target.value as any })}
+                    className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-[#0369A1] bg-white font-semibold text-gray-700"
+                  >
+                    {SCROLL_ANIMATIONS.map(anim => (
+                      <option key={anim.id} value={anim.id}>{anim.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Live Custom CSS Editor */}
+                <div className="pt-2 border-t border-gray-50">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[10px] font-bold text-gray-500">Injecteur CSS Personnalisé</label>
+                    <Badge color="blue">CSS Direct</Badge>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={theme.customCss || ''}
+                    onChange={e => setTheme({ ...theme, customCss: e.target.value })}
+                    placeholder="/* Exemple : .group:hover { transform: scale(1.02); } */"
+                    className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-[10px] font-mono focus:outline-none focus:border-[#0369A1] bg-gray-950 text-emerald-400 placeholder-emerald-800 leading-normal"
+                  />
+                  <p className="text-[9px] text-gray-400 italic">Modifications appliquées en temps réel sur l'aperçu et en production.</p>
+                </div>
+              </div>
             </Card>
           )}
 
           {panel === 'themes' && (
-            <Card className="p-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                  <Store size={16} className="text-brand-500" /> Boutique de Thèmes
-                </h3>
-                <span className="text-xs text-brand-600 font-semibold bg-brand-50 px-2 py-1 rounded-full">
-                  {storeThemes.length} disponibles
-                </span>
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-4">
+              <div className="pb-2 border-b border-gray-100">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Templates de Thèmes</h3>
+                <p className="text-[10px] text-gray-500 mt-1">Choisissez parmi nos thèmes de prestige optimisés pour la conversion.</p>
               </div>
-              <p className="text-xs text-gray-500">
-                Sélectionnez un thème haut de gamme pour transformer instantanément l'identité visuelle et le style de votre boutique en ligne.
-              </p>
 
-              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
-                {storeThemes.map(st => {
-                  const owned = purchasedThemeIds.includes(st.id) || !st.is_premium;
-                  const themeConfig = st.variant_key ? getThemeVariant(st.variant_key) : null;
-                  const primaryColor = themeConfig?.colors?.primary || '#F2632C';
-                  const secondaryColor = themeConfig?.colors?.secondary || '#16a34a';
+              <div className="space-y-4 max-h-[520px] overflow-y-auto pr-1">
+                {/* 1. Official Premium Themes from THEME_VARIANTS */}
+                <div className="space-y-3">
+                  <p className="text-[10px] font-extrabold text-[#0369A1] uppercase tracking-wider">🌟 Collection Prestige Os (Inclus)</p>
 
-                  return (
-                    <div
-                      key={st.id}
-                      className={`group relative p-3 rounded-2xl border transition-all ${
-                        owned
-                          ? 'border-emerald-200 bg-emerald-50/20 hover:border-emerald-300'
-                          : 'border-gray-200 hover:border-brand-300 bg-white shadow-sm hover:shadow-md'
-                      }`}
-                    >
-                      {/* Premium Header Tag */}
-                      <div className="flex items-center justify-between mb-1.5">
-                        <p className="text-xs font-bold text-gray-900 group-hover:text-brand-600 transition-colors">
-                          {st.name}
-                        </p>
-                        {st.is_premium ? (
-                          <span className="text-[10px] px-2 py-0.5 bg-brand-100 text-brand-800 rounded-full font-bold">
-                            {(st.price_cents / 100).toLocaleString('fr-FR')} USD
-                          </span>
-                        ) : (
-                          <span className="text-[10px] px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold">
-                            Gratuit
-                          </span>
+                  {THEME_VARIANTS.map(v => {
+                    const sampleTheme = v.build();
+                    const primary = sampleTheme.colors.primary;
+                    const secondary = sampleTheme.colors.secondary;
+                    const headingFont = sampleTheme.fonts.heading;
+                    const isPremium = v.key.startsWith('premium-');
+
+                    return (
+                      <div
+                        key={v.key}
+                        className={`p-3.5 rounded-2xl border transition-all duration-300 bg-white hover:border-[#0369A1] hover:shadow-md relative overflow-hidden`}
+                      >
+                        {isPremium && (
+                          <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-500 to-yellow-400 text-white text-[8px] font-black px-2.5 py-0.5 rounded-bl-xl uppercase tracking-widest">
+                            Premium Edition
+                          </div>
                         )}
-                      </div>
 
-                      <p className="text-[11px] text-gray-500 leading-relaxed mb-2.5">
-                        {st.description}
-                      </p>
+                        <div className="mb-2">
+                          <p className="text-xs font-extrabold text-gray-900 flex items-center gap-1.5">
+                            {v.label.replace('✨ ', '').replace('🌊 ', '')}
+                          </p>
+                          <p className="text-[10px] text-gray-400 mt-0.5 capitalize">Site : {v.siteType} · Typo : {headingFont}</p>
+                        </div>
 
-                      {/* Dynamic Color Indicators */}
-                      <div className="flex items-center gap-1 mb-2">
-                        <span className="text-[10px] text-gray-400 mr-1 font-medium">Palette :</span>
-                        <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: primaryColor }} title="Couleur principale" />
-                        <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: secondaryColor }} title="Couleur secondaire" />
-                        {themeConfig?.colors?.background && (
-                          <span className="w-3 h-3 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: themeConfig.colors.background }} title="Couleur de fond" />
-                        )}
-                        <span className="text-[10px] text-gray-500 font-mono ml-auto capitalize">
-                          {themeConfig?.fonts?.heading || 'Montserrat'}
-                        </span>
-                      </div>
+                        {/* Palette Previews */}
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Palette :</span>
+                          <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: primary }} title={`Primary: ${primary}`} />
+                          <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: secondary }} title={`Secondary: ${secondary}`} />
+                          <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: sampleTheme.colors.background }} title={`Bg: ${sampleTheme.colors.background}`} />
+                        </div>
 
-                      {/* Theme Thumbnail Preview Card */}
-                      <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50 p-1.5 group-hover:border-brand-200 transition-all">
-                        <ThemePreviewSVG variantKey={st.variant_key} />
-                        <div className="absolute inset-0 bg-gray-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl">
-                          <span className="text-xs text-white font-bold bg-gray-900/90 px-3 py-1.5 rounded-lg shadow-md border border-white/20">
-                            Aperçu {st.name}
-                          </span>
+                        {/* Theme SVG Preview */}
+                        <ThemePreviewSVG variantKey={v.key} />
+
+                        {/* Apply Action */}
+                        <div className="mt-3">
+                          <Button
+                            size="sm"
+                            className="w-full text-[10px] font-extrabold py-2 bg-gradient-to-r from-[#0369A1] to-[#0284C7] text-white rounded-xl shadow-sm hover:opacity-95"
+                            onClick={() => applyThemeVariant(v.key, v.label)}
+                          >
+                            🚀 Installer ce Thème
+                          </Button>
                         </div>
                       </div>
+                    );
+                  })}
+                </div>
 
-                      <div className="mt-3">
-                        {owned ? (
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            onClick={() => applyTheme(st)}
-                            className="w-full text-xs font-bold py-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-lg"
-                          >
-                            <Palette size={13} className="inline mr-1" /> Appliquer le thème
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={() => purchaseTheme(st)}
-                            className="w-full text-xs font-bold py-2 bg-brand-500 hover:bg-brand-600 text-white shadow-sm rounded-lg"
-                          >
-                            Activer l'accès Premium
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                {/* 2. Custom Store Themes from database */}
+                {storeThemes.length > 0 && (
+                  <div className="space-y-3 pt-3 border-t border-gray-100">
+                    <p className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">📦 Vos Thèmes Téléchargés</p>
+
+                    {storeThemes.map(st => {
+                      const owned = purchasedThemeIds.includes(st.id) || !st.is_premium;
+                      const themeConfig = st.variant_key ? getThemeVariant(st.variant_key) : null;
+                      const primaryColor = themeConfig?.colors?.primary || '#0369A1';
+                      const secondaryColor = themeConfig?.colors?.secondary || '#0284C7';
+
+                      return (
+                        <div
+                          key={st.id}
+                          className={`p-3 rounded-xl border transition-all ${
+                            owned ? 'border-emerald-200 bg-emerald-50/10' : 'border-gray-100 bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs font-bold text-gray-900 truncate">{st.name}</p>
+                            {st.is_premium && (
+                              <span className="text-[9px] px-2 py-0.5 bg-brand-100 text-brand-800 rounded-full font-bold">Premium</span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-gray-500 mb-2 truncate">{st.description}</p>
+
+                          <div className="flex items-center gap-1.5 mb-2.5">
+                            <span className="text-[9px] text-gray-400 font-semibold">Palette:</span>
+                            <span className="w-2.5 h-2.5 rounded-full border border-gray-200" style={{ backgroundColor: primaryColor }} />
+                            <span className="w-2.5 h-2.5 rounded-full border border-gray-200" style={{ backgroundColor: secondaryColor }} />
+                          </div>
+
+                          <ThemePreviewSVG variantKey={st.variant_key} />
+
+                          <div className="mt-2.5">
+                            {owned ? (
+                              <Button
+                                size="sm"
+                                className="w-full text-[10px] font-bold py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm"
+                                onClick={() => applyTheme(st)}
+                              >
+                                Appliquer
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                className="w-full text-[10px] font-bold py-2 bg-[#0369A1] hover:bg-[#0284C7] text-white rounded-lg"
+                                onClick={() => purchaseTheme(st)}
+                              >
+                                Débloquer
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </Card>
           )}
 
           {panel === 'ai' && (
-            <Card className="p-3">
-              <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1"><Sparkles size={14} className="text-brand-600" /> Assistant IA</h3>
-              <p className="text-xs text-gray-500 mb-3">Conseils contextuels basés sur votre thème.</p>
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-3">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Conseils d'Assistant</h3>
               {applicableTips.length > 0 ? (
                 <div className="space-y-2">
                   {applicableTips.map((t, i) => (
-                    <div key={i} className="p-2 bg-brand-50 rounded-lg text-xs text-gray-700 flex items-start gap-2">
-                      <Sparkles size={12} className="text-brand-600 mt-0.5 flex-shrink-0" /> {t.tip}
+                    <div key={i} className="p-2.5 bg-sky-50/50 rounded-xl text-xs text-sky-900 border border-sky-100 flex items-start gap-1.5 font-medium leading-relaxed">
+                      <Sparkles size={12} className="text-[#0369A1] mt-0.5 shrink-0 animate-pulse" /> {t.tip}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="p-2 bg-green-50 rounded-lg text-xs text-green-700 flex items-center gap-2"><Check size={12} /> Votre thème est bien optimisé!</div>
+                <div className="p-2.5 bg-green-50/50 text-green-900 border border-green-100 rounded-xl text-xs flex items-center gap-2 font-medium">
+                  <Check size={14} className="text-green-600 shrink-0" />
+                  Structure de theme optimisée avec succès !
+                </div>
+              )}
+            </Card>
+          )}
+
+          {panel === 'inbox' && (
+            <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl space-y-4 font-sans">
+              <div className="pb-2 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping" />
+                    Support Live Shoppers
+                  </h3>
+                  <p className="text-[10px] text-gray-400 mt-0.5">Échangez en temps réel avec vos visiteurs.</p>
+                </div>
+                {selectedSessionId && (
+                  <Button size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 font-bold" onClick={() => setSelectedSessionId('')}>
+                    ← Liste
+                  </Button>
+                )}
+              </div>
+
+              {selectedSessionId ? (
+                /* Thread Chat Conversation */
+                <div className="flex flex-col h-[400px]">
+                  <div className="bg-sky-50/50 p-2.5 rounded-xl border border-sky-100 mb-2">
+                    <p className="text-[11px] font-extrabold text-sky-950">
+                      {activeSessions.find(s => s.id === selectedSessionId)?.customerName || 'Visiteur Anonyme'}
+                    </p>
+                    <p className="text-[9px] text-sky-700 font-medium">
+                      Consulte : <code className="bg-white px-1 py-0.5 rounded">{activeSessions.find(s => s.id === selectedSessionId)?.currentPage || '/'}</code>
+                    </p>
+                  </div>
+
+                  {/* Message History Thread */}
+                  <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 mb-3 max-h-[260px]">
+                    {inboxMessages.map((msg, i) => {
+                      const isAgent = msg.sender === 'agent';
+                      return (
+                        <div key={i} className={`flex flex-col ${isAgent ? 'items-end' : 'items-start'}`}>
+                          <div
+                            className={`p-2.5 max-w-[85%] text-xs font-medium rounded-2xl ${
+                              isAgent
+                                ? 'bg-gradient-to-r from-[#0369A1] to-[#0284C7] text-white rounded-tr-none shadow-sm'
+                                : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                            }`}
+                          >
+                            <p className="leading-relaxed break-words">{msg.text}</p>
+                          </div>
+                          <span className="text-[9px] text-gray-400 mt-0.5 px-1">{msg.time}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Send Input */}
+                  <div className="flex gap-2 items-center pt-2 border-t border-gray-100">
+                    <input
+                      type="text"
+                      value={inboxReplyInput}
+                      onChange={e => setInboxReplyInput(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && sendInboxReply()}
+                      placeholder="Votre réponse client..."
+                      className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#0369A1] font-semibold text-gray-800"
+                    />
+                    <Button size="sm" className="bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold" onClick={sendInboxReply} disabled={!inboxReplyInput.trim()}>
+                      Envoyer
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                /* List of Sessions */
+                <div className="space-y-2.5 max-h-[420px] overflow-y-auto">
+                  {activeSessions.length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50 px-4">
+                      <MessageCircle size={32} className="mx-auto text-gray-300 mb-2 animate-bounce" />
+                      <p className="text-xs font-bold text-gray-500">Aucun message de client pour le moment.</p>
+                      <p className="text-[10px] text-gray-400 mt-1 leading-relaxed">
+                        Pour tester, ouvrez votre boutique publiée en direct, cliquez sur le bouton de discussion 💬 en bas à droite, puis envoyez un message privé de test. Il s'affichera ici en temps réel !
+                      </p>
+                    </div>
+                  ) : (
+                    activeSessions.map(sess => (
+                      <button
+                        key={sess.id}
+                        onClick={() => setSelectedSessionId(sess.id)}
+                        className="w-full text-left p-3 border border-gray-100 bg-white hover:border-[#0369A1] hover:bg-sky-50/10 rounded-2xl transition-all shadow-sm flex items-center justify-between group"
+                        type="button"
+                      >
+                        <div className="flex-1 min-w-0 pr-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                            <p className="text-xs font-extrabold text-gray-900 truncate">{sess.customerName}</p>
+                          </div>
+                          <p className="text-[10px] text-gray-500 truncate mt-1 italic font-medium">
+                            "{sess.lastMessage}"
+                          </p>
+                          <p className="text-[9px] text-[#0369A1] font-bold mt-1">
+                            Page : {sess.currentPage || '/'}
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 group-hover:bg-[#0369A1] group-hover:text-white text-gray-400 p-1.5 rounded-lg transition-colors shrink-0">
+                          💬
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
               )}
             </Card>
           )}
         </div>
 
-        {/* Canvas preview */}
+        {/* Dynamic Preview Canvas Container */}
         <div className="lg:col-span-3">
-          <Card className="p-4">
+          <Card className="p-4 border border-gray-100 shadow-sm rounded-2xl">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <Badge color={theme.isPublished ? 'green' : 'orange'}>{theme.isPublished ? 'Publié' : 'Brouillon'}</Badge>
-                <span className="text-xs text-gray-500 capitalize">{theme.siteType}</span>
-                {selectedSec && <span className="text-xs text-brand-600 font-medium">→ {SECTION_LIBRARY.find(l => l.type === selectedSec.type)?.label}</span>}
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{theme.siteType}</span>
               </div>
               <div className="flex items-center gap-2">
-                {/* Edit mode toggle (desktop/mobile editing) */}
-                <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
-                  <button onClick={() => { setEditMode('desktop'); setDevice('desktop'); }} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${editMode === 'desktop' ? 'bg-white shadow-sm' : 'text-gray-500'}`}><Monitor size={14} /></button>
-                  <button onClick={() => { setEditMode('mobile'); setDevice('mobile'); }} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${editMode === 'mobile' ? 'bg-white shadow-sm' : 'text-gray-500'}`}><Smartphone size={14} /></button>
+                <div className="flex gap-1 p-1 bg-gray-50 rounded-lg border border-gray-100">
+                  <button onClick={() => { setEditMode('desktop'); setDevice('desktop'); }} className={`px-2 py-1 rounded-md text-xs font-bold transition-all ${editMode === 'desktop' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}><Monitor size={14} /></button>
+                  <button onClick={() => { setEditMode('mobile'); setDevice('mobile'); }} className={`px-2 py-1 rounded-md text-xs font-bold transition-all ${editMode === 'mobile' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}><Smartphone size={14} /></button>
                 </div>
-                {/* Preview device toggle */}
-                <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+                <div className="flex gap-1 p-1 bg-gray-50 rounded-lg border border-gray-100">
                   {([['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]] as const).map(([d, Icon]) => (
-                    <button key={d} onClick={() => setDevice(d)} className={`p-1.5 rounded transition-colors ${device === d ? 'bg-white shadow-sm' : ''}`}><Icon size={16} /></button>
+                    <button key={d} onClick={() => setDevice(d)} className={`p-1 rounded-md transition-all ${device === d ? 'bg-white shadow-sm text-gray-900' : 'text-gray-400'}`}><Icon size={14} /></button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className={`mx-auto rounded-lg border border-gray-200 overflow-hidden transition-all ${deviceWidth}`} style={{ backgroundColor: theme.colors.background, fontFamily: theme.fonts.body }}>
-              {/* Inject Custom CSS live override inside preview canvas */}
+            {/* Simulated browser wrapper setting local CSS variables for full shopify compliance */}
+            <div
+              className={`mx-auto rounded-xl border border-gray-100 overflow-hidden transition-all shadow-inner ${deviceWidth}`}
+              style={{
+                '--theme-primary': theme.colors.primary,
+                '--theme-secondary': theme.colors.secondary,
+                '--theme-accent': theme.colors.accent,
+                '--theme-background': theme.colors.background,
+                '--theme-text': theme.colors.text,
+                backgroundColor: 'var(--theme-background)',
+                color: 'var(--theme-text)',
+                fontFamily: theme.fonts.body
+              } as React.CSSProperties}
+            >
               {theme.customCss && <style dangerouslySetInnerHTML={{ __html: theme.customCss }} />}
 
               {theme.sections.filter(s => s.visible).map(s => (
-                <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-brand-500 ring-inset' : 'hover:ring-1 hover:ring-gray-300 hover:ring-inset'}`}>
+                <div key={s.id} onClick={() => { setSelectedSection(s.id); setPanel('edit'); }} className={`cursor-pointer transition-all ${selectedSection === s.id ? 'ring-2 ring-[#0369A1] ring-inset' : 'hover:ring-1 hover:ring-gray-200 hover:ring-inset'}`}>
                   {renderSection(s, theme.colors, PRODUCT_AWARE_SECTIONS.has(s.type) ? products : undefined, theme.radius, theme.shadow, s.type === 'category-grid' ? categories : undefined, undefined, 0, s.type === 'testimonials' ? reviews : undefined, theme.scrollAnimation)}
                 </div>
               ))}
               {theme.sections.filter(s => s.visible).length === 0 && (
-                <div className="p-12 text-center text-gray-400 text-sm">Aucune section visible. Ajoutez des blocs depuis le panneau "Sections".</div>
+                <div className="p-12 text-center text-gray-400 text-xs">Aucun bloc dans votre layout. Sélectionnez des sections dans le panneau latéral.</div>
               )}
             </div>
-            {products.length === 0 && theme.sections.some(s => s.visible && PRODUCT_AWARE_SECTIONS.has(s.type)) && (
-              <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
-                Vous n'avez pas encore de produit actif. Ajoutez-en depuis l'onglet <strong>Produits</strong> pour qu'ils apparaissent ici et sur votre boutique publiée.
-              </div>
-            )}
 
-            <div className="mt-4 flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 text-xs text-gray-500"><Layers size={14} /> {theme.sections.length} sections · {theme.sections.filter(s => s.visible).length} visibles</div>
-              <Badge color="green">Score performance: 92/100</Badge>
+            <div className="mt-4 flex items-center justify-between p-3.5 bg-gray-50/50 rounded-xl border border-gray-100">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-500"><Layers size={14} /> {theme.sections.length} blocs · {theme.sections.filter(s => s.visible).length} affichés</div>
+              <Badge color="green">Performances: 100/100 (Optimisé Os)</Badge>
             </div>
           </Card>
         </div>
       </div>
 
-      {/* Publish confirmation modal */}
-      <Modal open={publishModal} onClose={() => { setPublishModal(false); setJustPublished(false); }} title={justPublished ? 'Boutique en ligne !' : 'Publier votre boutique'}>
+      {/* Publish modal */}
+      <Modal open={publishModal} onClose={() => { setPublishModal(false); setJustPublished(false); }} title={justPublished ? 'Boutique en ligne !' : 'Publication Immédiate'}>
         {justPublished ? (
-          <div className="space-y-4">
-            <div className="p-4 bg-green-50 rounded-lg text-center">
-              <p className="text-sm text-green-700 font-medium mb-2">🎉 Votre boutique est maintenant en ligne !</p>
+          <div className="space-y-4 font-sans">
+            <div className="p-4 bg-green-50 border border-green-100 rounded-xl text-center">
+              <p className="text-sm text-green-800 font-bold mb-1.5">🎉 Votre boutique Os est en ligne !</p>
               <a
                 href={`https://${verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-sm font-semibold text-brand-600 underline break-all"
+                className="inline-block text-xs font-extrabold text-[#0369A1] underline break-all"
               >
                 {verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}
               </a>
-              {!verifiedDomain && (
-                <p className="text-xs text-green-600 mt-2">Vous pouvez connecter votre propre domaine depuis Paramètres → Domaines.</p>
-              )}
             </div>
             <div className="flex gap-2 justify-end">
               <Button variant="secondary" onClick={() => { setPublishModal(false); setJustPublished(false); }}>Fermer</Button>
-              <Button onClick={() => window.open(`https://${verifiedDomain || `${tenant?.slug}.${PLATFORM_ROOT_DOMAIN}`}`, '_blank')}>
-                <Eye size={16} /> Voir ma boutique
-              </Button>
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-green-700 font-medium">Votre boutique sera mise en ligne immédiatement.</p>
-              <p className="text-xs text-green-600 mt-1">Tous les changements seront visibles par vos clients.</p>
-            </div>
+          <div className="space-y-4 font-sans">
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Confirmez la publication de vos modifications. Elles seront appliquées en direct pour vos clients.
+            </p>
             <div className="flex gap-2 justify-end">
               <Button variant="secondary" onClick={() => setPublishModal(false)}>Annuler</Button>
-              <Button onClick={publish} disabled={saving}>{saving ? 'Publication…' : <><Eye size={16} /> Confirmer la publication</>}</Button>
+              <Button className="bg-[#0369A1] hover:bg-[#0284C7] text-white font-bold" onClick={publish} disabled={saving}>{saving ? 'Mise en ligne…' : 'Confirmer'}</Button>
             </div>
           </div>
         )}

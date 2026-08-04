@@ -21,32 +21,11 @@ export interface AuthUser {
   app_metadata: Record<string, any>;
 }
 
-// Helper to check if Supabase has placeholder keys
-const isPlaceholderSupabase = !import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.VITE_SUPABASE_URL.includes('placeholder-project-id');
-
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if we have a mock user in localStorage first
-    const savedMockUser = localStorage.getItem('os_mock_user');
-    if (savedMockUser) {
-      try {
-        setUser(JSON.parse(savedMockUser));
-        setLoading(false);
-        return;
-      } catch (e) {
-        localStorage.removeItem('os_mock_user');
-      }
-    }
-
-    if (isPlaceholderSupabase) {
-      setLoading(false);
-      return;
-    }
-
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user) {
         setUser({
@@ -61,7 +40,6 @@ export function useAuth() {
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (localStorage.getItem('os_mock_user')) return; // Prioritize mock if active
       setUser(session?.user ? {
         id: session.user.id,
         email: session.user.email || '',
@@ -74,9 +52,6 @@ export function useAuth() {
 
   const signIn = async (email: string, password: string) => {
     try {
-      if (isPlaceholderSupabase) {
-        throw new Error("Failed to fetch");
-      }
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       return { data, error };
     } catch (err: any) {
@@ -86,9 +61,6 @@ export function useAuth() {
 
   const signUp = async (email: string, password: string) => {
     try {
-      if (isPlaceholderSupabase) {
-        throw new Error("Failed to fetch");
-      }
       const { data, error } = await supabase.auth.signUp({ email, password });
       return { data, error };
     } catch (err: any) {
@@ -96,46 +68,14 @@ export function useAuth() {
     }
   };
 
-  const signInDemo = (email: string = 'demo@liafrikos.com') => {
-    const mock: AuthUser = {
-      id: 'mock-user-123',
-      email,
-      app_metadata: { role: 'admin' }
-    };
-    localStorage.setItem('os_mock_user', JSON.stringify(mock));
-    setUser(mock);
-
-    // Initialize default demo tenant if none exists
-    const savedTenant = localStorage.getItem('os_mock_tenant');
-    if (!savedTenant) {
-      const mockTenant: Tenant = {
-        id: 'mock-tenant-123',
-        name: 'Ma Boutique Os',
-        slug: 'ma-boutique',
-        sector: 'Mode & Design',
-        country: 'Côte d\'Ivoire',
-        currency: 'XOF',
-        plan: 'premium',
-        status: 'trial',
-        theme_id: 'universal',
-        billing_cycle: 'monthly',
-        city: 'Abidjan'
-      };
-      localStorage.setItem('os_mock_tenant', JSON.stringify(mockTenant));
-    }
-  };
-
   const signOut = async () => {
-    localStorage.removeItem('os_mock_user');
     try {
-      if (!isPlaceholderSupabase) {
-        await supabase.auth.signOut();
-      }
+      await supabase.auth.signOut();
     } catch (e) {}
     setUser(null);
   };
 
-  return { user, loading, signIn, signUp, signInDemo, signOut };
+  return { user, loading, signIn, signUp, signOut };
 }
 
 export function useTenant() {
@@ -145,24 +85,6 @@ export function useTenant() {
 
   const loadTenant = useCallback(async () => {
     if (!user) { setTenant(null); setLoading(false); return; }
-
-    // If we have a mock tenant in localStorage, use it
-    const savedTenant = localStorage.getItem('os_mock_tenant');
-    if (savedTenant) {
-      try {
-        setTenant(JSON.parse(savedTenant));
-        setLoading(false);
-        return;
-      } catch (e) {
-        localStorage.removeItem('os_mock_tenant');
-      }
-    }
-
-    if (isPlaceholderSupabase) {
-      setTenant(null);
-      setLoading(false);
-      return;
-    }
 
     try {
       const { data, error } = await supabase
@@ -182,19 +104,7 @@ export function useTenant() {
 
   useEffect(() => { if (!authLoading) loadTenant(); }, [authLoading, loadTenant]);
 
-  const updateMockTenant = (updated: Partial<Tenant>) => {
-    const current = localStorage.getItem('os_mock_tenant');
-    if (current) {
-      try {
-        const parsed = JSON.parse(current);
-        const next = { ...parsed, ...updated };
-        localStorage.setItem('os_mock_tenant', JSON.stringify(next));
-        setTenant(next);
-      } catch (e) {}
-    }
-  };
-
-  return { tenant, loading: authLoading || loading, reload: loadTenant, updateMockTenant };
+  return { tenant, loading: authLoading || loading, reload: loadTenant };
 }
 
 export function useIsSuperAdmin(user: AuthUser | null) {
@@ -202,18 +112,6 @@ export function useIsSuperAdmin(user: AuthUser | null) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!user) { setIsSuperAdmin(false); setLoading(false); return; }
-
-    if (user.id === 'mock-user-123') {
-      setIsSuperAdmin(true);
-      setLoading(false);
-      return;
-    }
-
-    if (isPlaceholderSupabase) {
-      setIsSuperAdmin(false);
-      setLoading(false);
-      return;
-    }
 
     const userId = user.id;
     setLoading(true);

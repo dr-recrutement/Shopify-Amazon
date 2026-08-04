@@ -24,10 +24,6 @@ const slugify = (s: string) =>
 
 const randomSuffix = () => Math.random().toString(36).slice(2, 6);
 
-/**
- * Trouve un slug unique pour la boutique en vérifiant en base.
- * Si "ma-boutique" existe déjà, essaie "ma-boutique-a1b2", etc.
- */
 async function findAvailableSlug(baseName: string): Promise<string> {
   const base = slugify(baseName) || 'boutique';
   let candidate = base;
@@ -39,13 +35,6 @@ async function findAvailableSlug(baseName: string): Promise<string> {
   return `${base}-${Date.now()}`;
 }
 
-/**
- * Extrait le code pays (ISO) depuis l'objet COUNTRY_INFO, quel que soit le nom
- * réel de la propriété dans constants.ts (code, countryCode, iso, alpha2...).
- * Renvoie null si aucune valeur exploitable n'est trouvée, plutôt que de
- * laisser passer `undefined` jusqu'à l'insert Supabase (ce qui causait
- * l'erreur "null value in column country_code").
- */
 function extractCountryCode(info: any): string | null {
   if (!info) return null;
   const candidates = [info.code, info.countryCode, info.iso, info.iso2, info.alpha2, info.cca2];
@@ -94,9 +83,6 @@ export default function Onboarding() {
     e.preventDefault();
     if (!user) return;
 
-    // Garde-fou : si un tenant existe déjà pour ce compte (ex: la boutique a bien
-    // été créée mais l'utilisateur a été renvoyé ici par erreur), on ne le
-    // recrée pas en double — on recharge simplement la page.
     const { data: existingTenant } = await supabase.from('tenants').select('id').eq('owner_id', user.id).limit(1);
     if (existingTenant && existingTenant.length > 0) {
       window.location.reload();
@@ -129,38 +115,12 @@ export default function Onboarding() {
 
     const countryCode = extractCountryCode(info);
     if (!countryCode) {
-      // Ne devrait jamais arriver si constants.ts est bien formé, mais on bloque
-      // explicitement plutôt que d'envoyer `undefined`/`null` à la base.
       setError("Impossible de déterminer le code pays. Contactez le support.");
-      console.error('COUNTRY_INFO entry has no usable code field:', country, info);
       return;
     }
 
     setLoading(true);
     setError(null);
-
-    // If using Demo/Mock mode, persist to localStorage instead of Supabase
-    if (user.id === 'mock-user-123') {
-      setTimeout(() => {
-        const slug = slugify(trimmedName) || 'boutique';
-        const mockTenant = {
-          id: 'mock-tenant-123',
-          name: trimmedName,
-          slug,
-          sector,
-          country,
-          currency,
-          plan: selectedPlan,
-          status: 'trial',
-          theme_id: 'universal',
-          billing_cycle: 'monthly',
-          city: finalCity,
-        };
-        localStorage.setItem('os_mock_tenant', JSON.stringify(mockTenant));
-        window.location.reload();
-      }, 500);
-      return;
-    }
 
     try {
       const slug = await findAvailableSlug(trimmedName);
@@ -193,8 +153,6 @@ export default function Onboarding() {
         return;
       }
 
-      // Pré-remplit un thème par défaut cohérent avec l'activité choisie,
-      // pour que le marchand arrive sur un site déjà configuré (pas une page vide).
       if (inserted?.id) {
         const theme = defaultThemeForType(siteType);
         const { error: themeError } = await supabase.from('theme_configs').insert({
@@ -205,8 +163,6 @@ export default function Onboarding() {
           spacing: theme.spacing,
           is_published: false,
         });
-        // Non bloquant : si ça échoue, le tenant existe déjà et OnlineStore.tsx
-        // créera un theme_configs par défaut à la première sauvegarde.
         if (themeError) console.error('theme_configs prefill failed:', themeError);
       }
 
@@ -218,7 +174,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2 justify-center mb-8">
           <Shield size={28} className="text-brand-500" />
@@ -226,7 +182,7 @@ export default function Onboarding() {
         </div>
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-1">Bienvenue</h2>
-          <p className="text-sm text-gray-500 mb-5">Configurons votre boutique</p>
+          <p className="text-sm text-gray-500 mb-5">Configurons votre boutique d'excellence</p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input label="Nom de la boutique" value={name} onChange={setName} placeholder="Ma Boutique" />
             <Input label="Secteur d'activité" value={sector} onChange={setSector} placeholder="Mode, Électronique…" />

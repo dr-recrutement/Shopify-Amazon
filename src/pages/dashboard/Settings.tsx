@@ -102,16 +102,15 @@ export default function Settings() {
 
   // New States for Domain Purchasing
   const [domainSearchQuery, setDomainSearchQuery] = useState('');
-  const [domainSearchResult, setDomainSearchResult] = useState<{ domain: string; available: boolean; price: string } | null>(null);
+  const [domainSearchResult, setDomainSearchResult] = useState<any[] | null>(null);
   const [searchingDomain, setSearchingDomain] = useState(false);
   const [purchasingDomain, setPurchasingDomain] = useState<string | null>(null);
-  const [buyDomainModal, setBuyDomainModal] = useState(false);
 
   // Payment gateways
   const [gateways, setGateways] = useState<any[]>([]);
   const [gatewayModal, setGatewayModal] = useState<string | null>(null);
   const [gatewayForm, setGatewayForm] = useState({ apiKey: '', apiSecret: '' });
-  // Email transactionnel (Resend, configuré par le marchand lui-même)
+  // Email transactionnel
   const [emailSettings, setEmailSettings] = useState<any>(null);
   const [emailModal, setEmailModal] = useState(false);
   const [resendForm, setResendForm] = useState({ apiKey: '', fromEmail: '', fromName: '' });
@@ -392,6 +391,7 @@ export default function Settings() {
           </div>
         );
 
+      case 'notifications':
         return (
           <div className="space-y-3">
             {([['newOrders', 'Nouvelles commandes'], ['stockAlerts', 'Ruptures de stock'], ['newCustomers', 'Nouveaux clients'], ['promotions', 'Promotions'], ['weeklyReports', 'Rapports hebdomadaires']] as const).map(([key, label]) => (
@@ -401,8 +401,6 @@ export default function Settings() {
               </label>
             ))}
             <SaveButton saving={notifSaving} msg={notifMsg} />
-            <button onClick={saveNotif} className="hidden" data-save="notifications" />
-            <div className="flex items-center gap-3 pt-2"><Button onClick={saveNotif} disabled={notifSaving}><Save size={16} /> {notifSaving ? 'Sauvegarde…' : 'Sauvegarder'}</Button>{notifMsg && <span className="text-sm text-green-600 flex items-center gap-1"><Check size={14} /> {notifMsg}</span>}</div>
           </div>
         );
 
@@ -432,13 +430,17 @@ export default function Settings() {
           setDomainSearchResult(null);
           setTimeout(() => {
             setSearchingDomain(false);
-            const isAvailable = !domains.some(d => d.domain_name.toLowerCase() === domainSearchQuery.toLowerCase());
-            setDomainSearchResult({
-              domain: domainSearchQuery.toLowerCase(),
-              available: isAvailable,
-              price: "12.99 USD / an"
-            });
-          }, 1200);
+            const rawIn = domainSearchQuery.trim().toLowerCase();
+            const dotIdx = rawIn.indexOf('.');
+            const name = dotIdx === -1 ? rawIn : rawIn.substring(0, dotIdx);
+
+            setDomainSearchResult([
+              { domain: `${name}.com`, available: true, price: "$12.99 / an", tld: ".com" },
+              { domain: `${name}.store`, available: true, price: "$9.99 / an", tld: ".store" },
+              { domain: `${name}.africa`, available: true, price: "$14.99 / an", tld: ".africa" },
+              { domain: `${name}.shop`, available: true, price: "$11.99 / an", tld: ".shop" },
+            ]);
+          }, 1000);
         };
 
         const handleBuyDomain = async (domainName: string) => {
@@ -446,7 +448,6 @@ export default function Settings() {
           setPurchasingDomain(domainName);
           setTimeout(async () => {
             try {
-              // Insère directement le domaine acheté comme "verified"
               const { error } = await supabase.from('domains').insert({
                 tenant_id: tenant.id,
                 domain_name: domainName,
@@ -470,58 +471,57 @@ export default function Settings() {
         };
 
         return (
-          <div className="space-y-4">
-            <div className="p-4 bg-brand-50/50 rounded-2xl border border-brand-100 space-y-2">
-              <div className="flex items-center gap-1.5">
-                <span className="text-base">🚀</span>
-                <p className="text-sm font-bold text-gray-900">Domaines Personnalisés inclus sur TOUS les plans</p>
+          <div className="space-y-4 font-sans">
+            <div className="p-4 bg-gradient-to-r from-sky-50 to-indigo-50 rounded-2xl border border-sky-100 space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🚀</span>
+                <p className="text-sm font-extrabold text-sky-950">Domaines Personnalisés illimités sur TOUS les plans</p>
               </div>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Améliorez l'image de marque de votre boutique en connectant votre propre domaine professionnel (ex: <code>maboutique.com</code>). Bénéficiez d'un certificat SSL de Cloudflare gratuit et pré-configuré à vie.
+              <p className="text-xs text-sky-900 leading-relaxed">
+                Connectez autant de domaines personnalisés que vous le souhaitez, entièrement gratuitement. Bénéficiez d'un certificat SSL de Cloudflare gratuit et pré-configuré à vie.
               </p>
             </div>
 
-            {/* Simulated Domain Registrar / Search Panel */}
             <div className="p-4 border border-gray-100 rounded-2xl bg-white shadow-sm space-y-3">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Acheter un nom de domaine directement</h3>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Acheter ou rechercher un nouveau domaine</h3>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={domainSearchQuery}
                   onChange={e => setDomainSearchQuery(e.target.value)}
-                  placeholder="Rechercher maboutique.com, .store, .africa..."
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-400"
+                  placeholder="Saisissez maboutique (sans extension)..."
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#0369A1]"
                 />
-                <Button size="sm" onClick={handleSearchDomain} disabled={searchingDomain || !domainSearchQuery.trim()}>
+                <Button size="sm" className="bg-[#0369A1] text-white" onClick={handleSearchDomain} disabled={searchingDomain || !domainSearchQuery.trim()}>
                   {searchingDomain ? 'Recherche...' : 'Rechercher'}
                 </Button>
               </div>
 
               {domainSearchResult && (
-                <div className="p-3 border border-gray-100 bg-gray-50 rounded-xl flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">{domainSearchResult.domain}</p>
-                    <p className="text-[10px] text-gray-500">
-                      {domainSearchResult.available ? `Disponible · ${domainSearchResult.price}` : 'Déjà pris ou indisponible'}
-                    </p>
+                <div className="space-y-2 pt-2">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">Extensions disponibles :</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {domainSearchResult.map(res => (
+                      <div key={res.domain} className="p-2.5 border border-gray-100 bg-gray-50/50 rounded-xl flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-bold text-gray-900">{res.domain}</p>
+                          <p className="text-[10px] text-green-600 font-semibold">Disponible · {res.price}</p>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => handleBuyDomain(res.domain)}
+                          disabled={purchasingDomain !== null}
+                          className="bg-green-600 hover:bg-green-700 text-white font-bold"
+                        >
+                          {purchasingDomain === res.domain ? 'Achat...' : 'Acheter'}
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                  {domainSearchResult.available ? (
-                    <Button
-                      size="sm"
-                      onClick={() => handleBuyDomain(domainSearchResult.domain)}
-                      disabled={purchasingDomain !== null}
-                      className="bg-green-600 hover:bg-green-700 text-white font-bold"
-                    >
-                      {purchasingDomain ? 'Achat...' : 'Acheter'}
-                    </Button>
-                  ) : (
-                    <Badge color="red">Indisponible</Badge>
-                  )}
                 </div>
               )}
             </div>
 
-            {/* Connection list */}
             <div className="space-y-3">
               <div className="flex items-center justify-between pt-2">
                 <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Vos noms de domaine</h3>
@@ -532,7 +532,7 @@ export default function Settings() {
 
               {domains.length === 0 ? (
                 <div className="text-center py-10 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
-                  <Globe size={40} className="mx-auto text-gray-300 mb-2" />
+                  <Globe size={40} className="mx-auto text-gray-300 mb-2 animate-pulse" />
                   <p className="text-xs text-gray-500">Aucun domaine personnalisé connecté.</p>
                   <p className="text-[10px] text-gray-400 mt-1">Vos clients accèdent actuellement à votre boutique via votre sous-domaine gratuit.</p>
                 </div>
@@ -551,7 +551,6 @@ export default function Settings() {
                               SSL: {d.ssl_status === 'active' ? 'Actif' : 'Génération'}
                             </Badge>
                           </div>
-                          {d.last_error && <p className="text-[10px] text-red-600 mt-1">{d.last_error}</p>}
                         </div>
 
                         <div className="flex gap-1.5">
@@ -560,7 +559,7 @@ export default function Settings() {
                               <Button size="sm" variant="secondary" className="text-[11px]" onClick={() => toggleDnsInstructions(d.domain_name)}>
                                 {dnsExpanded === d.domain_name ? 'Masquer DNS' : 'Configurer DNS'}
                               </Button>
-                              <Button size="sm" variant="secondary" className="text-[11px] bg-brand-50 text-brand-600 border-none" onClick={() => verifyDomain(d.domain_name)}>
+                              <Button size="sm" variant="secondary" className="text-[11px] bg-brand-50 text-[#0369A1] border-none" onClick={() => verifyDomain(d.domain_name)}>
                                 Vérifier
                               </Button>
                             </>
@@ -575,19 +574,14 @@ export default function Settings() {
                         <div className="mt-3 p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-[11px] text-blue-900 space-y-2">
                           <p className="font-bold">Instructions Cloudflare & DNS :</p>
                           <p className="leading-relaxed">
-                            Pour valider votre domaine et générer le certificat SSL, veuillez ajouter l'enregistrement suivant dans la console DNS de votre registrar (GoDaddy, Namecheap, LWS...) :
+                            Pour valider votre domaine et générer le certificat SSL, veuillez ajouter l'enregistrement suivant dans la console DNS de votre registrar :
                           </p>
 
                           <div className="bg-white p-2 rounded-lg border border-blue-100 space-y-1.5 font-mono text-[10px] text-gray-800">
                             <p className="flex justify-between"><span>Type :</span> <strong>CNAME</strong></p>
                             <p className="flex justify-between"><span>Nom :</span> <strong>@</strong> (ou {d.domain_name})</p>
                             <p className="flex justify-between"><span>Cible :</span> <strong>{dnsTargets[d.domain_name]?.target || `${tenant?.slug}.liafrikos.pages.dev`}</strong></p>
-                            <p className="flex justify-between"><span>TTL :</span> <strong>Automatique / 3600</strong></p>
                           </div>
-
-                          <p className="text-[10px] text-blue-700 leading-normal">
-                            💡 La propagation mondiale des DNS peut durer entre 5 minutes et 24 heures. Cliquez sur <strong>Vérifier</strong> à tout moment pour rafraîchir le statut.
-                          </p>
                         </div>
                       )}
                     </div>
@@ -598,7 +592,6 @@ export default function Settings() {
           </div>
         );
       }
-
 
       case 'security':
         return (
@@ -653,18 +646,131 @@ export default function Settings() {
           </div>
         );
 
-      case 'billing':
+      case 'billing': {
+        const plansToUpgrade = [
+          { code: 'starter', name: 'Starter Plan', price: 9, features: ['15 produits actifs', 'Noms de domaines illimités', '1 Staff', '20 Générations IA / mois'] },
+          { code: 'premium', name: 'Premium Plan', price: 19, features: ['1000 produits actifs', 'Domaines personnalisés inclus', '5 Staff', '200 Générations IA / mois', 'Chatbot IA & WhatsApp'] },
+          { code: 'entreprise', name: 'Entreprise Plan', price: 69, features: ['Produits illimités', 'Staff illimité', 'IA illimitée', 'Support dédié + WhatsApp'] },
+        ];
+
+        const handleFlutterwaveSubscription = (planCode: string, planName: string, amountUsd: number) => {
+          setSaving(true);
+          setSavedMsg(`Lancement du paiement Flutterwave pour le forfait ${planName}...`);
+
+          const script = document.createElement('script');
+          script.src = 'https://checkout.flutterwave.com/v3.js';
+          script.async = true;
+          script.onload = () => {
+            const fw = (window as any).FlutterwaveCheckout;
+            if (fw) {
+              fw({
+                public_key: 'FLWPUBK_TEST-5f3e9a11db9f5a0be5bfa780d603e911-X',
+                tx_ref: 'os_sub_' + Date.now(),
+                amount: amountUsd,
+                currency: 'USD',
+                payment_options: 'card,mobilemoney,ussd',
+                customer: {
+                  email: user?.email || 'vendeur@os.com',
+                  name: tenant?.name || 'Os Marchand',
+                },
+                customizations: {
+                  title: 'Abonnement Os SaaS',
+                  description: `Forfait mensuel ${planName}`,
+                  logo: 'https://os.liafrik.com/assets/images/publicicon-512.png',
+                },
+                callback: async (response: any) => {
+                  if (response.status === 'successful' || response.status === 'completed') {
+                    if (tenant) {
+                      await supabase
+                        .from('tenants')
+                        .update({ plan: planCode, status: 'active' })
+                        .eq('id', tenant.id);
+                      await reload();
+                      alert(`🎉 Félicitations ! Votre abonnement au forfait ${planName} a été activé avec succès.`);
+                    }
+                  } else {
+                    alert('Le paiement a été interrompu ou refusé.');
+                  }
+                  setSaving(false);
+                  setSavedMsg('');
+                },
+                onclose: () => {
+                  setSaving(false);
+                  setSavedMsg('');
+                }
+              });
+            } else {
+              setSaving(false);
+              setSavedMsg('Erreur: Impossible de charger l\'API Flutterwave.');
+            }
+          };
+          script.onerror = () => {
+            setSaving(false);
+            setSavedMsg('Erreur de chargement du script de paiement.');
+          };
+          document.body.appendChild(script);
+        };
+
         return (
-          <div className="space-y-3">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-semibold text-gray-900 capitalize">{tenant?.plan || 'Starter'} Plan</p>
-              <p className="text-xs text-gray-500 capitalize">{tenant?.billing_cycle || 'Monthly'} · {tenant?.status || 'Trial'}</p>
+          <div className="space-y-4 font-sans">
+            <div className="p-4 bg-gray-50 border border-gray-100 rounded-2xl flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Votre forfait actuel</p>
+                <h3 className="text-base font-extrabold text-gray-900 capitalize mt-1">{tenant?.plan || 'Starter'} Plan</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Statut : {tenant?.status === 'active' ? 'Activé (Payé)' : 'Essai Gratuit'}</p>
+              </div>
+              <Badge color={tenant?.status === 'active' ? 'green' : 'orange'}>
+                {tenant?.status === 'active' ? 'Abonnement Actif' : 'Période d\'essai'}
+              </Badge>
             </div>
-            <Button variant="secondary" onClick={() => { setSavedMsg('Redirection vers la page de paiement…'); setTimeout(() => setSavedMsg(''), 2000); }}>Changer de plan</Button>
-            <Button variant="ghost" onClick={() => { setSavedMsg('Téléchargement des factures…'); setTimeout(() => setSavedMsg(''), 2000); }}>Voir les factures</Button>
-            {savedMsg && <p className="text-sm text-gray-500">{savedMsg}</p>}
+
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Choisir ou mettre à niveau votre forfait</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {plansToUpgrade.map(p => {
+                  const isCurrent = tenant?.plan === p.code;
+                  return (
+                    <div key={p.code} className={`p-4 border rounded-2xl flex flex-col justify-between transition-all bg-white ${isCurrent ? 'border-[#0369A1] ring-1 ring-[#0369A1]/30' : 'border-gray-100'}`}>
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-bold text-gray-900">{p.name}</span>
+                          {isCurrent && <Badge color="blue">Actuel</Badge>}
+                        </div>
+                        <p className="text-xl font-extrabold text-gray-950">${p.price}<span className="text-[10px] text-gray-400 font-normal"> / mois</span></p>
+
+                        <ul className="mt-3 space-y-1.5">
+                          {p.features.map((f, i) => (
+                            <li key={i} className="text-[10px] text-gray-500 flex items-center gap-1">
+                              <Check size={10} className="text-green-600 shrink-0" />
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        disabled={saving}
+                        className={`mt-4 w-full text-[10px] font-bold py-2 ${isCurrent ? 'bg-gray-100 text-gray-500 cursor-default' : 'bg-[#0369A1] hover:bg-[#0284C7] text-white'}`}
+                        onClick={() => !isCurrent && handleFlutterwaveSubscription(p.code, p.name, p.price)}
+                      >
+                        {isCurrent ? 'Forfait Actuel' : `S'abonner (${p.price}$)`}
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {savedMsg && (
+              <div className="p-3 bg-sky-50 border border-sky-100 rounded-xl text-xs text-[#0369A1] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#0369A1] animate-ping" />
+                <span>{savedMsg}</span>
+              </div>
+            )}
           </div>
         );
+      }
 
       case 'legal':
         return (
@@ -766,7 +872,6 @@ export default function Settings() {
     }
   };
 
-  // Mobile: list → modal
   if (isMobile) {
     return (
       <div>
@@ -793,7 +898,6 @@ export default function Settings() {
     );
   }
 
-  // Desktop: two-column
   return (
     <div>
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
@@ -817,7 +921,6 @@ export default function Settings() {
         </Card>
       </div>
 
-      {/* Domain modal */}
       <Modal open={domainModal} onClose={() => { setDomainModal(false); setDomainError(null); setDomainDns(null); }} title="Ajouter un domaine">
         <div className="space-y-4">
           <div>
@@ -841,7 +944,6 @@ export default function Settings() {
         </div>
       </Modal>
 
-      {/* Gateway modal */}
       <Modal open={!!gatewayModal} onClose={() => setGatewayModal(null)} title={`Configurer ${gatewayModal || ''}`}>
         <div className="space-y-4">
           <div>

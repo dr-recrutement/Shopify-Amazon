@@ -2,14 +2,21 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Trash2, ShoppingBag, ArrowRight, Tag, Shield, Truck, CreditCard } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getCartItems, saveCartItems, type CartItem } from '../lib/app-state';
 
 export default function CartPage() {
-  const [items, setItems] = useState([
-    { id: 1, name: 'Robe wax traditionnelle', variant: 'Taille M', price: 15000, qty: 1, currency: 'XOF' },
-    { id: 2, name: 'Sac en cuir artisanal', variant: 'Marron', price: 25000, qty: 2, currency: 'XOF' },
-  ]);
+  const [items, setItems] = useState<CartItem[]>([]);
+  useEffect(() => {
+    setItems(getCartItems());
+  }, []);
+
+  const updateItems = (nextItems: CartItem[]) => {
+    setItems(nextItems);
+    saveCartItems(nextItems);
+  };
+
   const fmt = (n: number) => n.toLocaleString('fr-FR');
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
   const shipping = 1000;
@@ -36,13 +43,13 @@ export default function CartPage() {
                         <h3 className="font-medium text-gray-900">{i.name}</h3>
                         <p className="text-sm text-gray-500">{i.variant}</p>
                       </div>
-                      <button onClick={() => setItems(items.filter(x => x.id !== i.id))} className="text-gray-400 hover:text-red-600"><Trash2 size={16} /></button>
+                      <button onClick={() => updateItems(items.filter(x => x.id !== i.id))} className="text-gray-400 hover:text-red-600"><Trash2 size={16} /></button>
                     </div>
                     <div className="mt-3 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setItems(items.map(x => x.id === i.id ? { ...x, qty: Math.max(1, x.qty - 1) } : x))} className="w-7 h-7 rounded border border-gray-200">-</button>
+                        <button onClick={() => updateItems(items.map(x => x.id === i.id ? { ...x, qty: Math.max(1, x.qty - 1) } : x))} className="w-7 h-7 rounded border border-gray-200">-</button>
                         <span className="w-8 text-center text-sm">{i.qty}</span>
-                        <button onClick={() => setItems(items.map(x => x.id === i.id ? { ...x, qty: x.qty + 1 } : x))} className="w-7 h-7 rounded border border-gray-200">+</button>
+                        <button onClick={() => updateItems(items.map(x => x.id === i.id ? { ...x, qty: x.qty + 1 } : x))} className="w-7 h-7 rounded border border-gray-200">+</button>
                       </div>
                       <span className="font-semibold">{fmt(i.price * i.qty)} {i.currency}</span>
                     </div>

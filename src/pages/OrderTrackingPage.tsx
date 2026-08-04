@@ -2,11 +2,22 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Search, Package, Clock, Truck, CheckCircle2, MapPin, MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function OrderTrackingPage() {
+  const location = useLocation();
   const [order, setOrder] = useState('');
   const [tracked, setTracked] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const orderParam = params.get('order');
+    if (orderParam) {
+      setOrder(orderParam);
+      setTracked(true);
+    }
+  }, [location.search]);
   const steps = [
     { label: 'Reçue', icon: CheckCircle2, done: true },
     { label: 'Préparation', icon: Clock, done: true },

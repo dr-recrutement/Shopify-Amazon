@@ -1,8 +1,18 @@
-import { PageHeader, StatCard, Card, Badge, Button } from './ui';
-import { ShoppingCart, DollarSign, Package, Users, TrendingUp, ArrowRight, CheckCircle2, Store } from 'lucide-react';
+import { PageHeader, StatCard, Card, Badge } from './ui';
+import { ShoppingCart, DollarSign, Package, Users, ArrowRight, CheckCircle2, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { getOrders, getProducts, getShopProfile } from '../../lib/app-state';
 
 export default function DashboardHome() {
+  const [shopProfile, setShopProfile] = useState(getShopProfile());
+  const [products] = useState(getProducts());
+  const [orders] = useState(getOrders());
+
+  useEffect(() => {
+    setShopProfile(getShopProfile());
+  }, []);
+
   const checklist = [
     { label: 'Ajouter votre logo', done: false, link: '/app/online-store' },
     { label: 'Configurer un moyen de paiement', done: false, link: '/app/settings' },
@@ -11,14 +21,18 @@ export default function DashboardHome() {
     { label: 'Définir vos zones de livraison', done: false, link: '/app/settings' },
   ];
 
+  const pendingOrders = useMemo(() => orders.filter(order => order.status === 'pending').length, [orders]);
+  const activeProducts = useMemo(() => products.filter(product => product.status === 'active').length, [products]);
+  const salesValue = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
+
   return (
     <div>
-      <PageHeader title="Bonjour 👋" subtitle="Voici l'activité de votre boutique aujourd'hui." />
+      <PageHeader title={`Bonjour 👋 ${shopProfile.name}`} subtitle="Voici l'activité de votre boutique aujourd'hui." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Ventes du jour" value="0 €" icon={DollarSign} color="green" />
-        <StatCard label="Commandes en attente" value="0" icon={ShoppingCart} color="orange" />
-        <StatCard label="Produits actifs" value="1" icon={Package} color="blue" />
-        <StatCard label="Clients" value="0" icon={Users} color="purple" />
+        <StatCard label="Ventes du jour" value={`${salesValue.toLocaleString('fr-FR')} ${shopProfile.currency}`} icon={DollarSign} color="green" />
+        <StatCard label="Commandes en attente" value={String(pendingOrders)} icon={ShoppingCart} color="orange" />
+        <StatCard label="Produits actifs" value={String(activeProducts)} icon={Package} color="blue" />
+        <StatCard label="Clients" value="3" icon={Users} color="purple" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -54,7 +68,7 @@ export default function DashboardHome() {
           </div>
           <div className="mt-6 p-3 bg-orange-50 rounded-lg flex items-center gap-2 text-sm">
             <Store size={16} className="text-orange-600" />
-            <span className="text-gray-700">Boutique en ligne : <strong>ma-boutique.liafrikos.com</strong></span>
+            <span className="text-gray-700">Boutique en ligne : <strong>{shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.liafrikos.com</strong></span>
           </div>
         </Card>
       </div>

@@ -1,18 +1,35 @@
 import { PageHeader, Card, Badge, Button, EmptyState, Table } from './ui';
 import { ShoppingCart, Plus, Filter } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getOrders, saveOrder, type StoreOrder } from '../../lib/app-state';
 
 export default function Orders() {
-  const orders = [
-    { id: '#1001', customer: 'Aïcha Diallo', date: '19 Jul 2026', total: '15 000 XOF', status: 'pending', payment: 'Orange Money' },
-    { id: '#1002', customer: 'Kwame Mensah', date: '18 Jul 2026', total: '320 GHS', status: 'paid', payment: 'Paystack' },
-    { id: '#1003', customer: 'Fatou Ndiaye', date: '18 Jul 2026', total: '45 000 XOF', status: 'shipped', payment: 'Flutterwave' },
-  ];
+  const [orders, setOrders] = useState<StoreOrder[]>([]);
+
+  useEffect(() => {
+    setOrders(getOrders());
+  }, []);
   const statusColors: any = { pending: 'orange', paid: 'green', shipped: 'blue', cancelled: 'red' };
   const statusLabels: any = { pending: 'En attente', paid: 'Payée', shipped: 'Expédiée', cancelled: 'Annulée' };
 
+  const addOrder = () => {
+    const draft: StoreOrder = {
+      id: `LA-${Date.now()}`,
+      customer: 'Client nouveau',
+      date: new Date().toLocaleDateString('fr-FR'),
+      total: 25000,
+      status: 'pending',
+      payment: 'Orange Money',
+      currency: 'XOF',
+      items: [{ name: 'Produit ajouté', qty: 1, price: 25000 }],
+    };
+    saveOrder(draft);
+    setOrders(getOrders());
+  };
+
   return (
     <div>
-      <PageHeader title="Commandes" subtitle="Gérez toutes vos commandes." action={<Button><Plus size={16} /> Créer une commande</Button>} />
+      <PageHeader title="Commandes" subtitle="Gérez toutes vos commandes." action={<Button onClick={addOrder}><Plus size={16} /> Créer une commande</Button>} />
       <div className="flex gap-2 mb-4 flex-wrap">
         {['Toutes', 'En attente', 'Payées', 'Expédiées', 'Livrées', 'Annulées'].map((t, i) => (
           <button key={t} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${i === 0 ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 hover:bg-gray-50'}`}>{t}</button>
@@ -29,7 +46,7 @@ export default function Orders() {
                 <td className="py-3 px-4 font-medium text-gray-900">{o.id}</td>
                 <td className="py-3 px-4 text-gray-700">{o.customer}</td>
                 <td className="py-3 px-4 text-gray-500">{o.date}</td>
-                <td className="py-3 px-4 font-medium text-gray-900">{o.total}</td>
+                <td className="py-3 px-4 font-medium text-gray-900">{o.total.toLocaleString('fr-FR')} {o.currency}</td>
                 <td className="py-3 px-4 text-gray-500">{o.payment}</td>
                 <td className="py-3 px-4"><Badge color={statusColors[o.status]}>{statusLabels[o.status]}</Badge></td>
                 <td className="py-3 px-4"><button className="text-orange-600 text-sm font-medium hover:underline">Voir</button></td>

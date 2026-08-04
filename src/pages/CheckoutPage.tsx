@@ -3,7 +3,8 @@ import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { clearCart } from '../lib/app-state';
 
 export default function CheckoutPage() {
   const nav = useNavigate();
@@ -13,7 +14,10 @@ export default function CheckoutPage() {
   const total = 66000;
   const shippingCost = 1000;
 
-  const placeOrder = () => nav('/order-tracking?order=LA-2024-1001');
+  const placeOrder = () => {
+    clearCart();
+    nav('/order-tracking?order=LA-2024-1001');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">

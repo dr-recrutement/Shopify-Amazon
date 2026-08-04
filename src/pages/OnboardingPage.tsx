@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Logo } from '../components/Logo';
 import { AFRICAN_COUNTRIES, PLANS } from '../lib/constants';
+import { saveShopProfile } from '../lib/app-state';
 import { Check, ChevronRight, Store, MapPin, Palette, Package, CreditCard, Sparkles, ArrowRight } from 'lucide-react';
 
 const STEPS = [
@@ -48,6 +49,12 @@ export default function OnboardingPage() {
         status: 'trial',
       });
     }
+    saveShopProfile({
+      name: data.shopName || 'Ma Boutique',
+      country: data.country,
+      plan: data.plan,
+      currency: data.currency || 'XOF',
+    });
     nav('/app');
   };
 

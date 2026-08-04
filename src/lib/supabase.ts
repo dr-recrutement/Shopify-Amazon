@@ -85,4 +85,4 @@ const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
 
 const isSupabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
 
-export const supabase = isSupabaseConfigured ? supabaseClient : createLocalSupabaseClient() as typeof supabaseClient;
+export const supabase = isSupabaseConfigured ? supabaseClient : (createLocalSupabaseClient() as any) as typeof supabaseClient;

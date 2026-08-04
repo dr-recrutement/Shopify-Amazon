@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, EmptyState } from './ui';
-import { FileText, Plus, Layout, Edit3, Save } from 'lucide-react';
+import { FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createCmsPage, getCmsPages, saveCmsPage, type CmsPage } from '../../lib/cms';
 
@@ -36,10 +36,16 @@ export default function Content() {
 
   return (
     <div>
-      <PageHeader title="Content" subtitle="CMS interne pro — pages, contenus, blocs, templates éditables." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
+      <PageHeader title="Content" subtitle="CMS interne premium — pages, contenus, blocs, templates et prévisualisation éditables." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
-          <div className="p-4 border-b border-gray-100"><h3 className="font-semibold text-gray-900">Pages</h3></div>
+          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-gray-900">Pages</h3>
+              <p className="text-xs text-gray-500">Structurez votre contenu comme une vraie plateforme éditoriale.</p>
+            </div>
+            <div className="flex items-center gap-2 text-orange-600 text-xs font-medium"><Sparkles size={14} /> Pro</div>
+          </div>
           {pages.length === 0 ? (
             <EmptyState icon={FileText} title="Aucune page" desc="Créez des pages personnalisées pour votre boutique." />
           ) : (
@@ -57,8 +63,8 @@ export default function Content() {
           )}
         </Card>
         <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Metaobjects</h3>
-          <p className="text-sm text-gray-500 mb-4">Créez des types de contenu personnalisés (témoignages, partenaires, carrousel).</p>
+          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Globe2 size={14} /> Metaobjects</h3>
+          <p className="text-sm text-gray-500 mb-4">Créez des types de contenu personnalisés (témoignages, partenaires, carrousel, collections).</p>
           <Button variant="secondary" size="sm" className="w-full"><Layout size={14} /> Créer un metaobject</Button>
         </Card>
       </div>
@@ -68,9 +74,12 @@ export default function Content() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold text-gray-900">Éditeur de page</h3>
-              <p className="text-sm text-gray-500">Modifiez le titre, le slug, le statut et les blocs de contenu.</p>
+              <p className="text-sm text-gray-500">Modifiez le titre, le slug, le statut, le template et les blocs de contenu.</p>
             </div>
-            <Button onClick={savePage}><Save size={14} /> Enregistrer</Button>
+            <div className="flex items-center gap-2">
+              <Button variant="secondary" size="sm"><Eye size={14} /> Prévisualiser</Button>
+              <Button onClick={savePage}><Save size={14} /> Enregistrer</Button>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -97,7 +106,10 @@ export default function Content() {
           </div>
 
           <div className="mt-4 space-y-2">
-            <h4 className="font-medium text-gray-900">Blocs</h4>
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium text-gray-900">Blocs</h4>
+              <span className="text-xs text-gray-500">{draft.sections.length} blocs</span>
+            </div>
             {draft.sections.map((section, index) => (
               <div key={section.id} className="border border-gray-100 rounded-lg p-3">
                 <div className="flex items-center justify-between">
@@ -110,10 +122,24 @@ export default function Content() {
                     setDraft({ ...draft, sections: nextSections });
                   }} className="text-xs text-gray-500 hover:text-red-600">Supprimer</button>
                 </div>
-                <textarea value={section.content} onChange={e => {
-                  const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, content: e.target.value } : item);
-                  setDraft({ ...draft, sections: nextSections });
-                }} rows={3} className="mt-3 w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                <div className="mt-3 grid gap-2 md:grid-cols-[1fr_180px]">
+                  <textarea value={section.content} onChange={e => {
+                    const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, content: e.target.value } : item);
+                    setDraft({ ...draft, sections: nextSections });
+                  }} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                  <div className="space-y-2">
+                    <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" defaultValue={section.type}>
+                      <option value="text">Texte</option>
+                      <option value="hero">Hero</option>
+                      <option value="quote">Citation</option>
+                      <option value="cta">CTA</option>
+                    </select>
+                    <input value={section.title} onChange={e => {
+                      const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, title: e.target.value } : item);
+                      setDraft({ ...draft, sections: nextSections });
+                    }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                  </div>
+                </div>
               </div>
             ))}
             <button onClick={() => {

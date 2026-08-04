@@ -64,8 +64,16 @@ export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; c
   },
 };
 
+export const FONT_OPTIONS = ['Inter', 'Montserrat', 'Playfair Display', 'Cormorant Garamond', 'Poppins', 'Manrope'];
+
 export function getPresetColors(preset: ThemePreset): ThemeConfig['colors'] {
   return THEME_PRESETS[preset].colors;
+}
+
+function getSpacingClass(spacing: ThemeConfig['spacing']) {
+  if (spacing === 'compact') return 'px-4 py-4';
+  if (spacing === 'spacious') return 'px-8 py-10';
+  return 'px-6 py-8';
 }
 
 export function defaultThemeForType(siteType: SiteType): ThemeConfig {
@@ -142,10 +150,14 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
   const accent = theme.colors.accent;
   const bg = theme.colors.background;
   const text = theme.colors.text;
+  const spacingClass = getSpacingClass(theme.spacing);
+  const headingStyle = { fontFamily: theme.fonts.heading, color: text };
+  const bodyStyle = { fontFamily: theme.fonts.body, color: text };
+
   switch (section.type) {
     case 'header':
       return (
-        <div className="flex items-center justify-between px-6 py-3 border-b" style={{ borderColor: '#eee', background: `linear-gradient(90deg, ${primary}, ${accent})`, color: 'white' }}>
+        <div className={`flex items-center justify-between ${theme.spacing === 'compact' ? 'px-4 py-3' : theme.spacing === 'spacious' ? 'px-8 py-4' : 'px-6 py-3'} border-b`} style={{ borderColor: '#eee', background: `linear-gradient(90deg, ${primary}, ${accent})`, color: 'white' }}>
           <div className="font-bold text-sm">Ma Boutique</div>
           <div className="hidden md:flex gap-4 text-xs">
             {(section.props.nav || []).map((n: string) => <span key={n}>{n}</span>)}
@@ -155,16 +167,16 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'hero':
       return (
-        <div className="px-6 py-12 text-center" style={{ background: `linear-gradient(135deg, ${bg} 0%, ${accent}22 100%)` }}>
+        <div className={`${spacingClass} text-center rounded-b-2xl`} style={{ background: `linear-gradient(135deg, ${bg} 0%, ${accent}22 100%)` }}>
           <div className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ backgroundColor: primary, color: 'white' }}>{theme.preset}</div>
-          <h2 className="mt-4 text-2xl font-extrabold" style={{ color: text }}>{section.props.title || 'Hero'}</h2>
-          <p className="mt-2 text-sm" style={{ color: '#666' }}>{section.props.subtitle || ''}</p>
-          <div className="mt-4 inline-block px-4 py-2 rounded-lg text-white text-xs font-semibold" style={{ backgroundColor: primary }}>{section.props.cta || 'Découvrir'}</div>
+          <h2 className="mt-4 text-2xl font-extrabold" style={{ ...headingStyle }}>{section.props.title || 'Hero'}</h2>
+          <p className="mt-2 text-sm" style={{ ...bodyStyle, color: '#666' }}>{section.props.subtitle || ''}</p>
+          <div className="mt-4 inline-block px-4 py-2 rounded-full text-white text-xs font-semibold shadow-sm" style={{ backgroundColor: primary }}>{section.props.cta || 'Découvrir'}</div>
         </div>
       );
     case 'product-grid':
       return (
-        <div className="px-6 py-8">
+        <div className={`${spacingClass}`}>
           <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(section.props.columns || 4, 4)}, minmax(0, 1fr))` }}>
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="rounded-xl border border-gray-100 p-3" style={{ backgroundColor: i % 2 === 0 ? `${accent}12` : `${primary}12` }}>
@@ -178,8 +190,8 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'category-grid':
       return (
-        <div className="px-6 py-8">
-          <h3 className="font-bold text-sm mb-3" style={{ color: text }}>{section.props.title || 'Catégories'}</h3>
+        <div className={`${spacingClass}`}>
+          <h3 className="font-bold text-sm mb-3" style={{ ...headingStyle }}>{section.props.title || 'Catégories'}</h3>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-square rounded-lg border border-gray-100" style={{ background: i % 2 === 0 ? `${primary}15` : `${accent}15` }} />)}
           </div>
@@ -187,7 +199,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'countdown':
       return (
-        <div className="px-6 py-6 text-center" style={{ background: `linear-gradient(90deg, ${primary}, ${accent})`, color: 'white' }}>
+        <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} text-center`} style={{ background: `linear-gradient(90deg, ${primary}, ${accent})`, color: 'white' }}>
           <h3 className="font-bold text-sm">{section.props.title || 'Promo'}</h3>
           <div className="mt-2 flex justify-center gap-2">
             {['J', 'H', 'M', 'S'].map(u => <div key={u} className="bg-white/20 rounded px-2 py-1 text-xs font-mono">00 {u}</div>)}
@@ -196,7 +208,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'filters-list':
       return (
-        <div className="px-6 py-6 flex gap-4">
+        <div className={`${spacingClass} flex gap-4`}>
           <div className="w-1/4 space-y-2">
             {(section.props.filters || []).map((f: string) => (
               <div key={f} className="p-2 bg-gray-50 rounded text-xs" style={{ color: text }}>{f}</div>
@@ -209,7 +221,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'product-detail':
       return (
-        <div className="px-6 py-8 flex gap-4">
+        <div className={`${spacingClass} flex gap-4`}>
           <div className="w-1/2 aspect-square bg-gray-100 rounded-lg" />
           <div className="flex-1 space-y-2">
             <div className="h-4 bg-gray-200 rounded w-3/4" />
@@ -220,7 +232,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       );
     case 'payments':
       return (
-        <div className="px-6 py-6 text-center border-y" style={{ borderColor: '#eee' }}>
+        <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} text-center border-y`} style={{ borderColor: '#eee' }}>
           <p className="text-xs font-semibold uppercase text-gray-500 mb-3">Paiements compatibles</p>
           <div className="flex flex-wrap justify-center gap-3">
             {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(p => (
@@ -236,10 +248,10 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
         </div>
       );
     case 'about':
-      return <div className="px-6 py-8 text-sm" style={{ color: text }}>Section À propos — racontez votre histoire.</div>;
+      return <div className={`${spacingClass} text-sm`} style={{ ...bodyStyle }}>Section À propos — racontez votre histoire.</div>;
     case 'newsletter':
       return (
-        <div className="px-6 py-6 text-center">
+        <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} text-center`}>
           <p className="text-sm font-semibold" style={{ color: colors.text }}>Newsletter</p>
           <div className="mt-2 flex justify-center gap-2">
             <div className="px-2 py-1 bg-gray-100 rounded text-xs w-40" />
@@ -248,9 +260,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
         </div>
       );
     case 'faq':
-      return <div className="px-6 py-8 space-y-2">{['Question 1', 'Question 2'].map(q => <div key={q} className="p-2 bg-gray-50 rounded text-xs" style={{ color: text }}>{q}</div>)}</div>;
+      return <div className={`${spacingClass} space-y-2`}>{['Question 1', 'Question 2'].map(q => <div key={q} className="p-2 bg-gray-50 rounded text-xs" style={{ color: text }}>{q}</div>)}</div>;
     case 'footer':
-      return <div className="px-6 py-6 bg-gray-900 text-white text-xs flex justify-between"><span>Ma Boutique</span><span>© 2026</span></div>;
+      return <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} bg-gray-900 text-white text-xs flex justify-between`}><span>Ma Boutique</span><span>© 2026</span></div>;
     case 'social-bar':
       return <div className="fixed right-4 top-1/2 -translate-y-1/2 space-y-1"><div className="w-8 h-8 bg-gray-800 rounded-full" /></div>;
     case 'chat-float':

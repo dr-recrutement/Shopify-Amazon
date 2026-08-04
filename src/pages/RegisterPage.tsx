@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, setLocalAuthMode } from '../lib/supabase';
 import { Logo } from '../components/Logo';
-import { Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 
 export default function RegisterPage() {
   const nav = useNavigate();
@@ -11,18 +11,56 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showDemoFallback, setShowDemoFallback] = useState(false);
+
+  const handleDemoMode = async () => {
+    setError('');
+    setLoading(true);
+    setLocalAuthMode(true);
+
+    const demoEmail = email || 'nouveau-vendeur@demo.liafrikos.com';
+    const demoName = fullName || 'Vendeur Démo';
+
+    const { data, error: err } = await supabase.auth.signUp({
+      email: demoEmail,
+      password: password || 'demopassword',
+      options: { data: { full_name: demoName } },
+    });
+    setLoading(false);
+    if (err) {
+      setError(err.message);
+      return;
+    }
+    if (data.user) nav('/onboarding');
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { full_name: fullName } },
-    });
-    setLoading(false);
-    if (error) { setError(error.message); return; }
-    if (data.user) nav('/onboarding');
+
+    try {
+      const { data, error: err } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: fullName } },
+      });
+      setLoading(false);
+      if (err) {
+        setError(err.message);
+        if (err.message.includes('Failed to fetch') || err.message.includes('fetch')) {
+          setShowDemoFallback(true);
+        }
+        return;
+      }
+      if (data.user) nav('/onboarding');
+    } catch (e: any) {
+      setLoading(false);
+      const msg = e?.message || '';
+      setError(msg || 'Une erreur est survenue lors de la création de la boutique.');
+      if (msg.includes('Failed to fetch') || msg.includes('fetch')) {
+        setShowDemoFallback(true);
+      }
+    }
   };
 
   return (
@@ -35,10 +73,46 @@ export default function RegisterPage() {
           <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
             <h1 className="font-serif-display text-2xl font-bold text-gray-900">Créer ma boutique</h1>
             <p className="mt-1 text-sm text-gray-500">7 jours d'essai gratuit, sans carte bancaire</p>
+
+            {/* Demo mode quick access badge */}
+            <div className="mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-emerald-600 animate-pulse" />
+                <div className="text-left">
+                  <div className="text-xs font-bold text-emerald-800">Pas de connexion Supabase ?</div>
+                  <div className="text-[11px] text-emerald-600">Explorez avec le Mode Démo local</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleDemoMode}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-all"
+              >
+                Explorer Démo
+              </button>
+            </div>
+
             <form onSubmit={submit} className="mt-6 space-y-4">
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 text-sm rounded-lg">
-                  <AlertCircle size={16} /> {error}
+                <div className="flex flex-col gap-2 p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle size={16} className="flex-shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                  {showDemoFallback && (
+                    <div className="mt-1 pt-2 border-t border-red-100">
+                      <p className="text-xs text-red-600 mb-2">
+                        Le serveur est inaccessible (problème d'environnement ou réseau).
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleDemoMode}
+                        className="w-full py-1.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 text-xs transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Sparkles size={12} /> Commencer en Mode Démo Local
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
               <div>
@@ -46,7 +120,7 @@ export default function RegisterPage() {
                 <div className="relative">
                   <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
                 </div>
               </div>
               <div>
@@ -54,7 +128,7 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
                 </div>
               </div>
               <div>
@@ -62,11 +136,11 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input type="password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
                 </div>
               </div>
               <button type="submit" disabled={loading}
-                className="w-full py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? 'Création...' : <>Commencer <ArrowRight size={16} /></>}
               </button>
             </form>
@@ -76,7 +150,7 @@ export default function RegisterPage() {
               <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-green-600" /> IA incluse</div>
             </div>
             <p className="mt-6 text-center text-sm text-gray-600">
-              Déjà un compte ? <Link to="/login" className="text-orange-600 font-medium hover:underline">Se connecter</Link>
+              Déjà un compte ? <Link to="/login" className="text-brand-600 font-medium hover:underline">Se connecter</Link>
             </p>
           </div>
         </div>

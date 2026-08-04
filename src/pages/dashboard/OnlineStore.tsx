@@ -189,7 +189,7 @@ export default function OnlineStore() {
                   onClick={() => setSelectedSection(s.id)}
                   className={`cursor-pointer ${selectedSection === s.id ? 'ring-2 ring-orange-500' : ''}`}
                 >
-                  {renderSection(s, theme.colors)}
+                  {renderSection(s, theme)}
                 </div>
               ))}
             </div>

@@ -139,6 +139,29 @@ export default function Onboarding() {
     setLoading(true);
     setError(null);
 
+    // If using Demo/Mock mode, persist to localStorage instead of Supabase
+    if (user.id === 'mock-user-123') {
+      setTimeout(() => {
+        const slug = slugify(trimmedName) || 'boutique';
+        const mockTenant = {
+          id: 'mock-tenant-123',
+          name: trimmedName,
+          slug,
+          sector,
+          country,
+          currency,
+          plan: selectedPlan,
+          status: 'trial',
+          theme_id: 'universal',
+          billing_cycle: 'monthly',
+          city: finalCity,
+        };
+        localStorage.setItem('os_mock_tenant', JSON.stringify(mockTenant));
+        window.location.reload();
+      }, 500);
+      return;
+    }
+
     try {
       const slug = await findAvailableSlug(trimmedName);
 

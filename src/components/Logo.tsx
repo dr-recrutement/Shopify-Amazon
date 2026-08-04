@@ -23,7 +23,7 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
       />
       {!iconOnly && (
         <span className={`font-black ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tighter`}>
-          Os <span className="text-green-600 font-normal">SaaS</span>
+          Os
         </span>
       )}
     </div>

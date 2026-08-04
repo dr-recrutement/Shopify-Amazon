@@ -251,11 +251,11 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       return <div className={`${spacingClass} text-sm`} style={{ ...bodyStyle }}>Section À propos — racontez votre histoire.</div>;
     case 'newsletter':
       return (
-        <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} text-center`}>
-          <p className="text-sm font-semibold" style={{ color: colors.text }}>Newsletter</p>
-          <div className="mt-2 flex justify-center gap-2">
-            <div className="px-2 py-1 bg-gray-100 rounded text-xs w-40" />
-            <div className="px-3 py-1 rounded text-white text-xs" style={{ backgroundColor: primary }}>S'inscrire</div>
+        <div className={`${theme.spacing === 'compact' ? 'px-4 py-4' : theme.spacing === 'spacious' ? 'px-8 py-6' : 'px-6 py-6'} text-center rounded-3xl`} style={{ backgroundColor: `${accent}08` }}>
+          <p className="text-sm font-semibold mb-3" style={{ ...headingStyle }}>Newsletter</p>
+          <div className="mt-2 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+            <div className="px-3 py-2 bg-white rounded-full text-xs text-gray-600 w-40">Recevez les nouveautés</div>
+            <div className="px-3 py-2 rounded-full text-white text-xs" style={{ backgroundColor: primary }}>S'inscrire</div>
           </div>
         </div>
       );

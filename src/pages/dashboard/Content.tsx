@@ -1,4 +1,4 @@
-import { PageHeader, Card, Button, EmptyState } from './ui';
+import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
 import { FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createCmsPage, getCmsPages, saveCmsPage, type CmsPage } from '../../lib/cms';
@@ -39,12 +39,24 @@ export default function Content() {
       <PageHeader title="Content" subtitle="CMS interne premium — pages, contenus, blocs, templates et prévisualisation éditables." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-gray-900">Pages</h3>
-              <p className="text-xs text-gray-500">Structurez votre contenu comme une vraie plateforme éditoriale.</p>
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-gray-900">Pages</h3>
+                <p className="text-xs text-gray-500">Structurez votre contenu comme une vraie plateforme éditoriale.</p>
+              </div>
+              <div className="flex items-center gap-2 text-orange-600 text-xs font-medium"><Sparkles size={14} /> Pro</div>
             </div>
-            <div className="flex items-center gap-2 text-orange-600 text-xs font-medium"><Sparkles size={14} /> Pro</div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px]">
+              <div className="relative">
+                <input className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm" placeholder="Rechercher une page" />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">⌕</span>
+              </div>
+              <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                <span>{pages.length} pages</span>
+                <Badge color="green">{pages.filter(p => p.status === 'published').length} publiées</Badge>
+              </div>
+            </div>
           </div>
           {pages.length === 0 ? (
             <EmptyState icon={FileText} title="Aucune page" desc="Créez des pages personnalisées pour votre boutique." />
@@ -71,10 +83,19 @@ export default function Content() {
 
       {draft && (
         <Card className="mt-6 p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-4">
             <div>
               <h3 className="font-semibold text-gray-900">Éditeur de page</h3>
               <p className="text-sm text-gray-500">Modifiez le titre, le slug, le statut, le template et les blocs de contenu.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge color={draft?.status === 'published' ? 'green' : 'orange'}>{draft?.status === 'published' ? 'Publié' : 'Brouillon'}</Badge>
+              <span className="text-xs text-gray-500">Mis à jour le {draft?.updatedAt}</span>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <FileText size={14} /> {draft?.template === 'custom' ? 'Template Libre' : `Template ${draft?.template}`}
             </div>
             <div className="flex items-center gap-2">
               <Button variant="secondary" size="sm"><Eye size={14} /> Prévisualiser</Button>
@@ -149,6 +170,17 @@ export default function Content() {
               });
             }} className="flex items-center gap-2 text-sm text-orange-600 font-medium"><Edit3 size={14} /> Ajouter un bloc</button>
           </div>
+
+          <Card className="mt-5 border border-gray-200 bg-slate-50 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.24em] text-gray-500">Aperçu de la page</p>
+                <h4 className="mt-2 text-lg font-semibold text-gray-900">{draft.title}</h4>
+                <p className="text-sm text-gray-600">/{draft.slug} · {draft.sections.length} blocs</p>
+              </div>
+              <Badge color="blue">{draft.template}</Badge>
+            </div>
+          </Card>
         </Card>
       )}
     </div>

@@ -18,9 +18,6 @@ export default function Products() {
   const [prodStatus, setProdStatus] = useState<'active' | 'out_of_stock'>('active');
   const [prodCategory, setProdCategory] = useState('');
   const [prodSubcategory, setProdSubcategory] = useState('');
-  const [prodImage, setProdImage] = useState('');
-  const [imageError, setImageError] = useState('');
-  const [dragActive, setDragActive] = useState(false);
 
   // States to add new category/subcategory inline
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
@@ -37,40 +34,12 @@ export default function Products() {
     return `${product.price.toLocaleString('fr-FR')} ${product.currency || 'XOF'}`;
   };
 
-  const handleImageFileChange = (file: File) => {
-    setImageError('');
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (!dataUrl) return;
-
-      const img = new Image();
-      img.onload = () => {
-        if (img.width !== 800 || img.height !== 800) {
-          setImageError(`L'image fait ${img.width}x${img.height}px. La dimension requise est strictement de 800x800 pixels (Format Shopify optimal).`);
-        } else {
-          setProdImage(dataUrl);
-          setImageError('');
-        }
-      };
-      img.onerror = () => {
-        setImageError("Impossible de charger l'image sélectionnée.");
-      };
-      img.src = dataUrl;
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleOpenAddModal = () => {
     setEditingProduct(null);
     setProdName('');
     setProdPrice(10000);
     setProdStock(10);
     setProdStatus('active');
-    setProdImage('');
-    setImageError('');
 
     // Default to the first category if available
     const keys = Object.keys(categories);
@@ -91,8 +60,6 @@ export default function Products() {
     setProdStatus(p.status);
     setProdCategory(p.category || '');
     setProdSubcategory(p.subcategory || '');
-    setProdImage(p.image || '');
-    setImageError('');
 
     setShowAddCategoryInput(false);
     setShowAddSubcategoryInput(false);
@@ -102,10 +69,6 @@ export default function Products() {
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prodName.trim()) return;
-    if (imageError) {
-      alert("Veuillez corriger les erreurs de dimension d'image avant d'enregistrer.");
-      return;
-    }
 
     let updatedList: StoreProduct[] = [];
     if (editingProduct) {
@@ -119,7 +82,6 @@ export default function Products() {
             status: Number(prodStock) === 0 ? 'out_of_stock' : prodStatus,
             category: prodCategory,
             subcategory: prodSubcategory,
-            image: prodImage
           };
         }
         return p;
@@ -134,7 +96,6 @@ export default function Products() {
         currency: 'XOF',
         category: prodCategory,
         subcategory: prodSubcategory,
-        image: prodImage
       };
       updatedList = [newProd, ...products];
     }
@@ -242,12 +203,8 @@ export default function Products() {
                 <tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-3.5 px-4 font-medium text-gray-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden border border-gray-100">
-                        {p.image ? (
-                          <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <Package size={18} />
-                        )}
+                      <div className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                        <Package size={18} />
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">{p.name}</div>
@@ -338,67 +295,6 @@ export default function Products() {
                   onChange={e => setProdName(e.target.value)}
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
-              </div>
-
-              {/* Product Image drag-and-drop file selector */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Image du Produit (Carré 800x800px requis) *
-                </label>
-
-                {prodImage ? (
-                  <div className="relative group rounded-xl overflow-hidden border border-gray-200 h-44 bg-gray-50 flex items-center justify-center">
-                    <img src={prodImage} alt="Aperçu du produit" className="h-full object-contain" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setProdImage('')}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold shadow hover:bg-red-700 transition-all"
-                      >
-                        Supprimer l'image
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                    onDragLeave={() => setDragActive(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setDragActive(false);
-                      if (e.dataTransfer.files?.[0]) {
-                        handleImageFileChange(e.dataTransfer.files[0]);
-                      }
-                    }}
-                    className={`border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer ${
-                      dragActive ? 'border-emerald-500 bg-emerald-50/50' : 'border-gray-200 hover:border-emerald-400 bg-gray-50/30'
-                    }`}
-                    onClick={() => document.getElementById('prod-image-file')?.click()}
-                  >
-                    <div className="flex flex-col items-center justify-center gap-1">
-                      <FileIcon size={24} className="text-gray-400" />
-                      <span className="text-sm font-semibold text-gray-700">Glisser-déposer votre image ici ou <span className="text-emerald-600 underline">cliquer</span></span>
-                      <span className="text-xs text-gray-400">Dimensions requises : exactement 800 x 800 pixels</span>
-                    </div>
-                    <input
-                      id="prod-image-file"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) {
-                          handleImageFileChange(e.target.files[0]);
-                        }
-                      }}
-                    />
-                  </div>
-                )}
-
-                {imageError && (
-                  <p className="text-xs font-semibold text-red-600 animate-pulse">
-                    ⚠️ {imageError}
-                  </p>
-                )}
               </div>
 
               {/* Price & Stock Row */}

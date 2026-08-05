@@ -154,6 +154,10 @@ export function saveOrder(order: StoreOrder) {
   writeStorage(ORDERS_KEY, [order, ...orders]);
 }
 
+export function saveOrdersList(orders: StoreOrder[]) {
+  writeStorage(ORDERS_KEY, orders);
+}
+
 export function getSupportTickets(): SupportTicket[] {
   return readStorage<SupportTicket[]>(SUPPORT_TICKETS_KEY, []);
 }

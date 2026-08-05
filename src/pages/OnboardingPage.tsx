@@ -109,7 +109,7 @@ export default function OnboardingPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la boutique</label>
                 <input value={data.shopName} onChange={e => setData({ ...data, shopName: e.target.value })} placeholder="Ex. Boutique Aïcha"
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
-                {data.shopName && <p className="mt-2 text-xs text-gray-500">URL : {data.shopName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.liafrikos.com</p>}
+                {data.shopName && <p className="mt-2 text-xs text-gray-500">URL : {data.shopName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.os.liafrik.com</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>

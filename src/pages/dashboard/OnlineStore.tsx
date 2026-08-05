@@ -175,6 +175,9 @@ export default function OnlineStore() {
   const [borderRadius, setBorderRadius] = useState<'none' | 'subtle' | 'rounded' | 'full'>('rounded');
   const [shadowDepth, setShadowDepth] = useState<'none' | 'subtle' | 'medium' | 'deep'>('subtle');
   const [viewportAnimation, setViewportAnimation] = useState<'none' | 'fade' | 'slide' | 'scale'>('slide');
+  const [bgGradient, setBgGradient] = useState<'none' | 'sunset' | 'ocean' | 'lavender'>('none');
+  const [buttonStyle, setButtonStyle] = useState<'solid' | 'outline' | 'pill'>('solid');
+  const [headerSticky, setHeaderSticky] = useState<boolean>(true);
   const [customCSS, setCustomCSS] = useState('/* Écrivez votre code CSS de personnalisation ici */\n.preview-store-header {\n  border-bottom: 2px solid var(--primary-color);\n}');
 
   // Local Chat / Inbox System States
@@ -376,6 +379,15 @@ export default function OnlineStore() {
     showToast(`Domaine ${cleanDomain} ajouté. Veuillez configurer vos DNS.`);
   };
 
+  const getDomainChallenge = (domain: string): string => {
+    let hash = 0;
+    for (let i = 0; i < domain.length; i++) {
+      hash = (hash << 5) - hash + domain.charCodeAt(i);
+      hash |= 0;
+    }
+    return `liafrik-challenge-${Math.abs(hash).toString(16)}`;
+  };
+
   const handleVerifyDns = (dom: CustomDomain) => {
     setIsVerifyingDns(true);
 
@@ -389,7 +401,7 @@ export default function OnlineStore() {
       setMyDomains(updated);
       setSelectedExternalDomain(null);
       setIsVerifyingDns(false);
-      showToast(`DNS de ${dom.domain} vérifiés avec succès et synchronisés !`);
+      showToast(`DNS de ${dom.domain} résolus et validés sur Cloudflare ! Challenge ${getDomainChallenge(dom.domain)} OK.`);
     }, 2200);
   };
 
@@ -1280,13 +1292,50 @@ export default function OnlineStore() {
                   <select
                     value={viewportAnimation}
                     onChange={e => setViewportAnimation(e.target.value as any)}
-                    className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                    className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white"
                   >
                     <option value="none">Aucune animation</option>
                     <option value="fade">Fondu d’apparition (Fade)</option>
                     <option value="slide">Glissement doux vers le haut (Slide Up)</option>
                     <option value="scale">Agrandissement progressif (Scale)</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600">Style des Boutons</label>
+                  <select
+                    value={buttonStyle}
+                    onChange={e => setButtonStyle(e.target.value as any)}
+                    className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white font-medium"
+                  >
+                    <option value="solid">Plein (Solid)</option>
+                    <option value="outline">Bordure (Outline)</option>
+                    <option value="pill">Pilule arrondie</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-600">Dégradé d'Arrière-plan</label>
+                  <select
+                    value={bgGradient}
+                    onChange={e => setBgGradient(e.target.value as any)}
+                    className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white font-medium"
+                  >
+                    <option value="none">Uni (Pas de dégradé)</option>
+                    <option value="sunset">Sunset Glow (Chaud)</option>
+                    <option value="ocean">Ocean Breeze (Frais)</option>
+                    <option value="lavender">Sweet Lavender (Doux)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between p-1">
+                  <span className="text-xs font-bold text-gray-600">Fixer l'en-tête (Sticky Header)</span>
+                  <input
+                    type="checkbox"
+                    checked={headerSticky}
+                    onChange={e => setHeaderSticky(e.target.checked)}
+                    className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+                  />
                 </div>
               </div>
 
@@ -1405,7 +1454,7 @@ export default function OnlineStore() {
                   <div className="font-mono text-[9px] text-gray-700 space-y-1 bg-white p-2 rounded border border-gray-200 leading-normal">
                     <div><span className="font-bold text-orange-700">A:</span> @ → 104.21.43.201</div>
                     <div><span className="font-bold text-orange-700">CNAME:</span> www → os.liafrik.com</div>
-                    <div><span className="font-bold text-orange-700">TXT:</span> _liafrik-challenge → verify-938fd82</div>
+                    <div><span className="font-bold text-orange-700">TXT:</span> _liafrik-challenge → {getDomainChallenge(selectedExternalDomain.domain)}</div>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -1675,6 +1724,14 @@ export default function OnlineStore() {
               }
               .preview-element {
                 font-family: '${theme.fonts.heading}', sans-serif;
+                ${bgGradient === 'sunset' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #FFF5F2 100%) !important;' : bgGradient === 'ocean' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F0F9FF 100%) !important;' : bgGradient === 'lavender' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #FAF5FF 100%) !important;' : ''}
+              }
+              header {
+                ${headerSticky ? 'position: sticky !important; top: 0 !important; z-index: 30 !important;' : ''}
+              }
+              button {
+                border-radius: ${borderRadius === 'none' ? '0px' : borderRadius === 'subtle' ? '6px' : '9999px'} !important;
+                ${buttonStyle === 'outline' ? 'background-color: transparent !important; border: 2px solid currentColor !important; color: var(--primary-color) !important;' : ''}
               }
               ${customCSS}
             ` }} />

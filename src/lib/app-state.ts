@@ -14,6 +14,8 @@ export type StoreProduct = {
   stock: number;
   status: 'active' | 'out_of_stock';
   currency: string;
+  category?: string;
+  subcategory?: string;
 };
 
 export type StoreOrder = {
@@ -41,6 +43,7 @@ const PRODUCTS_KEY = 'liafrikos_products';
 const ORDERS_KEY = 'liafrikos_orders';
 const SUPPORT_TICKETS_KEY = 'liafrikos_support_tickets';
 const SHOP_PROFILE_KEY = 'liafrikos_shop_profile';
+const CATEGORIES_KEY = 'liafrikos_categories';
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
@@ -74,10 +77,26 @@ export function clearCart() {
 
 export function getProducts(): StoreProduct[] {
   return readStorage<StoreProduct[]>(PRODUCTS_KEY, [
-    { id: 'p1', name: 'Robe wax traditionnelle', price: 15000, stock: 12, status: 'active', currency: 'XOF' },
-    { id: 'p2', name: 'Sac en cuir artisanal', price: 25000, stock: 5, status: 'active', currency: 'XOF' },
-    { id: 'p3', name: 'Boucles d’oreilles dorées', price: 8000, stock: 0, status: 'out_of_stock', currency: 'XOF' },
+    { id: 'p1', name: 'Robe wax traditionnelle', price: 15000, stock: 12, status: 'active', currency: 'XOF', category: 'Mode Femme', subcategory: 'Robes' },
+    { id: 'p2', name: 'Sac en cuir artisanal', price: 25000, stock: 5, status: 'active', currency: 'XOF', category: 'Accessoires', subcategory: 'Sacs' },
+    { id: 'p3', name: 'Boucles d’oreilles dorées', price: 8000, stock: 0, status: 'out_of_stock', currency: 'XOF', category: 'Bijoux', subcategory: 'Boucles d’oreilles' },
   ]);
+}
+
+export type CategoryMap = {
+  [category: string]: string[]; // category name maps to list of subcategories
+};
+
+export function getCategories(): CategoryMap {
+  return readStorage<CategoryMap>(CATEGORIES_KEY, {
+    'Mode Femme': ['Robes', 'Jupes', 'Pagne Wax'],
+    'Accessoires': ['Sacs', 'Ceintures', 'Chapeaux'],
+    'Bijoux': ['Boucles d’oreilles', 'Colliers', 'Bracelets'],
+  });
+}
+
+export function saveCategories(categories: CategoryMap) {
+  writeStorage(CATEGORIES_KEY, categories);
 }
 
 export function saveProducts(products: StoreProduct[]) {

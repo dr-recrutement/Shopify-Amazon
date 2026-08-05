@@ -16,6 +16,7 @@ export type StoreProduct = {
   currency: string;
   category?: string;
   subcategory?: string;
+  image?: string;
 };
 
 export type StoreOrder = {
@@ -95,9 +96,9 @@ export function clearCart() {
 
 export function getProducts(): StoreProduct[] {
   return readStorage<StoreProduct[]>(PRODUCTS_KEY, [
-    { id: 'p1', name: 'Robe wax traditionnelle', price: 15000, stock: 12, status: 'active', currency: 'XOF', category: 'Mode Femme', subcategory: 'Robes' },
-    { id: 'p2', name: 'Sac en cuir artisanal', price: 25000, stock: 5, status: 'active', currency: 'XOF', category: 'Accessoires', subcategory: 'Sacs' },
-    { id: 'p3', name: 'Boucles d’oreilles dorées', price: 8000, stock: 0, status: 'out_of_stock', currency: 'XOF', category: 'Bijoux', subcategory: 'Boucles d’oreilles' },
+    { id: 'p1', name: 'Robe wax traditionnelle', price: 15000, stock: 12, status: 'active', currency: 'XOF', category: 'Mode Femme', subcategory: 'Robes', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&q=80&w=600' },
+    { id: 'p2', name: 'Sac en cuir artisanal', price: 25000, stock: 5, status: 'active', currency: 'XOF', category: 'Accessoires', subcategory: 'Sacs', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600' },
+    { id: 'p3', name: 'Boucles d’oreilles dorées', price: 8000, stock: 0, status: 'out_of_stock', currency: 'XOF', category: 'Bijoux', subcategory: 'Boucles d’oreilles', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=600' },
   ]);
 }
 

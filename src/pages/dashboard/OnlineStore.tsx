@@ -16,77 +16,149 @@ interface CustomDomain {
   createdAt: string;
 }
 
-// Ultra-modern Preset Themes
+// Helper to generate default sections for preset variety
+const createPresetSections = (id: string): ThemeSection[] => {
+  const headerSection: ThemeSection = { id: 'hdr', type: 'header', visible: true, props: { logoText: 'Ma Boutique Os', showAnnouncement: true, announcementText: '✨ Nouvelle collection de Saison disponible ! ✨' } };
+  const heroSection: ThemeSection = { id: 'hr', type: 'hero', visible: true, props: { title: 'Collections Premium', subtitle: 'Le raffinement de la couture artisanale moderne.', cta: 'Acheter' } };
+  const productsSection: ThemeSection = { id: 'prd', type: 'product-grid', visible: true, props: { title: 'Best-Sellers', columns: 4 } };
+  const categorySection: ThemeSection = { id: 'cat', type: 'category-grid', visible: true, props: { title: 'Collections' } };
+  const countdownSection: ThemeSection = { id: 'cnt', type: 'countdown', visible: true, props: { title: 'Vente Privée ⚡', promoText: 'Profitez de tarifs exclusifs temporaires.' } };
+  const testimonialsSection: ThemeSection = { id: 'tst', type: 'testimonials', visible: true, props: { title: 'Avis de nos clients', list: [{ name: 'Fanta Kourouma', comment: 'Magnifique expérience, je repasserai commande assurément.', rating: 5, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150' }] } };
+  const paymentsSection: ThemeSection = { id: 'pay', type: 'payments', visible: true, props: { title: 'Moyens de paiements sécurisés', list: ['Orange Money', 'Wave', 'Stripe', 'Visa'] } };
+  const newsletterSection: ThemeSection = { id: 'nws', type: 'newsletter', visible: true, props: { title: 'Rejoindre le club' } };
+  const footerSection: ThemeSection = { id: 'ftr', type: 'footer', visible: true, props: { logoText: 'Os Boutique', copyright: '© 2026 Os. Tous droits réservés.' } };
+
+  if (id === 'lagos-beauty') {
+    return [headerSection, heroSection, categorySection, testimonialsSection, footerSection];
+  }
+  if (id === 'art-wax') {
+    return [headerSection, heroSection, countdownSection, productsSection, newsletterSection, footerSection];
+  }
+  if (id === 'coral-peach') {
+    return [headerSection, heroSection, categorySection, productsSection, newsletterSection, paymentsSection, footerSection];
+  }
+  if (id === 'ocean-blue') {
+    return [headerSection, heroSection, productsSection, paymentsSection, footerSection];
+  }
+  if (id === 'dakar-fashion') {
+    return [headerSection, heroSection, categorySection, productsSection, footerSection];
+  }
+  if (id === 'sahara-gold') {
+    return [headerSection, heroSection, countdownSection, testimonialsSection, newsletterSection, footerSection];
+  }
+  if (id === 'tokyo-tech') {
+    return [headerSection, heroSection, countdownSection, productsSection, footerSection];
+  }
+  if (id === 'cape-town-minimalist') {
+    return [headerSection, heroSection, productsSection, footerSection];
+  }
+  if (id === 'new-york-street') {
+    return [headerSection, heroSection, categorySection, productsSection, newsletterSection, footerSection];
+  }
+  return [headerSection, heroSection, countdownSection, testimonialsSection, paymentsSection, footerSection];
+};
+
+// Ultra-modern Preset Themes with distinct layouts & custom CSS
 const CUSTOM_PRESETS = [
   {
     id: 'lagos-beauty',
     name: 'Lagos Beauty 👑',
     description: 'Chic, luxueux, haut de gamme avec polices sérif élégantes.',
     colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('lagos-beauty'),
+    borderRadius: 'subtle' as const, shadowDepth: 'deep' as const, bgGradient: 'none' as const, buttonStyle: 'solid' as const, headerSticky: true,
+    customCSS: '.preview-store-header { border-bottom: 2px solid var(--primary-color); }'
   },
   {
     id: 'art-wax',
     name: 'Art & Wax 🎨',
     description: 'Vibrant, coloré, inspiré de l’art textile et de l’artisanat africain.',
     colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('art-wax'),
+    borderRadius: 'rounded' as const, shadowDepth: 'subtle' as const, bgGradient: 'sunset' as const, buttonStyle: 'pill' as const, headerSticky: true,
+    customCSS: ''
   },
   {
     id: 'coral-peach',
     name: 'Coral & Peach 🍑',
     description: 'Moderne, chaleureux et convivial, parfait pour les créatrices.',
     colors: { primary: '#FF6B35', secondary: '#4A5568', accent: '#FFA07A', background: '#FFF5F2', text: '#2D3748' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('coral-peach'),
+    borderRadius: 'rounded' as const, shadowDepth: 'medium' as const, bgGradient: 'sunset' as const, buttonStyle: 'solid' as const, headerSticky: false,
+    customCSS: ''
   },
   {
     id: 'ocean-blue',
     name: 'Ocean Blue 🌊',
     description: 'Corporate, épuré, d’un bleu profond d’affaires internationales.',
     colors: { primary: '#0369A1', secondary: '#1E293B', accent: '#38BDF8', background: '#F0F9FF', text: '#0F172A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('ocean-blue'),
+    borderRadius: 'none' as const, shadowDepth: 'none' as const, bgGradient: 'ocean' as const, buttonStyle: 'outline' as const, headerSticky: true,
+    customCSS: ''
   },
   {
     id: 'dakar-fashion',
     name: 'Dakar Fashion 🌟',
     description: 'Style couture moderne, jaune vibrant et indigo profond, typographie élégante.',
     colors: { primary: '#EAB308', secondary: '#312E81', accent: '#F59E0B', background: '#FAF8F5', text: '#1E1B4B' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('dakar-fashion'),
+    borderRadius: 'subtle' as const, shadowDepth: 'medium' as const, bgGradient: 'sunset' as const, buttonStyle: 'solid' as const, headerSticky: true,
+    customCSS: ''
   },
   {
     id: 'sahara-gold',
     name: 'Sahara Gold ✨',
     description: 'Palette dorée sablonneuse haut de gamme mariée au charbon épuré.',
     colors: { primary: '#D97706', secondary: '#1F2937', accent: '#F59E0B', background: '#FFFDF9', text: '#111827' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('sahara-gold'),
+    borderRadius: 'none' as const, shadowDepth: 'deep' as const, bgGradient: 'none' as const, buttonStyle: 'outline' as const, headerSticky: true,
+    customCSS: ''
   },
   {
     id: 'tokyo-tech',
     name: 'Tokyo Tech ⚡',
     description: 'Ambiance cyberpunk sombre et électrique, néon vert dynamique pour produits technologiques.',
     colors: { primary: '#22C55E', secondary: '#0F172A', accent: '#10B981', background: '#090D16', text: '#F8FAFC' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('tokyo-tech'),
+    borderRadius: 'none' as const, shadowDepth: 'none' as const, bgGradient: 'none' as const, buttonStyle: 'solid' as const, headerSticky: true,
+    customCSS: 'body { background: #090D16 !important; }'
   },
   {
     id: 'cape-town-minimalist',
     name: 'Cape Town Minimalist 🏔',
     description: 'Espaces confortables, lignes ultra épurées d’un gris ardoise noble et reposant.',
     colors: { primary: '#475569', secondary: '#0F172A', accent: '#64748B', background: '#F8FAFC', text: '#0F172A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('cape-town-minimalist'),
+    borderRadius: 'subtle' as const, shadowDepth: 'subtle' as const, bgGradient: 'ocean' as const, buttonStyle: 'outline' as const, headerSticky: false,
+    customCSS: ''
   },
   {
     id: 'new-york-street',
     name: 'NY Streetwear 🗽',
     description: 'Design urbain audacieux et contrasté, rouge vif de défilé et noir profond.',
     colors: { primary: '#DC2626', secondary: '#000000', accent: '#EF4444', background: '#FAF9F6', text: '#111111' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('new-york-street'),
+    borderRadius: 'rounded' as const, shadowDepth: 'deep' as const, bgGradient: 'none' as const, buttonStyle: 'solid' as const, headerSticky: true,
+    customCSS: ''
   },
   {
     id: 'yasmine-oriental',
     name: 'Yasmine Oriental 🌺',
     description: 'Mystique et envoûtant, violet royal et orbe de soleil d’Orient.',
     colors: { primary: '#7C3AED', secondary: '#1E1B4B', accent: '#F59E0B', background: '#FAF5FF', text: '#1E1B4B' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    sections: createPresetSections('yasmine-oriental'),
+    borderRadius: 'full' as const, shadowDepth: 'subtle' as const, bgGradient: 'lavender' as const, buttonStyle: 'pill' as const, headerSticky: true,
+    customCSS: ''
   }
 ];
 
@@ -244,11 +316,23 @@ export default function OnlineStore() {
   };
 
   const selectPreset = (preset: typeof CUSTOM_PRESETS[0]) => {
-    setTheme({
+    const newTheme: ThemeConfig = {
       ...theme,
       colors: { ...preset.colors },
-      fonts: { ...preset.fonts }
-    });
+      fonts: { ...preset.fonts },
+      sections: [...preset.sections]
+    };
+
+    setTheme(newTheme);
+
+    // Dynamically adjust custom design controller states from preset
+    setBorderRadius(preset.borderRadius);
+    setShadowDepth(preset.shadowDepth);
+    setBgGradient(preset.bgGradient);
+    setButtonStyle(preset.buttonStyle);
+    setHeaderSticky(preset.headerSticky);
+    setCustomCSS(preset.customCSS || '');
+
     showToast(`Thème "${preset.name}" appliqué avec succès !`);
   };
 
@@ -1822,11 +1906,11 @@ export default function OnlineStore() {
                       name: p.name,
                       price: p.price,
                       oldPrice: p.status === 'out_of_stock' ? 0 : p.price * 1.2,
-                      image: p.category?.toLowerCase().includes('sac')
+                      image: p.image || (p.category?.toLowerCase().includes('sac')
                         ? 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300'
                         : p.category?.toLowerCase().includes('bijou')
                         ? 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300'
-                        : 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300',
+                        : 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300'),
                       rating: 5
                     }));
                     sectionWithRealData.props = { ...s.props, products: realProds };

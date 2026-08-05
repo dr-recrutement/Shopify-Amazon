@@ -7,6 +7,14 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { getShopProfile } from '../../lib/app-state';
+
+interface CustomDomain {
+  domain: string;
+  type: 'platform' | 'external' | 'purchased';
+  status: 'active' | 'dns_pending' | 'dns_error';
+  createdAt: string;
+}
 
 // Ultra-modern Preset Themes
 const CUSTOM_PRESETS = [
@@ -42,8 +50,23 @@ const CUSTOM_PRESETS = [
 
 export default function OnlineStore() {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-  const [theme, setTheme] = useState<ThemeConfig>(() => defaultThemeForType('ecommerce'));
+  const [theme, setTheme] = useState<ThemeConfig>(() => {
+    const saved = localStorage.getItem('liafrikos_theme_config');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // ignore
+      }
+    }
+    return defaultThemeForType('ecommerce');
+  });
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+
+  // Sync theme to localStorage
+  useEffect(() => {
+    localStorage.setItem('liafrikos_theme_config', JSON.stringify(theme));
+  }, [theme]);
 
   // Custom states
   const [panel, setPanel] = useState<'themes' | 'sections' | 'design' | 'pages' | 'domain' | 'inbox' | 'settings'>('themes');
@@ -56,14 +79,55 @@ export default function OnlineStore() {
   ]);
   const [newPageTitle, setNewPageTitle] = useState('');
 
-  // Domain Management States
+  // Domain Management States with localStorage Sync
+  const shopProfile = getShopProfile();
+  const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
+
+  const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
+    const saved = localStorage.getItem('liafrikos_domains');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // fallback
+      }
+    }
+    return [
+      { domain: shopSubdomain, type: 'platform', status: 'active', createdAt: 'Créé à la création' }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('liafrikos_domains', JSON.stringify(myDomains));
+    // Dispatch local storage event so Settings.tsx is also updated in real-time
+    window.dispatchEvent(new Event('storage'));
+  }, [myDomains]);
+
+  // Synchronize domains if changed externally
+  useEffect(() => {
+    const handleStorage = () => {
+      const saved = localStorage.getItem('liafrikos_domains');
+      if (saved) {
+        try {
+          setMyDomains(JSON.parse(saved));
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
   const [domainQuery, setDomainQuery] = useState('');
   const [isSearchingDomain, setIsSearchingDomain] = useState(false);
-  const [domainSearchResult, setDomainSearchResult] = useState<{ domain: string; available: boolean; price: string } | null>(null);
-  const [myDomains, setMyDomains] = useState<Array<{ name: string; type: 'bought' | 'connected'; status: 'active' | 'pending' }>>([
-    { name: 'maboutique.liafrikos.shop', type: 'connected', status: 'active' }
-  ]);
+  const [domainSearchResult, setDomainSearchResult] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
+  const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'orange' | 'card'>('wave');
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const [externalDomainInput, setExternalDomainInput] = useState('');
+  const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
+  const [isVerifyingDns, setIsVerifyingDns] = useState(false);
 
   // Custom visual states
   const [borderRadius, setBorderRadius] = useState<'none' | 'subtle' | 'rounded' | 'full'>('rounded');
@@ -168,6 +232,24 @@ export default function OnlineStore() {
     setTheme({ ...theme, colors: { ...theme.colors, [key]: value } });
   };
 
+  const updateSectionProp = (sectionId: string, propKey: string, value: any) => {
+    setTheme(prev => ({
+      ...prev,
+      sections: prev.sections.map(s => {
+        if (s.id === sectionId) {
+          return {
+            ...s,
+            props: {
+              ...s.props,
+              [propKey]: value
+            }
+          };
+        }
+        return s;
+      })
+    }));
+  };
+
   const handleCreatePage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPageTitle.trim()) return;
@@ -186,33 +268,98 @@ export default function OnlineStore() {
     e.preventDefault();
     if (!domainQuery.trim()) return;
     setIsSearchingDomain(true);
-    setDomainSearchResult(null);
+    setDomainSearchResult([]);
+    setSelectedExtension(null);
+
     setTimeout(() => {
+      const cleanName = domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
+      setDomainSearchResult([
+        { ext: `.com`, price: '8 500 FCFA / an', available: true },
+        { ext: `.shop`, price: '4 900 FCFA / an', available: true },
+        { ext: `.ci`, price: '15 000 FCFA / an', available: !cleanName.includes('banned') },
+        { ext: `.net`, price: '9 900 FCFA / an', available: true },
+        { ext: `.sn`, price: '12 000 FCFA / an', available: true },
+      ]);
       setIsSearchingDomain(false);
-      const isAvailable = !domainQuery.includes('shop') && !domainQuery.includes('liafrikos');
-      setDomainSearchResult({
-        domain: domainQuery.endsWith('.com') || domainQuery.endsWith('.net') || domainQuery.endsWith('.shop') ? domainQuery : `${domainQuery}.com`,
-        available: isAvailable,
-        price: isAvailable ? '9,99 $' : ''
-      });
-    }, 1500);
+    }, 1200);
   };
 
-  const handleBuyDomain = (domainName: string) => {
-    const next = [...myDomains, { name: domainName, type: 'bought' as const, status: 'active' as const }];
-    setMyDomains(next);
-    setDomainSearchResult(null);
-    setDomainQuery('');
-    showToast(`Félicitations ! Le domaine ${domainName} a été enregistré avec succès via Os.`);
+  const handleBuyDomain = () => {
+    if (!selectedExtension) return;
+    setIsPurchasing(true);
+
+    setTimeout(() => {
+      const cleanName = domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
+      const domainName = `${cleanName}${selectedExtension.ext}`;
+
+      const newDomain: CustomDomain = {
+        domain: domainName,
+        type: 'purchased',
+        status: 'active',
+        createdAt: new Date().toLocaleDateString('fr-FR')
+      };
+
+      setMyDomains([...myDomains, newDomain]);
+      setIsPurchasing(false);
+      setDomainQuery('');
+      setDomainSearchResult([]);
+      setSelectedExtension(null);
+      showToast(`Félicitations ! Le domaine ${domainName} a été enregistré avec succès via Os.`);
+    }, 2000);
   };
 
   const handleConnectExternalDomain = (e: React.FormEvent) => {
     e.preventDefault();
     if (!externalDomainInput.trim()) return;
-    const next = [...myDomains, { name: externalDomainInput, type: 'connected' as const, status: 'pending' as const }];
-    setMyDomains(next);
+    const cleanDomain = externalDomainInput.toLowerCase().trim().replace(/^(https?:\/\/)?(www\.)?/, '');
+
+    if (myDomains.some(d => d.domain === cleanDomain)) {
+      showToast('Ce domaine est déjà enregistré.');
+      return;
+    }
+
+    const newDomain: CustomDomain = {
+      domain: cleanDomain,
+      type: 'external',
+      status: 'dns_pending',
+      createdAt: new Date().toLocaleDateString('fr-FR')
+    };
+
+    setMyDomains([...myDomains, newDomain]);
+    setSelectedExternalDomain(newDomain);
     setExternalDomainInput('');
-    showToast(`Requête de connexion pour ${externalDomainInput} envoyée ! En attente de validation DNS.`);
+    showToast(`Domaine ${cleanDomain} ajouté. Veuillez configurer vos DNS.`);
+  };
+
+  const handleVerifyDns = (dom: CustomDomain) => {
+    setIsVerifyingDns(true);
+
+    setTimeout(() => {
+      const updated = myDomains.map(d => {
+        if (d.domain === dom.domain) {
+          return { ...d, status: 'active' as const };
+        }
+        return d;
+      });
+      setMyDomains(updated);
+      setSelectedExternalDomain(null);
+      setIsVerifyingDns(false);
+      showToast(`DNS de ${dom.domain} vérifiés avec succès et synchronisés !`);
+    }, 2200);
+  };
+
+  const handleDeleteDomain = (domainName: string) => {
+    if (domainName === shopSubdomain) {
+      showToast('Impossible de supprimer le domaine de base.');
+      return;
+    }
+    if (confirm(`Êtes-vous sûr de vouloir supprimer le domaine ${domainName} ?`)) {
+      setMyDomains(myDomains.filter(d => d.domain !== domainName));
+      if (selectedExternalDomain?.domain === domainName) {
+        setSelectedExternalDomain(null);
+      }
+      showToast('Domaine supprimé.');
+    }
   };
 
   const publish = () => {
@@ -254,10 +401,10 @@ export default function OnlineStore() {
       />
 
       {/* Main CMS Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-x-hidden md:overflow-x-visible">
 
         {/* LEFT COLUMN: Subpanels controls & managers */}
-        <div className="space-y-4 col-span-1">
+        <div className="space-y-4 col-span-1 w-full max-w-full">
 
           {/* Navigation/subpanel switcher */}
           <Card className="p-2 border border-gray-100 shadow-sm">
@@ -351,13 +498,13 @@ export default function OnlineStore() {
           )}
 
           {/* PANEL 2: Dynamic drag & drop Sections configuration */}
-          {panel === 'sections' && (
+          {panel === 'sections' && !selectedSection && (
             <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                   <Layers size={16} className="text-brand-600" /> Structure du Thème
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Ajoutez, supprimez et réorganisez les blocs modulaires en temps réel.</p>
+                <p className="text-xs text-gray-500 mt-1">Ajoutez, supprimez et réorganisez les blocs modulaires en temps réel. Cliquez sur un bloc pour l'éditer.</p>
               </div>
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
@@ -427,6 +574,565 @@ export default function OnlineStore() {
               </div>
             </Card>
           )}
+
+          {panel === 'sections' && selectedSection && (() => {
+            const activeSection = theme.sections.find(s => s.id === selectedSection);
+            if (!activeSection) return null;
+
+            return (
+              <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                  <button
+                    onClick={() => setSelectedSection(null)}
+                    className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+                  >
+                    ← Retour à la structure
+                  </button>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Édition {activeSection.type}
+                  </span>
+                </div>
+
+                <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1 text-left">
+                  {/* Common Title/Heading inputs */}
+                  {'title' in activeSection.props && (
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Titre principal</label>
+                      <input
+                        type="text"
+                        value={activeSection.props.title || ''}
+                        onChange={e => updateSectionProp(activeSection.id, 'title', e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                      />
+                    </div>
+                  )}
+
+                  {'subtitle' in activeSection.props && (
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Sous-titre</label>
+                      <input
+                        type="text"
+                        value={activeSection.props.subtitle || ''}
+                        onChange={e => updateSectionProp(activeSection.id, 'subtitle', e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                      />
+                    </div>
+                  )}
+
+                  {'description' in activeSection.props && (
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+                      <textarea
+                        value={activeSection.props.description || ''}
+                        onChange={e => updateSectionProp(activeSection.id, 'description', e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        rows={3}
+                      />
+                    </div>
+                  )}
+
+                  {/* Header-specific inputs */}
+                  {activeSection.type === 'header' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte du logo</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.logoText || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'logoText', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte de l'annonce</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.announcementText || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'announcementText', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-700">Afficher la barre d'annonce</span>
+                        <input
+                          type="checkbox"
+                          checked={activeSection.props.showAnnouncement !== false}
+                          onChange={e => updateSectionProp(activeSection.id, 'showAnnouncement', e.target.checked)}
+                          className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hero-specific inputs */}
+                  {activeSection.type === 'hero' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.image || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Bouton CTA texte</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.cta || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'cta', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Alignement du texte</label>
+                        <select
+                          value={activeSection.props.align || 'center'}
+                          onChange={e => updateSectionProp(activeSection.id, 'align', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white"
+                        >
+                          <option value="left">Gauche</option>
+                          <option value="center">Milieu</option>
+                          <option value="right">Droite</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Columns limits layout parameters */}
+                  {'columns' in activeSection.props && (
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Colonnes de grille ({activeSection.props.columns || 4})</label>
+                      <input
+                        type="range"
+                        min="1"
+                        max="4"
+                        value={activeSection.props.columns || 4}
+                        onChange={e => updateSectionProp(activeSection.id, 'columns', Number(e.target.value))}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                    </div>
+                  )}
+
+                  {/* Countdown end date */}
+                  {activeSection.type === 'countdown' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte promotionnel</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.promoText || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'promoText', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Date de fin</label>
+                        <input
+                          type="date"
+                          value={activeSection.props.endDate || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'endDate', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Product detail inputs */}
+                  {activeSection.type === 'product-detail' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Prix</label>
+                        <input
+                          type="number"
+                          value={activeSection.props.price || 0}
+                          onChange={e => updateSectionProp(activeSection.id, 'price', Number(e.target.value))}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Ancien Prix</label>
+                        <input
+                          type="number"
+                          value={activeSection.props.oldPrice || 0}
+                          onChange={e => updateSectionProp(activeSection.id, 'oldPrice', Number(e.target.value))}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Devise</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.currency || 'FCFA'}
+                          onChange={e => updateSectionProp(activeSection.id, 'currency', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* About inputs */}
+                  {activeSection.type === 'about' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Badge</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.badge || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'badge', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Contenu</label>
+                        <textarea
+                          value={activeSection.props.content || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'content', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                          rows={4}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Position de l'image</label>
+                        <select
+                          value={activeSection.props.alignImage || 'right'}
+                          onChange={e => updateSectionProp(activeSection.id, 'alignImage', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white"
+                        >
+                          <option value="left">Gauche</option>
+                          <option value="right">Droite</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Newsletter inputs */}
+                  {activeSection.type === 'newsletter' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Espace réservé (Placeholder)</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.placeholder || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'placeholder', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte du bouton</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.buttonText || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'buttonText', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Footer description / copyright */}
+                  {activeSection.type === 'footer' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+                        <textarea
+                          value={activeSection.props.description || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'description', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                          rows={3}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Droit d'auteur (Copyright)</label>
+                        <input
+                          type="text"
+                          value={activeSection.props.copyright || ''}
+                          onChange={e => updateSectionProp(activeSection.id, 'copyright', e.target.value)}
+                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Complex Array Item Editors */}
+
+                  {/* Testimonials List */}
+                  {activeSection.type === 'testimonials' && 'list' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Témoignages clients</span>
+                      <div className="space-y-3.5 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {activeSection.props.list.map((t: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button
+                              onClick={() => {
+                                const nextList = activeSection.props.list.filter((_: any, i: number) => i !== idx);
+                                updateSectionProp(activeSection.id, 'list', nextList);
+                              }}
+                              className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold"
+                              title="Supprimer"
+                            >
+                              ✕
+                            </button>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Nom</label>
+                              <input
+                                type="text"
+                                value={t.name || ''}
+                                onChange={e => {
+                                  const nextList = [...activeSection.props.list];
+                                  nextList[idx] = { ...nextList[idx], name: e.target.value };
+                                  updateSectionProp(activeSection.id, 'list', nextList);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Commentaire</label>
+                              <textarea
+                                value={t.comment || ''}
+                                onChange={e => {
+                                  const nextList = [...activeSection.props.list];
+                                  nextList[idx] = { ...nextList[idx], comment: e.target.value };
+                                  updateSectionProp(activeSection.id, 'list', nextList);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                rows={2}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newItem = {
+                              name: 'Nouveau client',
+                              comment: 'Super service et produits fantastiques !',
+                              rating: 5,
+                              avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
+                            };
+                            updateSectionProp(activeSection.id, 'list', [...activeSection.props.list, newItem]);
+                          }}
+                          className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
+                        >
+                          + Ajouter un témoignage
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FAQ list */}
+                  {activeSection.type === 'faq' && 'list' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Questions Fréquentes</span>
+                      <div className="space-y-3 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {activeSection.props.list.map((item: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button
+                              onClick={() => {
+                                const nextList = activeSection.props.list.filter((_: any, i: number) => i !== idx);
+                                updateSectionProp(activeSection.id, 'list', nextList);
+                              }}
+                              className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold"
+                              title="Supprimer"
+                            >
+                              ✕
+                            </button>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Question</label>
+                              <input
+                                type="text"
+                                value={item.q || ''}
+                                onChange={e => {
+                                  const nextList = [...activeSection.props.list];
+                                  nextList[idx] = { ...nextList[idx], q: e.target.value };
+                                  updateSectionProp(activeSection.id, 'list', nextList);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Réponse</label>
+                              <textarea
+                                value={item.a || ''}
+                                onChange={e => {
+                                  const nextList = [...activeSection.props.list];
+                                  nextList[idx] = { ...nextList[idx], a: e.target.value };
+                                  updateSectionProp(activeSection.id, 'list', nextList);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                rows={2}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newItem = { q: 'Nouvelle Question ?', a: 'Réponse détaillée de la question...' };
+                            updateSectionProp(activeSection.id, 'list', [...activeSection.props.list, newItem]);
+                          }}
+                          className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
+                        >
+                          + Ajouter une question FAQ
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Categories list */}
+                  {activeSection.type === 'category-grid' && 'categories' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Catégories d'articles</span>
+                      <div className="space-y-3 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {activeSection.props.categories.map((c: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button
+                              onClick={() => {
+                                const nextCats = activeSection.props.categories.filter((_: any, i: number) => i !== idx);
+                                updateSectionProp(activeSection.id, 'categories', nextCats);
+                              }}
+                              className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold"
+                            >
+                              ✕
+                            </button>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Nom de la collection</label>
+                              <input
+                                type="text"
+                                value={c.name || ''}
+                                onChange={e => {
+                                  const nextCats = [...activeSection.props.categories];
+                                  nextCats[idx] = { ...nextCats[idx], name: e.target.value };
+                                  updateSectionProp(activeSection.id, 'categories', nextCats);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Image URL</label>
+                              <input
+                                type="text"
+                                value={c.image || ''}
+                                onChange={e => {
+                                  const nextCats = [...activeSection.props.categories];
+                                  nextCats[idx] = { ...nextCats[idx], image: e.target.value };
+                                  updateSectionProp(activeSection.id, 'categories', nextCats);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newItem = {
+                              name: 'Nouvelle Catégorie',
+                              image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=300'
+                            };
+                            updateSectionProp(activeSection.id, 'categories', [...activeSection.props.categories, newItem]);
+                          }}
+                          className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
+                        >
+                          + Ajouter une catégorie
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Products list */}
+                  {activeSection.type === 'product-grid' && 'products' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Produits en vedette</span>
+                      <div className="space-y-3 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {activeSection.props.products.map((p: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button
+                              onClick={() => {
+                                const nextProds = activeSection.props.products.filter((_: any, i: number) => i !== idx);
+                                updateSectionProp(activeSection.id, 'products', nextProds);
+                              }}
+                              className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold"
+                            >
+                              ✕
+                            </button>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Nom du produit</label>
+                              <input
+                                type="text"
+                                value={p.name || ''}
+                                onChange={e => {
+                                  const nextProds = [...activeSection.props.products];
+                                  nextProds[idx] = { ...nextProds[idx], name: e.target.value };
+                                  updateSectionProp(activeSection.id, 'products', nextProds);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-500">Prix (FCFA)</label>
+                                <input
+                                  type="number"
+                                  value={p.price || 0}
+                                  onChange={e => {
+                                    const nextProds = [...activeSection.props.products];
+                                    nextProds[idx] = { ...nextProds[idx], price: Number(e.target.value) };
+                                    updateSectionProp(activeSection.id, 'products', nextProds);
+                                  }}
+                                  className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-500">Ancien prix</label>
+                                <input
+                                  type="number"
+                                  value={p.oldPrice || 0}
+                                  onChange={e => {
+                                    const nextProds = [...activeSection.props.products];
+                                    nextProds[idx] = { ...nextProds[idx], oldPrice: Number(e.target.value) };
+                                    updateSectionProp(activeSection.id, 'products', nextProds);
+                                  }}
+                                  className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-500">Image URL</label>
+                              <input
+                                type="text"
+                                value={p.image || ''}
+                                onChange={e => {
+                                  const nextProds = [...activeSection.props.products];
+                                  nextProds[idx] = { ...nextProds[idx], image: e.target.value };
+                                  updateSectionProp(activeSection.id, 'products', nextProds);
+                                }}
+                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newItem = {
+                              name: 'Nouvel Article Chic',
+                              price: 18000,
+                              oldPrice: 22000,
+                              image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300',
+                              rating: 5
+                            };
+                            updateSectionProp(activeSection.id, 'products', [...activeSection.props.products, newItem]);
+                          }}
+                          className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
+                        >
+                          + Ajouter un produit
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              </Card>
+            );
+          })()}
 
           {/* PANEL 3: Advanced visual styling selectors, typography, custom CSS */}
           {panel === 'design' && (
@@ -597,17 +1303,71 @@ export default function OnlineStore() {
                 {myDomains.map((dom, i) => (
                   <div key={i} className="p-3 bg-white border border-gray-150 rounded-xl flex items-center justify-between shadow-sm">
                     <div className="text-left">
-                      <div className="text-xs font-bold text-gray-800">{dom.name}</div>
+                      <div className="text-xs font-bold text-gray-800">{dom.domain}</div>
                       <div className="text-[10px] text-gray-500 mt-0.5">
-                        {dom.type === 'bought' ? 'Enregistré via Os' : 'Liaison externe'}
+                        {dom.type === 'platform' ? 'Base de la plateforme' : dom.type === 'purchased' ? 'Enregistré via Os' : 'Liaison externe'}
                       </div>
                     </div>
-                    <Badge color={dom.status === 'active' ? 'green' : 'orange'}>
-                      {dom.status === 'active' ? 'Actif' : 'Vérification DNS'}
-                    </Badge>
+                    <div className="flex items-center gap-1.5">
+                      <Badge color={dom.status === 'active' ? 'green' : dom.status === 'dns_pending' ? 'orange' : 'red'}>
+                        {dom.status === 'active' ? 'Actif' : dom.status === 'dns_pending' ? 'Attente DNS' : 'Erreur DNS'}
+                      </Badge>
+                      {dom.status === 'dns_pending' && (
+                        <button
+                          onClick={() => setSelectedExternalDomain(dom)}
+                          className="px-2 py-0.5 bg-orange-100 text-orange-700 font-bold text-[9px] rounded hover:bg-orange-200"
+                        >
+                          DNS
+                        </button>
+                      )}
+                      {dom.type !== 'platform' && (
+                        <button
+                          onClick={() => handleDeleteDomain(dom.domain)}
+                          className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                          title="Supprimer"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {/* External Domain DNS Verification Card popup */}
+              {selectedExternalDomain && (
+                <div className="border border-orange-200 bg-orange-50/30 rounded-xl p-3 space-y-3 text-left">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-extrabold text-xs text-gray-900">DNS pour {selectedExternalDomain.domain}</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Ajoutez ces 3 enregistrements chez votre registrar externe :</p>
+                    </div>
+                    <button onClick={() => setSelectedExternalDomain(null)} className="text-gray-400 hover:text-gray-600 text-xs">✕</button>
+                  </div>
+
+                  <div className="font-mono text-[9px] text-gray-700 space-y-1 bg-white p-2 rounded border border-gray-200 leading-normal">
+                    <div><span className="font-bold text-orange-700">A:</span> @ → 104.21.43.201</div>
+                    <div><span className="font-bold text-orange-700">CNAME:</span> www → os.liafrik.com</div>
+                    <div><span className="font-bold text-orange-700">TXT:</span> _liafrik-challenge → verify-938fd82</div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleVerifyDns(selectedExternalDomain)}
+                      disabled={isVerifyingDns}
+                      className="px-3 py-1.5 bg-orange-600 text-white rounded-lg text-[10px] font-black hover:bg-orange-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+                    >
+                      {isVerifyingDns ? 'Vérification...' : 'Vérifier maintenant'}
+                    </button>
+                    <button
+                      onClick={() => setSelectedExternalDomain(null)}
+                      className="px-2.5 py-1.5 border border-gray-200 text-gray-700 rounded-lg text-[10px] hover:bg-white"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Buy a new domain */}
               <div className="border-t border-gray-150 pt-3 space-y-2">
@@ -629,17 +1389,54 @@ export default function OnlineStore() {
                   </button>
                 </form>
 
-                {domainSearchResult && (
-                  <div className="p-3 bg-brand-50 border border-brand-200 rounded-xl flex items-center justify-between">
-                    <div className="text-left">
-                      <span className="text-xs font-bold text-brand-900 block">{domainSearchResult.domain}</span>
-                      <span className="text-[10px] text-brand-700">Disponible à l’achat</span>
+                {domainSearchResult.length > 0 && (
+                  <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+                    {domainSearchResult.map(res => {
+                      const domainName = `${domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${res.ext}`;
+                      const isSelected = selectedExtension?.ext === res.ext;
+                      return (
+                        <div key={res.ext} className={`p-2.5 rounded-xl border flex items-center justify-between text-left ${isSelected ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white'}`}>
+                          <div>
+                            <span className="text-xs font-extrabold text-gray-900 block">{domainName}</span>
+                            <span className="text-[10px] text-emerald-600">Disponible</span>
+                          </div>
+                          <button
+                            onClick={() => setSelectedExtension(res)}
+                            className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${isSelected ? 'bg-brand-600 text-white' : 'border border-gray-200 hover:bg-gray-50'}`}
+                          >
+                            {isSelected ? 'Choisi' : 'Choisir'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {selectedExtension && (
+                  <div className="p-3 border border-brand-200 bg-brand-50 rounded-xl space-y-3 text-left">
+                    <div>
+                      <p className="text-xs font-extrabold text-gray-900">Acheter {domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
+                      <p className="text-[10px] text-gray-500">Moyen de paiement sécurisé local :</p>
                     </div>
+
+                    <div className="grid grid-cols-3 gap-1">
+                      {[['wave', 'Wave'], ['orange', 'Orange'], ['card', 'Carte CB']].map(([mId, mLabel]) => (
+                        <button
+                          key={mId}
+                          onClick={() => setPaymentMethod(mId as any)}
+                          className={`py-1 text-[10px] font-black rounded-md border text-center transition-colors ${paymentMethod === mId ? 'border-brand-500 bg-white text-brand-700' : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'}`}
+                        >
+                          {mLabel}
+                        </button>
+                      ))}
+                    </div>
+
                     <button
-                      onClick={() => handleBuyDomain(domainSearchResult.domain)}
-                      className="px-3 py-1.5 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition-colors shadow-sm"
+                      onClick={handleBuyDomain}
+                      disabled={isPurchasing}
+                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-lg hover:bg-emerald-700 transition-colors"
                     >
-                      Acheter ({domainSearchResult.price})
+                      {isPurchasing ? 'Enregistrement Cloudflare...' : `Payer ${selectedExtension.price}`}
                     </button>
                   </div>
                 )}
@@ -663,18 +1460,6 @@ export default function OnlineStore() {
                     Relier
                   </button>
                 </form>
-
-                {/* Cloudflare point guidelines */}
-                <div className="p-3 bg-gray-50 border border-gray-150 rounded-xl space-y-2 text-left">
-                  <span className="text-[10px] font-bold text-gray-600 uppercase block">Configuration DNS Requise</span>
-                  <p className="text-[10px] text-gray-500 leading-tight">
-                    Ajoutez ces enregistrements chez votre registrar (GoDaddy, LWS...) pour pointer vers nos serveurs :
-                  </p>
-                  <div className="font-mono text-[9px] text-gray-700 space-y-1 bg-white p-2 rounded border border-gray-200 leading-normal">
-                    <div><span className="font-bold text-brand-600">Type A:</span> @ → 104.21.43.12 (Os Proxy)</div>
-                    <div><span className="font-bold text-brand-600">CNAME:</span> www → domains.liafrikos.com</div>
-                  </div>
-                </div>
               </div>
             </Card>
           )}
@@ -857,7 +1642,7 @@ export default function OnlineStore() {
                     <span className="w-2 h-2 rounded-full bg-green-400 block" />
                   </div>
                   <div className="flex-1 bg-white rounded px-2 py-0.5 text-[10px] text-gray-500 font-mono text-center flex items-center justify-center gap-1">
-                    🔒 {myDomains[0]?.name || 'maboutique.liafrikos.shop'}
+                    🔒 {myDomains[0]?.domain || 'maboutique.liafrikos.shop'}
                   </div>
                 </div>
               )}

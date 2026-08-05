@@ -45,7 +45,10 @@ function createLocalSupabaseClient() {
     },
     async signOut() {
       const storage = getStorage();
-      if (storage) storage.removeItem(storageKey);
+      if (storage) {
+        storage.removeItem(storageKey);
+        storage.removeItem('use_local_supabase');
+      }
       return { error: null };
     },
     async getSession() {
@@ -79,10 +82,136 @@ function createLocalSupabaseClient() {
   return { auth, from };
 }
 
-const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
-
 const isSupabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
 
-export const supabase = isSupabaseConfigured ? supabaseClient : createLocalSupabaseClient() as unknown as typeof supabaseClient;
+const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: { persistSession: true, autoRefreshToken: true },
+});
+
+const localClient = createLocalSupabaseClient();
+
+export function isLocalAuthMode(): boolean {
+  if (!isSupabaseConfigured) return true;
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem('use_local_supabase') === 'true';
+  }
+  return false;
+}
+
+export function setLocalAuthMode(enabled: boolean) {
+  if (typeof window !== 'undefined') {
+    if (enabled) {
+      window.localStorage.setItem('use_local_supabase', 'true');
+    } else {
+      window.localStorage.removeItem('use_local_supabase');
+    }
+  }
+}
+
+// Unified, crash-proof, multi-mode client
+export const supabase = {
+  auth: {
+    async signUp(params: any) {
+      if (isLocalAuthMode()) {
+        return localClient.auth.signUp(params);
+      }
+      try {
+        const res = await supabaseClient.auth.signUp(params);
+        if (res.error && (res.error.message.includes('Failed to fetch') || res.error.message.includes('fetch'))) {
+          setLocalAuthMode(true);
+          return localClient.auth.signUp(params);
+        }
+        return res;
+      } catch (e: any) {
+        if (e?.message?.includes('Failed to fetch') || e?.message?.includes('fetch')) {
+          setLocalAuthMode(true);
+          return localClient.auth.signUp(params);
+        }
+        throw e;
+      }
+    },
+    async signInWithPassword(params: any) {
+      if (isLocalAuthMode()) {
+        return localClient.auth.signInWithPassword(params);
+      }
+      try {
+        const res = await supabaseClient.auth.signInWithPassword(params);
+        if (res.error && (res.error.message.includes('Failed to fetch') || res.error.message.includes('fetch'))) {
+          setLocalAuthMode(true);
+          return localClient.auth.signInWithPassword(params);
+        }
+        return res;
+      } catch (e: any) {
+        if (e?.message?.includes('Failed to fetch') || e?.message?.includes('fetch')) {
+          setLocalAuthMode(true);
+          return localClient.auth.signInWithPassword(params);
+        }
+        throw e;
+      }
+    },
+    async signOut() {
+      if (isLocalAuthMode()) {
+        return localClient.auth.signOut();
+      }
+      try {
+        return await supabaseClient.auth.signOut();
+      } catch {
+        return localClient.auth.signOut();
+      }
+    },
+    async getSession() {
+      if (isLocalAuthMode()) {
+        return localClient.auth.getSession();
+      }
+      try {
+        return await supabaseClient.auth.getSession();
+      } catch {
+        return localClient.auth.getSession();
+      }
+    },
+    async getUser() {
+      if (isLocalAuthMode()) {
+        return localClient.auth.getUser();
+      }
+      try {
+        return await supabaseClient.auth.getUser();
+      } catch {
+        return localClient.auth.getUser();
+      }
+    },
+    onAuthStateChange(callback: any) {
+      if (isLocalAuthMode()) {
+        return localClient.auth.onAuthStateChange(callback);
+      }
+      try {
+        return supabaseClient.auth.onAuthStateChange(callback);
+      } catch {
+        return localClient.auth.onAuthStateChange(callback);
+      }
+    }
+  },
+  from(table: string) {
+    if (isLocalAuthMode()) {
+      return localClient.from(table);
+    }
+    const originalFrom = supabaseClient.from(table);
+    return {
+      async insert(values: any) {
+        try {
+          const res = await originalFrom.insert(values);
+          if (res.error && (res.error.message.includes('Failed to fetch') || res.error.message.includes('fetch'))) {
+            setLocalAuthMode(true);
+            return localClient.from(table).insert(values);
+          }
+          return res;
+        } catch {
+          setLocalAuthMode(true);
+          return localClient.from(table).insert(values);
+        }
+      },
+      select() {
+        return originalFrom.select();
+      }
+    } as any;
+  }
+} as unknown as typeof supabaseClient;

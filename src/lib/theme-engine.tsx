@@ -58,20 +58,39 @@ export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon:
 
 export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts'] }> = {
   universal: {
-    label: 'Universel', desc: 'Design moderne et polyvalent', colors: { primary: '#F2632C', secondary: '#1e293b', accent: '#F59E0B', background: '#FFFFFF', text: '#111114' }, fonts: { heading: 'Montserrat', body: 'Inter' },
+    label: 'Universel', desc: 'Design moderne et polyvalent', colors: { primary: '#F2632C', secondary: '#1e293b', accent: '#F59E0B', background: '#FFFFFF', text: '#111114' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
   },
   luxury: {
-    label: 'Luxe', desc: 'Élégant, premium, haut de gamme', colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' }, fonts: { heading: 'Cormorant Garamond', body: 'Inter' },
+    label: 'Luxe', desc: 'Élégant, premium, haut de gamme', colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
   },
   african: {
-    label: 'African Vibrant', desc: 'Couleurs dynamiques orientées commerce pan-africain', colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' }, fonts: { heading: 'Montserrat', body: 'Inter' },
+    label: 'African Vibrant', desc: 'Couleurs dynamiques orientées commerce pan-africain', colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
   },
   editorial: {
-    label: 'Éditorial', desc: 'Style magazine, très propre et épuré', colors: { primary: '#1F2937', secondary: '#A16207', accent: '#D97706', background: '#F8FAFC', text: '#111827' }, fonts: { heading: 'Playfair Display', body: 'Inter' },
+    label: 'Éditorial', desc: 'Style magazine, très propre et épuré', colors: { primary: '#1F2937', secondary: '#A16207', accent: '#D97706', background: '#F8FAFC', text: '#111827' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
   },
 };
 
-export const FONT_OPTIONS = ['Inter', 'Montserrat', 'Playfair Display', 'Cormorant Garamond', 'Poppins', 'Manrope'];
+export const FONT_OPTIONS = [
+  'Montserrat',
+  'Playfair Display',
+  'Cormorant Garamond',
+  'Poppins',
+  'Inter',
+  'Manrope',
+  'Roboto',
+  'Open Sans',
+  'Lato',
+  'Oswald',
+  'Merriweather',
+  'Lora',
+  'PT Sans',
+  'Raleway',
+  'Cinzel',
+  'DM Sans',
+  'Outfit',
+  'Plus Jakarta Sans'
+];
 
 export function getPresetColors(preset: ThemePreset): ThemeConfig['colors'] {
   return THEME_PRESETS[preset].colors;

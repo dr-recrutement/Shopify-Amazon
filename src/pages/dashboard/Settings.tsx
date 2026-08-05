@@ -1,10 +1,10 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
-import { AFRICAN_COUNTRIES } from '../../lib/constants';
+import { AFRICAN_COUNTRIES, GLOBAL_COUNTRIES } from '../../lib/constants';
 import { getShopProfile } from '../../lib/app-state';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
-  Trash2, Plus, Check, AlertCircle, ArrowRight, HelpCircle
+  Trash2, Plus, Check, AlertCircle, ArrowRight, HelpCircle, ChevronDown
 } from 'lucide-react';
 
 const SECTIONS = [
@@ -40,6 +40,25 @@ export default function Settings() {
   const [active, setActive] = useState('general');
   const shopProfile = getShopProfile();
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
+
+  // Global country selection autocomplete state
+  const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
+    const found = GLOBAL_COUNTRIES.find(c => c.code === shopProfile.country || c.name === shopProfile.country);
+    return found ? found.code : 'CI';
+  });
+
+  const [countrySearch, setCountrySearch] = useState(() => {
+    const found = GLOBAL_COUNTRIES.find(c => c.code === shopProfile.country || c.name === shopProfile.country);
+    return found ? `${found.flag} ${found.name} (${found.nameEn})` : '🇨🇮 Côte d\'Ivoire (Côte d\'Ivoire)';
+  });
+
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+
+  const filteredCountries = GLOBAL_COUNTRIES.filter(c =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.nameEn.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.code.toLowerCase().includes(countrySearch.toLowerCase())
+  );
 
   // Domains State initialized with LocalStorage
   const [domains, setDomains] = useState<CustomDomain[]>(() => {
@@ -102,11 +121,14 @@ export default function Settings() {
     setTimeout(() => {
       const cleanName = searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
       setSearchResults([
-        { ext: `.com`, price: '8 500 FCFA / an', available: true },
-        { ext: `.shop`, price: '4 900 FCFA / an', available: true },
-        { ext: `.ci`, price: '15 000 FCFA / an', available: !cleanName.includes('banned') },
-        { ext: `.net`, price: '9 900 FCFA / an', available: true },
-        { ext: `.sn`, price: '12 000 FCFA / an', available: true },
+        { ext: `.com`, price: '$10.98 / year', available: true },
+        { ext: `.net`, price: '$14.58 / year', available: true },
+        { ext: `.org`, price: '$12.18 / year', available: true },
+        { ext: `.shop`, price: '$4.79 / year', available: true },
+        { ext: `.co`, price: '$25.19 / year', available: true },
+        { ext: `.io`, price: '$47.99 / year', available: true },
+        { ext: `.ai`, price: '$95.99 / year', available: true },
+        { ext: `.info`, price: '$17.99 / year', available: true },
       ]);
       setIsSearching(false);
     }, 1200);
@@ -214,7 +236,55 @@ export default function Settings() {
                 <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>{shopProfile.currency}</option><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
                 <div><label className="block font-semibold text-gray-700 mb-1">Fuseau horaire</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
               </div>
-              <div><label className="block font-semibold text-gray-700 mb-1">Pays</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white">{AFRICAN_COUNTRIES.map(c => <option key={c.code}>{c.flag} {c.name}</option>)}</select></div>
+              <div className="relative">
+                <label className="block font-semibold text-gray-700 mb-1">Pays (Recherche & Saisie globale)</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={countrySearch}
+                    onChange={e => {
+                      setCountrySearch(e.target.value);
+                      setCountryDropdownOpen(true);
+                    }}
+                    onFocus={() => setCountryDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setCountryDropdownOpen(false), 200)}
+                    placeholder="Recherchez un pays..."
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 pr-8 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+
+                {countryDropdownOpen && (
+                  <div className="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-xl divide-y divide-gray-50">
+                    {filteredCountries.length === 0 ? (
+                      <div className="p-2.5 text-xs text-gray-500 italic">Aucun pays trouvé</div>
+                    ) : (
+                      filteredCountries.map(c => (
+                        <button
+                          key={c.code}
+                          type="button"
+                          onClick={() => {
+                            setSelectedCountryCode(c.code);
+                            setCountrySearch(`${c.flag} ${c.name} (${c.nameEn})`);
+                            setCountryDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-orange-50 text-xs flex items-center gap-2"
+                        >
+                          <span className="text-sm">{c.flag}</span>
+                          <span className="font-semibold text-gray-800">{c.name}</span>
+                          <span className="text-gray-400">({c.nameEn})</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
               <Button size="sm">Sauvegarder</Button>
             </div>
           )}
@@ -435,7 +505,7 @@ export default function Settings() {
                   <div className="border-t border-gray-100 pt-4 space-y-4">
                     <div>
                       <p className="text-xs font-black text-gray-800">Finaliser l'enregistrement de {searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Choisissez votre moyen de paiement sécurisé local.</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Choisissez votre moyen de paiement sécurisé (Tarif Cloudflare + 20% markup, affiché en USD).</p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
@@ -461,7 +531,7 @@ export default function Settings() {
                       <button
                         onClick={handleBuyDomain}
                         disabled={isPurchasing}
-                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 animate-pulse"
                       >
                         {isPurchasing ? (
                           <>
@@ -480,6 +550,7 @@ export default function Settings() {
                         Annuler
                       </button>
                     </div>
+                    <p className="text-[10px] text-gray-400">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Os.</p>
                   </div>
                 )}
               </div>

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Logo } from '../components/Logo';
-import { AFRICAN_COUNTRIES, PLANS } from '../lib/constants';
+import { AFRICAN_COUNTRIES, GLOBAL_COUNTRIES, PLANS } from '../lib/constants';
 import { saveShopProfile } from '../lib/app-state';
-import { Check, ChevronRight, Store, MapPin, Palette, Package, CreditCard, Sparkles, ArrowRight } from 'lucide-react';
+import { Check, ChevronRight, Store, MapPin, Palette, Package, CreditCard, Sparkles, ArrowRight, ChevronDown } from 'lucide-react';
 
 const STEPS = [
   { id: 'account', label: 'Compte', icon: Store },
@@ -25,6 +25,15 @@ export default function OnboardingPage() {
     theme: 'universal', productName: '', productPrice: '', gateway: 'flutterwave',
     plan: 'premium', billing: 'monthly',
   });
+
+  const [countrySearch, setCountrySearch] = useState('');
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+
+  const filteredCountries = GLOBAL_COUNTRIES.filter(c =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.nameEn.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.code.toLowerCase().includes(countrySearch.toLowerCase())
+  );
 
   const total = STEPS.length;
   const progress = (step / total) * 100;
@@ -58,7 +67,7 @@ export default function OnboardingPage() {
     nav('/app');
   };
 
-  const country = AFRICAN_COUNTRIES.find(c => c.code === data.country);
+  const country = GLOBAL_COUNTRIES.find(c => c.code === data.country);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -129,14 +138,55 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div className="space-y-4">
               <h2 className="font-serif-display text-2xl font-bold text-gray-900">Localisation de votre entreprise</h2>
-              <p className="text-gray-600 text-sm">Sélectionnez votre pays. La devise locale sera appliquée automatiquement.</p>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-                <select value={data.country} onChange={e => setData({ ...data, country: e.target.value, currency: AFRICAN_COUNTRIES.find(c => c.code === e.target.value)?.currency || '' })}
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                  <option value="">Sélectionnez un pays...</option>
-                  {AFRICAN_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.name} ({c.nameEn})</option>)}
-                </select>
+              <p className="text-gray-600 text-sm">Saisissez ou sélectionnez votre pays. La devise locale sera appliquée automatiquement.</p>
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Pays (Saisie & Recherche)</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={countrySearch || (country ? `${country.flag} ${country.name} (${country.nameEn})` : '')}
+                    onChange={e => {
+                      setCountrySearch(e.target.value);
+                      setCountryDropdownOpen(true);
+                    }}
+                    onFocus={() => setCountryDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setCountryDropdownOpen(false), 200)}
+                    placeholder="Saisissez un pays pour rechercher..."
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+                </div>
+
+                {countryDropdownOpen && (
+                  <div className="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-xl divide-y divide-gray-50">
+                    {filteredCountries.length === 0 ? (
+                      <div className="p-2.5 text-xs text-gray-500 italic">Aucun pays trouvé</div>
+                    ) : (
+                      filteredCountries.map(c => (
+                        <button
+                          key={c.code}
+                          type="button"
+                          onClick={() => {
+                            setData({ ...data, country: c.code, currency: c.currency });
+                            setCountrySearch(`${c.flag} ${c.name} (${c.nameEn})`);
+                            setCountryDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-orange-50 text-xs flex items-center gap-2"
+                        >
+                          <span className="text-sm">{c.flag}</span>
+                          <span className="font-semibold text-gray-800">{c.name}</span>
+                          <span className="text-gray-400">({c.nameEn})</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
               {country && (
                 <>

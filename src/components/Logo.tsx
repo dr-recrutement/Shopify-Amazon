@@ -14,8 +14,8 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
   return (
     <div className="flex items-center gap-2">
       <img
-        src="/assets/images/Gemini_Generated_Image_v4c5hrv4c5hrv4c5.jpg"
-        alt="LiAfrik OS"
+        src="/assets/images/publicicon-512.png"
+        alt="Os"
         width={sizes[size].img}
         height={sizes[size].img}
         className="rounded-full object-cover flex-shrink-0"
@@ -23,7 +23,7 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
       />
       {!iconOnly && (
         <span className={`font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
-          LiAfrik <span className="text-green-600">OS</span>
+          Os <span className="text-green-600">🛒</span>
         </span>
       )}
     </div>

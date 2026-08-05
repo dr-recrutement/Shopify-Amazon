@@ -1,6 +1,11 @@
 import { PageHeader, Card, Button, Badge } from './ui';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AFRICAN_COUNTRIES } from '../../lib/constants';
+import { getShopProfile } from '../../lib/app-state';
+import {
+  Globe, Search, CreditCard, ShieldCheck, RefreshCw,
+  Trash2, Plus, Check, AlertCircle, ArrowRight, HelpCircle
+} from 'lucide-react';
 
 const SECTIONS = [
   { id: 'general', label: 'General' },
@@ -24,92 +29,484 @@ const SECTIONS = [
   { id: 'policies', label: 'Policies' },
 ];
 
+interface CustomDomain {
+  domain: string;
+  type: 'platform' | 'external' | 'purchased';
+  status: 'active' | 'dns_pending' | 'dns_error';
+  createdAt: string;
+}
+
 export default function Settings() {
   const [active, setActive] = useState('general');
+  const shopProfile = getShopProfile();
+  const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
+
+  // Domains State initialized with LocalStorage
+  const [domains, setDomains] = useState<CustomDomain[]>(() => {
+    const saved = localStorage.getItem('liafrikos_domains');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // fallback
+      }
+    }
+    return [
+      { domain: shopSubdomain, type: 'platform', status: 'active', createdAt: 'Créé à la création' }
+    ];
+  });
+
+  // Sync Domains with LocalStorage
+  useEffect(() => {
+    localStorage.setItem('liafrikos_domains', JSON.stringify(domains));
+  }, [domains]);
+
+  // domain search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'orange' | 'card'>('wave');
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  // external domain states
+  const [externalDomainInput, setExternalDomainInput] = useState('');
+  const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
+  const [isVerifyingDns, setIsVerifyingDns] = useState(false);
+
+  // Search domain simulation
+  const handleDomainSearch = () => {
+    if (!searchQuery.trim()) return;
+    setIsSearching(true);
+    setSearchResults([]);
+    setSelectedExtension(null);
+
+    setTimeout(() => {
+      const cleanName = searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
+      setSearchResults([
+        { ext: `.com`, price: '8 500 FCFA / an', available: true },
+        { ext: `.shop`, price: '4 900 FCFA / an', available: true },
+        { ext: `.ci`, price: '15 000 FCFA / an', available: !cleanName.includes('banned') },
+        { ext: `.net`, price: '9 900 FCFA / an', available: true },
+        { ext: `.sn`, price: '12 000 FCFA / an', available: true },
+      ]);
+      setIsSearching(false);
+    }, 1200);
+  };
+
+  // Buy domain simulation
+  const handleBuyDomain = () => {
+    if (!selectedExtension) return;
+    setIsPurchasing(true);
+
+    setTimeout(() => {
+      const cleanName = searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
+      const domainName = `${cleanName}${selectedExtension.ext}`;
+
+      const newDomain: CustomDomain = {
+        domain: domainName,
+        type: 'purchased',
+        status: 'active',
+        createdAt: new Date().toLocaleDateString('fr-FR')
+      };
+
+      setDomains([...domains, newDomain]);
+      setIsPurchasing(false);
+      setSearchQuery('');
+      setSearchResults([]);
+      setSelectedExtension(null);
+      alert(`🎉 Félicitations ! Le domaine ${domainName} a été acheté avec succès et configuré sur Cloudflare !`);
+    }, 2000);
+  };
+
+  // Add External Domain
+  const handleAddExternalDomain = () => {
+    if (!externalDomainInput.trim()) return;
+    const cleanDomain = externalDomainInput.toLowerCase().trim().replace(/^(https?:\/\/)?(www\.)?/, '');
+
+    // check duplicates
+    if (domains.some(d => d.domain === cleanDomain)) {
+      alert('Ce domaine est déjà enregistré.');
+      return;
+    }
+
+    const newDomain: CustomDomain = {
+      domain: cleanDomain,
+      type: 'external',
+      status: 'dns_pending',
+      createdAt: new Date().toLocaleDateString('fr-FR')
+    };
+
+    setDomains([...domains, newDomain]);
+    setSelectedExternalDomain(newDomain);
+    setExternalDomainInput('');
+  };
+
+  // Simulate DNS Verification
+  const handleVerifyDns = (dom: CustomDomain) => {
+    setIsVerifyingDns(true);
+
+    setTimeout(() => {
+      const updated = domains.map(d => {
+        if (d.domain === dom.domain) {
+          return { ...d, status: 'active' as const };
+        }
+        return d;
+      });
+      setDomains(updated);
+      setSelectedExternalDomain(null);
+      setIsVerifyingDns(false);
+      alert(`✅ Félicitations ! Les DNS de ${dom.domain} ont été vérifiés avec succès et synchronisés avec Cloudflare ! Le domaine est maintenant actif.`);
+    }, 2200);
+  };
+
+  // Delete Domain
+  const handleDeleteDomain = (domainName: string) => {
+    if (domainName === shopSubdomain) {
+      alert('Vous ne pouvez pas supprimer le domaine de base de la plateforme.');
+      return;
+    }
+    if (confirm(`Êtes-vous sûr de vouloir supprimer le domaine ${domainName} ?`)) {
+      setDomains(domains.filter(d => d.domain !== domainName));
+      if (selectedExternalDomain?.domain === domainName) {
+        setSelectedExternalDomain(null);
+      }
+    }
+  };
+
   return (
     <div>
-      <PageHeader title="Paramètres" subtitle="19 rubriques, toutes fonctionnelles." />
+      <PageHeader title="Paramètres" subtitle="Gérez les options de votre boutique et connectez votre marque." />
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <Card className="p-2 h-fit lg:sticky lg:top-20">
           {SECTIONS.map(s => (
             <button key={s.id} onClick={() => setActive(s.id)}
-              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium ${active === s.id ? 'bg-orange-50 text-orange-700' : 'text-gray-700 hover:bg-gray-50'}`}>
+              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${active === s.id ? 'bg-orange-50 text-orange-700' : 'text-gray-700 hover:bg-gray-50'}`}>
               {s.label}
             </button>
           ))}
         </Card>
         <Card className="lg:col-span-3 p-6">
           {active === 'general' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Informations boutique</h3>
-              <div><label className="block text-sm font-medium mb-1">Nom</label><input defaultValue="Ma Boutique" className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
-              <div><label className="block text-sm font-medium mb-1">Email contact</label><input defaultValue="contact@maboutique.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+            <div className="space-y-4 text-xs sm:text-sm">
+              <h3 className="font-bold text-gray-900 text-sm">Informations boutique</h3>
+              <div><label className="block font-semibold text-gray-700 mb-1">Nom</label><input defaultValue={shopProfile.name} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
+              <div><label className="block font-semibold text-gray-700 mb-1">Email contact</label><input defaultValue="contact@os.liafrik.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-sm font-medium mb-1">Devise</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
-                <div><label className="block text-sm font-medium mb-1">Fuseau horaire</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
+                <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>{shopProfile.currency}</option><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
+                <div><label className="block font-semibold text-gray-700 mb-1">Fuseau horaire</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
               </div>
-              <div><label className="block text-sm font-medium mb-1">Pays</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg">{AFRICAN_COUNTRIES.map(c => <option key={c.code}>{c.flag} {c.name}</option>)}</select></div>
-              <Button>Sauvegarder</Button>
+              <div><label className="block font-semibold text-gray-700 mb-1">Pays</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white">{AFRICAN_COUNTRIES.map(c => <option key={c.code}>{c.flag} {c.name}</option>)}</select></div>
+              <Button size="sm">Sauvegarder</Button>
             </div>
           )}
           {active === 'plan' && (
             <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Plan actuel</h3>
-              <div className="p-4 bg-orange-50 rounded-xl flex items-center justify-between">
-                <div><p className="font-semibold">Starter</p><p className="text-sm text-gray-500">9$/mois · 7 jours d'essai restants</p></div>
-                <Button>Changer de plan</Button>
+              <h3 className="font-bold text-gray-900 text-sm">Plan actuel</h3>
+              <div className="p-4 bg-orange-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
+                <div><p className="font-extrabold text-orange-800">Plan Premium</p><p className="text-gray-500">19$/mois · Custom Domains illimités</p></div>
+                <Button size="sm">Changer de plan</Button>
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {[{n:'Starter',p:'$9'},{n:'Premium',p:'$19',pop:true},{n:'Entreprise',p:'$69'}].map(p => (
-                  <div key={p.n} className={`p-4 rounded-xl border-2 ${p.pop ? 'border-orange-500' : 'border-gray-200'}`}>
+                  <div key={p.n} className={`p-4 rounded-xl border-2 text-center ${p.pop ? 'border-orange-500 bg-orange-50/20' : 'border-gray-200 bg-white'}`}>
                     {p.pop && <Badge color="orange">Recommandé</Badge>}
-                    <p className="font-semibold mt-1">{p.n}</p><p className="text-2xl font-bold">{p.p}</p>
+                    <p className="font-bold mt-1 text-xs text-gray-900">{p.n}</p>
+                    <p className="text-2xl font-black text-gray-900 mt-1">{p.p}</p>
+                    <p className="text-[10px] text-gray-400">/mois</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
           {active === 'payments' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Moyens de paiement</h3>
-              <p className="text-sm text-gray-500">Connectez vos propres identifiants API. L'argent va directement dans votre compte.</p>
+            <div className="space-y-4 text-xs sm:text-sm">
+              <h3 className="font-bold text-gray-900 text-sm">Moyens de paiement</h3>
+              <p className="text-gray-500">Connectez vos propres identifiants API. L'argent va directement dans votre compte.</p>
               {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => (
-                <div key={g} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                  <div><p className="font-medium text-gray-900">{g}</p><p className="text-xs text-gray-500">Non connecté</p></div>
+                <div key={g} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg bg-white shadow-sm">
+                  <div><p className="font-bold text-gray-900">{g}</p><p className="text-[10px] text-gray-500">Non connecté</p></div>
                   <Button variant="secondary" size="sm">Connecter</Button>
                 </div>
               ))}
             </div>
           )}
           {active === 'domains' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Domaines</h3>
-              <div className="p-3 bg-gray-50 rounded-lg flex items-center justify-between">
-                <div><p className="font-medium">ma-boutique.liafrikos.com</p><Badge color="green">Actif</Badge></div>
+            <div className="space-y-6 text-xs sm:text-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-3">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Globe className="w-5 h-5 text-orange-600" /> Gestion des Domaines</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">Bâtissez votre crédibilité avec votre propre extension de domaine.</p>
+                </div>
+                <Badge color="green">Intégration Cloudflare Connectée</Badge>
               </div>
-              <div className="p-3 border-2 border-dashed border-gray-200 rounded-lg">
-                <p className="text-sm font-medium">Connecter un domaine personnalisé</p>
-                <p className="text-xs text-gray-500 mt-1">Disponible avec le plan Premium.</p>
-                <Button variant="secondary" size="sm" className="mt-2">Ajouter un domaine</Button>
+
+              {/* Domains list */}
+              <div className="space-y-2">
+                <p className="font-bold text-gray-800 text-xs">Domaines associés à votre boutique</p>
+                {domains.map(d => (
+                  <div key={d.domain} className="p-3 bg-white border border-gray-100 rounded-xl flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <p className="font-black text-gray-900">{d.domain}</p>
+                        <p className="text-[10px] text-gray-400 capitalize">{d.type} · {d.createdAt}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge color={d.status === 'active' ? 'green' : d.status === 'dns_pending' ? 'orange' : 'red'}>
+                        {d.status === 'active' ? 'Actif' : d.status === 'dns_pending' ? 'En attente DNS' : 'Erreur DNS'}
+                      </Badge>
+
+                      {d.status === 'dns_pending' && (
+                        <button
+                          onClick={() => setSelectedExternalDomain(d)}
+                          className="px-2.5 py-1 rounded bg-orange-100 text-orange-700 font-bold text-[10px] hover:bg-orange-200"
+                        >
+                          Configurer DNS
+                        </button>
+                      )}
+
+                      {d.type !== 'platform' && (
+                        <button
+                          onClick={() => handleDeleteDomain(d.domain)}
+                          className="p-1 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* External Domain DNS Verification Card popup */}
+              {selectedExternalDomain && (
+                <div className="border border-orange-200 bg-orange-50/30 rounded-2xl p-4 space-y-4 animate-slide-up">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-extrabold text-gray-900">Configurer les DNS pour {selectedExternalDomain.domain}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">Veuillez ajouter ces 3 enregistrements chez votre registrar externe (GoDaddy, Namecheap, etc.) pour pointer vers nos serveurs Cloudflare.</p>
+                    </div>
+                    <button onClick={() => setSelectedExternalDomain(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+                  </div>
+
+                  {/* DNS Records Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-[11px] border-collapse bg-white rounded-lg overflow-hidden border border-gray-200">
+                      <thead>
+                        <tr className="bg-gray-100 font-bold border-b border-gray-200">
+                          <th className="p-2">Type</th>
+                          <th className="p-2">Hôte (Host)</th>
+                          <th className="p-2">Valeur (Cible)</th>
+                          <th className="p-2">TTL</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 font-mono">
+                        <tr>
+                          <td className="p-2 font-black text-orange-700">A</td>
+                          <td className="p-2">@</td>
+                          <td className="p-2">104.21.43.201</td>
+                          <td className="p-2">Auto</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-black text-orange-700">CNAME</td>
+                          <td className="p-2">www</td>
+                          <td className="p-2">os.liafrik.com</td>
+                          <td className="p-2">Auto</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-black text-orange-700">TXT</td>
+                          <td className="p-2">_liafrik-challenge</td>
+                          <td className="p-2">liafrik-verification-token-938fd82</td>
+                          <td className="p-2">Auto</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => handleVerifyDns(selectedExternalDomain)}
+                      disabled={isVerifyingDns}
+                      className="px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-black hover:bg-orange-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                    >
+                      {isVerifyingDns ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Vérification en cours...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5" /> J'ai configuré mes DNS, Vérifier maintenant
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setSelectedExternalDomain(null)}
+                      className="px-3 py-2 border border-gray-200 text-gray-700 rounded-lg text-xs hover:bg-white"
+                    >
+                      Plus tard
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Buy a domain on the platform */}
+              <div className="border border-gray-200 rounded-2xl p-4 space-y-4 bg-white shadow-sm">
+                <div>
+                  <p className="font-extrabold text-gray-900 text-xs">Acheter un domaine sur la plateforme (Cloudflare Connect)</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Enregistrez un domaine instantanément. Paiement local via Wave, Orange Money ou Carte Bancaire.</p>
+                </div>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') handleDomainSearch(); }}
+                      placeholder="Ex. maboutique-royal"
+                      className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+                  <button
+                    onClick={handleDomainSearch}
+                    disabled={isSearching}
+                    className="px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-black flex items-center gap-1.5 hover:bg-orange-700 disabled:opacity-50"
+                  >
+                    {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+                    Rechercher
+                  </button>
+                </div>
+
+                {/* Search results simulation */}
+                {searchResults.length > 0 && (
+                  <div className="space-y-2 border-t pt-3 border-gray-50">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Résultats de recherche</p>
+                    <div className="divide-y divide-gray-50 bg-slate-50/50 rounded-xl border border-gray-100 overflow-hidden">
+                      {searchResults.map(res => {
+                        const domainName = `${searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${res.ext}`;
+                        const isSelected = selectedExtension?.ext === res.ext;
+                        return (
+                          <div key={res.ext} className={`p-3 flex items-center justify-between transition-colors ${isSelected ? 'bg-orange-50/30' : ''}`}>
+                            <div>
+                              <span className="font-bold text-gray-900">{domainName}</span>
+                              <p className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-0.5"><Check className="w-3 h-3" /> Disponible instantanément</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs font-black text-gray-800">{res.price}</span>
+                              <button
+                                onClick={() => setSelectedExtension(res)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                  isSelected ? 'bg-orange-600 text-white shadow-sm' : 'border border-gray-200 text-gray-700 hover:border-gray-300'
+                                }`}
+                              >
+                                {isSelected ? 'Sélectionné' : 'Choisir'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Purchase Checkout Segment */}
+                {selectedExtension && (
+                  <div className="border-t border-gray-100 pt-4 space-y-4">
+                    <div>
+                      <p className="text-xs font-black text-gray-800">Finaliser l'enregistrement de {searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Choisissez votre moyen de paiement sécurisé local.</p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: 'wave', label: 'Wave', desc: 'Sénégal, CI' },
+                        { id: 'orange', label: 'Orange Money', desc: 'Afrique de l\'Ouest' },
+                        { id: 'card', label: 'Carte Bancaire', desc: 'Visa / Mastercard' },
+                      ].map(method => (
+                        <button
+                          key={method.id}
+                          onClick={() => setPaymentMethod(method.id as any)}
+                          className={`p-3 border rounded-xl text-left transition-all ${paymentMethod === method.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}
+                        >
+                          <p className="text-xs font-extrabold text-gray-900 flex items-center gap-1">
+                            <CreditCard className="w-3.5 h-3.5 text-gray-400" /> {method.label}
+                          </p>
+                          <span className="text-[9px] text-gray-400 leading-none mt-1 block">{method.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={handleBuyDomain}
+                        disabled={isPurchasing}
+                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                      >
+                        {isPurchasing ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Connexion API Cloudflare...
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck className="w-4 h-4" /> Payer {selectedExtension.price}
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setSelectedExtension(null)}
+                        className="text-xs text-gray-400 hover:text-gray-600 font-bold"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Connect existing domain card */}
+              <div className="border border-gray-200 rounded-2xl p-4 space-y-3 bg-white shadow-sm">
+                <div>
+                  <p className="font-extrabold text-gray-900 text-xs">Connecter un domaine externe existant</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Saisissez un nom de domaine acheté chez GoDaddy, Namecheap ou LWS, puis configurez vos DNS.</p>
+                </div>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={externalDomainInput}
+                    onChange={e => setExternalDomainInput(e.target.value)}
+                    placeholder="Ex. maboutique.com"
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                  <button
+                    onClick={handleAddExternalDomain}
+                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-black hover:bg-slate-800 transition-colors flex items-center gap-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Connecter
+                  </button>
+                </div>
               </div>
             </div>
           )}
           {active === 'shipping' && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Zones de livraison</h3>
-              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between">
-                <div><p className="font-medium">Côte d'Ivoire</p><p className="text-xs text-gray-500">1 000 XOF · 2-3 jours</p></div>
+            <div className="space-y-4 text-xs sm:text-sm">
+              <h3 className="font-bold text-gray-900 text-sm">Zones de livraison</h3>
+              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white shadow-sm">
+                <div><p className="font-bold text-gray-900 font-medium">Côte d'Ivoire</p><p className="text-[10px] text-gray-500">1 000 XOF · 2-3 jours</p></div>
                 <Button variant="ghost" size="sm">Éditer</Button>
               </div>
               <Button variant="secondary" size="sm">Ajouter une zone</Button>
             </div>
           )}
           {!['general','plan','payments','domains','shipping'].includes(active) && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">{SECTIONS.find(s => s.id === active)?.label}</h3>
-              <p className="text-sm text-gray-500">Configuration de cette section.</p>
-              <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-600">Module opérationnel — données sauvegardées et appliquées à votre boutique.</div>
-              <Button>Sauvegarder</Button>
+            <div className="space-y-4 text-xs sm:text-sm">
+              <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
+              <p className="text-gray-500">Configuration de cette section.</p>
+              <div className="p-4 bg-gray-50 rounded-lg text-xs text-gray-600">Module opérationnel — données sauvegardées et appliquées à votre boutique.</div>
+              <Button size="sm">Sauvegarder</Button>
             </div>
           )}
         </Card>

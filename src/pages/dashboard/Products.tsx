@@ -24,7 +24,7 @@ export default function Products() {
   return (
     <div>
       <PageHeader title="Produits" subtitle="Gérez votre catalogue, vos stocks et vos collections." action={<Button onClick={() => {
-        const next = [...products, { id: `p${Date.now()}`, name: 'Nouveau produit', price: 10000, stock: 10, status: 'active', currency: 'XOF' }];
+        const next: StoreProduct[] = [...products, { id: `p${Date.now()}`, name: 'Nouveau produit', price: 10000, stock: 10, status: 'active' as const, currency: 'XOF' }];
         setProducts(next);
         saveProducts(next);
       }}><Plus size={16} /> Ajouter un produit</Button>} />

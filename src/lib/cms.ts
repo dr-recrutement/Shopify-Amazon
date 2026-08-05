@@ -45,7 +45,7 @@ export function getCmsPages(): CmsPage[] {
       status: 'published',
       template: 'contact',
       sections: [
-        { id: 's3', type: 'contact', title: 'Prenez contact', content: 'contact@liafrikos.com' },
+        { id: 's3', type: 'contact', title: 'Prenez contact', content: 'contact@os.liafrik.com' },
       ],
       updatedAt: '2026-08-04',
     },

@@ -59,7 +59,25 @@ export default function Settings() {
   // Sync Domains with LocalStorage
   useEffect(() => {
     localStorage.setItem('liafrikos_domains', JSON.stringify(domains));
+    // Dispatch local storage event to notify other windows/components
+    window.dispatchEvent(new Event('storage'));
   }, [domains]);
+
+  // Synchronize domains if changed externally
+  useEffect(() => {
+    const handleStorage = () => {
+      const saved = localStorage.getItem('liafrikos_domains');
+      if (saved) {
+        try {
+          setDomains(JSON.parse(saved));
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   // domain search states
   const [searchQuery, setSearchQuery] = useState('');

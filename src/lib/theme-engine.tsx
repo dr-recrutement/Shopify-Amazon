@@ -4,6 +4,27 @@ import {
   Facebook, Instagram, Twitter, Clock, ArrowRight, Lock,
   ShieldCheck, AlertCircle, MessageCircle, Plus, Minus, Heart, Send
 } from 'lucide-react';
+import { getShopProfile } from './app-state';
+
+export function formatCurrency(amount: number, currency: string): string {
+  const symbolMap: Record<string, string> = {
+    'USD': '$',
+    'EUR': '€',
+    'GBP': '£',
+    'XOF': 'CFA',
+    'XAF': 'FCFA',
+    'GHS': 'GH₵',
+    'NGN': '₦',
+    'KES': 'KSh',
+    'ZAR': 'R'
+  };
+  const symbol = symbolMap[currency] || currency;
+  if (['USD', 'EUR', 'GBP'].includes(currency)) {
+    const converted = amount > 1000 ? Math.round(amount / 600) : amount;
+    return `${symbol}${converted.toLocaleString('en-US')}`;
+  }
+  return `${amount.toLocaleString('fr-FR')} ${symbol}`;
+}
 
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
 export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial';
@@ -402,13 +423,16 @@ function HeaderSection({ props, colors, fonts }: { props: any; colors: any; font
   const [mobileOpen, setMobileOpen] = useState(false);
   const logoText = props.logoText || 'Ma Boutique';
   const navItems = props.nav || ['Accueil', 'Boutique', 'À propos', 'Contact'];
+  const profile = getShopProfile();
+
+  const announcement = props.announcementText || `✨ LIVRAISON GRATUITE dès ${formatCurrency(35000, profile.currency)} avec nos paiements connectés ! ✨`;
 
   return (
     <div style={{ fontFamily: fonts.body }}>
       {/* Announcement Bar */}
       {props.showAnnouncement && (
         <div className="text-center py-1.5 px-4 text-xs font-semibold animate-pulse tracking-wide" style={{ backgroundColor: colors.accent, color: '#FFFFFF' }}>
-          {props.announcementText || '✨ Promo exceptionnelle en cours ✨'}
+          {announcement}
         </div>
       )}
 
@@ -570,11 +594,11 @@ function ProductGridSection({ props, colors, fonts, spacingClass }: { props: any
               <div className="mt-3 pt-3 border-t border-gray-50 flex items-center justify-between">
                 <div>
                   <span className="text-xs md:text-sm font-black" style={{ color: colors.primary }}>
-                    {(p.price || 10000).toLocaleString('fr-FR')} FCFA
+                    {formatCurrency(p.price || 10000, getShopProfile().currency)}
                   </span>
                   {p.oldPrice > 0 && (
                     <span className="text-[10px] text-gray-400 line-through ml-1.5">
-                      {p.oldPrice.toLocaleString('fr-FR')} FCFA
+                      {formatCurrency(p.oldPrice, getShopProfile().currency)}
                     </span>
                   )}
                 </div>
@@ -738,11 +762,11 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
 
           <div className="flex items-baseline gap-3">
             <span className="text-2xl font-black" style={{ color: colors.primary }}>
-              {(props.price || 15000).toLocaleString('fr-FR')} FCFA
+              {formatCurrency(props.price || 15000, getShopProfile().currency)}
             </span>
             {props.oldPrice > 0 && (
               <span className="text-sm text-gray-400 line-through">
-                {props.oldPrice.toLocaleString('fr-FR')} FCFA
+                {formatCurrency(props.oldPrice, getShopProfile().currency)}
               </span>
             )}
           </div>

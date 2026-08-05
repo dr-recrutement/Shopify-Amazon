@@ -6,7 +6,7 @@ import {
   Sparkles, Check, Send
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile } from '../../lib/app-state';
 
 interface CustomDomain {
@@ -23,28 +23,70 @@ const CUSTOM_PRESETS = [
     name: 'Lagos Beauty 👑',
     description: 'Chic, luxueux, haut de gamme avec polices sérif élégantes.',
     colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' },
-    fonts: { heading: 'Playfair Display', body: 'Inter' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
     id: 'art-wax',
     name: 'Art & Wax 🎨',
     description: 'Vibrant, coloré, inspiré de l’art textile et de l’artisanat africain.',
     colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' },
-    fonts: { heading: 'Montserrat', body: 'Inter' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
     id: 'coral-peach',
     name: 'Coral & Peach 🍑',
     description: 'Moderne, chaleureux et convivial, parfait pour les créatrices.',
     colors: { primary: '#FF6B35', secondary: '#4A5568', accent: '#FFA07A', background: '#FFF5F2', text: '#2D3748' },
-    fonts: { heading: 'Poppins', body: 'Inter' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
     id: 'ocean-blue',
     name: 'Ocean Blue 🌊',
     description: 'Corporate, épuré, d’un bleu profond d’affaires internationales.',
     colors: { primary: '#0369A1', secondary: '#1E293B', accent: '#38BDF8', background: '#F0F9FF', text: '#0F172A' },
-    fonts: { heading: 'Inter', body: 'Inter' }
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'dakar-fashion',
+    name: 'Dakar Fashion 🌟',
+    description: 'Style couture moderne, jaune vibrant et indigo profond, typographie élégante.',
+    colors: { primary: '#EAB308', secondary: '#312E81', accent: '#F59E0B', background: '#FAF8F5', text: '#1E1B4B' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'sahara-gold',
+    name: 'Sahara Gold ✨',
+    description: 'Palette dorée sablonneuse haut de gamme mariée au charbon épuré.',
+    colors: { primary: '#D97706', secondary: '#1F2937', accent: '#F59E0B', background: '#FFFDF9', text: '#111827' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'tokyo-tech',
+    name: 'Tokyo Tech ⚡',
+    description: 'Ambiance cyberpunk sombre et électrique, néon vert dynamique pour produits technologiques.',
+    colors: { primary: '#22C55E', secondary: '#0F172A', accent: '#10B981', background: '#090D16', text: '#F8FAFC' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'cape-town-minimalist',
+    name: 'Cape Town Minimalist 🏔',
+    description: 'Espaces confortables, lignes ultra épurées d’un gris ardoise noble et reposant.',
+    colors: { primary: '#475569', secondary: '#0F172A', accent: '#64748B', background: '#F8FAFC', text: '#0F172A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'new-york-street',
+    name: 'NY Streetwear 🗽',
+    description: 'Design urbain audacieux et contrasté, rouge vif de défilé et noir profond.',
+    colors: { primary: '#DC2626', secondary: '#000000', accent: '#EF4444', background: '#FAF9F6', text: '#111111' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'yasmine-oriental',
+    name: 'Yasmine Oriental 🌺',
+    description: 'Mystique et envoûtant, violet royal et orbe de soleil d’Orient.',
+    colors: { primary: '#7C3AED', secondary: '#1E1B4B', accent: '#F59E0B', background: '#FAF5FF', text: '#1E1B4B' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
   }
 ];
 
@@ -274,11 +316,14 @@ export default function OnlineStore() {
     setTimeout(() => {
       const cleanName = domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
       setDomainSearchResult([
-        { ext: `.com`, price: '8 500 FCFA / an', available: true },
-        { ext: `.shop`, price: '4 900 FCFA / an', available: true },
-        { ext: `.ci`, price: '15 000 FCFA / an', available: !cleanName.includes('banned') },
-        { ext: `.net`, price: '9 900 FCFA / an', available: true },
-        { ext: `.sn`, price: '12 000 FCFA / an', available: true },
+        { ext: `.com`, price: '$10.98 / year', available: true },
+        { ext: `.net`, price: '$14.58 / year', available: true },
+        { ext: `.org`, price: '$12.18 / year', available: true },
+        { ext: `.shop`, price: '$4.79 / year', available: true },
+        { ext: `.co`, price: '$25.19 / year', available: true },
+        { ext: `.io`, price: '$47.99 / year', available: true },
+        { ext: `.ai`, price: '$95.99 / year', available: true },
+        { ext: `.info`, price: '$17.99 / year', available: true },
       ]);
       setIsSearchingDomain(false);
     }, 1200);
@@ -1170,7 +1215,7 @@ export default function OnlineStore() {
               </div>
 
               {/* Font selectors */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <span className="text-xs font-bold text-gray-600 uppercase block">Polices de caractères</span>
                 <div>
                   <label className="block text-[10px] font-bold text-gray-500">Police des Titres</label>
@@ -1179,7 +1224,19 @@ export default function OnlineStore() {
                     onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, heading: e.target.value } })}
                     className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
                   >
-                    {['Montserrat', 'Playfair Display', 'Cormorant Garamond', 'Poppins', 'Inter', 'Manrope'].map(f => (
+                    {FONT_OPTIONS.map(f => (
+                      <option key={f} value={f}>{f}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500">Police du Corps de texte</label>
+                  <select
+                    value={theme.fonts.body}
+                    onChange={e => setTheme({ ...theme, fonts: { ...theme.fonts, body: e.target.value } })}
+                    className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                  >
+                    {FONT_OPTIONS.map(f => (
                       <option key={f} value={f}>{f}</option>
                     ))}
                   </select>
@@ -1416,7 +1473,7 @@ export default function OnlineStore() {
                   <div className="p-3 border border-brand-200 bg-brand-50 rounded-xl space-y-3 text-left">
                     <div>
                       <p className="text-xs font-extrabold text-gray-900">Acheter {domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
-                      <p className="text-[10px] text-gray-500">Moyen de paiement sécurisé local :</p>
+                      <p className="text-[10px] text-gray-500">Moyen de paiement sécurisé (Tarif Cloudflare + 20% markup, affiché en USD) :</p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-1">
@@ -1434,10 +1491,11 @@ export default function OnlineStore() {
                     <button
                       onClick={handleBuyDomain}
                       disabled={isPurchasing}
-                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-lg hover:bg-emerald-700 transition-colors"
+                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-lg hover:bg-emerald-700 transition-colors animate-pulse"
                     >
                       {isPurchasing ? 'Enregistrement Cloudflare...' : `Payer ${selectedExtension.price}`}
                     </button>
+                    <p className="text-[9px] text-gray-400 mt-1">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Os.</p>
                   </div>
                 )}
               </div>

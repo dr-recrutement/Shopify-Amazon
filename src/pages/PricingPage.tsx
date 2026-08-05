@@ -71,7 +71,7 @@ export default function PricingPage() {
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.customDomain ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Domaine personnalisé</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.videoAI ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Vidéos TikTok IA</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.chatbotAI ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Chatbot IA</li>
-                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.marketplaceListing ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Marketplace LiAfrikOS</li>
+                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.marketplaceListing ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Marketplace Os</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.verifiedBadge ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Badge vérifiée</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.apiAccess ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> API développeur</li>
                   </ul>

@@ -193,12 +193,12 @@ const stats = [
 ];
 
 const faqs = [
-  { q: 'LiAfrikOS prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Orange Money, etc.).' },
+  { q: 'Os prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Orange Money, etc.).' },
   { q: 'Combien de temps pour créer ma boutique ?', a: 'Moins de 10 minutes. Notre onboarding guidé vous accompagne : compte, nom, localisation, thème, premier produit, moyen de paiement, plan — puis votre boutique est en ligne.' },
-  { q: 'Puis-je vendre dans plusieurs pays africains ?', a: 'Oui. Le module Markets couvre les 54 pays africains avec leurs devises locales. Activez les marchés que vous souhaitez desservir.' },
+  { q: 'Puis-je vendre dans plusieurs pays ?', a: 'Oui. Le module Markets couvre de nombreux pays avec leurs devises locales. Activez les marchés que vous souhaitez desservir.' },
   { q: "L'IA est-elle vraiment incluse ?", a: 'Oui. Génération de descriptions, logos, bannières, publicités Facebook/Instagram, vidéos TikTok, chatbot client, assistant comptable — selon votre plan.' },
   { q: 'Quels moyens de paiement sont supportés ?', a: 'Flutterwave, Paystack, Orange Money, MTN MoMo, Wave, CinetPay, Stripe, PayPal, plus un champ générique pour toute autre passerelle. Vous connectez vos propres identifiants API.' },
-  { q: 'Pourquoi LiAfrikOS est-il différent ?', a: "Parce qu'il est conçu et développé au Cameroun par LIYAH GROUP, pour les réalités africaines — pas adapté après coup. Mobile Money natif, connexions faibles optimisées, adressage local." },
+  { q: 'Pourquoi Os est-il différent ?', a: "Parce qu'il est conçu et développé par LiAfrik basée à Dubai & Afrique, pour les réalités du commerce — pas adapté après coup. Mobile Money natif, connexions faibles optimisées, adressage local." },
 ];
 
 export default function LandingPage() {
@@ -471,16 +471,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why LiAfrikOS - mission */}
+      {/* Why Os - mission */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-6">
-              🇨🇲 Conçu au Cameroun — pour toute l'Afrique 🌍
+              🌍 Conçu par LiAfrik basée à Dubai & Afrique 🌍
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi LiAfrikOS ?</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi Os ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed font-medium">
-              LiAfrikOS n'est pas une adaptation d'un outil étranger — c'est pensé et construit depuis l'Afrique, pour l'Afrique, dès sa fondation. Mobile Money natif, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce africain.
+              Os n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik basée à Dubai & Afrique, dès sa fondation. Mobile Money natif, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
             </p>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
@@ -557,7 +557,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { name: 'Starter', price: 9, features: ['15 produits', 'Sous-domaine LiAfrikOS', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
+              { name: 'Starter', price: 9, features: ['15 produits', 'Sous-domaine os.liafrik.com', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
               { name: 'Premium', price: 19, popular: true, features: ['1000 produits', 'Domaine personnalisé', '5 staff', '200 générations IA/mois', 'Vidéos TikTok IA', 'Chatbot IA', 'Assistant comptable IA', 'Marketplace + badge vérifié'] },
               { name: 'Entreprise', price: 69, features: ['Produits illimités', 'Staff illimité', 'IA illimitée', 'Vidéos IA illimitées', 'API développeur', 'Support dédié + WhatsApp'] },
             ].map((p, i) => {
@@ -604,7 +604,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Ils vendent déjà avec LiAfrikOS</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Ils vendent déjà avec Os</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((tm, i) => (
@@ -686,7 +686,7 @@ export default function LandingPage() {
           <Link to="/register" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.02] active:scale-95 shadow-xl">
             Créer ma boutique gratuitement <ArrowRight size={18} />
           </Link>
-          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP</p>
+          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍</p>
         </div>
       </section>
 

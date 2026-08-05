@@ -44,9 +44,9 @@ export default function AdminThemes() {
       <Card className="mt-6 p-5">
         <h3 className="font-semibold text-gray-900 mb-3">Sources acceptées</h3>
         <ul className="text-sm text-gray-600 space-y-1">
-          <li>• Thèmes WordPress (convertis au format LiAfrikOS)</li>
+          <li>• Thèmes WordPress (convertis au format Os)</li>
           <li>• Thèmes Shopify (dans le respect des licences)</li>
-          <li>• Thèmes conçus directement dans l'éditeur LiAfrikOS</li>
+          <li>• Thèmes conçus directement dans l'éditeur Os</li>
         </ul>
       </Card>
       <LockedFeature title="Accès éditeur visuel via impersonation" desc="Super Admin peut éditer visuellement n'importe quelle boutique via impersonation sécurisée et tracée." plan="Super Admin" />

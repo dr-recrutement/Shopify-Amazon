@@ -11,7 +11,7 @@ export default function AdminSuperAdmins() {
   }));
   return (
     <div>
-      <PageHeader title="Super Admins" subtitle="Gestion des Super Admins — LIYAH GROUP. Privilèges identiques, sans hiérarchie." action={<Button><UserPlus size={16} /> Inviter</Button>} />
+      <PageHeader title="Super Admins" subtitle="Gestion des Super Admins — LiAfrik (Dubai & Afrique). Privilèges identiques, sans hiérarchie." action={<Button><UserPlus size={16} /> Inviter</Button>} />
       <Card className="mb-6 p-4 flex items-start gap-3 bg-gradient-to-r from-orange-50 to-white">
         <Crown className="text-orange-600 mt-0.5" size={20} />
         <div className="text-sm text-gray-700">

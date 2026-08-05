@@ -24,19 +24,19 @@ export const translations: Dict = {
   'hero.title2': { fr: 'à votre image.', en: 'in your image.' },
   'hero.title3': { fr: 'Partout en Afrique.', en: 'Everywhere in Africa.' },
   'hero.subtitle': {
-    fr: "La plateforme SaaS e-commerce panafricaine, conçue au Cameroun par LIYAH GROUP — Mobile Money natif, IA intégrée, 0% commission.",
-    en: "The pan-African e-commerce SaaS platform, built in Cameroon by LIYAH GROUP — native Mobile Money, built-in AI, 0% commission."
+    fr: "Os, la plateforme SaaS e-commerce panafricaine, conçue par LiAfrik basée à Dubai & Afrique — Mobile Money natif, IA intégrée, 0% commission.",
+    en: "Os, the pan-African e-commerce SaaS platform, built by LiAfrik based in Dubai & Africa — native Mobile Money, built-in AI, 0% commission."
   },
   'hero.cta.start': { fr: 'Créer ma boutique', en: 'Create my store' },
   'hero.cta.pricing': { fr: 'Voir les tarifs', en: 'See pricing' },
   'hero.trial': { fr: '7 jours d\'essai gratuit inclus — sans carte bancaire', en: '7-day free trial included — no credit card' },
   'footer.tagline': {
-    fr: 'La plateforme SaaS e-commerce panafricaine. Votre boutique en ligne, à votre image. Partout en Afrique.',
-    en: 'The pan-African e-commerce SaaS platform. Your online store, in your image. Everywhere in Africa.'
+    fr: 'Os, la plateforme SaaS e-commerce panafricaine. Votre boutique en ligne, à votre image. Partout en Afrique.',
+    en: 'Os, the pan-African e-commerce SaaS platform. Your online store, in your image. Everywhere in Africa.'
   },
   'footer.origin': {
-    fr: 'Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP — pour toute l\'Afrique 🌍',
-    en: 'Designed and developed in Cameroon 🇨🇲 by LIYAH GROUP — for all of Africa 🌍'
+    fr: 'Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍',
+    en: 'Designed and developed by LiAfrik based in Dubai & Africa 🌍'
   },
 };
 

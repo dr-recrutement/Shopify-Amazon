@@ -44,7 +44,7 @@ export default function AdminHome() {
     <div>
       <PageHeader
         title="Vue globale"
-        subtitle="Santé de la plateforme LiAfrikOS en temps réel."
+        subtitle="Santé de la plateforme Os en temps réel."
         action={
           <div className="flex gap-2">
             <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">

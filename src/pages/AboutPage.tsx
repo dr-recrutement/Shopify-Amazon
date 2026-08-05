@@ -13,15 +13,15 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
-            🇨🇲 Conçu au Cameroun — pour toute l'Afrique 🌍
+            🌍 Conçu par LiAfrik basée à Dubai & Afrique 🌍
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
             {fr ? 'Notre histoire' : 'Our story'}
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
             {fr
-              ? "LiAfrikOS est né au Cameroun, conçu par des Africains pour les réalités du commerce africain. Notre ambition : donner à chaque entrepreneur africain les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
-              : "LiAfrikOS was born in Cameroon, designed by Africans for the realities of African commerce. Our ambition: to give every African entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
+              ? "Os est né, conçu par LiAfrik pour les réalités du commerce africain et global. Notre ambition : donner à chaque entrepreneur les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
+              : "Os was born, designed by LiAfrik for the realities of global and African commerce. Our ambition: to give every entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
           </p>
         </div>
 
@@ -31,8 +31,8 @@ export default function AboutPage() {
           </h2>
           <p className="text-gray-700 leading-relaxed">
             {fr
-              ? "Le commerce en ligne africain mérite des outils construits pour ses réalités, pas des traductions. Mobile Money, connexions variables, diversité linguistique, logistique locale — autant de contraintes que les outils étrangers ignorent ou traitent en annexe. LiAfrikOS les aborde dès la conception."
-              : "African online commerce deserves tools built for its realities, not translations. Mobile Money, variable connections, linguistic diversity, local logistics — constraints that foreign tools ignore or treat as an afterthought. LiAfrikOS addresses them from the ground up."}
+              ? "Le commerce en ligne mérite des outils construits pour ses réalités, pas des traductions. Mobile Money, connexions variables, diversité linguistique, logistique locale — autant de contraintes que les outils étrangers ignorent ou traitent en annexe. Os les aborde dès la conception."
+              : "Online commerce deserves tools built for its realities, not translations. Mobile Money, variable connections, linguistic diversity, local logistics — constraints that foreign tools ignore or treat as an afterthought. Os addresses them from the ground up."}
           </p>
         </Card>
 
@@ -64,7 +64,7 @@ export default function AboutPage() {
               : "Made to sell everywhere in Africa, without compromise, without commission, without African borders."}
           </p>
           <p className="mt-6 text-xs text-gray-500">
-            {fr ? 'LiAfrikOS — conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP' : 'LiAfrikOS — designed and developed in Cameroon 🇨🇲 by LIYAH GROUP'}
+            {fr ? 'Os — conçu et développé par LiAfrik basée à Dubai & Afrique' : 'Os — designed and developed by LiAfrik based in Dubai & Africa'}
           </p>
         </Card>
       </div>

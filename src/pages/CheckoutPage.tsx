@@ -64,7 +64,7 @@ export default function CheckoutPage() {
                   </button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-gray-500 flex items-center gap-1"><Shield size={12} /> Paiement direct au vendeur. LiAfrikOS ne prélève aucune commission.</p>
+              <p className="mt-3 text-xs text-gray-500 flex items-center gap-1"><Shield size={12} /> Paiement direct au vendeur. Os ne prélève aucune commission.</p>
             </Card>
           </div>
           <div>

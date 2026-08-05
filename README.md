@@ -1,6 +1,6 @@
-# LIAFRIKOS — SaaS E-commerce Panafricain
+# Os — SaaS E-commerce Panafricain
 
-Plateforme SaaS multi-tenant e-commerce, conçue et développée au Cameroun 🇨🇲 par **LIYAH GROUP**, pour toute l'Afrique 🌍.
+Plateforme SaaS multi-tenant e-commerce, conçue et développée par **LiAfrik** basée à Dubai & Afrique 🌍.
 
 ## Stack technique
 
@@ -62,4 +62,4 @@ supabase/
   migrations/      # Migrations SQL (schema + RLS)
 ```
 
-## Conçu et développé au Cameroun 🇨🇲 par LIYAH GROUP — pour toute l'Afrique 🌍
+## Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍

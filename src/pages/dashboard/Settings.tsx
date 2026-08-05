@@ -27,6 +27,7 @@ const SECTIONS = [
   { id: 'languages', label: 'Languages' },
   { id: 'privacy', label: 'Customer privacy' },
   { id: 'policies', label: 'Policies' },
+  { id: 'chat', label: 'Support & Live Chat' },
 ];
 
 interface CustomDomain {
@@ -95,6 +96,15 @@ export default function Settings() {
       setGateways(next);
     }
   };
+
+  // Policies state
+  const [termsPolicy, setTermsPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_terms')) || 'Nos conditions d’utilisation...');
+  const [privacyPolicy, setPrivacyPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_privacy')) || 'Notre politique de confidentialité...');
+  const [refundPolicy, setRefundPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_refund')) || 'Notre politique de remboursement...');
+
+  // Chat settings state
+  const [chatProvider, setChatProvider] = useState(() => localStorage.getItem(getTenantStorageKey('chat_provider')) || 'whatsapp');
+  const [chatValue, setChatValue] = useState(() => localStorage.getItem(getTenantStorageKey('chat_value')) || '+2250700000000');
 
   // Global country selection autocomplete state
   const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
@@ -777,7 +787,100 @@ export default function Settings() {
               <Button variant="secondary" size="sm">Ajouter une zone</Button>
             </div>
           )}
-          {!['general','plan','payments','domains','shipping'].includes(active) && (
+          {active === 'policies' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Éditeur de Politiques Légales</h3>
+              <p className="text-gray-500">Rédigez les conditions de vente, livraison, retours et de protection des données pour rassurer vos acheteurs.</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Conditions Générales de Vente & d’Utilisation (CGU / CGV)</label>
+                  <textarea
+                    rows={4}
+                    value={termsPolicy}
+                    onChange={e => setTermsPolicy(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Politique de Confidentialité</label>
+                  <textarea
+                    rows={4}
+                    value={privacyPolicy}
+                    onChange={e => setPrivacyPolicy(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Politique de Retour, Remboursement & Mentions Légales</label>
+                  <textarea
+                    rows={4}
+                    value={refundPolicy}
+                    onChange={e => setRefundPolicy(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.setItem(getTenantStorageKey('policy_terms'), termsPolicy);
+                    localStorage.setItem(getTenantStorageKey('policy_privacy'), privacyPolicy);
+                    localStorage.setItem(getTenantStorageKey('policy_refund'), refundPolicy);
+                    alert('🎉 Vos politiques légales ont été enregistrées avec succès et connectées au pied de page de votre site !');
+                  }}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-md"
+                >
+                  Sauvegarder les politiques
+                </button>
+              </div>
+            </div>
+          )}
+          {active === 'chat' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Fournisseur de Live Chat Support</h3>
+              <p className="text-gray-500">Offrez un service client exceptionnel en connectant une bulle de chat en direct (WhatsApp, Crisp, ou Tawk.to).</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Choisissez votre canal préféré</label>
+                  <select
+                    value={chatProvider}
+                    onChange={e => setChatProvider(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-semibold text-gray-800"
+                  >
+                    <option value="whatsapp">💬 WhatsApp Business (Support direct)</option>
+                    <option value="crisp">✨ Crisp Live Chat (Bulle de chat moderne)</option>
+                    <option value="tawk">⚡ Tawk.to (Solution 100% gratuite)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Identifiant ou Numéro de téléphone</label>
+                  <input
+                    type="text"
+                    value={chatValue}
+                    onChange={e => setChatValue(e.target.value)}
+                    placeholder={chatProvider === 'whatsapp' ? 'Ex: +2250700000000' : 'Ex: 938fd82-abc-42...'}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono bg-white"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1">
+                    {chatProvider === 'whatsapp'
+                      ? 'Entrez votre numéro avec indicatif pays pour diriger les visiteurs vers votre WhatsApp.'
+                      : 'Collez simplement l’identifiant de site web de votre tableau de bord Crisp/Tawk.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.setItem(getTenantStorageKey('chat_provider'), chatProvider);
+                    localStorage.setItem(getTenantStorageKey('chat_value'), chatValue);
+                    alert('🎉 Intégration de Chat Client mise à jour avec succès sur votre boutique en ligne !');
+                  }}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-md"
+                >
+                  Activer le Chat
+                </button>
+              </div>
+            </div>
+          )}
+          {!['general','plan','payments','domains','shipping','policies','chat'].includes(active) && (
             <div className="space-y-4 text-xs sm:text-sm">
               <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
               <p className="text-gray-500">Configuration de cette section.</p>

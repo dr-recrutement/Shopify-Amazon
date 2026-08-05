@@ -539,7 +539,7 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
   );
 }
 
-function ProductGridSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const products = props.products || [];
   const cols = Math.min(props.columns || 4, 4);
@@ -550,65 +550,121 @@ function ProductGridSection({ props, colors, fonts, spacingClass }: { props: any
     cols === 3 ? 'grid-cols-2 sm:grid-cols-3' :
     'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4';
 
+  const isLuxury = theme.preset === 'luxury';
+  const isEditorial = theme.preset === 'editorial';
+  const isAfrican = theme.preset === 'african';
+
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background }}>
-      <div className="text-center mb-8 max-w-lg mx-auto">
-        <h3 className="text-2xl font-extrabold" style={headingStyle}>{props.title || 'Produits Vedettes'}</h3>
+      <div className={`mb-8 max-w-lg mx-auto ${isEditorial ? 'text-left ml-0' : 'text-center'}`}>
+        <h3 className={`text-2xl font-extrabold ${isLuxury ? 'tracking-widest uppercase' : ''}`} style={headingStyle}>
+          {props.title || 'Produits Vedettes'}
+        </h3>
         {props.subtitle && <p className="text-xs text-gray-500 mt-2" style={{ fontFamily: fonts.body }}>{props.subtitle}</p>}
-        <div className="w-12 h-1 mx-auto mt-3 rounded-full" style={{ backgroundColor: colors.primary }} />
+        {!isEditorial && <div className="w-12 h-1 mx-auto mt-3 rounded-full animate-pulse" style={{ backgroundColor: colors.primary }} />}
       </div>
 
       <div className={`grid gap-4 md:gap-6 ${colClasses}`}>
-        {products.map((p: any, i: number) => (
-          <div key={i} className="group rounded-xl border overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full" style={{ borderColor: `${colors.text}10`, backgroundColor: colors.background }}>
-
-            {/* Image Wrap */}
-            <div className="relative aspect-square overflow-hidden bg-gray-100">
-              <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-              {p.oldPrice > p.price && (
-                <span className="absolute top-3 left-3 text-[10px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce" style={{ backgroundColor: colors.primary }}>
-                  PROMO
-                </span>
-              )}
-              <button className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full text-gray-700 shadow-sm transition-colors">
-                <Heart className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Info */}
-            <div className="p-4 flex-1 flex flex-col justify-between">
-              <div>
-                {/* Rating stars */}
-                <div className="flex items-center gap-0.5 mb-1 text-amber-500">
-                  {Array.from({ length: 5 }).map((_, idx) => (
-                    <Star key={idx} className={`w-3 h-3 fill-current ${idx < (p.rating || 5) ? '' : 'opacity-30'}`} />
-                  ))}
-                  <span className="text-[10px] text-gray-400 font-medium ml-1">(5.0)</span>
+        {products.map((p: any, i: number) => {
+          // Dynamic templates per preset
+          if (isLuxury) {
+            return (
+              <div key={i} className="group flex flex-col h-full bg-white relative overflow-hidden transition-all duration-300 border-b-2 hover:shadow-2xl p-2" style={{ borderColor: `${colors.primary}40` }}>
+                <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-100">
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <button className="absolute top-2 right-2 p-1 bg-white/90 rounded-full shadow-sm text-gray-500 hover:text-red-500 transition-colors">
+                    <Heart className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-
-                <h4 className="font-bold text-xs md:text-sm line-clamp-2" style={{ color: colors.text, fontFamily: fonts.heading }}>
-                  {p.name}
-                </h4>
-              </div>
-
-              <div className="mt-3 pt-3 border-t border-gray-50 flex items-center justify-between">
-                <div>
-                  <span className="text-xs md:text-sm font-black" style={{ color: colors.primary }}>
-                    {formatCurrency(p.price || 10000, getShopProfile().currency)}
-                  </span>
-                  {p.oldPrice > 0 && (
-                    <span className="text-[10px] text-gray-400 line-through ml-1.5">
-                      {formatCurrency(p.oldPrice, getShopProfile().currency)}
+                <div className="p-3 flex-1 flex flex-col justify-between text-center mt-2">
+                  <div>
+                    <h4 className="font-semibold text-xs tracking-wider uppercase line-clamp-1" style={{ color: colors.text, fontFamily: fonts.heading }}>{p.name}</h4>
+                    <p className="text-[10px] text-amber-600 font-bold mt-1">★ EXCLUSIF</p>
+                  </div>
+                  <div className="mt-2.5 pt-2.5 border-t border-dashed border-gray-100 flex flex-col items-center gap-1.5">
+                    <span className="text-xs font-bold tracking-widest" style={{ color: colors.primary }}>
+                      {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                  )}
+                    <button className="w-full py-1 text-[9px] font-black uppercase tracking-widest border text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white transition-all">
+                      Aperçu rapide
+                    </button>
+                  </div>
                 </div>
-                <button className="px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
-                  Acheter
+              </div>
+            );
+          }
+
+          if (isEditorial) {
+            return (
+              <div key={i} className="group flex flex-col h-full bg-transparent overflow-hidden transition-all duration-300">
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300" />
+                </div>
+                <div className="py-3 flex-1 flex flex-col justify-between text-left">
+                  <div>
+                    <h4 className="font-extrabold text-sm line-clamp-2 leading-tight" style={{ color: colors.text, fontFamily: fonts.heading }}>{p.name}</h4>
+                  </div>
+                  <div className="mt-2 flex items-baseline justify-between">
+                    <span className="text-sm font-black" style={{ color: colors.text }}>
+                      {formatCurrency(p.price || 10000, getShopProfile().currency)}
+                    </span>
+                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-orange-600">Acheter</span>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // Default / African vibrants with shadow & badges
+          return (
+            <div key={i} className={`group rounded-2xl border overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full bg-white relative ${isAfrican ? 'border-orange-100 shadow-sm' : 'border-gray-100'}`}>
+              {/* Image Wrap */}
+              <div className="relative aspect-square overflow-hidden bg-gray-50">
+                <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                {p.oldPrice > p.price && (
+                  <span className="absolute top-3 left-3 text-[9px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse" style={{ backgroundColor: colors.primary }}>
+                    PROMO
+                  </span>
+                )}
+                <button className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full text-gray-700 shadow-sm transition-colors">
+                  <Heart className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Info */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-0.5 mb-1 text-amber-500">
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                      <Star key={idx} className="w-3 h-3 fill-current" />
+                    ))}
+                    <span className="text-[10px] text-gray-400 font-medium ml-1">(5.0)</span>
+                  </div>
+
+                  <h4 className="font-bold text-xs md:text-sm line-clamp-2" style={{ color: colors.text, fontFamily: fonts.heading }}>
+                    {p.name}
+                  </h4>
+                </div>
+
+                <div className="mt-3 pt-3 border-t border-gray-50 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs md:text-sm font-black" style={{ color: colors.primary }}>
+                      {formatCurrency(p.price || 10000, getShopProfile().currency)}
+                    </span>
+                    {p.oldPrice > 0 && (
+                      <span className="text-[10px] text-gray-400 line-through ml-1.5">
+                        {formatCurrency(p.oldPrice, getShopProfile().currency)}
+                      </span>
+                    )}
+                  </div>
+                  <button className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
+                    Acheter
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -1144,7 +1200,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
     case 'hero':
       return <HeroSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'product-grid':
-      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} />;
     case 'category-grid':
       return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'countdown':

@@ -4,14 +4,25 @@ import { Card, Button } from '../pages/dashboard/ui';
 import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { clearCart } from '../lib/app-state';
+import { clearCart, getShopProfile } from '../lib/app-state';
 
 export default function CheckoutPage() {
   const nav = useNavigate();
+  const profile = getShopProfile();
   const [payment, setPayment] = useState('flutterwave');
   const [shipping, setShipping] = useState('standard');
-  const fmt = (n: number) => n.toLocaleString('fr-FR');
-  const total = 66000;
+
+  const fmt = (n: number) => {
+    if (['USD', 'EUR', 'GBP'].includes(profile.currency)) {
+      const converted = n > 1000 ? Math.round(n / 600) : n;
+      const symbolMap: Record<string, string> = { 'USD': '$', 'EUR': '€', 'GBP': '£' };
+      const symbol = symbolMap[profile.currency] || profile.currency;
+      return `${symbol}${converted}`;
+    }
+    return `${n.toLocaleString('fr-FR')} ${profile.currency}`;
+  };
+
+  const total = 65000;
   const shippingCost = 1000;
 
   const placeOrder = () => {
@@ -44,7 +55,7 @@ export default function CheckoutPage() {
                 {[{ id: 'standard', name: 'Standard', desc: '2-3 jours', price: 1000 }, { id: 'express', name: 'Express', desc: '24h', price: 2500 }, { id: 'pickup', name: 'Point de retrait', desc: 'Gratuit', price: 0 }].map(s => (
                   <button key={s.id} onClick={() => setShipping(s.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${shipping === s.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
                     <div><div className="font-medium text-sm">{s.name}</div><div className="text-xs text-gray-500">{s.desc}</div></div>
-                    <span className="font-medium text-sm">{s.price === 0 ? 'Gratuit' : `${fmt(s.price)} XOF`}</span>
+                    <span className="font-medium text-sm">{s.price === 0 ? 'Gratuit' : `${fmt(s.price)}`}</span>
                   </button>
                 ))}
               </div>
@@ -71,10 +82,10 @@ export default function CheckoutPage() {
             <Card className="p-5 sticky top-20">
               <h3 className="font-semibold text-gray-900 mb-4">Récapitulatif</h3>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Robe wax M</span><span>15 000 XOF</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Sac cuir x2</span><span>50 000 XOF</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Livraison</span><span>{fmt(shippingCost)} XOF</span></div>
-                <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg">{fmt(total + shippingCost)} XOF</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Robe wax M</span><span>{fmt(15000)}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Sac cuir x2</span><span>{fmt(50000)}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Livraison</span><span>{fmt(shippingCost)}</span></div>
+                <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg">{fmt(total + shippingCost)}</span></div>
               </div>
               <Button onClick={placeOrder} className="mt-4 w-full">Confirmer la commande <ArrowRight size={16} /></Button>
               <div className="mt-4 space-y-2 text-xs text-gray-500">

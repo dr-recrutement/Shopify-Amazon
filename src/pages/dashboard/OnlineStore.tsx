@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
-import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories } from '../../lib/app-state';
 
 interface CustomDomain {
   domain: string;
@@ -114,6 +114,8 @@ export default function OnlineStore() {
   const [panel, setPanel] = useState<'themes' | 'sections' | 'design' | 'pages' | 'domain' | 'inbox' | 'settings'>('themes');
   const [toast, setToast] = useState<string | null>(null);
 
+  const shopProfile = getShopProfile();
+
   // Custom Pages State
   const [customPages, setCustomPages] = useState([
     { id: '1', title: 'À propos de nous', content: 'Nous créons les plus beaux vêtements d’Afrique.' },
@@ -121,8 +123,11 @@ export default function OnlineStore() {
   ]);
   const [newPageTitle, setNewPageTitle] = useState('');
 
-  // Domain Management States with localStorage Sync
-  const shopProfile = getShopProfile();
+  // Logo, Favicon, Meta states connected to shopProfile
+  const [shopNameInput, setShopNameInput] = useState(shopProfile.name);
+  const [metaDescInput, setMetaDescInput] = useState('Mode chic et tendances de marque.');
+  const [faviconUrlInput, setFaviconUrlInput] = useState('https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=64');
+  const [logoUrlInput, setLogoUrlInput] = useState('https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=150');
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
 
   const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
@@ -1661,20 +1666,63 @@ export default function OnlineStore() {
 
           {/* PANEL 7: Standard configurations */}
           {panel === 'settings' && (
-            <Card className="p-4 border border-gray-100 shadow-sm space-y-3">
-              <h3 className="text-sm font-bold text-gray-900">Préférences Générales</h3>
+            <Card className="p-4 border border-gray-100 shadow-sm space-y-3 text-left">
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">🎨 Préférences Générales</h3>
               <div>
                 <label className="text-xs font-bold text-gray-600">Titre de la boutique</label>
-                <input className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" defaultValue="Ma Boutique" />
+                <input
+                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                  value={shopNameInput}
+                  onChange={e => setShopNameInput(e.target.value)}
+                />
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-600">Description Méta SEO</label>
-                <textarea className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={2} defaultValue="Mode chic et tendances de marque panafricaine." />
+                <textarea
+                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                  rows={2}
+                  value={metaDescInput}
+                  onChange={e => setMetaDescInput(e.target.value)}
+                />
               </div>
               <div>
-                <label className="text-xs font-bold text-gray-600 block mb-1">Favicon de l’onglet</label>
-                <Button variant="secondary" size="sm" className="w-full"><Upload size={12} /> Téléverser favicon (ICO, PNG)</Button>
+                <label className="text-xs font-bold text-gray-600">Favicon URL (Onglet)</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-mono"
+                  value={faviconUrlInput}
+                  onChange={e => setFaviconUrlInput(e.target.value)}
+                />
+                <div className="flex gap-1.5 mt-1">
+                  {['https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=32', 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=32'].map((u, idx) => (
+                    <button key={idx} type="button" onClick={() => setFaviconUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Favicon modèle {idx+1}</button>
+                  ))}
+                </div>
               </div>
+              <div>
+                <label className="text-xs font-bold text-gray-600">Logo de la Boutique (URL)</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-mono"
+                  value={logoUrlInput}
+                  onChange={e => setLogoUrlInput(e.target.value)}
+                />
+                <div className="flex gap-1.5 mt-1">
+                  {['https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=150', 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=150'].map((u, idx) => (
+                    <button key={idx} type="button" onClick={() => setLogoUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Logo modèle {idx+1}</button>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  saveShopProfile({ ...shopProfile, name: shopNameInput });
+                  showToast('Préférences générales de marque sauvegardées !');
+                }}
+                className="w-full py-1.5 mt-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-black shadow"
+              >
+                Appliquer la marque
+              </button>
             </Card>
           )}
 
@@ -1767,15 +1815,43 @@ export default function OnlineStore() {
                 className={`preview-element transition-all ${viewportAnimation === 'fade' ? 'animate-pulse' : ''}`}
                 style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
               >
-                {theme.sections.filter(s => s.visible).map(s => (
-                  <div
-                    key={s.id}
-                    onClick={() => { setSelectedSection(s.id); setPanel('sections'); }}
-                    className={`relative cursor-pointer transition-all border ${selectedSection === s.id ? 'ring-2 ring-brand-500 z-10' : 'border-transparent hover:border-dashed hover:border-gray-300'}`}
-                  >
-                    {renderSection(s, theme)}
-                  </div>
-                ))}
+                {theme.sections.filter(s => s.visible).map(s => {
+                  let sectionWithRealData = { ...s };
+                  if (s.type === 'product-grid') {
+                    const realProds = getProducts().map(p => ({
+                      name: p.name,
+                      price: p.price,
+                      oldPrice: p.status === 'out_of_stock' ? 0 : p.price * 1.2,
+                      image: p.category?.toLowerCase().includes('sac')
+                        ? 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300'
+                        : p.category?.toLowerCase().includes('bijou')
+                        ? 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300'
+                        : 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300',
+                      rating: 5
+                    }));
+                    sectionWithRealData.props = { ...s.props, products: realProds };
+                  } else if (s.type === 'category-grid') {
+                    const realCats = Object.keys(getCategories()).map(cat => ({
+                      name: cat,
+                      image: cat.toLowerCase().includes('accessoire')
+                        ? 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300'
+                        : cat.toLowerCase().includes('bijou')
+                        ? 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300'
+                        : 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=300'
+                    }));
+                    sectionWithRealData.props = { ...s.props, categories: realCats };
+                  }
+
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => { setSelectedSection(s.id); setPanel('sections'); }}
+                      className={`relative cursor-pointer transition-all border ${selectedSection === s.id ? 'ring-2 ring-brand-500 z-10' : 'border-transparent hover:border-dashed hover:border-gray-300'}`}
+                    >
+                      {renderSection(sectionWithRealData, theme)}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Embedded floating Support Live Chat preview */}

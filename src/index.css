@@ -33,12 +33,12 @@
 
 @layer base {
   html {
-    font-family: 'Glacial Indifference', 'Montserrat', sans-serif;
+    font-family: 'Montserrat', 'Glacial Indifference', sans-serif;
     scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Glacial Indifference', 'Montserrat', sans-serif;
+    font-family: 'Montserrat', 'Glacial Indifference', sans-serif;
   }
 }
 

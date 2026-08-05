@@ -45,10 +45,28 @@ const SUPPORT_TICKETS_KEY = 'liafrikos_support_tickets';
 const SHOP_PROFILE_KEY = 'liafrikos_shop_profile';
 const CATEGORIES_KEY = 'liafrikos_categories';
 
+export function getTenantStorageKey(baseKey: string): string {
+  if (typeof window === 'undefined') return baseKey;
+  try {
+    const rawSession = window.localStorage.getItem('liafrikos_auth_session');
+    if (rawSession) {
+      const session = JSON.parse(rawSession);
+      const emailOrId = session?.user?.email || session?.user?.id;
+      if (emailOrId) {
+        const suffix = emailOrId.toLowerCase().replace(/[^a-z0-9_-]+/g, '_');
+        return `${baseKey}_${suffix}`;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return baseKey;
+}
+
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
   try {
-    const raw = window.localStorage.getItem(key);
+    const raw = window.localStorage.getItem(getTenantStorageKey(key));
     return raw ? (JSON.parse(raw) as T) : fallback;
   } catch {
     return fallback;
@@ -57,7 +75,7 @@ function readStorage<T>(key: string, fallback: T): T {
 
 function writeStorage<T>(key: string, value: T) {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+  window.localStorage.setItem(getTenantStorageKey(key), JSON.stringify(value));
 }
 
 export function getCartItems(): CartItem[] {

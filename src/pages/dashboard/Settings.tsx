@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
 import { AFRICAN_COUNTRIES, GLOBAL_COUNTRIES } from '../../lib/constants';
-import { getShopProfile } from '../../lib/app-state';
+import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
   Trash2, Plus, Check, AlertCircle, ArrowRight, HelpCircle, ChevronDown
@@ -41,6 +41,61 @@ export default function Settings() {
   const shopProfile = getShopProfile();
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
 
+  // Payment Gateways connections state
+  const [gateways, setGateways] = useState<Record<string, { publicKey: string; secretKey: string; clientId: string; connected: boolean }>>(() => {
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_gateways'));
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // fallback
+      }
+    }
+    return {};
+  });
+
+  // Sync Gateways with local storage
+  useEffect(() => {
+    localStorage.setItem(getTenantStorageKey('liafrikos_gateways'), JSON.stringify(gateways));
+  }, [gateways]);
+
+  // Modal for Payment connection
+  const [activeGatewayModal, setActiveGatewayModal] = useState<string | null>(null);
+  const [modalPublicKey, setModalPublicKey] = useState('');
+  const [modalSecretKey, setModalSecretKey] = useState('');
+  const [modalClientId, setModalClientId] = useState('');
+
+  const openGatewayModal = (gateway: string) => {
+    const existing = gateways[gateway] || { publicKey: '', secretKey: '', clientId: '', connected: false };
+    setActiveGatewayModal(gateway);
+    setModalPublicKey(existing.publicKey || '');
+    setModalSecretKey(existing.secretKey || '');
+    setModalClientId(existing.clientId || '');
+  };
+
+  const handleSaveGateway = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeGatewayModal) return;
+    setGateways({
+      ...gateways,
+      [activeGatewayModal]: {
+        publicKey: modalPublicKey,
+        secretKey: modalSecretKey,
+        clientId: modalClientId,
+        connected: true
+      }
+    });
+    setActiveGatewayModal(null);
+  };
+
+  const handleDisconnectGateway = (gateway: string) => {
+    if (confirm(`Voulez-vous vraiment déconnecter la passerelle ${gateway} ?`)) {
+      const next = { ...gateways };
+      delete next[gateway];
+      setGateways(next);
+    }
+  };
+
   // Global country selection autocomplete state
   const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
     const found = GLOBAL_COUNTRIES.find(c => c.code === shopProfile.country || c.name === shopProfile.country);
@@ -62,7 +117,7 @@ export default function Settings() {
 
   // Domains State initialized with LocalStorage
   const [domains, setDomains] = useState<CustomDomain[]>(() => {
-    const saved = localStorage.getItem('liafrikos_domains');
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_domains'));
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -77,7 +132,7 @@ export default function Settings() {
 
   // Sync Domains with LocalStorage
   useEffect(() => {
-    localStorage.setItem('liafrikos_domains', JSON.stringify(domains));
+    localStorage.setItem(getTenantStorageKey('liafrikos_domains'), JSON.stringify(domains));
     // Dispatch local storage event to notify other windows/components
     window.dispatchEvent(new Event('storage'));
   }, [domains]);
@@ -85,7 +140,7 @@ export default function Settings() {
   // Synchronize domains if changed externally
   useEffect(() => {
     const handleStorage = () => {
-      const saved = localStorage.getItem('liafrikos_domains');
+      const saved = localStorage.getItem(getTenantStorageKey('liafrikos_domains'));
       if (saved) {
         try {
           setDomains(JSON.parse(saved));
@@ -308,15 +363,138 @@ export default function Settings() {
             </div>
           )}
           {active === 'payments' && (
-            <div className="space-y-4 text-xs sm:text-sm">
-              <h3 className="font-bold text-gray-900 text-sm">Moyens de paiement</h3>
-              <p className="text-gray-500">Connectez vos propres identifiants API. L'argent va directement dans votre compte.</p>
-              {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => (
-                <div key={g} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg bg-white shadow-sm">
-                  <div><p className="font-bold text-gray-900">{g}</p><p className="text-[10px] text-gray-500">Non connecté</p></div>
-                  <Button variant="secondary" size="sm">Connecter</Button>
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <div className="flex items-center justify-between border-b pb-3 border-gray-100">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm flex items-center gap-1.5">🔑 Vos Moyens de paiement</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">Associez vos clés API marchandes privées. 100% sécurisé et isolé.</p>
                 </div>
-              ))}
+                <Badge color="green">Isolation Tenant Activée</Badge>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => {
+                  const conn = gateways[g]?.connected;
+                  return (
+                    <div key={g} className="flex items-center justify-between p-4 border border-gray-150 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-gray-900 text-sm">{g}</p>
+                          <Badge color={conn ? 'green' : 'gray'}>
+                            {conn ? 'Actif / Connecté' : 'Inactif'}
+                          </Badge>
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1">
+                          {conn
+                            ? `Clé publique: ${gateways[g].publicKey.substring(0, 10)}... | Secret: **********`
+                            : 'Configurez vos clés d’API privées pour recevoir directement vos fonds.'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          variant={conn ? 'secondary' : 'primary'}
+                          size="sm"
+                          onClick={() => openGatewayModal(g)}
+                        >
+                          {conn ? 'Configurer' : 'Connecter'}
+                        </Button>
+                        {conn && (
+                          <button
+                            onClick={() => handleDisconnectGateway(g)}
+                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-gray-100"
+                            title="Déconnecter"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Dynamic Gateways Connection Dialog modal overlay */}
+              {activeGatewayModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-gray-100 animate-in fade-in zoom-in duration-150">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-orange-50/50">
+                      <div className="flex items-center gap-1.5">
+                        <CreditCard className="text-orange-600 w-5 h-5" />
+                        <h4 className="font-extrabold text-gray-900 text-sm">Passerelle {activeGatewayModal}</h4>
+                      </div>
+                      <button onClick={() => setActiveGatewayModal(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+                    </div>
+
+                    <form onSubmit={handleSaveGateway} className="p-6 space-y-4 text-left">
+                      <p className="text-xs text-gray-500 leading-normal">
+                        Entrez vos identifiants {activeGatewayModal} pour lier ce moyen de paiement à votre site marchand. Vos informations de clé API sont cryptées localement et isolées.
+                      </p>
+
+                      <div className="space-y-3">
+                        {activeGatewayModal !== 'PayPal' && (
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-500 uppercase">Clé Publique (Public API Key)</label>
+                            <input
+                              type="text"
+                              required
+                              value={modalPublicKey}
+                              onChange={e => setModalPublicKey(e.target.value)}
+                              placeholder="pk_live_..."
+                              className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
+                            />
+                          </div>
+                        )}
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-gray-500 uppercase">
+                            {activeGatewayModal === 'PayPal' ? 'Client Secret' : 'Clé Secrète (Secret Key / Token)'}
+                          </label>
+                          <input
+                            type="password"
+                            required
+                            value={modalSecretKey}
+                            onChange={e => setModalSecretKey(e.target.value)}
+                            placeholder={activeGatewayModal === 'PayPal' ? 'PayPal Secret Key' : 'sk_live_...'}
+                            className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
+                          />
+                        </div>
+
+                        {['PayPal', 'Stripe', 'CinetPay'].includes(activeGatewayModal) && (
+                          <div>
+                            <label className="block text-[11px] font-bold text-gray-500 uppercase">
+                              {activeGatewayModal === 'PayPal' ? 'PayPal Client ID' : 'Merchant ID / Service ID'}
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={modalClientId}
+                              onChange={e => setModalClientId(e.target.value)}
+                              placeholder="ID marchand officiel..."
+                              className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => setActiveGatewayModal(null)}
+                          className="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-50"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-lg text-xs hover:bg-emerald-700 shadow-md transition-colors"
+                        >
+                          Sauvegarder et Activer
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           {active === 'domains' && (

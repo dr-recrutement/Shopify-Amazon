@@ -8,12 +8,14 @@ export type CmsPage = {
   updatedAt: string;
 };
 
+import { getTenantStorageKey } from './app-state';
+
 const CMS_KEY = 'liafrikos_cms_pages';
 
 function readCmsPages(): CmsPage[] {
   if (typeof window === 'undefined') return [];
   try {
-    return JSON.parse(window.localStorage.getItem(CMS_KEY) || '[]');
+    return JSON.parse(window.localStorage.getItem(getTenantStorageKey(CMS_KEY)) || '[]');
   } catch {
     return [];
   }
@@ -21,7 +23,7 @@ function readCmsPages(): CmsPage[] {
 
 function writeCmsPages(pages: CmsPage[]) {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem(CMS_KEY, JSON.stringify(pages));
+  window.localStorage.setItem(getTenantStorageKey(CMS_KEY), JSON.stringify(pages));
 }
 
 export function getCmsPages(): CmsPage[] {

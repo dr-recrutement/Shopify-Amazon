@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
-import { getShopProfile } from '../../lib/app-state';
+import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
 
 interface CustomDomain {
   domain: string;
@@ -93,7 +93,7 @@ const CUSTOM_PRESETS = [
 export default function OnlineStore() {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [theme, setTheme] = useState<ThemeConfig>(() => {
-    const saved = localStorage.getItem('liafrikos_theme_config');
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_theme_config'));
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -107,7 +107,7 @@ export default function OnlineStore() {
 
   // Sync theme to localStorage
   useEffect(() => {
-    localStorage.setItem('liafrikos_theme_config', JSON.stringify(theme));
+    localStorage.setItem(getTenantStorageKey('liafrikos_theme_config'), JSON.stringify(theme));
   }, [theme]);
 
   // Custom states
@@ -126,7 +126,7 @@ export default function OnlineStore() {
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
 
   const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
-    const saved = localStorage.getItem('liafrikos_domains');
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_domains'));
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -140,7 +140,7 @@ export default function OnlineStore() {
   });
 
   useEffect(() => {
-    localStorage.setItem('liafrikos_domains', JSON.stringify(myDomains));
+    localStorage.setItem(getTenantStorageKey('liafrikos_domains'), JSON.stringify(myDomains));
     // Dispatch local storage event so Settings.tsx is also updated in real-time
     window.dispatchEvent(new Event('storage'));
   }, [myDomains]);
@@ -148,7 +148,7 @@ export default function OnlineStore() {
   // Synchronize domains if changed externally
   useEffect(() => {
     const handleStorage = () => {
-      const saved = localStorage.getItem('liafrikos_domains');
+      const saved = localStorage.getItem(getTenantStorageKey('liafrikos_domains'));
       if (saved) {
         try {
           setMyDomains(JSON.parse(saved));
@@ -195,7 +195,7 @@ export default function OnlineStore() {
   useEffect(() => {
     const handleStorageChange = () => {
       try {
-        const stored = localStorage.getItem('liafrikos_chat_history');
+        const stored = localStorage.getItem(getTenantStorageKey('liafrikos_chat_history'));
         if (stored) {
           setChatMessages(JSON.parse(stored));
         }
@@ -210,7 +210,7 @@ export default function OnlineStore() {
 
   const saveChatHistory = (history: typeof chatMessages) => {
     setChatMessages(history);
-    localStorage.setItem('liafrikos_chat_history', JSON.stringify(history));
+    localStorage.setItem(getTenantStorageKey('liafrikos_chat_history'), JSON.stringify(history));
     // Dispatch local storage event to trigger update
     window.dispatchEvent(new Event('storage'));
   };

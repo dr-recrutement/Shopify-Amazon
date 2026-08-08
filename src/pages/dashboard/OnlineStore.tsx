@@ -8,6 +8,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories } from '../../lib/app-state';
+import { ImageUploadField } from '../../components/ImageUpload';
 
 interface CustomDomain {
   domain: string;
@@ -733,15 +734,11 @@ export default function OnlineStore() {
                   {/* Hero-specific inputs */}
                   {activeSection.type === 'hero' && (
                     <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
-                        <input
-                          type="text"
-                          value={activeSection.props.image || ''}
-                          onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)}
-                          className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
-                        />
-                      </div>
+                      <ImageUploadField
+                        label="Image (téléversement)"
+                        value={activeSection.props.image || ''}
+                        onChange={dataUrl => updateSectionProp(activeSection.id, 'image', dataUrl)}
+                      />
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Bouton CTA texte</label>
                         <input
@@ -900,10 +897,11 @@ export default function OnlineStore() {
                   {/* Shopify "image-banner" inputs */}
                   {activeSection.type === 'image-banner' && (
                     <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
-                        <input type="text" value={activeSection.props.image || ''} onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
-                      </div>
+                      <ImageUploadField
+                        label="Image (téléversement)"
+                        value={activeSection.props.image || ''}
+                        onChange={dataUrl => updateSectionProp(activeSection.id, 'image', dataUrl)}
+                      />
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
                         <textarea value={activeSection.props.description || ''} onChange={e => updateSectionProp(activeSection.id, 'description', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={2} />
@@ -972,10 +970,11 @@ export default function OnlineStore() {
                   {/* Shopify "image-with-text" inputs */}
                   {activeSection.type === 'image-with-text' && (
                     <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
-                        <input type="text" value={activeSection.props.image || ''} onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
-                      </div>
+                      <ImageUploadField
+                        label="Image (téléversement)"
+                        value={activeSection.props.image || ''}
+                        onChange={dataUrl => updateSectionProp(activeSection.id, 'image', dataUrl)}
+                      />
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Texte</label>
                         <textarea value={activeSection.props.text || activeSection.props.description || ''} onChange={e => updateSectionProp(activeSection.id, 'text', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={3} />
@@ -1265,16 +1264,14 @@ export default function OnlineStore() {
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-500">Image URL</label>
-                              <input
-                                type="text"
+                              <ImageUploadField
+                                label="Image (téléversement)"
                                 value={c.image || ''}
-                                onChange={e => {
+                                onChange={dataUrl => {
                                   const nextCats = [...activeSection.props.categories];
-                                  nextCats[idx] = { ...nextCats[idx], image: e.target.value };
+                                  nextCats[idx] = { ...nextCats[idx], image: dataUrl };
                                   updateSectionProp(activeSection.id, 'categories', nextCats);
                                 }}
-                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
                               />
                             </div>
                           </div>
@@ -1353,16 +1350,14 @@ export default function OnlineStore() {
                               </div>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-500">Image URL</label>
-                              <input
-                                type="text"
+                              <ImageUploadField
+                                label="Image (téléversement)"
                                 value={p.image || ''}
-                                onChange={e => {
+                                onChange={dataUrl => {
                                   const nextProds = [...activeSection.props.products];
-                                  nextProds[idx] = { ...nextProds[idx], image: e.target.value };
+                                  nextProds[idx] = { ...nextProds[idx], image: dataUrl };
                                   updateSectionProp(activeSection.id, 'products', nextProds);
                                 }}
-                                className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
                               />
                             </div>
                           </div>
@@ -1894,32 +1889,20 @@ export default function OnlineStore() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-gray-600">Favicon URL (Onglet)</label>
-                <input
-                  type="text"
-                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-mono"
+                <label className="text-xs font-bold text-gray-600 block mb-1">Favicon (téléversement)</label>
+                <ImageUploadField
                   value={faviconUrlInput}
-                  onChange={e => setFaviconUrlInput(e.target.value)}
+                  onChange={dataUrl => setFaviconUrlInput(dataUrl)}
+                  maxWidth={64}
                 />
-                <div className="flex gap-1.5 mt-1">
-                  {['', ''].map((u, idx) => (
-                    <button key={idx} type="button" onClick={() => setFaviconUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Favicon modèle {idx+1}</button>
-                  ))}
-                </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-gray-600">Logo de la Boutique (URL)</label>
-                <input
-                  type="text"
-                  className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-mono"
+                <label className="text-xs font-bold text-gray-600 block mb-1">Logo de la Boutique (téléversement)</label>
+                <ImageUploadField
                   value={logoUrlInput}
-                  onChange={e => setLogoUrlInput(e.target.value)}
+                  onChange={dataUrl => setLogoUrlInput(dataUrl)}
+                  maxWidth={400}
                 />
-                <div className="flex gap-1.5 mt-1">
-                  {['', ''].map((u, idx) => (
-                    <button key={idx} type="button" onClick={() => setLogoUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Logo modèle {idx+1}</button>
-                  ))}
-                </div>
               </div>
               <button
                 type="button"

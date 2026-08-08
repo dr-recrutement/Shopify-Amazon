@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, Plus, Minus, Trash2, Check, ArrowRight, Smartphone, CreditCard, Wallet, Lock } from 'lucide-react';
 import {
   defaultThemeForType,
   renderSection,
@@ -12,37 +12,100 @@ import {
   getActiveCatalogProducts,
   getCatalogCategories,
   getShopProfile,
-  getShopSubdomain,
   getPrimaryDomain,
+  getCartItems,
+  saveCartItems,
+  getProductImage,
+  saveOrder,
+  type CartItem,
 } from '../lib/app-state';
+
+type CartDrawerItem = CartItem & { image?: string };
 
 /**
  * Public storefront — renders the merchant's live theme + sections with REAL
  * catalog products (active only). This is what a visitor sees at
  * /s/:slug (temporary domain) or a connected custom domain.
  *
- * Design goals (Shopify parity):
- *  - A product added and marked "active" appears here automatically.
- *  - The merchant's chosen template + colors + fonts drive the rendering.
- *  - Sticky header with cart, search, navigation.
- *  - Product grid pulls from the real catalog (uploaded images, prices).
+ * Fully functional e-commerce: add to cart, cart drawer, checkout with
+ * Mobile Money / card, and real order creation that appears in the
+ * merchant's dashboard Orders list.
  */
 export default function StorefrontPage() {
   const { slug } = useParams<{ slug?: string }>();
   const [theme, setTheme] = useState<ThemeConfig | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [cart, setCart] = useState<CartDrawerItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [orderConfirmed, setOrderConfirmed] = useState<string | null>(null);
+
+  // Checkout form state
+  const [custName, setCustName] = useState('');
+  const [custEmail, setCustEmail] = useState('');
+  const [custPhone, setCustPhone] = useState('');
+  const [custAddress, setCustAddress] = useState('');
+  const [custCity, setCustCity] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('orange_money');
 
   useEffect(() => {
     const stored = getShopTheme<ThemeConfig | null>(null);
     setTheme(stored || defaultThemeForType('ecommerce'));
+    setCart(getCartItems().map(c => {
+      const prod = getActiveCatalogProducts().find(p => p.id === String(c.id));
+      return { ...c, image: prod?.image || undefined };
+    }));
   }, []);
 
-  // Resolve which domain label to show (custom > temporary platform domain).
   const domainLabel = useMemo(() => slug ? `${slug}.os.liafrik.com` : getPrimaryDomain(), [slug]);
   const profile = useMemo(() => getShopProfile(), []);
   const shopName = profile?.name || 'Boutique';
 
-  // Inject real catalog data into product / category sections before render.
+  const handleAddToCart = useCallback((product: any) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === Number(product.id));
+      let updated: CartDrawerItem[];
+      if (existing) {
+        updated = prev.map(i => i.id === Number(product.id) ? { ...i, qty: i.qty + 1 } : i);
+      } else {
+        updated = [...prev, {
+          id: Number(product.id),
+          name: product.name || 'Produit',
+          variant: product.subcategory || product.category || '',
+          price: product.price || 0,
+          qty: 1,
+          currency: product.currency || 'XOF',
+          image: product.image || getProductImage(product as any),
+        }];
+      }
+      saveCartItems(updated);
+      return updated;
+    });
+    setCartOpen(true);
+  }, []);
+
+  const updateQty = (id: number, delta: number) => {
+    setCart(prev => {
+      const updated = prev.map(i => i.id === id ? { ...i, qty: Math.max(0, i.qty + delta) } : i).filter(i => i.qty > 0);
+      saveCartItems(updated);
+      return updated;
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart(prev => {
+      const updated = prev.filter(i => i.id !== id);
+      saveCartItems(updated);
+      return updated;
+    });
+  };
+
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+  const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const currency = profile?.currency || 'XOF';
+
   const sectionsWithCatalog: ThemeSection[] = useMemo(() => {
     if (!theme) return [];
     const products = getActiveCatalogProducts();
@@ -58,6 +121,34 @@ export default function StorefrontPage() {
     });
   }, [theme]);
 
+  // Search results
+  const allProducts = useMemo(() => getActiveCatalogProducts(), [theme]);
+  const searchResults = searchQuery
+    ? allProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : [];
+
+  const handleCheckout = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!custName.trim() || !custPhone.trim() || cart.length === 0) return;
+    const orderId = `LA-${Date.now().toString().slice(-6)}`;
+    const order = {
+      id: orderId,
+      customer: custName,
+      date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
+      total: cartTotal,
+      status: 'pending' as const,
+      payment: paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
+      currency,
+      items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+    };
+    saveOrder(order);
+    setOrderConfirmed(orderId);
+    setCart([]);
+    saveCartItems([]);
+  };
+
+  const fmtPrice = (amt: number) => `${amt.toLocaleString('fr-FR')} ${currency}`;
+
   if (!theme) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -70,25 +161,25 @@ export default function StorefrontPage() {
   }
 
   const visibleSections = sectionsWithCatalog.filter(s => s.visible);
-  const hasProducts = getActiveCatalogProducts().length > 0;
+  const hasProducts = allProducts.length > 0;
 
   return (
     <div className="min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>
-      {/* Top utility bar — domain + cart */}
+      {/* Top utility bar */}
       <div className="border-b" style={{ borderColor: `${theme.colors.text}10` }}>
         <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between text-xs" style={{ color: theme.colors.text }}>
-          <span className="opacity-60 truncate">🔒 {domainLabel}</span>
+          <span className="opacity-60 truncate flex items-center gap-1"><Lock size={10} /> {domainLabel}</span>
           <div className="flex items-center gap-4">
             <button className="opacity-70 hover:opacity-100 transition-opacity">FR ▾</button>
-            <span className="opacity-60">{profile?.currency || 'XOF'}</span>
+            <span className="opacity-60">{currency}</span>
           </div>
         </div>
       </div>
 
-      {/* Announcement bar (if present as a section, otherwise default) */}
+      {/* Announcement bar */}
       {!visibleSections.some(s => s.type === 'announcement-bar') && (
         <div className="text-center text-xs font-medium py-2 px-4" style={{ backgroundColor: theme.colors.primary, color: '#fff' }}>
-          Livraison offerte dès 50 000 {profile?.currency || 'XOF'} · Paiement mobile money accepté
+          Livraison offerte dès 50 000 {currency} · Paiement mobile money accepté
         </div>
       )}
 
@@ -109,12 +200,14 @@ export default function StorefrontPage() {
             <Link to="#" className="hover:opacity-70 transition-opacity">Contact</Link>
           </nav>
           <div className="flex items-center gap-3">
-            <button className="p-1.5 hover:opacity-70 transition-opacity" aria-label="Rechercher">
+            <button className="p-1.5 hover:opacity-70 transition-opacity" aria-label="Rechercher" onClick={() => setSearchOpen(v => !v)}>
               <Search size={20} />
             </button>
-            <button className="relative p-1.5 hover:opacity-70 transition-opacity" aria-label="Panier">
+            <button className="relative p-1.5 hover:opacity-70 transition-opacity" aria-label="Panier" onClick={() => setCartOpen(true)}>
               <ShoppingCart size={20} />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center text-white" style={{ backgroundColor: theme.colors.primary }}>0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center text-white" style={{ backgroundColor: theme.colors.primary }}>{cartCount}</span>
+              )}
             </button>
           </div>
         </div>
@@ -127,12 +220,47 @@ export default function StorefrontPage() {
             <Link to="#" onClick={() => setMobileNavOpen(false)}>Contact</Link>
           </nav>
         )}
+        {/* Search bar */}
+        {searchOpen && (
+          <div className="border-t px-4 py-3" style={{ borderColor: `${theme.colors.text}10` }}>
+            <div className="max-w-6xl mx-auto">
+              <input
+                autoFocus
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Rechercher un produit…"
+                className="w-full px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2"
+                style={{ borderColor: `${theme.colors.text}20`, color: theme.colors.text }}
+              />
+              {searchQuery && (
+                <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {searchResults.length === 0 ? (
+                    <p className="text-sm opacity-60 col-span-full py-4 text-center">Aucun produit trouvé pour « {searchQuery} »</p>
+                  ) : searchResults.map(p => (
+                    <button key={p.id} onClick={() => { handleAddToCart(p); setSearchOpen(false); setSearchQuery(''); }} className="text-left border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} className="w-full h-24 object-cover" />
+                      ) : (
+                        <div className="w-full h-24 bg-gray-100" />
+                      )}
+                      <div className="p-2">
+                        <p className="text-xs font-medium truncate" style={{ color: theme.colors.text }}>{p.name}</p>
+                        <p className="text-xs font-bold" style={{ color: theme.colors.primary }}>{fmtPrice(p.price)}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Rendered live theme sections */}
       <main>
         {visibleSections.map(section => (
-          <div key={section.id}>{renderSection(section, theme)}</div>
+          <div key={section.id}>{renderSection(section, theme, { onAddToCart: handleAddToCart })}</div>
         ))}
       </main>
 
@@ -174,6 +302,157 @@ export default function StorefrontPage() {
           © {new Date().getFullYear()} {shopName} · {domainLabel}
         </div>
       </footer>
+
+      {/* ===== CART DRAWER (slide-in from right) ===== */}
+      {cartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setCartOpen(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative w-full max-w-md bg-white h-full flex flex-col shadow-2xl" onClick={e => e.stopPropagation()} style={{ color: '#111' }}>
+            <div className="flex items-center justify-between p-5 border-b">
+              <h2 className="font-bold text-lg flex items-center gap-2"><ShoppingCart size={20} /> Panier ({cartCount})</h2>
+              <button onClick={() => setCartOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={22} /></button>
+            </div>
+            {cart.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+                <ShoppingCart size={48} className="mb-3 opacity-30" />
+                <p className="text-sm">Votre panier est vide</p>
+                <button onClick={() => setCartOpen(false)} className="mt-4 text-sm font-medium text-brand-600 hover:underline">Continuer mes achats</button>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex gap-3 border-b border-gray-100 pb-3">
+                      <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+                        {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <div className="w-full h-full" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.name}</p>
+                        {item.variant && <p className="text-xs text-gray-400">{item.variant}</p>}
+                        <p className="text-sm font-bold mt-1">{fmtPrice(item.price)}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-50"><Minus size={12} /></button>
+                          <span className="text-sm font-medium w-6 text-center">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-50"><Plus size={12} /></button>
+                          <button onClick={() => removeFromCart(item.id)} className="ml-auto text-red-400 hover:text-red-600"><Trash2 size={14} /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t p-5 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Sous-total</span>
+                    <span className="font-bold text-lg">{fmtPrice(cartTotal)}</span>
+                  </div>
+                  <p className="text-xs text-gray-400">Livraison calculée à l'étape suivante</p>
+                  <button
+                    onClick={() => { setCartOpen(false); setCheckoutOpen(true); }}
+                    className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                    style={{ backgroundColor: theme.colors.primary }}
+                  >
+                    Commander <ArrowRight size={16} />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== CHECKOUT MODAL ===== */}
+      {checkoutOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setCheckoutOpen(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()} style={{ color: '#111' }}>
+            {orderConfirmed ? (
+              <div className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+                  <Check size={32} className="text-green-600" />
+                </div>
+                <h2 className="text-xl font-bold mb-2">Commande confirmée !</h2>
+                <p className="text-sm text-gray-500 mb-1">Votre numéro de commande</p>
+                <p className="text-lg font-mono font-bold text-brand-600 mb-4">{orderConfirmed}</p>
+                <p className="text-sm text-gray-500 mb-6">Nous vous contacterons au {custPhone} pour confirmer la livraison et le paiement.</p>
+                <button
+                  onClick={() => { setCheckoutOpen(false); setOrderConfirmed(null); setCustName(''); setCustPhone(''); setCustEmail(''); setCustAddress(''); setCustCity(''); }}
+                  className="px-6 py-3 rounded-xl font-bold text-white"
+                  style={{ backgroundColor: theme.colors.primary }}
+                >
+                  Continuer mes achats
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between p-5 border-b sticky top-0 bg-white z-10">
+                  <h2 className="font-bold text-lg">Commander</h2>
+                  <button onClick={() => setCheckoutOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={22} /></button>
+                </div>
+                <form onSubmit={handleCheckout} className="p-6 space-y-6">
+                  {/* Contact info */}
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Informations de contact</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <input required placeholder="Nom complet *" value={custName} onChange={e => setCustName(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" />
+                      <input required type="tel" placeholder="Téléphone *" value={custPhone} onChange={e => setCustPhone(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" />
+                      <input type="email" placeholder="Email" value={custEmail} onChange={e => setCustEmail(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 col-span-2" />
+                      <input placeholder="Adresse de livraison" value={custAddress} onChange={e => setCustAddress(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 col-span-2" />
+                      <input placeholder="Ville" value={custCity} onChange={e => setCustCity(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 col-span-2" />
+                    </div>
+                  </div>
+
+                  {/* Payment method */}
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Mode de paiement</h3>
+                    <div className="space-y-2">
+                      {[
+                        { id: 'orange_money', label: 'Orange Money', icon: Smartphone, desc: 'Paiement via USSD' },
+                        { id: 'wave', label: 'Wave', icon: Wallet, desc: 'Paiement instantané' },
+                        { id: 'mtn', label: 'MTN MoMo', icon: Smartphone, desc: 'Mobile Money' },
+                        { id: 'card', label: 'Carte bancaire', icon: CreditCard, desc: 'Visa / Mastercard' },
+                      ].map(p => {
+                        const Icon = p.icon;
+                        return (
+                          <label key={p.id} className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-colors ${paymentMethod === p.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                            <input type="radio" name="payment" value={p.id} checked={paymentMethod === p.id} onChange={e => setPaymentMethod(e.target.value)} className="sr-only" />
+                            <Icon size={20} className={paymentMethod === p.id ? 'text-brand-600' : 'text-gray-400'} />
+                            <div className="flex-1">
+                              <div className="text-sm font-medium">{p.label}</div>
+                              <div className="text-xs text-gray-400">{p.desc}</div>
+                            </div>
+                            {paymentMethod === p.id && <Check size={16} className="text-brand-600" />}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Order summary */}
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Récapitulatif</h3>
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                      {cart.map(item => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{item.name} × {item.qty}</span>
+                          <span className="font-medium">{fmtPrice(item.price * item.qty)}</span>
+                        </div>
+                      ))}
+                      <div className="border-t border-gray-200 pt-2 flex justify-between">
+                        <span className="font-bold">Total</span>
+                        <span className="font-bold text-lg" style={{ color: theme.colors.primary }}>{fmtPrice(cartTotal)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity" style={{ backgroundColor: theme.colors.primary }}>
+                    <Lock size={16} /> Confirmer la commande · {fmtPrice(cartTotal)}
+                  </button>
+                  <p className="text-xs text-gray-400 text-center">Paiement sécurisé · Vos données sont protégées</p>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

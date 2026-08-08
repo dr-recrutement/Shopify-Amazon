@@ -1043,7 +1043,7 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
   );
 }
 
-function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig }) {
+function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddToCart }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig; onAddToCart?: (p: any) => void }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const products = props.products || [];
   const cols = Math.min(props.columns || 4, 4);
@@ -1089,8 +1089,8 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
                     <span className="text-xs font-bold tracking-widest" style={{ color: colors.primary }}>
                       {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                    <button className="w-full py-1 text-[9px] font-black uppercase tracking-widest border text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white transition-all">
-                      Aperçu rapide
+                    <button onClick={() => onAddToCart?.(p)} className="w-full py-1 text-[9px] font-black uppercase tracking-widest border text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white transition-all">
+                      Ajouter au panier
                     </button>
                   </div>
                 </div>
@@ -1112,7 +1112,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
                     <span className="text-sm font-black" style={{ color: colors.text }}>
                       {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-brand-600">Acheter</span>
+                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-brand-600" onClick={() => onAddToCart?.(p)}>Acheter</span>
                   </div>
                 </div>
               </div>
@@ -1161,7 +1161,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
                       </span>
                     )}
                   </div>
-                  <button className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
+                  <button onClick={() => onAddToCart?.(p)} className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
                     Acheter
                   </button>
                 </div>
@@ -2011,7 +2011,7 @@ function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any;
 // ---------------------------------------------------------------------------
 // MAIN RENDER ROUTER
 // ---------------------------------------------------------------------------
-export function renderSection(section: ThemeSection, theme: ThemeConfig): React.ReactNode {
+export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void }): React.ReactNode {
   const colors = theme.colors;
   const fonts = theme.fonts;
   const spacingClass = getSpacingClass(theme.spacing);
@@ -2031,9 +2031,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
     case 'video':
       return <VideoSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'product-grid':
-      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} />;
+      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} />;
     case 'featured-collection':
-      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} />;
+      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} />;
     case 'category-grid':
       return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'collection-list':

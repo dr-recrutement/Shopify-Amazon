@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
 import {
   FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
   ChevronDown, ChevronRight, Settings as SettingsIcon, MousePointerClick, PanelLeft,
+  Palette, Type,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -10,6 +11,11 @@ import {
   addOsSection, removeOsSection, reorderOsSections, updateOsSectionSettings,
   addOsBlock, removeBlock, updateOsBlockSettings, reorderOsBlocks,
 } from '../../lib/cms';
+import { ImageUploadField } from '../../components/ImageUpload';
+import {
+  TEMPLATE_PROFILES, FONT_OPTIONS, type ThemePreset,
+} from '../../lib/theme-engine';
+import { getTenantStorageKey } from '../../lib/app-state';
 
 export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
@@ -24,6 +30,45 @@ export default function Content() {
   // Drag-and-drop state.
   const [draggedSectionIdx, setDraggedSectionIdx] = useState<number | null>(null);
   const [dragOverSectionIdx, setDragOverSectionIdx] = useState<number | null>(null);
+  // Active template + theme design settings (colors/fonts) — persisted in
+  // the same tenant-scoped store as OnlineStore so the two pages stay in sync.
+  const [activeTemplate, setActiveTemplate] = useState<ThemePreset>(() => {
+    return (localStorage.getItem(getTenantStorageKey('liafrikos_active_template')) as ThemePreset) || 'ecommerce-pro';
+  });
+  const [themeColors, setThemeColors] = useState(() => {
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_theme_colors'));
+    const profile = TEMPLATE_PROFILES.find(p => p.id === activeTemplate) || TEMPLATE_PROFILES[0];
+    return saved ? JSON.parse(saved) : profile.colors;
+  });
+  const [themeFonts, setThemeFonts] = useState(() => {
+    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_theme_fonts'));
+    const profile = TEMPLATE_PROFILES.find(p => p.id === activeTemplate) || TEMPLATE_PROFILES[0];
+    return saved ? JSON.parse(saved) : profile.fonts;
+  });
+  // Toggle between "pages" view and "theme design" view in the CMS.
+  const [view, setView] = useState<'pages' | 'design'>('pages');
+
+  const persistTemplate = (preset: ThemePreset) => {
+    const profile = TEMPLATE_PROFILES.find(p => p.id === preset) || TEMPLATE_PROFILES[0];
+    setActiveTemplate(preset);
+    setThemeColors(profile.colors);
+    setThemeFonts(profile.fonts);
+    localStorage.setItem(getTenantStorageKey('liafrikos_active_template'), preset);
+    localStorage.setItem(getTenantStorageKey('liafrikos_theme_colors'), JSON.stringify(profile.colors));
+    localStorage.setItem(getTenantStorageKey('liafrikos_theme_fonts'), JSON.stringify(profile.fonts));
+  };
+
+  const updateColor = (key: keyof typeof themeColors, value: string) => {
+    const next = { ...themeColors, [key]: value };
+    setThemeColors(next);
+    localStorage.setItem(getTenantStorageKey('liafrikos_theme_colors'), JSON.stringify(next));
+  };
+
+  const updateFont = (key: keyof typeof themeFonts, value: string) => {
+    const next = { ...themeFonts, [key]: value };
+    setThemeFonts(next);
+    localStorage.setItem(getTenantStorageKey('liafrikos_theme_fonts'), JSON.stringify(next));
+  };
 
   useEffect(() => {
     const initial = getCmsPages();
@@ -101,8 +146,103 @@ export default function Content() {
 
   return (
     <div>
-      <PageHeader title="Content" subtitle="CMS Shopify Online Store 2.0 — éditeur de thème drag-and-drop, sections et blocs réordonnables." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
+      <PageHeader title="Content" subtitle="CMS Shopify Online Store 2.0 — choisissez un template, activez-le, puis personnalisez tout : textes, images, couleurs, sections." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
 
+      {/* Tab bar: Pages / Design du thème */}
+      <div className="flex items-center gap-2 mb-4">
+        <button onClick={() => setView('pages')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'pages' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+          <FileText size={14} className="inline mr-1" /> Pages & Sections
+        </button>
+        <button onClick={() => setView('design')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'design' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+          <Palette size={14} className="inline mr-1" /> Template & Design
+        </button>
+      </div>
+
+      {/* DESIGN VIEW — template selector + colors + fonts */}
+      {view === 'design' && (
+        <div className="space-y-6">
+          {/* Template selector — exactly 5 templates */}
+          <Card className="p-5">
+            <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2"><Layout size={16} className="text-brand-600" /> Choisir un template</h3>
+            <p className="text-xs text-gray-500 mb-4">5 templates professionnels pour 5 usages. Activez un template puis personnalisez-le entièrement.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {TEMPLATE_PROFILES.map(p => {
+                const isActive = activeTemplate === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => persistTemplate(p.id)}
+                    className={`text-left p-4 rounded-xl border transition-all ${isActive ? 'border-brand-500 ring-2 ring-brand-200 bg-brand-50/30' : 'border-gray-200 hover:border-brand-300 hover:shadow-md bg-white'}`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-2xl">{p.icon}</span>
+                      {isActive && <span className="text-[9px] font-bold uppercase text-brand-600 bg-brand-100 px-1.5 py-0.5 rounded">Actif</span>}
+                    </div>
+                    <div className="mt-2 text-sm font-bold text-gray-900">{p.label}</div>
+                    <div className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{p.useCase}</div>
+                    <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{p.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {p.features.map(f => <span key={f} className="text-[9px] px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-100">{f}</span>)}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Colors + Typography customization */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-5">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Palette size={14} className="text-brand-600" /> Couleurs du thème</h3>
+              <p className="text-xs text-gray-500 mb-4">Personnalisez chaque couleur. Les images se téléversent (pas de liens externes).</p>
+              <div className="space-y-3">
+                {([
+                  ['primary', 'Couleur principale'],
+                  ['secondary', 'Couleur secondaire'],
+                  ['accent', 'Couleur d\'accent'],
+                  ['background', 'Arrière-plan'],
+                  ['text', 'Texte'],
+                ] as const).map(([key, label]) => (
+                  <div key={key} className="flex items-center justify-between gap-3">
+                    <label className="text-xs font-medium text-gray-700">{label}</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={themeColors[key]} onChange={e => updateColor(key, e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-gray-200" />
+                      <input value={themeColors[key]} onChange={e => updateColor(key, e.target.value)} className="w-20 px-2 py-1 border border-gray-200 rounded text-xs font-mono" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <Card className="p-5">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Type size={14} className="text-brand-600" /> Typographie</h3>
+              <p className="text-xs text-gray-500 mb-4">Choisissez les polices de vos titres et de votre texte.</p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Police des titres</label>
+                  <select value={themeFonts.heading} onChange={e => updateFont('heading', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                    {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Police du texte</label>
+                  <select value={themeFonts.body} onChange={e => updateFont('body', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                    {FONT_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+                  </select>
+                </div>
+                <div className="pt-2 border-t border-gray-100">
+                  <div className="text-xs text-gray-400">Aperçu</div>
+                  <div className="mt-1 text-lg font-bold" style={{ fontFamily: themeFonts.heading, color: themeColors.primary }}>Titre de démonstration</div>
+                  <div className="text-sm" style={{ fontFamily: themeFonts.body, color: themeColors.text }}>Texte courant de démonstration.</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* PAGES VIEW — page list + 3-pane theme editor */}
+      {view === 'pages' && (
+        <>
       {/* Page list */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <Card className="lg:col-span-2">
@@ -333,6 +473,19 @@ export default function Content() {
                       className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:ring-2 focus:ring-brand-200 focus:outline-none"
                     />
                   </div>
+                  <ImageUploadField
+                    label="Image (téléverser)"
+                    value={selectedSection.settings?.image || ''}
+                    onChange={dataUrl => setDraft(updateOsSectionSettings(draft, selectedSection.id, { image: dataUrl }))}
+                  />
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">Texte du bouton</label>
+                    <input
+                      value={selectedSection.settings?.cta || ''}
+                      onChange={e => setDraft(updateOsSectionSettings(draft, selectedSection.id, { cta: e.target.value }))}
+                      className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:ring-2 focus:ring-brand-200 focus:outline-none"
+                    />
+                  </div>
                   <div className="pt-2 border-t border-gray-100">
                     <div className="text-[10px] text-gray-400">{selectedSection.blocks.length} bloc(s) dans cette section</div>
                   </div>
@@ -362,6 +515,8 @@ export default function Content() {
           </div>
         </Card>
       )}
+        </>
+      )}
     </div>
   );
 }
@@ -370,13 +525,16 @@ export default function Content() {
 function CanvasSection({ sec }: { sec: { type: string; settings: Record<string, any>; blocks: any[] } }) {
   const heading = sec.settings?.heading || sec.settings?.title;
   const subtext = sec.settings?.subtext;
+  const image = sec.settings?.image;
+  const imgStyle = image ? { backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined;
   switch (sec.type) {
     case 'image-banner':
     case 'slideshow':
       return (
-        <div className="h-40 bg-gradient-to-br from-brand-600 to-brand-900 flex flex-col items-center justify-center text-white p-4">
-          {heading && <div className="text-lg font-bold">{heading}</div>}
-          {subtext && <div className="text-xs opacity-80 mt-1">{subtext}</div>}
+        <div className="h-40 flex flex-col items-center justify-center text-white p-4" style={imgStyle || { background: 'linear-gradient(135deg, #008060, #004C3F)' }}>
+          {heading && <div className="text-lg font-bold drop-shadow">{heading}</div>}
+          {subtext && <div className="text-xs opacity-90 mt-1 drop-shadow">{subtext}</div>}
+          {!image && <span className="text-[9px] opacity-60 mt-1">Téléversez une image dans les réglages →</span>}
         </div>
       );
     case 'featured-collection':
@@ -409,7 +567,7 @@ function CanvasSection({ sec }: { sec: { type: string; settings: Record<string, 
     case 'image-with-text':
       return (
         <div className="p-4 grid grid-cols-2 gap-3">
-          <div className="aspect-[4/3] rounded bg-gradient-to-br from-gray-100 to-gray-200" />
+          <div className="aspect-[4/3] rounded bg-gradient-to-br from-gray-100 to-gray-200" style={imgStyle} />
           <div className="flex flex-col justify-center">
             {heading && <div className="text-sm font-bold text-gray-900">{heading}</div>}
             {subtext && <div className="text-[10px] text-gray-500 mt-1">{subtext}</div>}

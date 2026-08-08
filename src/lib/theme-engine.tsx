@@ -86,7 +86,7 @@ export function MediaBox({ src, alt, seed, className, style }: {
 }
 
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
-export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial';
+export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial' | 'ecommerce-pro' | 'vitrine' | 'business-corp' | 'services' | 'creative-magazine';
 
 export type SectionType =
   | 'header' | 'announcement-bar' | 'footer'
@@ -126,18 +126,23 @@ export interface ThemeConfig {
 
 // Each variant produces a genuinely different design, not just a colour swap.
 export type LayoutVariant =
-  | 'dawn'          // minimal, full-bleed banner, square-ish cards, thin header
-  | 'refresh'       // centered editorial, rounded cards, drawer cart hint
-  | 'spotlight'     // large imagery, overlay nav, big product focus
-  | 'crave'         // vibrant rounded, playful badges, warm grid
-  | 'sense'         // soft pastel, gentle radius, airy spacing
-  | 'craft'         // warm artisanal, textured borders, serif headings
-  | 'colorblock'    // bold blocks, high contrast, hard edges
-  | 'studio'        // creative asymmetric, mixed radius, accent gold
-  | 'publisher'     // editorial columns, serif, dense text layout
-  | 'taste';        // typographic, tight grid, monochrome
+  | 'ecommerce-pro'   // E-commerce: full store, product grid, cart, promos, badges
+  | 'vitrine'         // Site vitrine: portfolio, team, testimonials, airy
+  | 'business-corp'   // Business/Corporate: agency/startup, bold, trust-led
+  | 'services'        // Services: consultants/freelance, booking, contact-led
+  | 'creative-magazine' // Créatif/Magazine/Blog: editorial, asymmetric, typographic
+  // Legacy variants kept for backward compatibility with stored themes
+  | 'dawn' | 'refresh' | 'spotlight' | 'crave' | 'sense'
+  | 'craft' | 'colorblock' | 'studio' | 'publisher' | 'taste';
 
 export const LAYOUT_VARIANTS: { id: LayoutVariant; label: string; desc: string; radius: string; headerStyle: string; cardStyle: string }[] = [
+  // The 5 professional templates — each a complete, distinct theme
+  { id: 'ecommerce-pro', label: 'E-commerce Pro', desc: 'Boutique en ligne moderne — produits, catégories, panier, promotions', radius: 'rounded-xl', headerStyle: 'ecommerce', cardStyle: 'product' },
+  { id: 'vitrine', label: 'Site Vitrine', desc: 'Présentation entreprise — portfolio, équipe, témoignages, contact', radius: 'rounded-2xl', headerStyle: 'centered', cardStyle: 'rounded' },
+  { id: 'business-corp', label: 'Business Corporate', desc: 'Solution pro — agences, startups, sociétés, services B2B', radius: 'rounded-lg', headerStyle: 'block', cardStyle: 'shadowed' },
+  { id: 'services', label: 'Services Pro', desc: 'Consultants, freelances, cabinets — réservation et contact', radius: 'rounded-md', headerStyle: 'warm', cardStyle: 'bordered' },
+  { id: 'creative-magazine', label: 'Créatif / Magazine', desc: 'Éditorial, médias, blogs, créateurs — design typographique', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
+  // Legacy variants (kept for backward compat)
   { id: 'dawn', label: 'Dawn', desc: 'Minimal, bannière plein cadre, cartes nettes', radius: 'rounded-none', headerStyle: 'thin', cardStyle: 'flat' },
   { id: 'refresh', label: 'Refresh', desc: 'Éditorial centré, cartes arrondies', radius: 'rounded-2xl', headerStyle: 'centered', cardStyle: 'rounded' },
   { id: 'spotlight', label: 'Spotlight', desc: 'Grandes images, nav overlay', radius: 'rounded-lg', headerStyle: 'overlay', cardStyle: 'shadowed' },
@@ -213,7 +218,108 @@ export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; c
     colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#6B6B6B', background: '#F8F6F1', text: '#1A1A1A' },
     fonts: { heading: 'Playfair Display', body: 'Lora' }, layoutVariant: 'publisher',
   },
+  // The 5 professional templates — each a complete, distinct theme for a use case
+  'ecommerce-pro': {
+    label: 'E-commerce Pro', desc: 'Boutique en ligne moderne — produits, panier, promotions',
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#00A878', background: '#FFFFFF', text: '#121212' },
+    fonts: { heading: 'Poppins', body: 'Inter' }, layoutVariant: 'ecommerce-pro',
+  },
+  'vitrine': {
+    label: 'Site Vitrine', desc: 'Présentation entreprise — portfolio, équipe, témoignages',
+    colors: { primary: '#2563EB', secondary: '#1E293B', accent: '#60A5FA', background: '#F8FAFC', text: '#1E293B' },
+    fonts: { heading: 'Manrope', body: 'DM Sans' }, layoutVariant: 'vitrine',
+  },
+  'business-corp': {
+    label: 'Business Corporate', desc: 'Solution pro — agences, startups, sociétés B2B',
+    colors: { primary: '#0F172A', secondary: '#1E293B', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' },
+    fonts: { heading: 'Plus Jakarta Sans', body: 'Inter' }, layoutVariant: 'business-corp',
+  },
+  'services': {
+    label: 'Services Pro', desc: 'Consultants, freelances, cabinets — réservation et contact',
+    colors: { primary: '#7C3AED', secondary: '#1F2937', accent: '#A78BFA', background: '#FAFAFA', text: '#1F2937' },
+    fonts: { heading: 'Outfit', body: 'Inter' }, layoutVariant: 'services',
+  },
+  'creative-magazine': {
+    label: 'Créatif / Magazine', desc: 'Éditorial, médias, blogs, créateurs — design typographique',
+    colors: { primary: '#DC2626', secondary: '#171717', accent: '#F59E0B', background: '#FAFAF9', text: '#171717' },
+    fonts: { heading: 'Playfair Display', body: 'Lora' }, layoutVariant: 'creative-magazine',
+  },
 };
+
+/**
+ * The 5 professional templates — exactly five, each for a distinct use case.
+ * This is the canonical list shown in the theme selector: the user picks one,
+ * activates it, then customizes everything via the CMS page builder.
+ */
+export interface TemplateProfile {
+  id: ThemePreset;
+  layoutVariant: LayoutVariant;
+  label: string;
+  useCase: string;
+  description: string;
+  icon: string;
+  colors: ThemeConfig['colors'];
+  fonts: { heading: string; body: string };
+  features: string[];
+}
+
+export const TEMPLATE_PROFILES: TemplateProfile[] = [
+  {
+    id: 'ecommerce-pro',
+    layoutVariant: 'ecommerce-pro',
+    label: 'E-commerce Pro',
+    useCase: 'E-commerce',
+    description: 'Boutique en ligne moderne avec produits, catégories, panier, checkout et promotions.',
+    icon: '🛍️',
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#00A878', background: '#FFFFFF', text: '#121212' },
+    fonts: { heading: 'Poppins', body: 'Inter' },
+    features: ['Catalogue produits', 'Collections', 'Panier', 'Promotions', 'Paiements', 'Checkout'],
+  },
+  {
+    id: 'vitrine',
+    layoutVariant: 'vitrine',
+    label: 'Site Vitrine',
+    useCase: 'Site vitrine',
+    description: 'Présentation d’entreprise, portfolio, équipe, témoignages et formulaire de contact.',
+    icon: '🏢',
+    colors: { primary: '#2563EB', secondary: '#1E293B', accent: '#60A5FA', background: '#F8FAFC', text: '#1E293B' },
+    fonts: { heading: 'Manrope', body: 'DM Sans' },
+    features: ['Portfolio', 'À propos', 'Équipe', 'Témoignages', 'Contact'],
+  },
+  {
+    id: 'business-corp',
+    layoutVariant: 'business-corp',
+    label: 'Business Corporate',
+    useCase: 'Business / Corporate',
+    description: 'Solution professionnelle pour entreprises, agences, startups et sociétés B2B.',
+    icon: '💼',
+    colors: { primary: '#0F172A', secondary: '#1E293B', accent: '#3B82F6', background: '#FFFFFF', text: '#0F172A' },
+    fonts: { heading: 'Plus Jakarta Sans', body: 'Inter' },
+    features: ['Services B2B', 'À propos', 'Témoignages', 'Stats', 'Contact pro'],
+  },
+  {
+    id: 'services',
+    layoutVariant: 'services',
+    label: 'Services Pro',
+    useCase: 'Services',
+    description: 'Adapté aux consultants, freelances, cabinets et services professionnels avec réservation.',
+    icon: '🤝',
+    colors: { primary: '#7C3AED', secondary: '#1F2937', accent: '#A78BFA', background: '#FAFAFA', text: '#1F2937' },
+    fonts: { heading: 'Outfit', body: 'Inter' },
+    features: ['Prestations', 'Réservation', 'À propos', 'Témoignages', 'Contact'],
+  },
+  {
+    id: 'creative-magazine',
+    layoutVariant: 'creative-magazine',
+    label: 'Créatif / Magazine',
+    useCase: 'Créatif / Magazine / Blog',
+    description: 'Design éditorial et créatif pour médias, créateurs, blogs et contenus riches.',
+    icon: '🎨',
+    colors: { primary: '#DC2626', secondary: '#171717', accent: '#F59E0B', background: '#FAFAF9', text: '#171717' },
+    fonts: { heading: 'Playfair Display', body: 'Lora' },
+    features: ['Articles', 'Diaporama', 'Édito', 'Catégories', 'Newsletter'],
+  },
+];
 
 export function getLayoutVariant(preset: ThemePreset): LayoutVariant {
   return THEME_PRESETS[preset].layoutVariant;
@@ -234,6 +340,7 @@ export function getVariantStyles(variant: LayoutVariant): { radius: string; card
     mixed: 'rounded-lg shadow-md border border-gray-100',
     'text-led': 'rounded-sm shadow-none border border-gray-200',
     tight: 'rounded-none shadow-none border border-gray-100',
+    product: 'rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-shadow',
   };
   const headerMap: Record<string, string> = {
     thin: 'border-b border-gray-100 py-3',
@@ -246,6 +353,7 @@ export function getVariantStyles(variant: LayoutVariant): { radius: string; card
     asymmetric: 'py-4 border-b border-gray-100',
     editorial: 'py-5 border-b border-gray-200',
     minimal: 'py-2 border-b border-gray-100',
+    ecommerce: 'border-b border-gray-100 py-3 sticky top-0 bg-white/95 backdrop-blur z-30',
   };
   return { radius: v.radius, cardClass: cardMap[v.cardStyle] || cardMap.flat, headerClass: headerMap[v.headerStyle] || headerMap.thin };
 }
@@ -289,6 +397,55 @@ function getSpacingClass(spacing: ThemeConfig['spacing']) {
  */
 export function sectionsForVariantPublic(variant: LayoutVariant, s: Record<string, ThemeSection>): ThemeSection[] {
   switch (variant) {
+    // 1. E-commerce Pro — full online store: banner → collections → featured →
+    //    countdown promo → product detail → trust badges → payments → newsletter
+    case 'ecommerce-pro':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.collectionListSection, s.multicolumnSection, s.countdownSection,
+        s.featuredCollectionSection, s.productDetailSection, s.imageWithTextSection,
+        s.testimonialsSection, s.paymentsSection, s.newsletterSection,
+        s.footerSection, s.socialBarSection, s.chatFloatSection,
+      ];
+    // 2. Site Vitrine — company showcase: banner → about → portfolio/team →
+    //    multicolumn values → testimonials → contact → footer
+    case 'vitrine':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.aboutSection, s.imageWithTextSection, s.multicolumnSection,
+        s.richTextSection, s.testimonialsSection, s.collapsibleContentSection,
+        s.contactFormSection, s.emailSignupSection, s.footerSection,
+      ];
+    // 3. Business / Corporate — B2B trust-led: banner → rich-text → services
+    //    (multicolumn) → about → testimonials → stats → contact → footer
+    case 'business-corp':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.richTextSection, s.multicolumnSection, s.imageWithTextSection,
+        s.aboutSection, s.testimonialsSection, s.collapsibleContentSection,
+        s.contactFormSection, s.emailSignupSection, s.footerSection,
+      ];
+    // 4. Services Pro — consultants/freelance: banner → services (multicolumn)
+    //    → image-with-text → about → testimonials → pricing/countdown →
+    //    contact/booking → footer
+    case 'services':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.multicolumnSection, s.imageWithTextSection, s.aboutSection,
+        s.testimonialsSection, s.countdownSection, s.collapsibleContentSection,
+        s.contactFormSection, s.emailSignupSection, s.footerSection,
+      ];
+    // 5. Créatif / Magazine / Blog — editorial: slideshow → rich-text →
+    //    image-with-text (asymmetric) → featured-collection → testimonials →
+    //    collapsible → newsletter → footer
+    case 'creative-magazine':
+      return [
+        s.announcementBarSection, s.headerSection, s.slideshowSection,
+        s.richTextSection, s.imageWithTextSection, s.aboutSection,
+        s.featuredCollectionSection, s.testimonialsSection,
+        s.collapsibleContentSection, s.emailSignupSection, s.footerSection,
+      ];
+    // Legacy arrangements kept for backward compatibility
     // Dawn — minimalist, media-forward, balanced
     case 'dawn':
       return [
@@ -371,8 +528,8 @@ export function sectionsForVariantPublic(variant: LayoutVariant, s: Record<strin
 }
 
 
-export function defaultThemeForType(siteType: SiteType): ThemeConfig {
-  const preset: ThemePreset = siteType === 'landing' ? 'luxury' : siteType === 'ecommerce' ? 'african' : siteType === 'business' ? 'editorial' : 'universal';
+export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePreset): ThemeConfig {
+  const preset: ThemePreset = presetOverride ?? (siteType === 'landing' ? 'luxury' : siteType === 'ecommerce' ? 'african' : siteType === 'business' ? 'editorial' : 'universal');
   const presetConfig = THEME_PRESETS[preset];
   const colors = presetConfig.colors;
   const fonts = presetConfig.fonts;

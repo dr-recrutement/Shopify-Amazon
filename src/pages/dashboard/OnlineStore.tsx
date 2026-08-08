@@ -6,7 +6,7 @@ import {
   Sparkles, Check, Send
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories } from '../../lib/app-state';
 
 interface CustomDomain {
@@ -16,83 +16,21 @@ interface CustomDomain {
   createdAt: string;
 }
 
-// Official Shopify Theme Store presets — all free Shopify themes are built on
-// the Dawn (Online Store 2.0) codebase; each is essentially a colour + typography
-// preset. We mirror that model here so merchants pick a real Shopify theme.
-const CUSTOM_PRESETS = [
-  {
-    id: 'dawn', name: 'Dawn', layoutVariant: 'dawn' as const,
-    description: 'Thème de référence Shopify OS 2.0. Minimal, rapide, polyvalent — idéal pour démarrer.',
-    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'refresh', name: 'Refresh', layoutVariant: 'refresh' as const,
-    description: 'Style éditorial centré produit, tiroir panier coulissant. Idéal petits catalogues.',
-    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#8A8A8A', background: '#FAFAFA', text: '#1A1A1A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'spotlight', name: 'Spotlight', layoutVariant: 'spotlight' as const,
-    description: 'Mise en avant visuelle, grandes images, parfait pour mettre un produit à l’honneur.',
-    colors: { primary: '#008060', secondary: '#2A2A2A', accent: '#A0A0A0', background: '#FFFFFF', text: '#111111' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'crave', name: 'Crave', layoutVariant: 'crave' as const,
-    description: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons. Appétit visuel.',
-    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5CC190', background: '#FBFBFB', text: '#1A1A1A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'sense', name: 'Sense', layoutVariant: 'sense' as const,
-    description: 'Doux et minimaliste, dédié beauté & bien-être. Palette pastel apaisante.',
-    colors: { primary: '#008060', secondary: '#3A3530', accent: '#9ED8C5', background: '#FBF8F4', text: '#3A3530' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'taste', name: 'Taste', layoutVariant: 'taste' as const,
-    description: 'Épuré et typographique, pour spécialités alimentaires et produits de niche.',
-    colors: { primary: '#1A1A1A', secondary: '#3A3A3A', accent: '#008060', background: '#FFFFFF', text: '#1A1A1A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'craft', name: 'Craft', layoutVariant: 'craft' as const,
-    description: 'Chaleureux et artisanal, met en valeur le savoir-faire et les matières.',
-    colors: { primary: '#008060', secondary: '#2A2520', accent: '#36A18A', background: '#F5F0EA', text: '#2A2520' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'colorblock', name: 'Colorblock', layoutVariant: 'colorblock' as const,
-    description: 'Grille audacieuse et contrastée, mode & prêt-à-porter. Blocs de couleur vifs.',
-    colors: { primary: '#008060', secondary: '#111111', accent: '#004C3F', background: '#FFFFFF', text: '#111111' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'studio', name: 'Studio', layoutVariant: 'studio' as const,
-    description: 'Élégant et créatif, pour marques de design et studios artistiques.',
-    colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#008060', background: '#FAFAFA', text: '#1B1B1B' },
-    fonts: { heading: 'Playfair Display', body: 'Montserrat' }
-  },
-  {
-    id: 'origin', name: 'Origin', layoutVariant: 'craft' as const,
-    description: 'Authentique et naturel, pour marques durables et éco-responsables.',
-    colors: { primary: '#008060', secondary: '#283618', accent: '#6BC4A8', background: '#F4F1EA', text: '#283618' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'publisher', name: 'Publisher', layoutVariant: 'publisher' as const,
-    description: 'Éditorial et riche en contenu, livres, musique et marques à storytelling.',
-    colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#008060', background: '#F8F6F1', text: '#1A1A1A' },
-    fonts: { heading: 'Playfair Display', body: 'Lora' }
-  },
-  {
-    id: 'dawn-panafrican', name: 'Dawn — Panafrican', layoutVariant: 'dawn' as const,
-    description: 'Variante panafricaine de Dawn : vert Shopify appliqué au commerce africain.',
-    colors: { primary: '#008060', secondary: '#004C3F', accent: '#5CC190', background: '#FBFBFB', text: '#14213D' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-];
+// Exactly 5 professional templates — each a complete, distinct theme for a
+// distinct use case. Sourced from TEMPLATE_PROFILES in theme-engine so the
+// canonical list lives in one place. The user picks one → activates it →
+// then customizes everything via the CMS page builder.
+const CUSTOM_PRESETS = TEMPLATE_PROFILES.map(p => ({
+  id: p.id,
+  name: p.label,
+  useCase: p.useCase,
+  layoutVariant: p.layoutVariant,
+  description: p.description,
+  icon: p.icon,
+  features: p.features,
+  colors: p.colors,
+  fonts: p.fonts,
+}));
 
 export default function OnlineStore() {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
@@ -248,18 +186,20 @@ export default function OnlineStore() {
   };
 
   const selectPreset = (preset: typeof CUSTOM_PRESETS[0]) => {
-    // Regenerate the full theme from the new preset so the merchant gets the
-    // theme's distinct default section arrangement + colours + typography —
-    // exactly like clicking a theme on the Shopify Theme Store.
-    const fresh = defaultThemeForType(theme.siteType);
+    // Regenerate the full theme from the selected preset so the merchant gets
+    // the template's distinct default section arrangement + colours + typography
+    // — exactly like activating a theme on the Shopify Theme Store.
+    const fresh = defaultThemeForType(theme.siteType, preset.id as any);
     setTheme({
       ...fresh,
       colors: { ...preset.colors },
       fonts: { ...preset.fonts },
+      preset: preset.id as any,
       layoutVariant: preset.layoutVariant,
       sections: fresh.sections,
     });
-    showToast(`Thème "${preset.name}" appliqué — nouveau design chargé.`);
+    setPanel('sections');
+    showToast(`Template « ${preset.name} » activé — personnalisez-le via le CMS.`);
   };
 
   const addSection = (type: ThemeSection['type']) => {
@@ -564,32 +504,53 @@ export default function OnlineStore() {
             </div>
           </Card>
 
-          {/* PANEL 1: Ultra-modern preset selection */}
+          {/* PANEL 1: Template selection — exactly 5 professional templates */}
           {panel === 'themes' && (
             <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                  <Store size={16} className="text-brand-600" /> Thèmes Shopify (Online Store 2.0)
+                  <Store size={16} className="text-brand-600" /> Choisir un template
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Thèmes officiels du Shopify Theme Store — tous basés sur Dawn. Chaque thème est un preset de couleurs & typographie appliqué instantanément.</p>
+                <p className="text-xs text-gray-500 mt-1">5 templates professionnels pour 5 usages différents. Choisissez → activez → personnalisez tout via le CMS.</p>
               </div>
               <div className="space-y-3">
-                {CUSTOM_PRESETS.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => selectPreset(p)}
-                    className="w-full text-left p-3.5 rounded-xl border border-gray-200 hover:border-brand-300 hover:shadow-md transition-all bg-white group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">{p.name}</span>
-                      <div className="flex gap-1">
-                        <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.primary }} />
-                        <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.background }} />
+                {CUSTOM_PRESETS.map(p => {
+                  const isActive = theme.layoutVariant === p.layoutVariant;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => selectPreset(p)}
+                      className={`w-full text-left p-3.5 rounded-xl border transition-all bg-white group ${isActive ? 'border-brand-500 ring-2 ring-brand-200' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-xl flex-shrink-0">{p.icon}</span>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">{p.name}</span>
+                              {isActive && <span className="text-[9px] font-bold uppercase text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">Actif</span>}
+                            </div>
+                            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{p.useCase}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-1 flex-shrink-0">
+                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.primary }} />
+                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.accent }} />
+                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.background }} />
+                        </div>
                       </div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{p.description}</p>
-                  </button>
-                ))}
+                      <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{p.description}</p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {p.features.map((f: string) => (
+                          <span key={f} className="text-[9px] px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
+                        ))}
+                      </div>
+                      <div className={`mt-2 text-[11px] font-medium flex items-center gap-1 ${isActive ? 'text-brand-600' : 'text-gray-400 group-hover:text-brand-600'}`}>
+                        {isActive ? <><CheckCircle size={12} /> Template activé</> : <><ChevronRight size={12} /> Activer ce template</>}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </Card>
           )}

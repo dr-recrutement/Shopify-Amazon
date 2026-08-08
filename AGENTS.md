@@ -43,6 +43,26 @@ The platform mirrors Shopify's theme architecture. Do NOT rename concepts away f
 - Lists the real Shopify Theme Store catalog with industries (Dawn, Refresh, Spotlight, etc.)
 - Documents OS 2.0 architecture (JSON templates, sections everywhere, app blocks, metafields)
 
+### Storefront (`src/pages/StorefrontPage.tsx`)
+- Public-facing e-commerce page at `/store` or `/s/:slug` (custom domain)
+- Renders merchant's live theme sections with REAL catalog products (active only)
+- Fully functional e-commerce (not just a landing page):
+  - **Cart drawer** (slide-in from right): add to cart, qty +/-, remove, subtotal, persisted via `getCartItems`/`saveCartItems`
+  - **Checkout modal**: customer form (name, phone, email, address, city) + 4 payment methods (Orange Money, Wave, MTN MoMo, Carte bancaire) + order summary + confirmation screen
+  - **Real order creation** via `saveOrder()` — orders appear in dashboard `/app/orders` list
+  - **Functional search**: live product filtering with add-to-cart from search results
+  - Cart count badge in header, mobile nav, announcement bar, full footer
+- `renderSection(section, theme, { onAddToCart })` — callbacks param wires buy buttons to cart
+- ProductGridSection passes `onAddToCart` to all 3 card variants (default, editorial, luxury)
+
+### Data persistence (`src/lib/app-state.ts`)
+- Tenant-scoped localStorage layer: products, orders, customers, discounts, staff,
+  automations, markets, reports, campaigns, chat threads, cart items, shop profile, theme
+- `getActiveCatalogProducts()` returns active products mapped to `CatalogProductCard` shape
+- `saveOrder()` / `getOrders()` — orders created from storefront checkout appear in dashboard
+- `getCartItems()` / `saveCartItems()` — cart persistence across page reloads
+- `getProductImage()` / `getProductImages()` — primary image + full gallery from uploaded base64
+
 ## Auth (`src/lib/supabase.ts`)
 - `isSupabaseConfigured` = env vars present. When false, local mode auto-activates.
 - `setLocalAuthMode(true)` forces local mode (used by "Explorer Démo" on login page).
@@ -68,7 +88,13 @@ The platform mirrors Shopify's theme architecture. Do NOT rename concepts away f
 
 ## Verification done
 - typecheck passes (exit 0)
-- build passes (dist produced)
-- vitest passes (4/4)
-- Visual QA in browser: Online Store editor renders Dawn sections, theme picker shows
-  real Shopify themes, CMS shows Shopify JSON templates + block types.
+- build passes (3.25s, dist produced)
+- vitest passes (12/12)
+- Visual QA in browser (2026-08-08):
+  - Online Store editor renders Dawn sections, theme picker shows real Shopify themes
+  - CMS shows Shopify JSON templates + block types
+  - Storefront: add to cart → cart drawer opens, qty +/- works, total updates
+  - Storefront: checkout form filled → order confirmed (LA-201663)
+  - Dashboard /app/orders: order LA-201663 visible with customer, total, payment method
+  - Storefront: search "robe" → returns "Robe wax traditionnelle" product with add-to-cart
+  - All colors use Shopify green (#008060), no orange in UI

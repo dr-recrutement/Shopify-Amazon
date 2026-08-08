@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, EmptyState, Table, Badge } from './ui';
 import { Package, Plus, Sparkles, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, type StoreProduct, type CategoryMap } from '../../lib/app-state';
+import { ImageUploadField } from '../../components/ImageUpload';
 
 export default function Products() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -18,6 +19,8 @@ export default function Products() {
   const [prodStatus, setProdStatus] = useState<'active' | 'out_of_stock'>('active');
   const [prodCategory, setProdCategory] = useState('');
   const [prodSubcategory, setProdSubcategory] = useState('');
+  const [prodImage, setProdImage] = useState('');
+  const [prodDescription, setProdDescription] = useState('');
 
   // States to add new category/subcategory inline
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
@@ -40,6 +43,8 @@ export default function Products() {
     setProdPrice(10000);
     setProdStock(10);
     setProdStatus('active');
+    setProdImage('');
+    setProdDescription('');
 
     // Default to the first category if available
     const keys = Object.keys(categories);
@@ -58,6 +63,8 @@ export default function Products() {
     setProdPrice(p.price);
     setProdStock(p.stock);
     setProdStatus(p.status);
+    setProdImage(p.image || '');
+    setProdDescription(p.description || '');
     setProdCategory(p.category || '');
     setProdSubcategory(p.subcategory || '');
 
@@ -82,6 +89,8 @@ export default function Products() {
             status: Number(prodStock) === 0 ? 'out_of_stock' : prodStatus,
             category: prodCategory,
             subcategory: prodSubcategory,
+            image: prodImage,
+            description: prodDescription,
           };
         }
         return p;
@@ -96,6 +105,8 @@ export default function Products() {
         currency: 'XOF',
         category: prodCategory,
         subcategory: prodSubcategory,
+        image: prodImage,
+        description: prodDescription,
       };
       updatedList = [newProd, ...products];
     }
@@ -203,12 +214,12 @@ export default function Products() {
                 <tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-3.5 px-4 font-medium text-gray-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-                        <Package size={18} />
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-100" style={p.image ? { backgroundImage: `url(${p.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
+                        {!p.image && <Package size={18} className="text-gray-400" />}
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">{p.name}</div>
-                        <div className="text-xs text-gray-400">ID: {p.id}</div>
+                        <div className="text-xs text-gray-400">ID: {p.id}{p.status === 'active' ? ' · Visible sur la boutique' : ' · Masqué'}</div>
                       </div>
                     </div>
                   </td>
@@ -282,6 +293,19 @@ export default function Products() {
             </div>
 
             <form onSubmit={handleSaveProduct} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+              {/* Product Image (upload only — no links) */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Image du produit (téléversement)
+                </label>
+                <ImageUploadField
+                  value={prodImage}
+                  onChange={setProdImage}
+                  maxWidth={600}
+                />
+                <p className="text-[10px] text-gray-400">Téléversez une image — elle s’affichera sur la boutique. Aucun lien externe.</p>
+              </div>
+
               {/* Product Name */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -293,6 +317,20 @@ export default function Products() {
                   placeholder="Ex: Robe Wax Kente Royale"
                   value={prodName}
                   onChange={e => setProdName(e.target.value)}
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Product Description */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Description
+                </label>
+                <textarea
+                  placeholder="Décrivez votre produit (matière, dimensions, origine…)"
+                  value={prodDescription}
+                  onChange={e => setProdDescription(e.target.value)}
+                  rows={3}
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>

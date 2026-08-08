@@ -13,9 +13,9 @@ import {
 } from '../../lib/cms';
 import { ImageUploadField } from '../../components/ImageUpload';
 import {
-  TEMPLATE_PROFILES, FONT_OPTIONS, type ThemePreset,
+  TEMPLATE_PROFILES, FONT_OPTIONS, defaultThemeForType, type ThemePreset,
 } from '../../lib/theme-engine';
-import { getTenantStorageKey } from '../../lib/app-state';
+import { getTenantStorageKey, getShopTheme, saveShopTheme } from '../../lib/app-state';
 
 export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
@@ -56,18 +56,29 @@ export default function Content() {
     localStorage.setItem(getTenantStorageKey('liafrikos_active_template'), preset);
     localStorage.setItem(getTenantStorageKey('liafrikos_theme_colors'), JSON.stringify(profile.colors));
     localStorage.setItem(getTenantStorageKey('liafrikos_theme_fonts'), JSON.stringify(profile.fonts));
+    // Regenerate the FULL unified theme (sections + layout + colors + fonts)
+    // so the public storefront reflects the newly activated template — total
+    // coherence between the CMS design tab and /store.
+    const fresh = defaultThemeForType('ecommerce', preset);
+    saveShopTheme(fresh);
   };
 
   const updateColor = (key: keyof typeof themeColors, value: string) => {
     const next = { ...themeColors, [key]: value };
     setThemeColors(next);
     localStorage.setItem(getTenantStorageKey('liafrikos_theme_colors'), JSON.stringify(next));
+    // Sync into the unified theme the storefront reads.
+    const current = getShopTheme<any>(defaultThemeForType('ecommerce', activeTemplate));
+    saveShopTheme({ ...current, colors: next });
   };
 
   const updateFont = (key: keyof typeof themeFonts, value: string) => {
     const next = { ...themeFonts, [key]: value };
     setThemeFonts(next);
     localStorage.setItem(getTenantStorageKey('liafrikos_theme_fonts'), JSON.stringify(next));
+    // Sync into the unified theme the storefront reads.
+    const current = getShopTheme<any>(defaultThemeForType('ecommerce', activeTemplate));
+    saveShopTheme({ ...current, fonts: next });
   };
 
   useEffect(() => {

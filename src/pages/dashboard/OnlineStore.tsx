@@ -3,11 +3,12 @@ import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, Upload, FileText, Settings as SettingsIcon, ArrowUp, ArrowDown,
   Globe, Search, ChevronRight, CheckCircle, HelpCircle, MessageSquare, Code,
-  Sparkles, Check, Send
+  Sparkles, Check, Send, ExternalLink
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
-import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories } from '../../lib/app-state';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getPrimaryDomain } from '../../lib/app-state';
 import { ImageUploadField } from '../../components/ImageUpload';
 
 interface CustomDomain {
@@ -428,6 +429,11 @@ export default function OnlineStore() {
         subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
           <div className="flex gap-2">
+            <Link to="/store" target="_blank" rel="noopener noreferrer">
+              <Button variant="secondary" size="sm">
+                <ExternalLink size={14} /> Voir la boutique
+              </Button>
+            </Link>
             <Button variant="secondary" size="sm" onClick={saveDraft}>
               <History size={14} /> Brouillon
             </Button>
@@ -1604,11 +1610,25 @@ export default function OnlineStore() {
           {/* PANEL 5: Shopify-like premium custom domain panel */}
           {panel === 'domain' && (
             <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
-              <div>
+              {/* Temporary platform domain — always active */}
+              <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50/40">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Domaine temporaire (offert)</div>
+                    <div className="text-xs font-bold text-gray-800 truncate">{getShopSubdomain()}</div>
+                    <div className="text-[10px] text-gray-500 mt-0.5">Votre boutique est déjà accessible publiquement à cette adresse.</div>
+                  </div>
+                  <Link to="/store" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 px-3 py-1.5 bg-brand-600 text-white rounded-lg text-[10px] font-black hover:bg-brand-700 transition-colors flex items-center gap-1">
+                    <ExternalLink size={12} /> Visiter
+                  </Link>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-150 pt-3">
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                  <Globe size={16} className="text-brand-600" /> Domaines Personnalisés
+                  <Globe size={16} className="text-brand-600" /> Domaine Personnalisé
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Sécurisez un nom de domaine unique ou liez votre domaine acheté chez GoDaddy, Namecheap, LWS...</p>
+                <p className="text-xs text-gray-500 mt-1">Connectez votre propre domaine (ex. ma-boutique.com) ou achetez-en un via Os pour remplacer l'adresse temporaire.</p>
               </div>
 
               {/* Active domain list */}
@@ -2009,26 +2029,23 @@ export default function OnlineStore() {
                 {theme.sections.filter(s => s.visible).map(s => {
                   let sectionWithRealData = { ...s };
                   if (s.type === 'product-grid' || s.type === 'featured-collection') {
-                    const realProds = getProducts().map(p => ({
-                      name: p.name,
-                      price: p.price,
-                      oldPrice: p.status === 'out_of_stock' ? 0 : p.price * 1.2,
-                      image: p.category?.toLowerCase().includes('sac')
-                        ? ''
-                        : p.category?.toLowerCase().includes('bijou')
-                        ? ''
-                        : '',
-                      rating: 5
-                    }));
+                    // Inject REAL catalog products (active only) into the storefront
+                    // preview — an active product appears on the site automatically.
+                    const realProds = getProducts()
+                      .filter(p => p.status === 'active')
+                      .map(p => ({
+                        name: p.name,
+                        price: p.price,
+                        oldPrice: p.status === 'out_of_stock' ? 0 : Math.round(p.price * 1.2),
+                        image: p.image || '',
+                        rating: 5,
+                        description: p.description || '',
+                      }));
                     sectionWithRealData.props = { ...s.props, products: realProds };
                   } else if (s.type === 'category-grid' || s.type === 'collection-list') {
                     const realCats = Object.keys(getCategories()).map(cat => ({
                       name: cat,
-                      image: cat.toLowerCase().includes('accessoire')
-                        ? ''
-                        : cat.toLowerCase().includes('bijou')
-                        ? ''
-                        : ''
+                      image: '',
                     }));
                     sectionWithRealData.props = { ...s.props, categories: realCats };
                   }

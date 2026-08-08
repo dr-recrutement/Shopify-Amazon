@@ -14,6 +14,7 @@ import OrderTrackingPage from './pages/OrderTrackingPage';
 import SupportPage from './pages/SupportPage';
 import GenericPage from './pages/GenericPage';
 import AboutPage from './pages/AboutPage';
+import StorefrontPage from './pages/StorefrontPage';
 
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import DashboardHome from './pages/dashboard/Home';
@@ -56,6 +57,10 @@ export default function App() {
       <Routes>
         {/* Public */}
         <Route path="/" element={<LandingPage />} />
+        {/* Public storefront — temporary platform domain (/s/:slug) or the
+            current merchant's own storefront preview (/store). */}
+        <Route path="/s/:slug" element={<StorefrontPage />} />
+        <Route path="/store" element={<StorefrontPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/cart" element={<CartPage />} />

@@ -16,6 +16,10 @@ export type StoreProduct = {
   currency: string;
   category?: string;
   subcategory?: string;
+  /** Base64 data URL (uploaded image) — never an external link. */
+  image?: string;
+  /** Short marketing description shown on the storefront + product card. */
+  description?: string;
 };
 
 export type StoreOrder = {
@@ -168,7 +172,7 @@ export function saveSupportTicket(ticket: SupportTicket) {
 }
 
 export function getShopProfile() {
-  return readStorage<{ name: string; country: string; plan: string; currency: string }>(SHOP_PROFILE_KEY, {
+  return readStorage<{ name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string }>(SHOP_PROFILE_KEY, {
     name: 'Ma Boutique',
     country: 'CI',
     plan: 'premium',
@@ -176,6 +180,118 @@ export function getShopProfile() {
   });
 }
 
-export function saveShopProfile(profile: { name: string; country: string; plan: string; currency: string }) {
+export function saveShopProfile(profile: { name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string }) {
   writeStorage(SHOP_PROFILE_KEY, profile);
 }
+
+/** Returns the merchant's auto-assigned temporary subdomain on the platform. */
+export function getShopSubdomain(): string {
+  const profile = getShopProfile();
+  const base = (profile.slug || profile.name || 'ma-boutique')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'ma-boutique';
+  return `${base}.os.liafrik.com`;
+}
+
+/** Full temporary URL the platform assigns to every shop. */
+export function getShopTemporaryUrl(): string {
+  return `https://${getShopSubdomain()}`;
+}
+
+export type ShopDomain = {
+  domain: string;
+  type: 'platform' | 'custom' | 'external';
+  status: 'active' | 'pending' | 'error';
+  isPrimary: boolean;
+  createdAt: string;
+};
+
+const DOMAINS_KEY = 'liafrikos_domains';
+
+export function getDomains(): ShopDomain[] {
+  const subdomain = getShopSubdomain();
+  return readStorage<ShopDomain[]>(DOMAINS_KEY, [
+    { domain: subdomain, type: 'platform', status: 'active', isPrimary: true, createdAt: 'Créé à l’inscription' },
+  ]);
+}
+
+export function saveDomains(domains: ShopDomain[]) {
+  writeStorage(DOMAINS_KEY, domains);
+}
+
+/** Adds a custom domain and marks it primary (demotes others). */
+export function addCustomDomain(domain: string): ShopDomain[] {
+  const clean = domain.toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  if (!clean) return getDomains();
+  const current = getDomains().map(d => ({ ...d, isPrimary: false }));
+  const entry: ShopDomain = { domain: clean, type: 'custom', status: 'pending', isPrimary: true, createdAt: new Date().toLocaleDateString('fr-FR') };
+  const next = [entry, ...current.filter(d => d.domain !== clean)];
+  saveDomains(next);
+  // Persist the primary custom domain on the shop profile so the storefront can resolve it.
+  saveShopProfile({ ...getShopProfile(), customDomain: clean });
+  return next;
+}
+
+/** Resolves which domain is primary (custom takes priority over platform). */
+export function getPrimaryDomain(): string {
+  const domains = getDomains();
+  const primary = domains.find(d => d.isPrimary) || domains[0];
+  return primary?.domain || getShopSubdomain();
+}
+
+export type CatalogProductCard = {
+  name: string;
+  price: number;
+  oldPrice: number;
+  image: string;
+  rating: number;
+  description: string;
+  stock: number;
+  category?: string;
+  id?: string;
+};
+
+/** Returns the merchant's active products, mapped to the card shape the
+ *  storefront sections expect (image is the uploaded base64 data URL). */
+export function getActiveCatalogProducts(): CatalogProductCard[] {
+  return getProducts()
+    .filter(p => p.status === 'active')
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      oldPrice: Math.round(p.price * 1.2),
+      image: p.image || '',
+      rating: 5,
+      description: p.description || '',
+      stock: p.stock,
+      category: p.category,
+    }));
+}
+
+export type CatalogCategoryCard = { name: string; image: string };
+
+/** Returns the merchant's categories, mapped to the card shape the storefront
+ *  category sections expect. */
+export function getCatalogCategories(): CatalogCategoryCard[] {
+  return Object.keys(getCategories()).map(cat => ({ name: cat, image: '' }));
+}
+
+// ---------------------------------------------------------------------------
+// SHOP THEME PERSISTENCE
+// ---------------------------------------------------------------------------
+const THEME_CONFIG_KEY = 'liafrikos_theme_config';
+
+export function getShopTheme<T = any>(fallback: T): T {
+  return readStorage<T>(THEME_CONFIG_KEY, fallback);
+}
+
+export function saveShopTheme(theme: any) {
+  writeStorage(THEME_CONFIG_KEY, theme);
+}
+
+/** The key the storefront section-renderer checks to decide whether to pull
+ *  real catalog products (active) into product-grid / featured-collection. */
+export const STOREFRONT_USE_CATALOG = true;

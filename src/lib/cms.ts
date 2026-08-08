@@ -214,3 +214,68 @@ export const SHOPIFY_BLOCK_TYPES: { type: CmsBlockType; label: string }[] = [
   { type: 'custom-liquid', label: 'Code Liquid personnalisé' },
   { type: '@app', label: 'Bloc d\'application' },
 ];
+
+// Shopify Online Store 2.0 section palette — the list of sections a merchant
+// can add via "Add section" in the theme editor sidebar.
+export const SECTION_PALETTE: { type: string; label: string; desc: string; icon: string }[] = [
+  { type: 'image-banner', label: 'Bannière image', desc: 'Image plein cadre avec overlay et CTA', icon: '🖼️' },
+  { type: 'slideshow', label: 'Diaporama', desc: 'Slides auto-rotatifs pleine largeur', icon: '🎠' },
+  { type: 'featured-collection', label: 'Collection vedette', desc: 'Grille de produits d\'une collection', icon: '🛍️' },
+  { type: 'collection-list', label: 'Liste de collections', desc: 'Cartes de catégories cliquables', icon: '📂' },
+  { type: 'multicolumn', label: 'Multi-colonnes', desc: 'Colonnes de texte + icônes (atouts)', icon: '📑' },
+  { type: 'image-with-text', label: 'Image + texte', desc: 'Bloc scindé image / texte avec CTA', icon: '📝' },
+  { type: 'rich-text', label: 'Texte enrichi', desc: 'Paragraphe éditorial centré', icon: '✍️' },
+  { type: 'collapsible-content', label: 'Contenu repliable', desc: 'Accordéons FAQ / infos', icon: '📂' },
+  { type: 'contact-form', label: 'Formulaire de contact', desc: 'Champs nom / email / message', icon: '📧' },
+  { type: 'email-signup', label: 'Inscription email', desc: 'Capture newsletter', icon: '✉️' },
+  { type: 'video', label: 'Vidéo', desc: 'Vidéo embarquée ou URL externe', icon: '🎬' },
+  { type: 'spacer', label: 'Espacement', desc: 'Espace vertical ajustable', icon: '↕️' },
+];
+
+// OS 2.0 section helpers — add / remove / reorder sections in the page stack.
+export function addOsSection(page: CmsPage, type: string): CmsPage {
+  const id = `${type}-${Date.now()}`;
+  const section: CmsSection = { id, type, blocks: [], block_order: [], settings: { title: SECTION_PALETTE.find(p => p.type === type)?.label || type } };
+  return { ...page, osSections: [...(page.osSections || []), section], updatedAt: new Date().toLocaleDateString('fr-FR') };
+}
+
+export function removeOsSection(page: CmsPage, sectionId: string): CmsPage {
+  return { ...page, osSections: (page.osSections || []).filter(s => s.id !== sectionId), updatedAt: new Date().toLocaleDateString('fr-FR') };
+}
+
+export function reorderOsSections(page: CmsPage, fromIdx: number, toIdx: number): CmsPage {
+  const sections = [...(page.osSections || [])];
+  if (fromIdx < 0 || toIdx < 0 || fromIdx >= sections.length || toIdx >= sections.length) return page;
+  const [moved] = sections.splice(fromIdx, 1);
+  sections.splice(toIdx, 0, moved);
+  return { ...page, osSections: sections, updatedAt: new Date().toLocaleDateString('fr-FR') };
+}
+
+export function updateOsSectionSettings(page: CmsPage, sectionId: string, settings: Record<string, any>): CmsPage {
+  const osSections = (page.osSections || []).map(s => s.id === sectionId ? { ...s, settings: { ...s.settings, ...settings } } : s);
+  return { ...page, osSections, updatedAt: new Date().toLocaleDateString('fr-FR') };
+}
+
+export function addOsBlock(page: CmsPage, sectionId: string, type: CmsBlockType): CmsPage {
+  const block: CmsBlock = { id: `b-${Date.now()}`, type, settings: { text: SHOPIFY_BLOCK_TYPES.find(b => b.type === type)?.label || '' } };
+  return addBlock(page, sectionId, block);
+}
+
+export function updateOsBlockSettings(page: CmsPage, sectionId: string, blockId: string, settings: Record<string, any>): CmsPage {
+  const osSections = (page.osSections || []).map(s => s.id === sectionId
+    ? { ...s, blocks: s.blocks.map(b => b.id === blockId ? { ...b, settings: { ...b.settings, ...settings } } : b) }
+    : s);
+  return { ...page, osSections, updatedAt: new Date().toLocaleDateString('fr-FR') };
+}
+
+export function reorderOsBlocks(page: CmsPage, sectionId: string, fromIdx: number, toIdx: number): CmsPage {
+  const osSections = (page.osSections || []).map(s => {
+    if (s.id !== sectionId) return s;
+    const blocks = [...s.blocks];
+    if (fromIdx < 0 || toIdx < 0 || fromIdx >= blocks.length || toIdx >= blocks.length) return s;
+    const [moved] = blocks.splice(fromIdx, 1);
+    blocks.splice(toIdx, 0, moved);
+    return { ...s, blocks, block_order: blocks.map(b => b.id) };
+  });
+  return { ...page, osSections, updatedAt: new Date().toLocaleDateString('fr-FR') };
+}

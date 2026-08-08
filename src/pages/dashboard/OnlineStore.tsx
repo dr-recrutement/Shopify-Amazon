@@ -130,8 +130,8 @@ export default function OnlineStore() {
   // Logo, Favicon, Meta states connected to shopProfile
   const [shopNameInput, setShopNameInput] = useState(shopProfile.name);
   const [metaDescInput, setMetaDescInput] = useState('Mode chic et tendances de marque.');
-  const [faviconUrlInput, setFaviconUrlInput] = useState('https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=64');
-  const [logoUrlInput, setLogoUrlInput] = useState('https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=150');
+  const [faviconUrlInput, setFaviconUrlInput] = useState('');
+  const [logoUrlInput, setLogoUrlInput] = useState('');
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
 
   const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
@@ -248,13 +248,18 @@ export default function OnlineStore() {
   };
 
   const selectPreset = (preset: typeof CUSTOM_PRESETS[0]) => {
+    // Regenerate the full theme from the new preset so the merchant gets the
+    // theme's distinct default section arrangement + colours + typography —
+    // exactly like clicking a theme on the Shopify Theme Store.
+    const fresh = defaultThemeForType(theme.siteType);
     setTheme({
-      ...theme,
+      ...fresh,
       colors: { ...preset.colors },
       fonts: { ...preset.fonts },
       layoutVariant: preset.layoutVariant,
+      sections: fresh.sections,
     });
-    showToast(`Thème "${preset.name}" appliqué avec succès !`);
+    showToast(`Thème "${preset.name}" appliqué — nouveau design chargé.`);
   };
 
   const addSection = (type: ThemeSection['type']) => {
@@ -1199,7 +1204,7 @@ export default function OnlineStore() {
                               name: 'Nouveau client',
                               comment: 'Super service et produits fantastiques !',
                               rating: 5,
-                              avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
+                              avatar: ''
                             };
                             updateSectionProp(activeSection.id, 'list', [...activeSection.props.list, newItem]);
                           }}
@@ -1317,7 +1322,7 @@ export default function OnlineStore() {
                           onClick={() => {
                             const newItem = {
                               name: 'Nouvelle Catégorie',
-                              image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=300'
+                              image: ''
                             };
                             updateSectionProp(activeSection.id, 'categories', [...activeSection.props.categories, newItem]);
                           }}
@@ -1407,7 +1412,7 @@ export default function OnlineStore() {
                               name: 'Nouvel Article Chic',
                               price: 18000,
                               oldPrice: 22000,
-                              image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300',
+                              image: '',
                               rating: 5
                             };
                             updateSectionProp(activeSection.id, 'products', [...activeSection.props.products, newItem]);
@@ -1936,7 +1941,7 @@ export default function OnlineStore() {
                   onChange={e => setFaviconUrlInput(e.target.value)}
                 />
                 <div className="flex gap-1.5 mt-1">
-                  {['https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=32', 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=32'].map((u, idx) => (
+                  {['', ''].map((u, idx) => (
                     <button key={idx} type="button" onClick={() => setFaviconUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Favicon modèle {idx+1}</button>
                   ))}
                 </div>
@@ -1950,7 +1955,7 @@ export default function OnlineStore() {
                   onChange={e => setLogoUrlInput(e.target.value)}
                 />
                 <div className="flex gap-1.5 mt-1">
-                  {['https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=150', 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=150'].map((u, idx) => (
+                  {['', ''].map((u, idx) => (
                     <button key={idx} type="button" onClick={() => setLogoUrlInput(u)} className="text-[10px] text-brand-600 underline font-semibold">Logo modèle {idx+1}</button>
                   ))}
                 </div>
@@ -2065,10 +2070,10 @@ export default function OnlineStore() {
                       price: p.price,
                       oldPrice: p.status === 'out_of_stock' ? 0 : p.price * 1.2,
                       image: p.category?.toLowerCase().includes('sac')
-                        ? 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300'
+                        ? ''
                         : p.category?.toLowerCase().includes('bijou')
-                        ? 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300'
-                        : 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300',
+                        ? ''
+                        : '',
                       rating: 5
                     }));
                     sectionWithRealData.props = { ...s.props, products: realProds };
@@ -2076,10 +2081,10 @@ export default function OnlineStore() {
                     const realCats = Object.keys(getCategories()).map(cat => ({
                       name: cat,
                       image: cat.toLowerCase().includes('accessoire')
-                        ? 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300'
+                        ? ''
                         : cat.toLowerCase().includes('bijou')
-                        ? 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300'
-                        : 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=300'
+                        ? ''
+                        : ''
                     }));
                     sectionWithRealData.props = { ...s.props, categories: realCats };
                   }

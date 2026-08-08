@@ -27,6 +27,64 @@ export function formatCurrency(amount: number, currency: string): string {
   return `${amount.toLocaleString('fr-FR')} ${symbol}`;
 }
 
+/**
+ * Generates a deterministic CSS gradient placeholder instead of an external image URL.
+ * No external links — purely visual via inline gradient + pattern.
+ */
+const PLACEHOLDER_GRADIENTS = [
+  ['#008060', '#004C3F'],
+  ['#1A1A1A', '#3A3A3A'],
+  ['#5CC190', '#008060'],
+  ['#C4A86A', '#8B6F3F'],
+  ['#2B2B2B', '#1A1A1A'],
+  ['#36A18A', '#005A45'],
+  ['#9ED8C5', '#5CC190'],
+  ['#6BC4A8', '#008060'],
+  ['#1B1B1B', '#2B2B2B'],
+  ['#004C3F', '#00352B'],
+];
+export function placeholderGradient(seed: string | number): string {
+  const s = String(seed);
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+  const [a, b] = PLACEHOLDER_GRADIENTS[hash % PLACEHOLDER_GRADIENTS.length];
+  const angle = (hash % 4) * 45;
+  return `linear-gradient(${angle}deg, ${a} 0%, ${b} 100%)`;
+}
+
+/** Inline SVG data URI placeholder — no external requests at all. */
+export function placeholderImg(seed: string | number, w = 300, h = 300): string {
+  const grad = placeholderGradient(seed);
+  // CSS gradients can't be used in <img src>, so we return empty string and
+  // callers should use gradientStyle() instead. This keeps the API explicit.
+  void w; void h;
+  return '';
+}
+
+/** Returns a React style object for gradient placeholders. */
+export function gradientStyle(seed: string | number): React.CSSProperties {
+  return { background: placeholderGradient(seed) };
+}
+
+/** Checks whether a string is a real fetchable image URL (http/data/asset path). */
+export function isRealImage(src: string | undefined | null): boolean {
+  if (!src) return false;
+  return src.startsWith('http') || src.startsWith('data:') || src.startsWith('/assets') || src.startsWith('/');
+}
+
+/**
+ * MediaBox — renders <img> when a real URL is provided, otherwise a gradient
+ * placeholder div. Eliminates ALL external image dependencies.
+ */
+export function MediaBox({ src, alt, seed, className, style }: {
+  src?: string; alt?: string; seed: string | number; className?: string; style?: React.CSSProperties;
+}) {
+  if (isRealImage(src)) {
+    return <img src={src as string} alt={alt || ''} className={className} style={style} />;
+  }
+  return <div className={className} style={{ ...gradientStyle(seed), ...style }} aria-label={alt} />;
+}
+
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
 export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial';
 
@@ -223,6 +281,96 @@ function getSpacingClass(spacing: ThemeConfig['spacing']) {
   return 'px-6 py-10 md:px-8 md:py-16';
 }
 
+/**
+ * Public section-arrangement generator — returns a distinct homepage section
+ * list per Shopify theme variant. Each variant produces a visibly different
+ * page structure (different sections, different order, different count).
+ * This mirrors how real Shopify themes ship different default arrangements.
+ */
+export function sectionsForVariantPublic(variant: LayoutVariant, s: Record<string, ThemeSection>): ThemeSection[] {
+  switch (variant) {
+    // Dawn — minimalist, media-forward, balanced
+    case 'dawn':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.multicolumnSection, s.featuredCollectionSection, s.imageWithTextSection,
+        s.collapsibleContentSection, s.paymentsSection, s.emailSignupSection, s.footerSection,
+      ];
+    // Refresh — editorial, image-with-text overlap, testimonials focus
+    case 'refresh':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageWithTextSection,
+        s.multicolumnSection, s.richTextSection, s.featuredCollectionSection,
+        s.testimonialsSection, s.contactFormSection, s.emailSignupSection, s.footerSection,
+      ];
+    // Spotlight — sparse, image-led, fewer sections, big visuals
+    case 'spotlight':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.slideshowSection, s.featuredCollectionSection, s.imageWithTextSection,
+        s.collapsibleContentSection, s.footerSection,
+      ];
+    // Crave — vibrant, promo-heavy, countdown + collection-list + newsletter
+    case 'crave':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.collectionListSection, s.countdownSection, s.featuredCollectionSection,
+        s.productDetailSection, s.multicolumnSection, s.testimonialsSection,
+        s.newsletterSection, s.paymentsSection, s.footerSection, s.socialBarSection,
+      ];
+    // Sense — soft, story-led, about + rich-text + testimonials
+    case 'sense':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.richTextSection, s.aboutSection, s.imageWithTextSection,
+        s.featuredCollectionSection, s.testimonialsSection, s.collapsibleContentSection,
+        s.emailSignupSection, s.footerSection,
+      ];
+    // Craft — artisanal, product-narrative, about + product detail + collapsible
+    case 'craft':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageWithTextSection,
+        s.aboutSection, s.productDetailSection, s.featuredCollectionSection,
+        s.collapsibleContentSection, s.testimonialsSection, s.contactFormSection, s.footerSection,
+      ];
+    // Colorblock — bold blocks, collection-list + multicolumn + countdown
+    case 'colorblock':
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.collectionListSection, s.multicolumnSection, s.countdownSection,
+        s.featuredCollectionSection, s.imageWithTextSection, s.paymentsSection, s.footerSection,
+      ];
+    // Studio — asymmetric, rich-text + image-with-text + featured-collection
+    case 'studio':
+      return [
+        s.announcementBarSection, s.headerSection, s.richTextSection,
+        s.imageWithTextSection, s.featuredCollectionSection, s.productDetailSection,
+        s.testimonialsSection, s.contactFormSection, s.footerSection,
+      ];
+    // Publisher — editorial columns, rich-text + about + collapsible
+    case 'publisher':
+      return [
+        s.announcementBarSection, s.headerSection, s.richTextSection,
+        s.aboutSection, s.featuredCollectionSection, s.collapsibleContentSection,
+        s.testimonialsSection, s.contactFormSection, s.emailSignupSection, s.footerSection,
+      ];
+    // Taste — sleek image-forward, slideshow + featured-collection + image-with-text
+    case 'taste':
+      return [
+        s.announcementBarSection, s.headerSection, s.slideshowSection,
+        s.featuredCollectionSection, s.imageWithTextSection, s.collectionListSection,
+        s.collapsibleContentSection, s.emailSignupSection, s.footerSection,
+      ];
+    default:
+      return [
+        s.announcementBarSection, s.headerSection, s.imageBannerSection,
+        s.featuredCollectionSection, s.multicolumnSection, s.imageWithTextSection,
+        s.collapsibleContentSection, s.footerSection,
+      ];
+  }
+}
+
+
 export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   const preset: ThemePreset = siteType === 'landing' ? 'luxury' : siteType === 'ecommerce' ? 'african' : siteType === 'business' ? 'editorial' : 'universal';
   const presetConfig = THEME_PRESETS[preset];
@@ -258,7 +406,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       title: 'L’Élégance de la Mode Africaine',
       subtitle: 'Découvrez notre collection exclusive de robes en Wax Royal faites à la main par des couturiers locaux de renom.',
       cta: 'Acheter Maintenant',
-      image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=1200',
+      image: '',
       align: 'center',
       overlayOpacity: '50',
       textColor: '#ffffff',
@@ -274,10 +422,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       title: 'Nos Collections Inspirantes',
       columns: 4,
       categories: [
-        { name: 'Créations Wax', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=300' },
-        { name: 'Accessoires Cuir', image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300' },
-        { name: 'Pagne Traditionnel', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=300' },
-        { name: 'Bijoux Dorés', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300' },
+        { name: 'Créations Wax', image: '' },
+        { name: 'Accessoires Cuir', image: '' },
+        { name: 'Pagne Traditionnel', image: '' },
+        { name: 'Bijoux Dorés', image: '' },
       ]
     }
   };
@@ -307,10 +455,10 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       columns: 4,
       limit: 4,
       products: [
-        { name: 'Robe Wax Traditionnelle', price: 15000, oldPrice: 18000, image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=300', rating: 5 },
-        { name: 'Sac en Cuir Artisanal', price: 25000, oldPrice: 30000, image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=300', rating: 4 },
-        { name: 'Boucles d’oreilles Dorées', price: 8000, oldPrice: 0, image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300', rating: 5 },
-        { name: 'Collier Perles Multicolore', price: 12000, oldPrice: 15000, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=300', rating: 4 },
+        { name: 'Robe Wax Traditionnelle', price: 15000, oldPrice: 18000, image: '', rating: 5 },
+        { name: 'Sac en Cuir Artisanal', price: 25000, oldPrice: 30000, image: '', rating: 4 },
+        { name: 'Boucles d’oreilles Dorées', price: 8000, oldPrice: 0, image: '', rating: 5 },
+        { name: 'Collier Perles Multicolore', price: 12000, oldPrice: 15000, image: '', rating: 4 },
       ]
     }
   };
@@ -325,7 +473,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       price: 35000,
       oldPrice: 45000,
       description: 'Cet ensemble traditionnel en pagne de cire premium est conçu pour offrir un style distingué et un confort royal absolu. Idéal pour les célébrations, les réceptions et les tenues de prestige au quotidien.',
-      image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=600',
+      image: '',
       rating: 5,
       reviewsCount: 42,
       currency: 'FCFA',
@@ -341,9 +489,9 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     props: {
       title: 'Témoignages de nos Clients Satisfaits',
       list: [
-        { name: 'Aïcha Diallo', comment: 'Qualité de couture impeccable ! La robe tombe parfaitement et le tissu ne décolore pas au lavage. Livraison rapide en 48h à Abidjan.', rating: 5, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150' },
-        { name: 'Kwame Mensah', comment: 'Le sac à dos en cuir est robuste et élégant. Parfait pour aller au bureau. Je recommande chaudement cet artisanat de premier choix !', rating: 5, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150' },
-        { name: 'Fatou Bensouda', comment: 'Excellent support client. J’avais un doute sur ma taille et on m’a conseillée en direct via WhatsApp. Très satisfaite de mon achat.', rating: 5, avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150' },
+        { name: 'Aïcha Diallo', comment: 'Qualité de couture impeccable ! La robe tombe parfaitement et le tissu ne décolore pas au lavage. Livraison rapide en 48h à Abidjan.', rating: 5, avatar: '' },
+        { name: 'Kwame Mensah', comment: 'Le sac à dos en cuir est robuste et élégant. Parfait pour aller au bureau. Je recommande chaudement cet artisanat de premier choix !', rating: 5, avatar: '' },
+        { name: 'Fatou Bensouda', comment: 'Excellent support client. J’avais un doute sur ma taille et on m’a conseillée en direct via WhatsApp. Très satisfaite de mon achat.', rating: 5, avatar: '' },
       ]
     }
   };
@@ -357,7 +505,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       title: 'Notre Vision de l’Artisanat Local',
       badge: 'HISTOIRE & VALEURS',
       content: 'Chaque création vendue sur notre boutique est le fruit d’un travail acharné réalisé par des coopératives de femmes et des maîtres artisans couturiers en Afrique de l’Ouest. Nous garantissons une rémunération juste, éthique et équitable tout en préservant des techniques ancestrales de tissage et de teinture.',
-      image: 'https://images.unsplash.com/photo-1488459716781-31852582fe9d?auto=format&fit=crop&q=80&w=600',
+      image: '',
       alignImage: 'right',
     }
   };
@@ -474,7 +622,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       title: 'L’art de vivre africain, livré chez vous',
       subtitle: 'COLLECTION EXCLUSIVE',
       description: 'Des créations artisanales uniques, pensées par des couturiers et artisans locaux d’exception.',
-      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600',
+      image: '',
       align: 'center',
       overlayOpacity: '35',
       height: 'medium',
@@ -492,9 +640,9 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     props: {
       overlayOpacity: '35',
       slides: [
-        { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600' },
-        { title: 'Soldes d’été', subtitle: '−30%', description: 'Profitez de réductions exclusives sur une sélection d’articles.', cta: 'J’en profite', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600' },
-        { title: 'Artisanat local', subtitle: 'Fait main', cta: 'Voir les créations', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=1600' },
+        { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: '' },
+        { title: 'Soldes d’été', subtitle: '−30%', description: 'Profitez de réductions exclusives sur une sélection d’articles.', cta: 'J’en profite', image: '' },
+        { title: 'Artisanat local', subtitle: 'Fait main', cta: 'Voir les créations', image: '' },
       ],
     }
   };
@@ -526,7 +674,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       badge: 'NOTRE SAVOIR-FAIRE',
       title: 'L’artisanat africain réinventé',
       text: 'Chaque pièce est le fruit d’un travail acharné réalisé par des coopératives d’artisans. Nous garantissons une rémunération juste et éthique tout en préservant les techniques ancestrales.',
-      image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800',
+      image: '',
       layout: 'image-right',
       cta: 'En savoir plus',
     }
@@ -588,86 +736,28 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   // Shopify Dawn "collection-list" (alias of category-grid, Dawn naming).
   const collectionListSection: ThemeSection = { ...categoryGridSection, id: 'collection-list-1', type: 'collection-list' };
 
-  if (siteType === 'landing') {
-    return {
-      siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
-      sections: [
-        announcementBarSection,
-        headerSection,
-        imageBannerSection,
-        multicolumnSection,
-        countdownSection,
-        imageWithTextSection,
-        testimonialsSection,
-        collapsibleContentSection,
-        paymentsSection,
-        newsletterSection,
-        footerSection,
-      ],
-    };
+  /**
+   * Distinct homepage section arrangements per Shopify theme — this is exactly
+   * how real Shopify themes differ (same code, different default arrangement +
+   * container color scheme + corner radius). Each variant produces a visibly
+   * different page structure.
+   */
+  function sectionsForVariant(variant: LayoutVariant): ThemeSection[] {
+    return sectionsForVariantPublic(variant, {
+      announcementBarSection, headerSection, imageBannerSection, heroSection,
+      imageWithTextSection, multicolumnSection, richTextSection, aboutSection,
+      featuredCollectionSection, collectionListSection, countdownSection,
+      productDetailSection, testimonialsSection, collapsibleContentSection,
+      contactFormSection, emailSignupSection, newsletterSection, paymentsSection,
+      footerSection, socialBarSection, chatFloatSection, slideshowSection,
+    });
   }
 
-  if (siteType === 'ecommerce') {
-    return {
-      siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
-      sections: [
-        announcementBarSection,
-        headerSection,
-        imageBannerSection,
-        collectionListSection,
-        multicolumnSection,
-        countdownSection,
-        featuredCollectionSection,
-        productDetailSection,
-        imageWithTextSection,
-        testimonialsSection,
-        collapsibleContentSection,
-        paymentsSection,
-        emailSignupSection,
-        footerSection,
-        socialBarSection,
-        chatFloatSection,
-      ],
-    };
-  }
-
-  if (siteType === 'business') {
-    return {
-      siteType, preset, colors, fonts, spacing: 'spacious', layoutVariant, isPublished: false,
-      sections: [
-        announcementBarSection,
-        headerSection,
-        imageBannerSection,
-        richTextSection,
-        aboutSection,
-        multicolumnSection,
-        testimonialsSection,
-        contactFormSection,
-        emailSignupSection,
-        footerSection,
-      ],
-    };
-  }
-
-  // Marketplace Default
+  // Use the variant-specific section arrangement for a genuinely distinct template
+  const variantSections = sectionsForVariant(layoutVariant);
   return {
-    siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
-    sections: [
-      announcementBarSection,
-      headerSection,
-      imageBannerSection,
-      slideshowSection,
-      collectionListSection,
-      multicolumnSection,
-      countdownSection,
-      featuredCollectionSection,
-      testimonialsSection,
-      paymentsSection,
-      emailSignupSection,
-      footerSection,
-      socialBarSection,
-      chatFloatSection,
-    ],
+    siteType, preset, colors, fonts, spacing: siteType === 'business' ? 'spacious' : 'comfortable', layoutVariant, isPublished: false,
+    sections: variantSections,
   };
 }
 
@@ -700,7 +790,7 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
           {/* Logo */}
           <div className="flex items-center gap-2">
             {props.logoUrl ? (
-              <img src={props.logoUrl} alt="Logo" className="h-8 max-w-[120px] object-contain" />
+              <MediaBox src={props.logoUrl} alt="Logo" seed="header-logo" className="h-8 max-w-[120px] object-contain" />
             ) : (
               <div className="text-lg font-black tracking-wider uppercase flex items-center gap-1" style={{ fontFamily: fonts.heading, color: colors.primary }}>
                 <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
@@ -762,7 +852,7 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
 function HeroSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const alignClass = props.align === 'left' ? 'text-left items-start' : props.align === 'right' ? 'text-right items-end' : 'text-center items-center';
   const overlayOpacity = Number(props.overlayOpacity || 50) / 100;
-  const imageSrc = props.image || 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=1200';
+  const imageSrc = props.image || '';
 
   return (
     <div
@@ -828,7 +918,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
             return (
               <div key={i} className="group flex flex-col h-full bg-white relative overflow-hidden transition-all duration-300 border-b-2 hover:shadow-2xl p-2" style={{ borderColor: `${colors.primary}40` }}>
                 <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-100">
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <MediaBox src={p.image} alt={p.name} seed={`prod-lux-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <button className="absolute top-2 right-2 p-1 bg-white/90 rounded-full shadow-sm text-gray-500 hover:text-red-500 transition-colors">
                     <Heart className="w-3.5 h-3.5" />
                   </button>
@@ -855,7 +945,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
             return (
               <div key={i} className="group flex flex-col h-full bg-transparent overflow-hidden transition-all duration-300">
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300" />
+                  <MediaBox src={p.image} alt={p.name} seed={`prod-edit-${i}`} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300" />
                 </div>
                 <div className="py-3 flex-1 flex flex-col justify-between text-left">
                   <div>
@@ -877,7 +967,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
             <div key={i} className={`group rounded-2xl border overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full bg-white relative ${isAfrican ? 'border-brand-100 shadow-sm' : 'border-gray-100'}`}>
               {/* Image Wrap */}
               <div className="relative aspect-square overflow-hidden bg-gray-50">
-                <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                  <MediaBox src={p.image} alt={p.name} seed={`prod-def-${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 {p.oldPrice > p.price && (
                   <span className="absolute top-3 left-3 text-[9px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse" style={{ backgroundColor: colors.primary }}>
                     PROMO
@@ -945,7 +1035,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass }: { props: an
       <div className={`grid gap-4 ${colClasses}`}>
         {categories.map((c: any, i: number) => (
           <div key={i} className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm cursor-pointer hover:shadow-lg transition-all duration-300">
-            <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <MediaBox src={c.image} alt={c.name} seed={`cat-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-3 left-3 right-3 text-white">
               <p className="font-extrabold text-xs tracking-wider uppercase" style={{ fontFamily: fonts.heading }}>{c.name}</p>
@@ -1053,7 +1143,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
 
         {/* Left: Beautiful Product Image */}
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-50 border border-black/5 shadow-sm">
-          <img src={props.image || 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=600'} alt="Détail" className="w-full h-full object-cover" />
+          <MediaBox src={props.image} alt="Détail" seed="pdetail" className="w-full h-full object-cover" />
           <span className="absolute top-4 left-4 text-[10px] font-black text-white px-3 py-1 rounded-full uppercase tracking-widest bg-emerald-500 shadow-sm animate-pulse">
             EN STOCK • ARTISANAL
           </span>
@@ -1175,7 +1265,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
             </div>
 
             <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
-              <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" />
+              <MediaBox src={t.avatar} alt={t.name} seed={`avatar-${i}`} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" />
               <div>
                 <p className="text-xs font-extrabold" style={{ color: colors.text, fontFamily: fonts.heading }}>{t.name}</p>
                 <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
@@ -1191,7 +1281,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
 }
 
 function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
-  const imageSrc = props.image || 'https://images.unsplash.com/photo-1488459716781-31852582fe9d?auto=format&fit=crop&q=80&w=600';
+  const imageSrc = props.image || '';
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const imageOnRight = props.alignImage === 'right';
 
@@ -1217,7 +1307,7 @@ function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colo
 
         {/* Image Area */}
         <div className={`aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-black/5 shadow-md ${imageOnRight ? 'order-2' : 'order-2 md:order-1'}`}>
-          <img src={imageSrc} alt="Story" className="w-full h-full object-cover" />
+          <MediaBox src={imageSrc} alt="Story" seed="hero-story" className="w-full h-full object-cover" />
         </div>
       </div>
     </div>
@@ -1479,10 +1569,10 @@ function ImageBannerSection({ props, colors, fonts, spacingClass }: { props: any
   const height = props.height || 'medium';
   const heightClass = height === 'small' ? 'min-h-[320px]' : height === 'large' ? 'min-h-[560px]' : 'min-h-[440px]';
   const align = props.align === 'left' ? 'items-start text-left' : props.align === 'right' ? 'items-end text-right' : 'items-center text-center';
-  const img = props.image || 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600';
+  const img = props.image || '';
   return (
     <section className={`relative flex ${heightClass} ${align} justify-center overflow-hidden`} style={{ fontFamily: fonts.body }}>
-      <img src={img} alt={props.title || 'Banner'} className="absolute inset-0 w-full h-full object-cover" />
+      <MediaBox src={img} alt={props.title || 'Banner'} seed="image-banner" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0" style={{ backgroundColor: '#000', opacity: overlay }} />
       <div className={`relative z-10 max-w-2xl px-6 py-12 flex flex-col ${align} ${spacingClass}`}>
         {props.subtitle && (
@@ -1518,8 +1608,8 @@ function ImageBannerSection({ props, colors, fonts, spacingClass }: { props: any
 // Shopify "slideshow" section — auto-rotating slides with manual controls.
 function SlideshowSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const slides: any[] = Array.isArray(props.slides) && props.slides.length ? props.slides : [
-    { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600' },
-    { title: 'Soldes d\'été', subtitle: '-30%', cta: 'J\'en profite', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600' },
+    { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: '' },
+    { title: 'Soldes d\'été', subtitle: '-30%', cta: 'J\'en profite', image: '' },
   ];
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -1594,7 +1684,7 @@ function MulticolumnSection({ props, colors, fonts, spacingClass }: { props: any
         {columns.map((c, i) => (
           <div key={i} className="flex flex-col items-center">
             <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3" style={{ backgroundColor: `${colors.primary}15` }}>
-              {c.image ? <img src={c.image} alt={c.title} className="w-full h-full rounded-full object-cover" /> : c.icon || '✦'}
+              {c.image ? <MediaBox src={c.image} alt={c.title} seed={`coll-${i}`} className="w-full h-full rounded-full object-cover" /> : c.icon || '✦'}
             </div>
             <h4 className="font-extrabold text-sm mb-1" style={{ fontFamily: fonts.heading, color: colors.text }}>{c.title}</h4>
             <p className="text-xs text-gray-500 leading-relaxed max-w-[220px]">{c.text}</p>
@@ -1608,12 +1698,12 @@ function MulticolumnSection({ props, colors, fonts, spacingClass }: { props: any
 // Shopify "image-with-text" section — two-column image + rich text.
 function ImageWithTextSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const imageRight = props.layout === 'image-right';
-  const img = props.image || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800';
+  const img = props.image || '';
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className={`aspect-[4/3] rounded-xl overflow-hidden ${imageRight ? 'md:order-2' : ''}`}>
-          <img src={img} alt={props.title || 'Image'} className="w-full h-full object-cover" />
+          <MediaBox src={img} alt={props.title || 'Image'} seed="img-text" className="w-full h-full object-cover" />
         </div>
         <div className={`space-y-4 ${imageRight ? 'md:order-1' : ''}`}>
           {props.badge && <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: colors.primary }}>{props.badge}</span>}
@@ -1645,7 +1735,7 @@ function RichTextSection({ props, colors, fonts, spacingClass }: { props: any; c
 // Shopify "video" section — hosted/embedded video with overlay poster.
 function VideoSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const [playing, setPlaying] = useState(false);
-  const poster = props.poster || 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=1600';
+  const poster = props.poster || '';
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-5xl mx-auto">
@@ -1655,7 +1745,7 @@ function VideoSection({ props, colors, fonts, spacingClass }: { props: any; colo
             <iframe src={props.videoUrl} className="absolute inset-0 w-full h-full" allow="autoplay; encrypted-media" allowFullScreen title={props.title || 'Video'} />
           ) : (
             <>
-              <img src={poster} alt="Video poster" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+              <MediaBox src={poster} alt="Video poster" seed="video-poster" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
                   <Play className="w-7 h-7 text-gray-900 fill-current ml-1" />

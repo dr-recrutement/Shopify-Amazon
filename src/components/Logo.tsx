@@ -13,17 +13,15 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
 
   return (
     <div className="flex items-center gap-2">
-      <img
-        src="/assets/images/publicicon-512.png"
-        alt="Os"
-        width={sizes[size].img}
-        height={sizes[size].img}
-        className="rounded-full object-cover flex-shrink-0"
-        style={{ width: sizes[size].img, height: sizes[size].img }}
-      />
+      <div
+        className="rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold"
+        style={{ width: sizes[size].img, height: sizes[size].img, background: 'linear-gradient(135deg, #008060 0%, #004C3F 100%)' }}
+      >
+        <span style={{ fontSize: sizes[size].img * 0.5 }}>O</span>
+      </div>
       {!iconOnly && (
         <span className={`font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
-          Os <span className="text-green-600">🛒</span>
+          Os <span className="text-brand-600">🛒</span>
         </span>
       )}
     </div>

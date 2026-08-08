@@ -16,78 +16,94 @@ interface CustomDomain {
   createdAt: string;
 }
 
-// Ultra-modern Preset Themes
+// Official Shopify Theme Store presets — all free Shopify themes are built on
+// the Dawn (Online Store 2.0) codebase; each is essentially a colour + typography
+// preset. We mirror that model here so merchants pick a real Shopify theme.
 const CUSTOM_PRESETS = [
   {
-    id: 'lagos-beauty',
-    name: 'Lagos Beauty 👑',
-    description: 'Chic, luxueux, haut de gamme avec polices sérif élégantes.',
-    colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' },
+    id: 'dawn',
+    name: 'Dawn',
+    description: 'Thème de référence Shopify OS 2.0. Minimal, rapide, polyvalent — idéal pour démarrer.',
+    colors: { primary: '#121212', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'art-wax',
-    name: 'Art & Wax 🎨',
-    description: 'Vibrant, coloré, inspiré de l’art textile et de l’artisanat africain.',
+    id: 'refresh',
+    name: 'Refresh',
+    description: 'Style éditorial centré produit, tiroir panier coulissant. Idéal petits catalogues.',
+    colors: { primary: '#4A4A4A', secondary: '#1A1A1A', accent: '#8A8A8A', background: '#FAFAFA', text: '#1A1A1A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'spotlight',
+    name: 'Spotlight',
+    description: 'Mise en avant visuelle, grandes images, parfait pour mettre un produit à l’honneur.',
+    colors: { primary: '#111111', secondary: '#2A2A2A', accent: '#A0A0A0', background: '#FFFFFF', text: '#111111' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'crave',
+    name: 'Crave',
+    description: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons. Appétit visuel.',
+    colors: { primary: '#E65525', secondary: '#1A1A1A', accent: '#FF8A4C', background: '#FFF7F3', text: '#1A1A1A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'sense',
+    name: 'Sense',
+    description: 'Doux et minimaliste, dédié beauté & bien-être. Palette pastel apaisante.',
+    colors: { primary: '#9C8B7A', secondary: '#3A3530', accent: '#C9B8A6', background: '#FBF8F4', text: '#3A3530' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'taste',
+    name: 'Taste',
+    description: 'Épuré et typographique, pour spécialités alimentaires et produits de niche.',
+    colors: { primary: '#1A1A1A', secondary: '#3A3A3A', accent: '#8A8A8A', background: '#FFFFFF', text: '#1A1A1A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'craft',
+    name: 'Craft',
+    description: 'Chaleureux et artisanal, met en valeur le savoir-faire et les matières.',
+    colors: { primary: '#6B5B4E', secondary: '#2A2520', accent: '#A8917A', background: '#F5F0EA', text: '#2A2520' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'colorblock',
+    name: 'Colorblock',
+    description: 'Grille audacieuse et contrastée, mode & prêt-à-porter. Blocs de couleur vifs.',
+    colors: { primary: '#D63B3B', secondary: '#111111', accent: '#F5C518', background: '#FFFFFF', text: '#111111' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'studio',
+    name: 'Studio',
+    description: 'Élégant et créatif, pour marques de design et studios artistiques.',
+    colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#C4A86A', background: '#FAFAFA', text: '#1B1B1B' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'origin',
+    name: 'Origin',
+    description: 'Authentique et naturel, pour marques durables et éco-responsables.',
+    colors: { primary: '#3A5A40', secondary: '#283618', accent: '#A3B18A', background: '#F4F1EA', text: '#283618' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'publisher',
+    name: 'Publisher',
+    description: 'Éditorial et riche en contenu, livres, musique et marques à storytelling.',
+    colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#B8956A', background: '#F8F6F1', text: '#1A1A1A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+  },
+  {
+    id: 'dawn-panafrican',
+    name: 'Dawn — African Vibrant',
+    description: 'Variante panafricaine de Dawn : couleurs dynamiques orientées commerce africain.',
     colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
-  {
-    id: 'coral-peach',
-    name: 'Coral & Peach 🍑',
-    description: 'Moderne, chaleureux et convivial, parfait pour les créatrices.',
-    colors: { primary: '#FF6B35', secondary: '#4A5568', accent: '#FFA07A', background: '#FFF5F2', text: '#2D3748' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'ocean-blue',
-    name: 'Ocean Blue 🌊',
-    description: 'Corporate, épuré, d’un bleu profond d’affaires internationales.',
-    colors: { primary: '#0369A1', secondary: '#1E293B', accent: '#38BDF8', background: '#F0F9FF', text: '#0F172A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'dakar-fashion',
-    name: 'Dakar Fashion 🌟',
-    description: 'Style couture moderne, jaune vibrant et indigo profond, typographie élégante.',
-    colors: { primary: '#EAB308', secondary: '#312E81', accent: '#F59E0B', background: '#FAF8F5', text: '#1E1B4B' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'sahara-gold',
-    name: 'Sahara Gold ✨',
-    description: 'Palette dorée sablonneuse haut de gamme mariée au charbon épuré.',
-    colors: { primary: '#D97706', secondary: '#1F2937', accent: '#F59E0B', background: '#FFFDF9', text: '#111827' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'tokyo-tech',
-    name: 'Tokyo Tech ⚡',
-    description: 'Ambiance cyberpunk sombre et électrique, néon vert dynamique pour produits technologiques.',
-    colors: { primary: '#22C55E', secondary: '#0F172A', accent: '#10B981', background: '#090D16', text: '#F8FAFC' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'cape-town-minimalist',
-    name: 'Cape Town Minimalist 🏔',
-    description: 'Espaces confortables, lignes ultra épurées d’un gris ardoise noble et reposant.',
-    colors: { primary: '#475569', secondary: '#0F172A', accent: '#64748B', background: '#F8FAFC', text: '#0F172A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'new-york-street',
-    name: 'NY Streetwear 🗽',
-    description: 'Design urbain audacieux et contrasté, rouge vif de défilé et noir profond.',
-    colors: { primary: '#DC2626', secondary: '#000000', accent: '#EF4444', background: '#FAF9F6', text: '#111111' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  },
-  {
-    id: 'yasmine-oriental',
-    name: 'Yasmine Oriental 🌺',
-    description: 'Mystique et envoûtant, violet royal et orbe de soleil d’Orient.',
-    colors: { primary: '#7C3AED', secondary: '#1E1B4B', accent: '#F59E0B', background: '#FAF5FF', text: '#1E1B4B' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
-  }
 ];
 
 export default function OnlineStore() {
@@ -449,7 +465,7 @@ export default function OnlineStore() {
       {/* Page Header */}
       <PageHeader
         title="Boutique en Ligne"
-        subtitle="Moteur de thème universel CMS & Gestionnaire de Domaines Premium."
+        subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
           <div className="flex gap-2">
             <Button variant="secondary" size="sm" onClick={saveDraft}>
@@ -534,9 +550,9 @@ export default function OnlineStore() {
             <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                  <Store size={16} className="text-brand-600" /> Thèmes Ultra-Modernes
+                  <Store size={16} className="text-brand-600" /> Thèmes Shopify (Online Store 2.0)
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Sélectionnez un preset professionnel éditable pour métamorphoser votre site.</p>
+                <p className="text-xs text-gray-500 mt-1">Thèmes officiels du Shopify Theme Store — tous basés sur Dawn. Chaque thème est un preset de couleurs & typographie appliqué instantanément.</p>
               </div>
               <div className="space-y-3">
                 {CUSTOM_PRESETS.map(p => (
@@ -889,6 +905,197 @@ export default function OnlineStore() {
                           onChange={e => updateSectionProp(activeSection.id, 'buttonText', e.target.value)}
                           className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
                         />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "image-banner" inputs */}
+                  {activeSection.type === 'image-banner' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
+                        <input type="text" value={activeSection.props.image || ''} onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+                        <textarea value={activeSection.props.description || ''} onChange={e => updateSectionProp(activeSection.id, 'description', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={2} />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Bouton 1</label>
+                          <input type="text" value={activeSection.props.cta || ''} onChange={e => updateSectionProp(activeSection.id, 'cta', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Bouton 2</label>
+                          <input type="text" value={activeSection.props.cta2 || ''} onChange={e => updateSectionProp(activeSection.id, 'cta2', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Alignement</label>
+                        <select value={activeSection.props.align || 'center'} onChange={e => updateSectionProp(activeSection.id, 'align', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white">
+                          <option value="left">Gauche</option>
+                          <option value="center">Centre</option>
+                          <option value="right">Droite</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Opacité overlay ({activeSection.props.overlayOpacity || 40}%)</label>
+                        <input type="range" min="0" max="90" value={activeSection.props.overlayOpacity || 40} onChange={e => updateSectionProp(activeSection.id, 'overlayOpacity', e.target.value)} className="w-full" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Hauteur</label>
+                        <select value={activeSection.props.height || 'medium'} onChange={e => updateSectionProp(activeSection.id, 'height', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white">
+                          <option value="small">Petite</option>
+                          <option value="medium">Moyenne</option>
+                          <option value="large">Grande</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "slideshow" overlay + slides count */}
+                  {activeSection.type === 'slideshow' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Opacité overlay ({activeSection.props.overlayOpacity || 35}%)</label>
+                        <input type="range" min="0" max="90" value={activeSection.props.overlayOpacity || 35} onChange={e => updateSectionProp(activeSection.id, 'overlayOpacity', e.target.value)} className="w-full" />
+                      </div>
+                      <p className="text-xs text-gray-500 bg-gray-50 rounded-lg p-2">{(activeSection.props.slides || []).length} diapositives configurées. Modifiez les titres/images directement dans le code du thème pour le slideshow multi-slides.</p>
+                    </div>
+                  )}
+
+                  {/* Shopify "multicolumn" columns editor */}
+                  {activeSection.type === 'multicolumn' && 'columns' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Colonnes</span>
+                      <div className="space-y-3 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {(activeSection.props.columns || []).map((c: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button onClick={() => { const next = activeSection.props.columns.filter((_: any, i: number) => i !== idx); updateSectionProp(activeSection.id, 'columns', next); }} className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+                            <input type="text" value={c.title || ''} onChange={e => { const next = [...activeSection.props.columns]; next[idx] = { ...next[idx], title: e.target.value }; updateSectionProp(activeSection.id, 'columns', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" placeholder="Titre" />
+                            <textarea value={c.text || ''} onChange={e => { const next = [...activeSection.props.columns]; next[idx] = { ...next[idx], text: e.target.value }; updateSectionProp(activeSection.id, 'columns', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" rows={2} placeholder="Texte" />
+                          </div>
+                        ))}
+                        <button onClick={() => updateSectionProp(activeSection.id, 'columns', [...(activeSection.props.columns || []), { title: 'Nouvel atout', text: 'Description de l’avantage.', icon: '✦' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une colonne</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "image-with-text" inputs */}
+                  {activeSection.type === 'image-with-text' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
+                        <input type="text" value={activeSection.props.image || ''} onChange={e => updateSectionProp(activeSection.id, 'image', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte</label>
+                        <textarea value={activeSection.props.text || activeSection.props.description || ''} onChange={e => updateSectionProp(activeSection.id, 'text', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={3} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Position de l’image</label>
+                        <select value={activeSection.props.layout || 'image-right'} onChange={e => updateSectionProp(activeSection.id, 'layout', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white">
+                          <option value="image-left">Image à gauche</option>
+                          <option value="image-right">Image à droite</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Bouton CTA</label>
+                        <input type="text" value={activeSection.props.cta || ''} onChange={e => updateSectionProp(activeSection.id, 'cta', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "rich-text" inputs */}
+                  {activeSection.type === 'rich-text' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte</label>
+                        <textarea value={activeSection.props.text || ''} onChange={e => updateSectionProp(activeSection.id, 'text', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" rows={4} />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Alignement</label>
+                          <select value={activeSection.props.align || 'center'} onChange={e => updateSectionProp(activeSection.id, 'align', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white">
+                            <option value="left">Gauche</option>
+                            <option value="center">Centre</option>
+                            <option value="right">Droite</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Largeur</label>
+                          <select value={activeSection.props.width || 'narrow'} onChange={e => updateSectionProp(activeSection.id, 'width', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white">
+                            <option value="narrow">Étroite</option>
+                            <option value="wide">Large</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "collapsible-content" rows editor */}
+                  {activeSection.type === 'collapsible-content' && 'rows' in activeSection.props && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Lignes repliables</span>
+                      <div className="space-y-3 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {(activeSection.props.rows || []).map((r: any, idx: number) => (
+                          <div key={idx} className="p-2 bg-white rounded-lg border border-gray-200 space-y-2 relative">
+                            <button onClick={() => { const next = activeSection.props.rows.filter((_: any, i: number) => i !== idx); updateSectionProp(activeSection.id, 'rows', next); }} className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+                            <input type="text" value={r.heading || ''} onChange={e => { const next = [...activeSection.props.rows]; next[idx] = { ...next[idx], heading: e.target.value }; updateSectionProp(activeSection.id, 'rows', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" placeholder="Titre" />
+                            <textarea value={r.content || ''} onChange={e => { const next = [...activeSection.props.rows]; next[idx] = { ...next[idx], content: e.target.value }; updateSectionProp(activeSection.id, 'rows', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" rows={2} placeholder="Contenu" />
+                          </div>
+                        ))}
+                        <button onClick={() => updateSectionProp(activeSection.id, 'rows', [...(activeSection.props.rows || []), { heading: 'Nouvelle rubrique', content: 'Contenu de la rubrique.' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une ligne</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "announcement-bar" messages editor */}
+                  {activeSection.type === 'announcement-bar' && (
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <span className="block text-xs font-bold text-gray-700 uppercase">Messages d’annonce</span>
+                      <div className="space-y-2 bg-gray-50 p-2.5 rounded-xl border border-gray-150">
+                        {(activeSection.props.messages || []).map((m: string, idx: number) => (
+                          <div key={idx} className="flex gap-1">
+                            <input type="text" value={m} onChange={e => { const next = [...activeSection.props.messages]; next[idx] = e.target.value; updateSectionProp(activeSection.id, 'messages', next); }} className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs" />
+                            <button onClick={() => { const next = activeSection.props.messages.filter((_: any, i: number) => i !== idx); updateSectionProp(activeSection.id, 'messages', next); }} className="px-2 text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+                          </div>
+                        ))}
+                        <button onClick={() => updateSectionProp(activeSection.id, 'messages', [...(activeSection.props.messages || []), 'Nouveau message promo'])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter un message</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "video" inputs */}
+                  {activeSection.type === 'video' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">URL Vidéo (embed YouTube/Vimeo)</label>
+                        <input type="text" value={activeSection.props.videoUrl || ''} onChange={e => updateSectionProp(activeSection.id, 'videoUrl', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="https://www.youtube.com/embed/..." />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Image de couverture (poster)</label>
+                        <input type="text" value={activeSection.props.poster || ''} onChange={e => updateSectionProp(activeSection.id, 'poster', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "email-signup" inputs */}
+                  {activeSection.type === 'email-signup' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Sous-titre</label>
+                        <input type="text" value={activeSection.props.subtitle || ''} onChange={e => updateSectionProp(activeSection.id, 'subtitle', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shopify "contact-form" inputs */}
+                  {activeSection.type === 'contact-form' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Sous-titre</label>
+                        <input type="text" value={activeSection.props.subtitle || ''} onChange={e => updateSectionProp(activeSection.id, 'subtitle', e.target.value)} className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
                       </div>
                     </div>
                   )}
@@ -1817,7 +2024,7 @@ export default function OnlineStore() {
               >
                 {theme.sections.filter(s => s.visible).map(s => {
                   let sectionWithRealData = { ...s };
-                  if (s.type === 'product-grid') {
+                  if (s.type === 'product-grid' || s.type === 'featured-collection') {
                     const realProds = getProducts().map(p => ({
                       name: p.name,
                       price: p.price,
@@ -1830,7 +2037,7 @@ export default function OnlineStore() {
                       rating: 5
                     }));
                     sectionWithRealData.props = { ...s.props, products: realProds };
-                  } else if (s.type === 'category-grid') {
+                  } else if (s.type === 'category-grid' || s.type === 'collection-list') {
                     const realCats = Object.keys(getCategories()).map(cat => ({
                       name: cat,
                       image: cat.toLowerCase().includes('accessoire')

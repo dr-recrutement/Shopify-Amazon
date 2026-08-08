@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
 import { FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createCmsPage, getCmsPages, saveCmsPage, type CmsPage } from '../../lib/cms';
+import { SHOPIFY_TEMPLATES, SHOPIFY_BLOCK_TYPES } from '../../lib/cms';
 
 export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
@@ -36,7 +37,7 @@ export default function Content() {
 
   return (
     <div>
-      <PageHeader title="Content" subtitle="CMS interne premium — pages, contenus, blocs, templates et prévisualisation éditables." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
+      <PageHeader title="Content" subtitle="CMS Shopify Online Store 2.0 — templates JSON, sections, blocs réordonnables et metaobjects." action={<Button onClick={createPage}><Plus size={16} /> Nouvelle page</Button>} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <div className="p-4 border-b border-gray-100">
@@ -112,10 +113,11 @@ export default function Content() {
               <input value={draft.slug} onChange={e => setDraft({ ...draft, slug: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Template</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Template (JSON Shopify)</label>
               <select value={draft.template} onChange={e => setDraft({ ...draft, template: e.target.value as CmsPage['template'] })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
-                {['landing', 'about', 'contact', 'faq', 'custom'].map(option => <option key={option} value={option}>{option}</option>)}
+                {SHOPIFY_TEMPLATES.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
               </select>
+              <p className="text-[10px] text-gray-400 mt-1">{SHOPIFY_TEMPLATES.find(t => t.id === draft.template)?.desc}</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Statut</label>
@@ -150,10 +152,7 @@ export default function Content() {
                   }} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                   <div className="space-y-2">
                     <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" defaultValue={section.type}>
-                      <option value="text">Texte</option>
-                      <option value="hero">Hero</option>
-                      <option value="quote">Citation</option>
-                      <option value="cta">CTA</option>
+                      {SHOPIFY_BLOCK_TYPES.map(bt => <option key={bt.type} value={bt.type}>{bt.label}</option>)}
                     </select>
                     <input value={section.title} onChange={e => {
                       const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, title: e.target.value } : item);

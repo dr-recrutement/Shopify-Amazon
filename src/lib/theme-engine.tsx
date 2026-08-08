@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Search, ShoppingBag, User, Star, Check, Mail, Phone, MapPin,
   Facebook, Instagram, Twitter, Clock, ArrowRight, Lock,
-  ShieldCheck, AlertCircle, MessageCircle, Plus, Minus, Heart, Send
+  ShieldCheck, AlertCircle, MessageCircle, Plus, Minus, Heart, Send,
+  ChevronLeft, ChevronRight, Play, Quote, Megaphone, X
 } from 'lucide-react';
 import { getShopProfile } from './app-state';
 
@@ -29,9 +30,19 @@ export function formatCurrency(amount: number, currency: string): string {
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
 export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial';
 
+export type SectionType =
+  | 'header' | 'announcement-bar' | 'footer'
+  | 'hero' | 'image-banner' | 'slideshow' | 'video'
+  | 'product-grid' | 'featured-collection' | 'category-grid' | 'collection-list'
+  | 'multicolumn' | 'image-with-text' | 'rich-text'
+  | 'countdown' | 'filters-list' | 'product-detail' | 'payments'
+  | 'testimonials' | 'about'
+  | 'social-bar' | 'chat-float'
+  | 'newsletter' | 'email-signup' | 'faq' | 'collapsible-content' | 'contact-form';
+
 export interface ThemeSection {
   id: string;
-  type: 'header' | 'hero' | 'product-grid' | 'category-grid' | 'countdown' | 'filters-list' | 'product-detail' | 'payments' | 'testimonials' | 'about' | 'footer' | 'social-bar' | 'chat-float' | 'newsletter' | 'faq';
+  type: SectionType;
   visible: boolean;
   props: Record<string, any>;
 }
@@ -59,22 +70,39 @@ export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
   { id: 'marketplace', label: 'Marketplace basique', desc: 'Plusieurs vendeurs/catégories sur une même boutique' },
 ];
 
-export const SECTION_LIBRARY: { type: ThemeSection['type']; label: string; icon: string }[] = [
-  { type: 'header', label: 'En-tête (Header)', icon: '☰' },
-  { type: 'hero', label: 'Bannière (Hero)', icon: '✦' },
-  { type: 'product-grid', label: 'Grille produits', icon: '▦' },
-  { type: 'category-grid', label: 'Grille catégories', icon: '▤' },
-  { type: 'countdown', label: 'Compte à rebours', icon: '⏱' },
-  { type: 'filters-list', label: 'Filtres + liste', icon: '⇕' },
-  { type: 'product-detail', label: 'Fiche produit', icon: '⬚' },
-  { type: 'payments', label: 'Paiements acceptés', icon: '💳' },
-  { type: 'testimonials', label: 'Témoignages clients', icon: '★' },
-  { type: 'about', label: 'Histoire (À propos)', icon: 'ℹ' },
-  { type: 'newsletter', label: 'Newsletter', icon: '✉' },
-  { type: 'faq', label: 'Foire Aux Questions', icon: '?' },
-  { type: 'footer', label: 'Pied de page (Footer)', icon: '▭' },
-  { type: 'social-bar', label: 'Barre de réseaux', icon: '◎' },
-  { type: 'chat-float', label: 'Chat support', icon: '💬' },
+export const SECTION_LIBRARY: { type: SectionType; label: string; icon: string; group: string }[] = [
+  // Layout / structure
+  { type: 'header', label: 'En-tête (Header)', icon: '☰', group: 'Structure' },
+  { type: 'announcement-bar', label: 'Barre d\'annonce', icon: '📢', group: 'Structure' },
+  { type: 'footer', label: 'Pied de page (Footer)', icon: '▭', group: 'Structure' },
+  // Banners & media (Shopify Dawn: image-banner, slideshow, video)
+  { type: 'image-banner', label: 'Bannière image (Image banner)', icon: '🖼', group: 'Bannières' },
+  { type: 'hero', label: 'Bannière Hero', icon: '✦', group: 'Bannières' },
+  { type: 'slideshow', label: 'Diaporama (Slideshow)', icon: '⏵', group: 'Bannières' },
+  { type: 'video', label: 'Vidéo', icon: '▶', group: 'Bannières' },
+  // Collections & products (Shopify Dawn: featured-collection, collection-list)
+  { type: 'featured-collection', label: 'Collection en vedette', icon: '🛍', group: 'Produits' },
+  { type: 'product-grid', label: 'Grille produits', icon: '▦', group: 'Produits' },
+  { type: 'collection-list', label: 'Liste de collections', icon: '▤', group: 'Produits' },
+  { type: 'category-grid', label: 'Grille catégories', icon: '▦', group: 'Produits' },
+  { type: 'product-detail', label: 'Fiche produit', icon: '⬚', group: 'Produits' },
+  { type: 'filters-list', label: 'Filtres + liste', icon: '⇕', group: 'Produits' },
+  { type: 'countdown', label: 'Compte à rebours', icon: '⏱', group: 'Produits' },
+  { type: 'payments', label: 'Paiements acceptés', icon: '💳', group: 'Produits' },
+  // Content blocks (Shopify Dawn: multicolumn, image-with-text, rich-text, collapsible-content)
+  { type: 'multicolumn', label: 'Multi-colonnes', icon: '⫴', group: 'Contenu' },
+  { type: 'image-with-text', label: 'Image avec texte', icon: '◧', group: 'Contenu' },
+  { type: 'rich-text', label: 'Texte enrichi', icon: '¶', group: 'Contenu' },
+  { type: 'testimonials', label: 'Témoignages clients', icon: '★', group: 'Contenu' },
+  { type: 'about', label: 'Histoire (À propos)', icon: 'ℹ', group: 'Contenu' },
+  // Engagement & conversion
+  { type: 'collapsible-content', label: 'Contenu repliable', icon: '∭', group: 'Engagement' },
+  { type: 'faq', label: 'Foire Aux Questions', icon: '?', group: 'Engagement' },
+  { type: 'newsletter', label: 'Newsletter', icon: '✉', group: 'Engagement' },
+  { type: 'email-signup', label: 'Inscription email', icon: '📨', group: 'Engagement' },
+  { type: 'contact-form', label: 'Formulaire de contact', icon: '✎', group: 'Engagement' },
+  { type: 'social-bar', label: 'Barre de réseaux', icon: '◎', group: 'Engagement' },
+  { type: 'chat-float', label: 'Chat support', icon: '💬', group: 'Engagement' },
 ];
 
 export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts'] }> = {
@@ -348,14 +376,157 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     }
   };
 
+  // Shopify Dawn "announcement-bar" — rotating promo messages above header.
+  const announcementBarSection: ThemeSection = {
+    id: 'announcement-1',
+    type: 'announcement-bar',
+    visible: true,
+    props: {
+      messages: [
+        '✨ Livraison gratuite dès 35 000 FCFA',
+        '💳 Paiement Mobile Money accepté — Orange Money, Wave, MTN MoMo',
+        '🚚 Expédition en 24-48h dans toute l’Afrique de l’Ouest',
+      ],
+      bgColor: colors.secondary,
+      textColor: '#ffffff',
+    }
+  };
+
+  // Shopify Dawn "image-banner" — full-bleed hero with overlay.
+  const imageBannerSection: ThemeSection = {
+    id: 'image-banner-1',
+    type: 'image-banner',
+    visible: true,
+    props: {
+      title: 'L’art de vivre africain, livré chez vous',
+      subtitle: 'COLLECTION EXCLUSIVE',
+      description: 'Des créations artisanales uniques, pensées par des couturiers et artisans locaux d’exception.',
+      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600',
+      align: 'center',
+      overlayOpacity: '35',
+      height: 'medium',
+      cta: 'Découvrir la collection',
+      cta2: 'Notre histoire',
+      textColor: '#ffffff',
+    }
+  };
+
+  // Shopify Dawn "slideshow" — auto-rotating slides.
+  const slideshowSection: ThemeSection = {
+    id: 'slideshow-1',
+    type: 'slideshow',
+    visible: false,
+    props: {
+      overlayOpacity: '35',
+      slides: [
+        { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600' },
+        { title: 'Soldes d’été', subtitle: '−30%', description: 'Profitez de réductions exclusives sur une sélection d’articles.', cta: 'J’en profite', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600' },
+        { title: 'Artisanat local', subtitle: 'Fait main', cta: 'Voir les créations', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=1600' },
+      ],
+    }
+  };
+
+  // Shopify Dawn "multicolumn" — value props / trust badges.
+  const multicolumnSection: ThemeSection = {
+    id: 'multicolumn-1',
+    type: 'multicolumn',
+    visible: true,
+    props: {
+      title: 'Pourquoi nous choisir',
+      subtitle: 'Une expérience d’achat pensée pour l’Afrique.',
+      align: 'center',
+      columns: [
+        { title: 'Livraison rapide', text: 'Expédition en 24-48h dans les grandes villes africaines.', icon: '🚚' },
+        { title: 'Paiement sécurisé', text: 'Orange Money, Wave, MTN MoMo et cartes bancaires.', icon: '🔒' },
+        { title: 'Support 7j/7', text: 'Une équipe dédiée à votre écoute par WhatsApp et chat.', icon: '💬' },
+        { title: 'Qualité garantie', text: 'Retours acceptés sous 14 jours, satisfait ou remboursé.', icon: '✅' },
+      ],
+    }
+  };
+
+  // Shopify Dawn "image-with-text" — brand story split block.
+  const imageWithTextSection: ThemeSection = {
+    id: 'iwt-1',
+    type: 'image-with-text',
+    visible: true,
+    props: {
+      badge: 'NOTRE SAVOIR-FAIRE',
+      title: 'L’artisanat africain réinventé',
+      text: 'Chaque pièce est le fruit d’un travail acharné réalisé par des coopératives d’artisans. Nous garantissons une rémunération juste et éthique tout en préservant les techniques ancestrales.',
+      image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800',
+      layout: 'image-right',
+      cta: 'En savoir plus',
+    }
+  };
+
+  // Shopify Dawn "rich-text" — editorial paragraph block.
+  const richTextSection: ThemeSection = {
+    id: 'rich-text-1',
+    type: 'rich-text',
+    visible: true,
+    props: {
+      title: 'Bienvenue dans notre univers',
+      text: 'Nous croyons à une mode africaine responsable, locale et accessible. Découvrez des créations qui célèbrent le talent de nos artisans tout en soutenant l’économie locale.',
+      align: 'center',
+      width: 'narrow',
+    }
+  };
+
+  // Shopify Dawn "collapsible-content" — FAQ-style accordions.
+  const collapsibleContentSection: ThemeSection = {
+    id: 'collapsible-1',
+    type: 'collapsible-content',
+    visible: true,
+    props: {
+      title: 'Informations utiles',
+      rows: [
+        { heading: 'Livraison & retours', content: 'Livraison en 24-48h dans les grandes villes. Retours acceptés sous 14 jours après réception.' },
+        { heading: 'Modes de paiement', content: 'Orange Money, Wave, MTN MoMo, Flutterwave, Paystack et cartes Visa/Mastercard.' },
+        { heading: 'Suivi de commande', content: 'Un lien de suivi vous est envoyé par SMS dès l’expédition de votre commande.' },
+      ],
+    }
+  };
+
+  // Shopify Dawn "contact-form".
+  const contactFormSection: ThemeSection = {
+    id: 'contact-1',
+    type: 'contact-form',
+    visible: true,
+    props: {
+      title: 'Contactez-nous',
+      subtitle: 'Une question ? Écrivez-nous, nous répondons sous 24h.',
+    }
+  };
+
+  // Shopify Dawn "email-signup".
+  const emailSignupSection: ThemeSection = {
+    id: 'email-signup-1',
+    type: 'email-signup',
+    visible: true,
+    props: {
+      title: 'Rejoignez notre communauté',
+      subtitle: 'Recevez nos offres exclusives et nouveautés directement dans votre boîte mail.',
+    }
+  };
+
+  // Shopify Dawn "featured-collection" (alias of product-grid, Dawn naming).
+  const featuredCollectionSection: ThemeSection = { ...productGridSection, id: 'featured-collection-1', type: 'featured-collection' };
+
+  // Shopify Dawn "collection-list" (alias of category-grid, Dawn naming).
+  const collectionListSection: ThemeSection = { ...categoryGridSection, id: 'collection-list-1', type: 'collection-list' };
+
   if (siteType === 'landing') {
     return {
       siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
       sections: [
+        announcementBarSection,
         headerSection,
-        heroSection,
+        imageBannerSection,
+        multicolumnSection,
         countdownSection,
+        imageWithTextSection,
         testimonialsSection,
+        collapsibleContentSection,
         paymentsSection,
         newsletterSection,
         footerSection,
@@ -367,15 +538,19 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     return {
       siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
       sections: [
+        announcementBarSection,
         headerSection,
-        heroSection,
-        categoryGridSection,
+        imageBannerSection,
+        collectionListSection,
+        multicolumnSection,
         countdownSection,
-        productGridSection,
+        featuredCollectionSection,
         productDetailSection,
+        imageWithTextSection,
         testimonialsSection,
+        collapsibleContentSection,
         paymentsSection,
-        newsletterSection,
+        emailSignupSection,
         footerSection,
         socialBarSection,
         chatFloatSection,
@@ -387,11 +562,15 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
     return {
       siteType, preset, colors, fonts, spacing: 'spacious', isPublished: false,
       sections: [
+        announcementBarSection,
         headerSection,
-        heroSection,
+        imageBannerSection,
+        richTextSection,
         aboutSection,
+        multicolumnSection,
         testimonialsSection,
-        newsletterSection,
+        contactFormSection,
+        emailSignupSection,
         footerSection,
       ],
     };
@@ -401,13 +580,17 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   return {
     siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
     sections: [
+      announcementBarSection,
       headerSection,
-      heroSection,
-      categoryGridSection,
+      imageBannerSection,
+      slideshowSection,
+      collectionListSection,
+      multicolumnSection,
       countdownSection,
-      productGridSection,
+      featuredCollectionSection,
       testimonialsSection,
       paymentsSection,
+      emailSignupSection,
       footerSection,
       socialBarSection,
       chatFloatSection,
@@ -1187,6 +1370,324 @@ function ChatFloatSection({ props, colors, fonts }: { props: any; colors: any; f
 }
 
 // ---------------------------------------------------------------------------
+// SHOPIFY DAWN (ONLINE STORE 2.0) SECTIONS
+// Sections aligned with Shopify's reference theme: image-banner, slideshow,
+// multicolumn, image-with-text, rich-text, collapsible-content, contact-form,
+// featured-collection, collection-list, email-signup, video, announcement-bar.
+// ---------------------------------------------------------------------------
+
+// Shopify "announcement-bar" group — sticky rotating messages above the header.
+function AnnouncementBarSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+  const messages: string[] = Array.isArray(props.messages) && props.messages.length
+    ? props.messages
+    : ['Livraison gratuite dès 35 000 FCFA', 'Paiement Mobile Money accepté', 'Nouvelle collection disponible'];
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setIdx(i => (i + 1) % messages.length), 4000);
+    return () => clearInterval(t);
+  }, [messages.length]);
+  const bgColor = props.bgColor || colors.secondary;
+  const txtColor = props.textColor || '#ffffff';
+  return (
+    <div
+      className="text-center py-2 px-4 text-[11px] font-semibold tracking-wide flex items-center justify-center gap-2"
+      style={{ backgroundColor: bgColor, color: txtColor, fontFamily: fonts.body }}
+    >
+      <Megaphone className="w-3.5 h-3.5 shrink-0" />
+      <span key={idx} className="animate-fade-in-up">{messages[idx]}</span>
+    </div>
+  );
+}
+
+// Shopify "image-banner" section — single full-bleed image with overlay content.
+function ImageBannerSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const overlay = Number(props.overlayOpacity ?? 40) / 100;
+  const height = props.height || 'medium';
+  const heightClass = height === 'small' ? 'min-h-[320px]' : height === 'large' ? 'min-h-[560px]' : 'min-h-[440px]';
+  const align = props.align === 'left' ? 'items-start text-left' : props.align === 'right' ? 'items-end text-right' : 'items-center text-center';
+  const img = props.image || 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600';
+  return (
+    <section className={`relative flex ${heightClass} ${align} justify-center overflow-hidden`} style={{ fontFamily: fonts.body }}>
+      <img src={img} alt={props.title || 'Banner'} className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0" style={{ backgroundColor: '#000', opacity: overlay }} />
+      <div className={`relative z-10 max-w-2xl px-6 py-12 flex flex-col ${align} ${spacingClass}`}>
+        {props.subtitle && (
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] mb-3" style={{ color: colors.accent }}>
+            {props.subtitle}
+          </span>
+        )}
+        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: props.textColor || '#fff' }}>
+          {props.title || 'Bannière image'}
+        </h2>
+        {props.description && (
+          <p className="mt-4 max-w-xl text-sm md:text-base opacity-90" style={{ color: props.textColor || '#fff' }}>
+            {props.description}
+          </p>
+        )}
+        <div className="mt-6 flex flex-wrap gap-3 justify-center">
+          {props.cta && (
+            <button className="px-6 py-3 text-xs font-black uppercase tracking-wider shadow-lg hover:scale-105 transition-transform text-white" style={{ backgroundColor: colors.primary }}>
+              {props.cta}
+            </button>
+          )}
+          {props.cta2 && (
+            <button className="px-6 py-3 text-xs font-black uppercase tracking-wider border border-white/60 text-white hover:bg-white/10 transition-colors">
+              {props.cta2}
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Shopify "slideshow" section — auto-rotating slides with manual controls.
+function SlideshowSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const slides: any[] = Array.isArray(props.slides) && props.slides.length ? props.slides : [
+    { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1600' },
+    { title: 'Soldes d\'été', subtitle: '-30%', cta: 'J\'en profite', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600' },
+  ];
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const total = slides.length;
+  const next = () => setActive(a => (a + 1) % total);
+  const prev = () => setActive(a => (a - 1 + total) % total);
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(next, 5000);
+    return () => clearInterval(t);
+  }, [paused, total]);
+  const slide = slides[active];
+  const overlay = Number(props.overlayOpacity ?? 35) / 100;
+  const align = slide.align === 'left' ? 'items-start text-left' : slide.align === 'right' ? 'items-end text-right' : 'items-center text-center';
+  return (
+    <section
+      className={`relative ${spacingClass} overflow-hidden min-h-[440px] flex ${align} justify-center`}
+      style={{ fontFamily: fonts.body }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {slides.map((s, i) => (
+        <img
+          key={i}
+          src={s.image}
+          alt={s.title}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === active ? 'opacity-100' : 'opacity-0'}`}
+        />
+      ))}
+      <div className="absolute inset-0" style={{ backgroundColor: '#000', opacity: overlay }} />
+      <div className={`relative z-10 max-w-2xl px-6 py-12 flex flex-col ${align}`}>
+        {slide.subtitle && (
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] mb-3" style={{ color: colors.accent }}>{slide.subtitle}</span>
+        )}
+        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: slide.textColor || '#fff' }}>{slide.title}</h2>
+        <p className="mt-3 text-sm opacity-90" style={{ color: slide.textColor || '#fff' }}>{slide.description}</p>
+        {slide.cta && (
+          <button className="mt-6 px-6 py-3 text-xs font-black uppercase tracking-wider shadow-lg hover:scale-105 transition-transform text-white" style={{ backgroundColor: colors.primary }}>{slide.cta}</button>
+        )}
+      </div>
+      {total > 1 && (
+        <>
+          <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/30 backdrop-blur flex items-center justify-center text-white hover:bg-white/50 transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+          <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/30 backdrop-blur flex items-center justify-center text-white hover:bg-white/50 transition-colors"><ChevronRight className="w-5 h-5" /></button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {slides.map((_, i) => (
+              <button key={i} onClick={() => setActive(i)} className={`h-1.5 rounded-full transition-all ${i === active ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
+// Shopify "multicolumn" section — repeatable column blocks with image + text.
+function MulticolumnSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const columns: any[] = Array.isArray(props.columns) && props.columns.length ? props.columns : [
+    { title: 'Livraison rapide', text: 'Expédition en 24-48h partout en Afrique.', icon: '🚚' },
+    { title: 'Paiement sécurisé', text: 'Orange Money, Wave, cartes bancaires.', icon: '🔒' },
+    { title: 'Support 7j/7', text: 'Une équipe dédiée à votre écoute.', icon: '💬' },
+  ];
+  const align = props.align || 'center';
+  const grid = columns.length <= 2 ? 'md:grid-cols-2' : columns.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-4';
+  return (
+    <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
+      <div className={`max-w-5xl mx-auto ${align === 'left' ? 'text-left' : 'text-center'}`}>
+        {props.title && <h3 className="text-2xl font-extrabold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.subtitle && <p className="text-sm text-gray-500 mb-8 max-w-xl mx-auto">{props.subtitle}</p>}
+      </div>
+      <div className={`grid gap-6 ${grid} ${align === 'center' ? 'text-center' : ''}`}>
+        {columns.map((c, i) => (
+          <div key={i} className="flex flex-col items-center">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3" style={{ backgroundColor: `${colors.primary}15` }}>
+              {c.image ? <img src={c.image} alt={c.title} className="w-full h-full rounded-full object-cover" /> : c.icon || '✦'}
+            </div>
+            <h4 className="font-extrabold text-sm mb-1" style={{ fontFamily: fonts.heading, color: colors.text }}>{c.title}</h4>
+            <p className="text-xs text-gray-500 leading-relaxed max-w-[220px]">{c.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Shopify "image-with-text" section — two-column image + rich text.
+function ImageWithTextSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const imageRight = props.layout === 'image-right';
+  const img = props.image || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800';
+  return (
+    <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className={`aspect-[4/3] rounded-xl overflow-hidden ${imageRight ? 'md:order-2' : ''}`}>
+          <img src={img} alt={props.title || 'Image'} className="w-full h-full object-cover" />
+        </div>
+        <div className={`space-y-4 ${imageRight ? 'md:order-1' : ''}`}>
+          {props.badge && <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: colors.primary }}>{props.badge}</span>}
+          <h3 className="text-2xl md:text-3xl font-extrabold" style={{ fontFamily: fonts.heading }}>{props.title || 'Texte avec image'}</h3>
+          <div className="w-12 h-1 rounded-full" style={{ backgroundColor: colors.primary }} />
+          <p className="text-sm text-gray-600 leading-relaxed">{props.text || props.description || 'Décrivez ici votre marque, vos valeurs ou votre produit phare.'}</p>
+          {props.cta && <button className="px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>{props.cta}</button>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Shopify "rich-text" section — heading + paragraph + optional button, full width.
+function RichTextSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const width = props.width === 'narrow' ? 'max-w-2xl' : 'max-w-4xl';
+  const align = props.align === 'left' ? 'text-left' : props.align === 'right' ? 'text-right' : 'text-center';
+  return (
+    <section className={`${spacingClass} ${align}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
+      <div className={`${width} mx-auto space-y-4`}>
+        {props.title && <h3 className="text-2xl md:text-3xl font-extrabold" style={{ fontFamily: fonts.heading }}>{props.title}</h3>}
+        {props.text && <p className="text-sm md:text-base text-gray-600 leading-relaxed">{props.text}</p>}
+        {props.cta && <button className="px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>{props.cta}</button>}
+      </div>
+    </section>
+  );
+}
+
+// Shopify "video" section — hosted/embedded video with overlay poster.
+function VideoSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const [playing, setPlaying] = useState(false);
+  const poster = props.poster || 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=1600';
+  return (
+    <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
+      <div className="max-w-5xl mx-auto">
+        {props.title && <h3 className="text-2xl font-extrabold text-center mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        <div className="relative aspect-video rounded-xl overflow-hidden bg-black group cursor-pointer" onClick={() => setPlaying(true)}>
+          {playing && props.videoUrl ? (
+            <iframe src={props.videoUrl} className="absolute inset-0 w-full h-full" allow="autoplay; encrypted-media" allowFullScreen title={props.title || 'Video'} />
+          ) : (
+            <>
+              <img src={poster} alt="Video poster" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                  <Play className="w-7 h-7 text-gray-900 fill-current ml-1" />
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+        {props.description && <p className="text-center text-sm text-gray-500 mt-3">{props.description}</p>}
+      </div>
+    </section>
+  );
+}
+
+// Shopify "collapsible-content" section — accordions grouped by row.
+function CollapsibleContentSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const rows: any[] = Array.isArray(props.rows) && props.rows.length ? props.rows : [
+    { heading: 'Livraison & retours', content: 'Livraison en 24-48h dans les grandes villes. Retours sous 14 jours.' },
+    { heading: 'Modes de paiement', content: 'Orange Money, Wave, MTN MoMo, cartes Visa/Mastercard.' },
+  ];
+  return (
+    <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
+      <div className="max-w-2xl mx-auto">
+        {props.title && <h3 className="text-center text-2xl font-extrabold mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        <div className="space-y-2">
+          {rows.map((r, i) => {
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} className="rounded-lg border overflow-hidden" style={{ borderColor: `${colors.text}15` }}>
+                <button onClick={() => setOpenIdx(isOpen ? null : i)} className="w-full flex items-center justify-between p-4 text-left text-sm font-bold" style={{ color: colors.text }}>
+                  <span>{r.heading}</span>
+                  <span className="text-lg font-black">{isOpen ? '−' : '+'}</span>
+                </button>
+                {isOpen && <div className="p-4 pt-0 text-sm text-gray-500 leading-relaxed">{r.content}</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Shopify "contact-form" section — name/email/phone/message form.
+function ContactFormSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+  const [sent, setSent] = useState(false);
+  return (
+    <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
+      <div className="max-w-xl mx-auto">
+        {props.title && <h3 className="text-center text-2xl font-extrabold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.subtitle && <p className="text-center text-sm text-gray-500 mb-6">{props.subtitle}</p>}
+        {sent ? (
+          <div className="p-5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-bold text-center">
+            ✓ Merci ! Votre message a bien été envoyé. Notre équipe vous répond sous 24h.
+          </div>
+        ) : (
+          <form onSubmit={e => { e.preventDefault(); setSent(true); }} className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input required placeholder="Nom complet" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+              <input required type="email" placeholder="Adresse email" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+            </div>
+            <input placeholder="Téléphone (optionnel)" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+            <textarea required placeholder="Votre message" rows={4} className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+            <button type="submit" className="w-full py-3 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>Envoyer le message</button>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// Shopify "featured-collection" — same product grid, Dawn-named. Reuses ProductGridSection.
+function FeaturedCollectionSection(props: any) {
+  return ProductGridSection(props);
+}
+
+// Shopify "collection-list" — same category grid, Dawn-named. Reuses CategoryGridSection.
+function CollectionListSection(props: any) {
+  return CategoryGridSection(props);
+}
+
+// Shopify "email-signup" — Dawn footer email capture, more minimal than newsletter.
+function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+  const [email, setEmail] = useState('');
+  const [done, setDone] = useState(false);
+  return (
+    <div className="py-8 px-4 text-center" style={{ backgroundColor: colors.secondary, color: '#fff', fontFamily: fonts.body }}>
+      <div className="max-w-md mx-auto">
+        <h3 className="text-lg font-extrabold mb-1" style={{ fontFamily: fonts.heading }}>{props.title || 'Inscrivez-vous à notre lettre d\'information'}</h3>
+        <p className="text-xs opacity-80 mb-4">{props.subtitle || 'Recevez nos offres et nouveautés.'}</p>
+        {done ? (
+          <p className="text-xs font-bold text-emerald-300">✓ Merci pour votre inscription !</p>
+        ) : (
+          <form onSubmit={e => { e.preventDefault(); if (email.trim()) setDone(true); }} className="flex gap-2 max-w-sm mx-auto">
+            <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="flex-1 px-3 py-2 rounded-lg text-xs text-gray-900 bg-white" />
+            <button type="submit" className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ backgroundColor: colors.primary }}>S'inscrire</button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+// ---------------------------------------------------------------------------
 // MAIN RENDER ROUTER
 // ---------------------------------------------------------------------------
 export function renderSection(section: ThemeSection, theme: ThemeConfig): React.ReactNode {
@@ -1197,12 +1698,30 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
   switch (section.type) {
     case 'header':
       return <HeaderSection props={section.props} colors={colors} fonts={fonts} />;
+    case 'announcement-bar':
+      return <AnnouncementBarSection props={section.props} colors={colors} fonts={fonts} />;
     case 'hero':
       return <HeroSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'image-banner':
+      return <ImageBannerSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'slideshow':
+      return <SlideshowSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'video':
+      return <VideoSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'product-grid':
       return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} />;
+    case 'featured-collection':
+      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} />;
     case 'category-grid':
       return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'collection-list':
+      return <CollectionListSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'multicolumn':
+      return <MulticolumnSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'image-with-text':
+      return <ImageWithTextSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'rich-text':
+      return <RichTextSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'countdown':
       return <CountdownSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'filters-list':
@@ -1217,8 +1736,14 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
       return <AboutSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'newsletter':
       return <NewsletterSection props={section.props} colors={colors} fonts={fonts} />;
+    case 'email-signup':
+      return <EmailSignupSection props={section.props} colors={colors} fonts={fonts} />;
     case 'faq':
       return <FaqSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'collapsible-content':
+      return <CollapsibleContentSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+    case 'contact-form':
+      return <ContactFormSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'footer':
       return <FooterSection props={section.props} colors={colors} fonts={fonts} />;
     case 'social-bar':

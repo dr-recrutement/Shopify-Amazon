@@ -16,7 +16,11 @@ export type StoreProduct = {
   currency: string;
   category?: string;
   subcategory?: string;
-  /** Base64 data URL (uploaded image) — never an external link. */
+  /** Gallery of uploaded images (base64 data URLs) — never external links.
+   *  images[0] is the primary image shown in grids and the storefront. */
+  images?: string[];
+  /** Single-image legacy field. Kept for backward compatibility with older
+   *  stored products; new products write `images` instead. */
   image?: string;
   /** Short marketing description shown on the storefront + product card. */
   description?: string;
@@ -122,7 +126,32 @@ export function saveCategories(categories: CategoryMap) {
 }
 
 export function saveProducts(products: StoreProduct[]) {
-  writeStorage(PRODUCTS_KEY, products);
+  try {
+    writeStorage(PRODUCTS_KEY, products);
+    return true;
+  } catch (err) {
+    // localStorage quota exceeded — images are large base64 strings.
+    // Surface a clear signal so the UI can inform the merchant.
+    if (err instanceof DOMException && (err.name === 'QuotaExceededError' || err.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+      return false;
+    }
+    throw err;
+  }
+}
+
+/** Resolves the primary image of a product, handling both the new `images`
+ *  gallery and the legacy single `image` field. */
+export function getProductImage(p: StoreProduct): string {
+  if (p.images && p.images.length > 0) return p.images[0];
+  return p.image || '';
+}
+
+/** Resolves the full image gallery of a product (legacy single image is
+ *  treated as a 1-element gallery). */
+export function getProductImages(p: StoreProduct): string[] {
+  if (p.images && p.images.length > 0) return p.images;
+  if (p.image) return [p.image];
+  return [];
 }
 
 export function getOrders(): StoreOrder[] {
@@ -169,6 +198,254 @@ export function getSupportTickets(): SupportTicket[] {
 export function saveSupportTicket(ticket: SupportTicket) {
   const tickets = getSupportTickets();
   writeStorage(SUPPORT_TICKETS_KEY, [ticket, ...tickets]);
+}
+
+export function saveSupportTickets(tickets: SupportTicket[]) {
+  writeStorage(SUPPORT_TICKETS_KEY, tickets);
+}
+
+// ---------------------------------------------------------------------------
+// Customers — tenant-scoped CRM. Each seller manages their own customer base.
+// ---------------------------------------------------------------------------
+
+export type CustomerSegment = 'vip' | 'new' | 'regular' | 'inactive';
+
+export type Customer = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  country?: string;
+  city?: string;
+  ordersCount: number;
+  totalSpent: number;
+  currency: string;
+  segment: CustomerSegment;
+  tags?: string[];
+  createdAt: string;
+  notes?: string;
+};
+
+const CUSTOMERS_KEY = 'liafrikos_customers';
+
+export function getCustomers(): Customer[] {
+  return readStorage<Customer[]>(CUSTOMERS_KEY, [
+    { id: 'c1', name: 'Aïcha Diallo', email: 'aicha@example.com', phone: '+225 07 00 00 01', country: 'CI', city: 'Abidjan', ordersCount: 3, totalSpent: 45000, currency: 'XOF', segment: 'vip', createdAt: '2026-05-10', tags: ['Fidèle'] },
+    { id: 'c2', name: 'Kwame Mensah', email: 'kwame@example.com', phone: '+233 24 000 002', country: 'GH', city: 'Accra', ordersCount: 1, totalSpent: 320, currency: 'GHS', segment: 'new', createdAt: '2026-07-20', tags: [] },
+    { id: 'c3', name: 'Fatou Ndiaye', email: 'fatou@example.com', phone: '+221 77 000 003', country: 'SN', city: 'Dakar', ordersCount: 0, totalSpent: 0, currency: 'XOF', segment: 'inactive', createdAt: '2026-03-01', tags: [] },
+  ]);
+}
+
+export function saveCustomers(customers: Customer[]) {
+  writeStorage(CUSTOMERS_KEY, customers);
+}
+
+// ---------------------------------------------------------------------------
+// Discounts — promo codes and automatic discounts (Shopify Discounts).
+// ---------------------------------------------------------------------------
+
+export type DiscountType = 'percentage' | 'fixed_amount' | 'free_shipping';
+export type DiscountStatus = 'active' | 'scheduled' | 'expired';
+
+export type Discount = {
+  id: string;
+  code: string;
+  title: string;
+  type: DiscountType;
+  value: number; // percentage (0-100) or fixed amount
+  currency?: string;
+  minOrder?: number;
+  usageLimit?: number;
+  usedCount: number;
+  status: DiscountStatus;
+  startsAt?: string;
+  endsAt?: string;
+  createdAt: string;
+};
+
+const DISCOUNTS_KEY = 'liafrikos_discounts';
+
+export function getDiscounts(): Discount[] {
+  return readStorage<Discount[]>(DISCOUNTS_KEY, [
+    { id: 'd1', code: 'BIENVENUE10', title: 'Bienvenue 10%', type: 'percentage', value: 10, currency: 'XOF', minOrder: 0, usageLimit: 100, usedCount: 12, status: 'active', createdAt: '2026-06-01', startsAt: '2026-06-01' },
+    { id: 'd2', code: 'LIVRAISONFREE', title: 'Livraison offerte', type: 'free_shipping', value: 0, currency: 'XOF', minOrder: 35000, usageLimit: 50, usedCount: 5, status: 'active', createdAt: '2026-06-15' },
+    { id: 'd3', code: 'VIP20', title: 'VIP -20%', type: 'percentage', value: 20, currency: 'XOF', minOrder: 50000, usageLimit: 20, usedCount: 0, status: 'scheduled', createdAt: '2026-07-01', startsAt: '2026-12-01' },
+  ]);
+}
+
+export function saveDiscounts(discounts: Discount[]) {
+  writeStorage(DISCOUNTS_KEY, discounts);
+}
+
+// ---------------------------------------------------------------------------
+// Staff / Team — multi-tenant staff management with roles & permissions.
+// ---------------------------------------------------------------------------
+
+export type StaffRole = 'admin' | 'manager' | 'staff' | 'support';
+
+export type StaffMember = {
+  id: string;
+  name: string;
+  email: string;
+  role: StaffRole;
+  status: 'active' | 'invited' | 'suspended';
+  permissions: string[];
+  lastActive?: string;
+  createdAt: string;
+};
+
+const STAFF_KEY = 'liafrikos_staff';
+
+export function getStaff(): StaffMember[] {
+  return readStorage<StaffMember[]>(STAFF_KEY, [
+    { id: 's1', name: 'Aïcha Diallo (Vous)', email: 'aicha@example.com', role: 'admin', status: 'active', permissions: ['all'], lastActive: '2026-08-08', createdAt: '2026-01-01' },
+    { id: 's2', name: 'Moussa Traoré', email: 'moussa@example.com', role: 'manager', status: 'active', permissions: ['products', 'orders', 'customers'], lastActive: '2026-08-07', createdAt: '2026-03-15' },
+  ]);
+}
+
+export function saveStaff(staff: StaffMember[]) {
+  writeStorage(STAFF_KEY, staff);
+}
+
+// ---------------------------------------------------------------------------
+// Markets — internationalization config (active countries, currencies).
+// ---------------------------------------------------------------------------
+
+export type MarketConfig = {
+  activeCountries: string[];
+  defaultCountry: string;
+  currencies: string[];
+  defaultCurrency: string;
+};
+
+const MARKETS_KEY = 'liafrikos_markets';
+
+export function getMarketConfig(): MarketConfig {
+  return readStorage<MarketConfig>(MARKETS_KEY, {
+    activeCountries: ['CI', 'GH', 'NG'],
+    defaultCountry: 'CI',
+    currencies: ['XOF', 'GHS', 'NGN'],
+    defaultCurrency: 'XOF',
+  });
+}
+
+export function saveMarketConfig(config: MarketConfig) {
+  writeStorage(MARKETS_KEY, config);
+}
+
+// ---------------------------------------------------------------------------
+// Automations — workflow rules (Shopify Flow style).
+// ---------------------------------------------------------------------------
+
+export type AutomationTrigger = 'order_created' | 'order_paid' | 'customer_signup' | 'low_stock' | 'abandoned_cart';
+export type AutomationAction = 'send_email' | 'create_discount' | 'tag_customer' | 'notify_staff' | 'restock_alert';
+
+export type Automation = {
+  id: string;
+  name: string;
+  trigger: AutomationTrigger;
+  action: AutomationAction;
+  enabled: boolean;
+  runs: number;
+  createdAt: string;
+};
+
+const AUTOMATIONS_KEY = 'liafrikos_automations';
+
+export function getAutomations(): Automation[] {
+  return readStorage<Automation[]>(AUTOMATIONS_KEY, [
+    { id: 'a1', name: 'Email de bienvenue', trigger: 'customer_signup', action: 'send_email', enabled: true, runs: 47, createdAt: '2026-05-01' },
+    { id: 'a2', name: 'Alerte stock bas', trigger: 'low_stock', action: 'restock_alert', enabled: true, runs: 8, createdAt: '2026-06-01' },
+    { id: 'a3', name: 'Relance panier abandonné', trigger: 'abandoned_cart', action: 'send_email', enabled: false, runs: 0, createdAt: '2026-07-01' },
+  ]);
+}
+
+export function saveAutomations(automations: Automation[]) {
+  writeStorage(AUTOMATIONS_KEY, automations);
+}
+
+// ---------------------------------------------------------------------------
+// Marketing campaigns — email/SMS/social campaigns.
+// ---------------------------------------------------------------------------
+
+export type CampaignChannel = 'email' | 'sms' | 'social';
+export type CampaignStatus = 'draft' | 'scheduled' | 'sent' | 'active';
+
+export type Campaign = {
+  id: string;
+  name: string;
+  channel: CampaignChannel;
+  status: CampaignStatus;
+  audience: number;
+  sent: number;
+  opened: number;
+  clicked: number;
+  revenue: number;
+  currency: string;
+  createdAt: string;
+};
+
+const CAMPAIGNS_KEY = 'liafrikos_campaigns';
+
+export function getCampaigns(): Campaign[] {
+  return readStorage<Campaign[]>(CAMPAIGNS_KEY, [
+    { id: 'mc1', name: 'Soldes d\'été', channel: 'email', status: 'sent', audience: 120, sent: 120, opened: 78, clicked: 34, revenue: 85000, currency: 'XOF', createdAt: '2026-07-15' },
+    { id: 'mc2', name: 'Nouvelle collection', channel: 'sms', status: 'scheduled', audience: 85, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: '2026-08-01' },
+    { id: 'mc3', name: 'Black Friday', channel: 'social', status: 'draft', audience: 0, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: '2026-08-05' },
+  ]);
+}
+
+export function saveCampaigns(campaigns: Campaign[]) {
+  writeStorage(CAMPAIGNS_KEY, campaigns);
+}
+
+// ---------------------------------------------------------------------------
+// Chat messages — customer support inbox.
+// ---------------------------------------------------------------------------
+
+export type ChatMessage = {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  message: string;
+  fromMerchant: boolean;
+  read: boolean;
+  createdAt: string;
+};
+
+export type ChatThread = {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  lastMessage: string;
+  lastAt: string;
+  unread: number;
+  messages: ChatMessage[];
+};
+
+const CHAT_KEY = 'liafrikos_chat_threads';
+
+export function getChatThreads(): ChatThread[] {
+  return readStorage<ChatThread[]>(CHAT_KEY, [
+    {
+      id: 't1', customerName: 'Aïcha Diallo', customerEmail: 'aicha@example.com',
+      lastMessage: 'Bonjour, ma commande est-elle expédiée ?', lastAt: '2026-08-08 10:30', unread: 1,
+      messages: [
+        { id: 'm1', customerName: 'Aïcha Diallo', customerEmail: 'aicha@example.com', message: 'Bonjour, ma commande est-elle expédiée ?', fromMerchant: false, read: false, createdAt: '2026-08-08 10:30' },
+      ],
+    },
+    {
+      id: 't2', customerName: 'Kwame Mensah', customerEmail: 'kwame@example.com',
+      lastMessage: 'Merci pour la livraison rapide !', lastAt: '2026-08-07 16:45', unread: 0,
+      messages: [
+        { id: 'm2', customerName: 'Kwame Mensah', customerEmail: 'kwame@example.com', message: 'Merci pour la livraison rapide !', fromMerchant: false, read: true, createdAt: '2026-08-07 16:45' },
+      ],
+    },
+  ]);
+}
+
+export function saveChatThreads(threads: ChatThread[]) {
+  writeStorage(CHAT_KEY, threads);
 }
 
 export function getShopProfile() {
@@ -246,6 +523,7 @@ export type CatalogProductCard = {
   price: number;
   oldPrice: number;
   image: string;
+  images: string[];
   rating: number;
   description: string;
   stock: number;
@@ -254,21 +532,26 @@ export type CatalogProductCard = {
 };
 
 /** Returns the merchant's active products, mapped to the card shape the
- *  storefront sections expect (image is the uploaded base64 data URL). */
+ *  storefront sections expect. `image` is the primary uploaded base64 data
+ *  URL; `images` carries the full gallery for product detail / quick view. */
 export function getActiveCatalogProducts(): CatalogProductCard[] {
   return getProducts()
     .filter(p => p.status === 'active')
-    .map(p => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      oldPrice: Math.round(p.price * 1.2),
-      image: p.image || '',
-      rating: 5,
-      description: p.description || '',
-      stock: p.stock,
-      category: p.category,
-    }));
+    .map(p => {
+      const images = getProductImages(p);
+      return {
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        oldPrice: Math.round(p.price * 1.2),
+        image: images[0] || '',
+        images,
+        rating: 5,
+        description: p.description || '',
+        stock: p.stock,
+        category: p.category,
+      };
+    });
 }
 
 export type CatalogCategoryCard = { name: string; image: string };

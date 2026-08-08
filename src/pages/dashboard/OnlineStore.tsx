@@ -8,7 +8,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
-import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getPrimaryDomain } from '../../lib/app-state';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getPrimaryDomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { ImageUploadField } from '../../components/ImageUpload';
 
 interface CustomDomain {
@@ -2037,7 +2037,8 @@ export default function OnlineStore() {
                         name: p.name,
                         price: p.price,
                         oldPrice: p.status === 'out_of_stock' ? 0 : Math.round(p.price * 1.2),
-                        image: p.image || '',
+                        image: getProductImage(p),
+                        images: getProductImages(p),
                         rating: 5,
                         description: p.description || '',
                       }));

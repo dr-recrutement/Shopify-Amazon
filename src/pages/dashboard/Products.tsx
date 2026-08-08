@@ -1,8 +1,8 @@
 import { PageHeader, Card, Button, EmptyState, Table, Badge } from './ui';
 import { Package, Plus, Sparkles, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getProducts, saveProducts, getCategories, saveCategories, type StoreProduct, type CategoryMap } from '../../lib/app-state';
-import { ImageUploadField } from '../../components/ImageUpload';
+import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
+import { MultiImageUpload } from '../../components/ImageUpload';
 
 export default function Products() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -19,7 +19,7 @@ export default function Products() {
   const [prodStatus, setProdStatus] = useState<'active' | 'out_of_stock'>('active');
   const [prodCategory, setProdCategory] = useState('');
   const [prodSubcategory, setProdSubcategory] = useState('');
-  const [prodImage, setProdImage] = useState('');
+  const [prodImages, setProdImages] = useState<string[]>([]);
   const [prodDescription, setProdDescription] = useState('');
 
   // States to add new category/subcategory inline
@@ -43,7 +43,7 @@ export default function Products() {
     setProdPrice(10000);
     setProdStock(10);
     setProdStatus('active');
-    setProdImage('');
+    setProdImages([]);
     setProdDescription('');
 
     // Default to the first category if available
@@ -63,7 +63,7 @@ export default function Products() {
     setProdPrice(p.price);
     setProdStock(p.stock);
     setProdStatus(p.status);
-    setProdImage(p.image || '');
+    setProdImages(getProductImages(p));
     setProdDescription(p.description || '');
     setProdCategory(p.category || '');
     setProdSubcategory(p.subcategory || '');
@@ -89,7 +89,8 @@ export default function Products() {
             status: Number(prodStock) === 0 ? 'out_of_stock' : prodStatus,
             category: prodCategory,
             subcategory: prodSubcategory,
-            image: prodImage,
+            images: prodImages,
+            image: prodImages[0] || p.image,
             description: prodDescription,
           };
         }
@@ -105,14 +106,19 @@ export default function Products() {
         currency: 'XOF',
         category: prodCategory,
         subcategory: prodSubcategory,
-        image: prodImage,
+        images: prodImages,
+        image: prodImages[0],
         description: prodDescription,
       };
       updatedList = [newProd, ...products];
     }
 
+    const saved = saveProducts(updatedList);
+    if (!saved) {
+      alert('Stockage plein : la limite du navigateur (≈5 Mo) est atteinte. Réduisez le nombre d\'images par produit ou supprimez d\'anciens produits, puis réessayez.');
+      return;
+    }
     setProducts(updatedList);
-    saveProducts(updatedList);
     setIsModalOpen(false);
   };
 
@@ -214,8 +220,13 @@ export default function Products() {
                 <tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-3.5 px-4 font-medium text-gray-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 bg-gray-100" style={p.image ? { backgroundImage: `url(${p.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
-                        {!p.image && <Package size={18} className="text-gray-400" />}
+                      <div className="relative flex-shrink-0">
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden bg-gray-100" style={getProductImage(p) ? { backgroundImage: `url(${getProductImage(p)})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
+                          {!getProductImage(p) && <Package size={18} className="text-gray-400" />}
+                        </div>
+                        {getProductImages(p).length > 1 && (
+                          <span className="absolute -bottom-1 -right-1 bg-gray-800 text-white text-[8px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{getProductImages(p).length}</span>
+                        )}
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">{p.name}</div>
@@ -293,17 +304,15 @@ export default function Products() {
             </div>
 
             <form onSubmit={handleSaveProduct} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-              {/* Product Image (upload only — no links) */}
+              {/* Product Images gallery (upload only — no links) */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Image du produit (téléversement)
-                </label>
-                <ImageUploadField
-                  value={prodImage}
-                  onChange={setProdImage}
-                  maxWidth={600}
+                <MultiImageUpload
+                  label="Images du produit (téléversement)"
+                  value={prodImages}
+                  onChange={setProdImages}
+                  dimensionsHint="Recommandé : 800×800 px · carré · jusqu'à 8 images · max 5 Mo/image"
                 />
-                <p className="text-[10px] text-gray-400">Téléversez une image — elle s’affichera sur la boutique. Aucun lien externe.</p>
+                <p className="text-[10px] text-gray-400">La première image est l'image principale affichée sur la boutique. Glissez pour réordonner.</p>
               </div>
 
               {/* Product Name */}

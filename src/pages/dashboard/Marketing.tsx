@@ -1,36 +1,47 @@
 import { PageHeader, Card, Button, Badge, Table } from './ui';
-import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye } from 'lucide-react';
-import { useState } from 'react';
+import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getCampaigns, saveCampaigns, type Campaign, type CampaignChannel } from '../../lib/app-state';
 
-interface Campaign {
-  name: string; channel: string; audience: string; sent: number; opens: string; status: string;
-}
+const CHANNEL_LABELS: Record<CampaignChannel, string> = { email: 'Email', sms: 'SMS', social: 'Social' };
+const STATUS_LABELS: Record<string, string> = { sent: 'Envoyée', active: 'Active', scheduled: 'Programmée', draft: 'Brouillon' };
 
 export default function Marketing() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([
-    { name: 'Soldes d\'été', channel: 'Email', audience: 'Tous', sent: 1240, opens: '38%', status: 'sent' },
-    { name: 'Panier abandonné', channel: 'WhatsApp', audience: 'Auto', sent: 45, opens: '62%', status: 'active' },
-    { name: 'Bienvenue nouveau client', channel: 'Email', audience: 'Nouveaux', sent: 0, opens: '-', status: 'draft' },
-  ]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [showEditor, setShowEditor] = useState(false);
   const [preview, setPreview] = useState(false);
-  const [form, setForm] = useState({ name: '', channel: 'Email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
+  const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
+
+  useEffect(() => { setCampaigns(getCampaigns()); }, []);
 
   const sendCampaign = () => {
-    setCampaigns([{ name: form.name || 'Nouvelle campagne', channel: form.channel, audience: form.audience, sent: 0, opens: '-', status: form.schedule === 'now' ? 'sent' : 'scheduled' }, ...campaigns]);
+    if (!form.name.trim()) return;
+    const status = form.schedule === 'now' ? 'sent' : 'scheduled';
+    const newC: Campaign = { id: `mc-${Date.now()}`, name: form.name, channel: form.channel, status: status as any, audience: 0, sent: form.schedule === 'now' ? 1 : 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
+    const updated = [newC, ...campaigns];
+    setCampaigns(updated); saveCampaigns(updated);
     setShowEditor(false);
-    setForm({ name: '', channel: 'Email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
+    setForm({ name: '', channel: 'email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
   };
+
+  const deleteCampaign = (id: string) => {
+    const updated = campaigns.filter(c => c.id !== id);
+    setCampaigns(updated); saveCampaigns(updated);
+  };
+
+  const totalOpens = campaigns.reduce((s, c) => s + c.opened, 0);
+  const totalSent = campaigns.reduce((s, c) => s + c.sent, 0);
+  const avgOpenRate = totalSent > 0 ? Math.round((totalOpens / totalSent) * 100) : 0;
 
   return (
     <div>
       <PageHeader title="Marketing" subtitle="Campagnes, automatisations et performance." action={<Button onClick={() => setShowEditor(true)}><Plus size={16} /> Créer une campagne</Button>} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4"><Mail size={18} className="text-brand-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'Email').length}</p></Card>
-        <Card className="p-4"><MessageSquare size={18} className="text-green-600 mb-2" /><p className="text-xs text-gray-500">Campagnes WhatsApp</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'WhatsApp').length}</p></Card>
+        <Card className="p-4"><Mail size={18} className="text-brand-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'email').length}</p></Card>
+        <Card className="p-4"><MessageSquare size={18} className="text-green-600 mb-2" /><p className="text-xs text-gray-500">Campagnes SMS</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'sms').length}</p></Card>
         <Card className="p-4"><Calendar size={18} className="text-blue-600 mb-2" /><p className="text-xs text-gray-500">Programmées</p><p className="text-xl font-bold">{campaigns.filter(c => c.status === 'scheduled').length}</p></Card>
-        <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-bold">50%</p></Card>
+        <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-bold">{avgOpenRate}%</p></Card>
       </div>
 
       <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-brand-50 to-white">
@@ -43,16 +54,18 @@ export default function Marketing() {
 
       <Card>
         <div className="p-4 border-b border-gray-100"><h3 className="font-semibold text-gray-900">Campagnes</h3></div>
-        <Table headers={['Nom', 'Canal', 'Audience', 'Envoyés', 'Ouverture', 'Statut', '']}>
+        <Table headers={['Nom', 'Canal', 'Audience', 'Envoyés', 'Ouverts', 'Clics', 'Revenus', 'Statut', '']}>
           {campaigns.map(c => (
-            <tr key={c.name} className="border-b border-gray-50 hover:bg-gray-50">
+            <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50">
               <td className="py-3 px-4 font-medium text-gray-900">{c.name}</td>
-              <td className="py-3 px-4 text-gray-500">{c.channel}</td>
+              <td className="py-3 px-4 text-gray-500">{CHANNEL_LABELS[c.channel]}</td>
               <td className="py-3 px-4 text-gray-500">{c.audience}</td>
               <td className="py-3 px-4 text-gray-700">{c.sent}</td>
-              <td className="py-3 px-4 text-gray-700">{c.opens}</td>
-              <td className="py-3 px-4"><Badge color={c.status === 'sent' ? 'green' : c.status === 'active' ? 'brand' : c.status === 'scheduled' ? 'blue' : 'gray'}>{c.status === 'sent' ? 'Envoyée' : c.status === 'active' ? 'Active' : c.status === 'scheduled' ? 'Programmée' : 'Brouillon'}</Badge></td>
-              <td className="py-3 px-4"><button className="text-brand-600 text-sm font-medium hover:underline">Voir</button></td>
+              <td className="py-3 px-4 text-gray-700">{c.opened}</td>
+              <td className="py-3 px-4 text-gray-700">{c.clicked}</td>
+              <td className="py-3 px-4 text-gray-700">{c.revenue.toLocaleString('fr-FR')} {c.currency}</td>
+              <td className="py-3 px-4"><Badge color={c.status === 'sent' ? 'green' : c.status === 'active' ? 'brand' : c.status === 'scheduled' ? 'blue' : 'gray'}>{STATUS_LABELS[c.status]}</Badge></td>
+              <td className="py-3 px-4"><button onClick={() => deleteCampaign(c.id)} className="text-red-500 text-sm hover:underline"><Trash2 size={12} /></button></td>
             </tr>
           ))}
         </Table>
@@ -71,26 +84,25 @@ export default function Marketing() {
         </div>
       </Card>
 
-      {/* Campaign editor modal */}
       {showEditor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowEditor(false)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <h3 className="font-semibold text-gray-900">Éditeur de campagne</h3>
               <button onClick={() => setShowEditor(false)}><X size={18} /></button>
             </div>
             <div className="p-5 space-y-4">
-              <div><label className="block text-sm font-medium mb-1">Nom de la campagne</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Ex. Soldes d'été" /></div>
+              <div><label className="block text-sm font-medium mb-1">Nom de la campagne</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" placeholder="Ex. Soldes d'été" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-sm font-medium mb-1">Canal</label><select value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option>Email</option><option>WhatsApp</option><option>SMS</option></select></div>
-                <div><label className="block text-sm font-medium mb-1">Audience</label><select value={form.audience} onChange={e => setForm({ ...form, audience: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option>Tous</option><option>Nouveaux</option><option>Acheteurs récents</option><option>Inactifs 60j</option><option>VIP</option></select></div>
+                <div><label className="block text-sm font-medium mb-1">Canal</label><select value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value as CampaignChannel })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500"><option value="email">Email</option><option value="sms">SMS</option><option value="social">Social</option></select></div>
+                <div><label className="block text-sm font-medium mb-1">Audience</label><select value={form.audience} onChange={e => setForm({ ...form, audience: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500"><option>Tous</option><option>Nouveaux</option><option>Acheteurs récents</option><option>Inactifs 60j</option><option>VIP</option></select></div>
               </div>
-              <div><label className="block text-sm font-medium mb-1">Objet</label><input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Ex. -20% sur tout le magasin" /></div>
-              <div><label className="block text-sm font-medium mb-1">Contenu</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={5} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Rédigez votre message..." /></div>
-              <div><label className="block text-sm font-medium mb-1">CTA</label><input value={form.cta} onChange={e => setForm({ ...form, cta: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>
+              <div><label className="block text-sm font-medium mb-1">Objet</label><input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" placeholder="Ex. -20% sur tout le magasin" /></div>
+              <div><label className="block text-sm font-medium mb-1">Contenu</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={5} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" placeholder="Rédigez votre message..." /></div>
+              <div><label className="block text-sm font-medium mb-1">CTA</label><input value={form.cta} onChange={e => setForm({ ...form, cta: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-sm font-medium mb-1">Programmation</label><select value={form.schedule} onChange={e => setForm({ ...form, schedule: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="now">Immédiate</option><option value="later">Différée</option></select></div>
-                {form.schedule === 'later' && <div><label className="block text-sm font-medium mb-1">Date</label><input type="datetime-local" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" /></div>}
+                <div><label className="block text-sm font-medium mb-1">Programmation</label><select value={form.schedule} onChange={e => setForm({ ...form, schedule: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500"><option value="now">Immédiate</option><option value="later">Différée</option></select></div>
+                {form.schedule === 'later' && <div><label className="block text-sm font-medium mb-1">Date</label><input type="datetime-local" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" /></div>}
               </div>
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <span className="text-xs text-gray-500">Code promo lié (optionnel)</span>

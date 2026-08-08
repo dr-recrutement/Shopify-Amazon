@@ -11,7 +11,7 @@ export default function Orders() {
     setOrders(getOrders());
   }, []);
 
-  const statusColors: any = { pending: 'orange', paid: 'green', shipped: 'blue', cancelled: 'red' };
+  const statusColors: any = { pending: 'brand', paid: 'green', shipped: 'blue', cancelled: 'red' };
   const statusLabels: any = { pending: 'En attente', paid: 'Payée', shipped: 'Expédiée', cancelled: 'Annulée' };
 
   const addOrder = () => {
@@ -58,7 +58,7 @@ export default function Orders() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${activeTab === tab.id ? 'bg-orange-600 text-white shadow' : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'}`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${activeTab === tab.id ? 'bg-brand-600 text-white shadow' : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700'}`}
           >
             {tab.label}
           </button>
@@ -81,8 +81,8 @@ export default function Orders() {
                   <select
                     value={o.status}
                     onChange={e => handleUpdateStatus(o.id, e.target.value as any)}
-                    className="text-xs px-2 py-1 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 font-bold"
-                    style={{ color: o.status === 'paid' ? '#16a34a' : o.status === 'pending' ? '#ea580c' : o.status === 'shipped' ? '#2563eb' : '#dc2626' }}
+                    className="text-xs px-2 py-1 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-500 font-bold"
+                    style={{ color: o.status === 'paid' ? '#008060' : o.status === 'pending' ? '#008060' : o.status === 'shipped' ? '#2563eb' : '#dc2626' }}
                   >
                     <option value="pending">⏳ En attente</option>
                     <option value="paid">✅ Payée</option>
@@ -91,7 +91,7 @@ export default function Orders() {
                   </select>
                 </td>
                 <td className="py-3 px-4">
-                  <button onClick={() => alert(`🔍 Commande ${o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-orange-600 text-xs font-bold hover:underline">
+                  <button onClick={() => alert(`🔍 Commande ${o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
                     Détail
                   </button>
                 </td>

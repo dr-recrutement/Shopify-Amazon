@@ -59,9 +59,38 @@ export interface ThemeConfig {
   };
   fonts: { heading: string; body: string };
   spacing: 'compact' | 'comfortable' | 'spacious';
+  // Layout variant drives visually distinct templates (header style, card style,
+  // radius, dividers) — mirrors how Shopify themes differ beyond colour.
+  layoutVariant: LayoutVariant;
   sections: ThemeSection[];
   isPublished: boolean;
 }
+
+// Each variant produces a genuinely different design, not just a colour swap.
+export type LayoutVariant =
+  | 'dawn'          // minimal, full-bleed banner, square-ish cards, thin header
+  | 'refresh'       // centered editorial, rounded cards, drawer cart hint
+  | 'spotlight'     // large imagery, overlay nav, big product focus
+  | 'crave'         // vibrant rounded, playful badges, warm grid
+  | 'sense'         // soft pastel, gentle radius, airy spacing
+  | 'craft'         // warm artisanal, textured borders, serif headings
+  | 'colorblock'    // bold blocks, high contrast, hard edges
+  | 'studio'        // creative asymmetric, mixed radius, accent gold
+  | 'publisher'     // editorial columns, serif, dense text layout
+  | 'taste';        // typographic, tight grid, monochrome
+
+export const LAYOUT_VARIANTS: { id: LayoutVariant; label: string; desc: string; radius: string; headerStyle: string; cardStyle: string }[] = [
+  { id: 'dawn', label: 'Dawn', desc: 'Minimal, bannière plein cadre, cartes nettes', radius: 'rounded-none', headerStyle: 'thin', cardStyle: 'flat' },
+  { id: 'refresh', label: 'Refresh', desc: 'Éditorial centré, cartes arrondies', radius: 'rounded-2xl', headerStyle: 'centered', cardStyle: 'rounded' },
+  { id: 'spotlight', label: 'Spotlight', desc: 'Grandes images, nav overlay', radius: 'rounded-lg', headerStyle: 'overlay', cardStyle: 'shadowed' },
+  { id: 'crave', label: 'Crave', desc: 'Vibrant arrondi, badges ludiques', radius: 'rounded-full', headerStyle: 'pill', cardStyle: 'rounded-bold' },
+  { id: 'sense', label: 'Sense', desc: 'Pastel doux, radius gentle', radius: 'rounded-xl', headerStyle: 'airy', cardStyle: 'soft' },
+  { id: 'craft', label: 'Craft', desc: 'Artisanal chaleureux, bordures texturées', radius: 'rounded-md', headerStyle: 'warm', cardStyle: 'bordered' },
+  { id: 'colorblock', label: 'Colorblock', desc: 'Blocs audacieux, contraste fort', radius: 'rounded-none', headerStyle: 'block', cardStyle: 'hard' },
+  { id: 'studio', label: 'Studio', desc: 'Créatif asymétrique, accent or', radius: 'rounded-lg', headerStyle: 'asymmetric', cardStyle: 'mixed' },
+  { id: 'publisher', label: 'Publisher', desc: 'Colonnes éditoriales, serif dense', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
+  { id: 'taste', label: 'Taste', desc: 'Typographique, grille serrée monochrome', radius: 'rounded-none', headerStyle: 'minimal', cardStyle: 'tight' },
+];
 
 export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
   { id: 'landing', label: 'Landing page', desc: 'Page de présentation produit/service unique, sans catalogue complet' },
@@ -105,20 +134,63 @@ export const SECTION_LIBRARY: { type: SectionType; label: string; icon: string; 
   { type: 'chat-float', label: 'Chat support', icon: '💬', group: 'Engagement' },
 ];
 
-export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts'] }> = {
+export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts']; layoutVariant: LayoutVariant }> = {
   universal: {
-    label: 'Universel', desc: 'Design moderne et polyvalent', colors: { primary: '#F2632C', secondary: '#1e293b', accent: '#F59E0B', background: '#FFFFFF', text: '#111114' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    label: 'Dawn', desc: 'Thème de référence Shopify OS 2.0 — minimal, rapide, polyvalent',
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }, layoutVariant: 'dawn',
   },
   luxury: {
-    label: 'Luxe', desc: 'Élégant, premium, haut de gamme', colors: { primary: '#B07C2D', secondary: '#111827', accent: '#D4AF37', background: '#FCF7ED', text: '#111827' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    label: 'Studio', desc: 'Élégant et créatif, pour marques de design et studios artistiques',
+    colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#C4A86A', background: '#FAFAFA', text: '#1B1B1B' },
+    fonts: { heading: 'Playfair Display', body: 'Montserrat' }, layoutVariant: 'studio',
   },
   african: {
-    label: 'African Vibrant', desc: 'Couleurs dynamiques orientées commerce pan-africain', colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    label: 'Crave', desc: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons',
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5CC190', background: '#FBFBFB', text: '#1A1A1A' },
+    fonts: { heading: 'Montserrat', body: 'Montserrat' }, layoutVariant: 'crave',
   },
   editorial: {
-    label: 'Éditorial', desc: 'Style magazine, très propre et épuré', colors: { primary: '#1F2937', secondary: '#A16207', accent: '#D97706', background: '#F8FAFC', text: '#111827' }, fonts: { heading: 'Montserrat', body: 'Montserrat' },
+    label: 'Publisher', desc: 'Éditorial et riche en contenu, livres, musique et storytelling',
+    colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#6B6B6B', background: '#F8F6F1', text: '#1A1A1A' },
+    fonts: { heading: 'Playfair Display', body: 'Lora' }, layoutVariant: 'publisher',
   },
 };
+
+export function getLayoutVariant(preset: ThemePreset): LayoutVariant {
+  return THEME_PRESETS[preset].layoutVariant;
+}
+
+// Returns Tailwind radius + card style classes for a layout variant, used by
+// section renderers to produce visually distinct templates.
+export function getVariantStyles(variant: LayoutVariant): { radius: string; cardClass: string; headerClass: string } {
+  const v = LAYOUT_VARIANTS.find(l => l.id === variant) || LAYOUT_VARIANTS[0];
+  const cardMap: Record<string, string> = {
+    flat: 'rounded-none shadow-none border border-gray-100',
+    rounded: 'rounded-2xl shadow-sm border border-gray-100',
+    shadowed: 'rounded-lg shadow-lg border-0',
+    'rounded-bold': 'rounded-3xl shadow-md border-2 border-gray-50',
+    soft: 'rounded-xl shadow-sm border border-gray-100',
+    bordered: 'rounded-md shadow-none border-2 border-gray-200',
+    hard: 'rounded-none shadow-none border-0',
+    mixed: 'rounded-lg shadow-md border border-gray-100',
+    'text-led': 'rounded-sm shadow-none border border-gray-200',
+    tight: 'rounded-none shadow-none border border-gray-100',
+  };
+  const headerMap: Record<string, string> = {
+    thin: 'border-b border-gray-100 py-3',
+    centered: 'justify-center text-center py-4 border-b border-gray-100',
+    overlay: 'absolute top-0 left-0 right-0 z-20 bg-transparent text-white',
+    pill: 'rounded-full mx-auto py-2 px-6 bg-gray-50',
+    airy: 'py-6 border-b border-gray-50',
+    warm: 'py-4 border-b-2 border-gray-200',
+    block: 'py-3 bg-gray-900 text-white',
+    asymmetric: 'py-4 border-b border-gray-100',
+    editorial: 'py-5 border-b border-gray-200',
+    minimal: 'py-2 border-b border-gray-100',
+  };
+  return { radius: v.radius, cardClass: cardMap[v.cardStyle] || cardMap.flat, headerClass: headerMap[v.headerStyle] || headerMap.thin };
+}
 
 export const FONT_OPTIONS = [
   'Montserrat',
@@ -156,6 +228,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
   const presetConfig = THEME_PRESETS[preset];
   const colors = presetConfig.colors;
   const fonts = presetConfig.fonts;
+  const layoutVariant = presetConfig.layoutVariant;
 
   // Let's populate sections with highly rich defaults
   const sections: ThemeSection[] = [];
@@ -218,7 +291,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
       title: 'Vente Flash Exclusive ! ⚡',
       promoText: 'Profitez de -25% de réduction immédiate sur tous nos sacs en cuir faits main.',
       endDate: '2026-12-31',
-      bgColor: '#EF6B2A',
+      bgColor: '#008060',
       textColor: '#ffffff',
     }
   };
@@ -517,7 +590,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 
   if (siteType === 'landing') {
     return {
-      siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
+      siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
       sections: [
         announcementBarSection,
         headerSection,
@@ -536,7 +609,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 
   if (siteType === 'ecommerce') {
     return {
-      siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
+      siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
       sections: [
         announcementBarSection,
         headerSection,
@@ -560,7 +633,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 
   if (siteType === 'business') {
     return {
-      siteType, preset, colors, fonts, spacing: 'spacious', isPublished: false,
+      siteType, preset, colors, fonts, spacing: 'spacious', layoutVariant, isPublished: false,
       sections: [
         announcementBarSection,
         headerSection,
@@ -578,7 +651,7 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 
   // Marketplace Default
   return {
-    siteType, preset, colors, fonts, spacing: 'comfortable', isPublished: false,
+    siteType, preset, colors, fonts, spacing: 'comfortable', layoutVariant, isPublished: false,
     sections: [
       announcementBarSection,
       headerSection,
@@ -602,13 +675,14 @@ export function defaultThemeForType(siteType: SiteType): ThemeConfig {
 // SUB-COMPONENTS WITH PROPER REACT STATES FOR INTERACTION & REAL RENDERING
 // ---------------------------------------------------------------------------
 
-function HeaderSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colors: any; fonts: any; headerClass?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const logoText = props.logoText || 'Ma Boutique';
   const navItems = props.nav || ['Accueil', 'Boutique', 'À propos', 'Contact'];
   const profile = getShopProfile();
 
   const announcement = props.announcementText || `✨ LIVRAISON GRATUITE dès ${formatCurrency(35000, profile.currency)} avec nos paiements connectés ! ✨`;
+  const hClass = headerClass || 'border-b border-gray-100 py-3';
 
   return (
     <div style={{ fontFamily: fonts.body }}>
@@ -620,7 +694,7 @@ function HeaderSection({ props, colors, fonts }: { props: any; colors: any; font
       )}
 
       {/* Main Header */}
-      <header className="border-b transition-colors duration-200" style={{ backgroundColor: colors.background, borderColor: `${colors.text}15`, color: colors.text }}>
+      <header className={`transition-colors duration-200 ${hClass}`} style={{ backgroundColor: colors.background, borderColor: `${colors.text}15`, color: colors.text }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
           {/* Logo */}
@@ -674,7 +748,7 @@ function HeaderSection({ props, colors, fonts }: { props: any; colors: any; font
         {mobileOpen && (
           <div className="md:hidden border-t bg-white px-4 py-3 space-y-2 text-sm font-semibold border-gray-100 shadow-lg">
             {navItems.map((item: string) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="block py-1 hover:text-orange-500" onClick={() => setMobileOpen(false)}>
+              <a key={item} href={`#${item.toLowerCase()}`} className="block py-1 hover:text-brand-500" onClick={() => setMobileOpen(false)}>
                 {item}
               </a>
             ))}
@@ -791,7 +865,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
                     <span className="text-sm font-black" style={{ color: colors.text }}>
                       {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-orange-600">Acheter</span>
+                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-brand-600">Acheter</span>
                   </div>
                 </div>
               </div>
@@ -800,7 +874,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme }: { pro
 
           // Default / African vibrants with shadow & badges
           return (
-            <div key={i} className={`group rounded-2xl border overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full bg-white relative ${isAfrican ? 'border-orange-100 shadow-sm' : 'border-gray-100'}`}>
+            <div key={i} className={`group rounded-2xl border overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full bg-white relative ${isAfrican ? 'border-brand-100 shadow-sm' : 'border-gray-100'}`}>
               {/* Image Wrap */}
               <div className="relative aspect-square overflow-hidden bg-gray-50">
                 <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -1023,7 +1097,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
                   <button
                     key={v}
                     onClick={() => setSelectedVariant(v)}
-                    className={`px-3 py-1.5 border text-xs font-bold rounded-lg transition-all ${selectedVariant === v ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm ring-1 ring-orange-500' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`px-3 py-1.5 border text-xs font-bold rounded-lg transition-all ${selectedVariant === v ? 'border-brand-500 bg-brand-50 text-brand-700 shadow-sm ring-1 ring-brand-500' : 'border-gray-200 hover:border-gray-300'}`}
                   >
                     {v}
                   </button>
@@ -1101,7 +1175,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
             </div>
 
             <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
-              <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-orange-500/20" />
+              <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" />
               <div>
                 <p className="text-xs font-extrabold" style={{ color: colors.text, fontFamily: fonts.heading }}>{t.name}</p>
                 <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
@@ -1128,7 +1202,7 @@ function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colo
         {/* Text Area */}
         <div className={`space-y-4 ${imageOnRight ? 'order-1' : 'order-1 md:order-2'}`}>
           {props.badge && (
-            <span className="inline-block text-[10px] font-black tracking-[0.2em] text-orange-600 uppercase">
+            <span className="inline-block text-[10px] font-black tracking-[0.2em] text-brand-600 uppercase">
               {props.badge}
             </span>
           )}
@@ -1165,7 +1239,7 @@ function NewsletterSection({ props, colors, fonts }: { props: any; colors: any; 
   return (
     <div className="mx-4 my-6 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-lg" style={{ backgroundColor: `${colors.accent}12`, border: `1px solid ${colors.accent}30`, fontFamily: fonts.body }}>
       <div className="max-w-xl mx-auto space-y-4 relative z-10">
-        <Mail className="w-10 h-10 mx-auto text-orange-600 animate-bounce" />
+        <Mail className="w-10 h-10 mx-auto text-brand-600 animate-bounce" />
         <h3 className="text-xl md:text-2xl font-extrabold" style={{ fontFamily: fonts.heading, color: colors.text }}>
           {props.title || 'Inscrivez-vous à notre lettre'}
         </h3>
@@ -1185,7 +1259,7 @@ function NewsletterSection({ props, colors, fonts }: { props: any; colors: any; 
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder={props.placeholder || 'votre-email@adresse.com'}
-              className="flex-1 px-4 py-2.5 rounded-xl text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+              className="flex-1 px-4 py-2.5 rounded-xl text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
             />
             <button type="submit" className="px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 transition-all" style={{ backgroundColor: colors.primary }}>
               {props.buttonText || 'S’abonner'}
@@ -1341,7 +1415,7 @@ function ChatFloatSection({ props, colors, fonts }: { props: any; colors: any; f
             {chatHistory.map((item, i) => (
               <div key={i} className={`flex ${item.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`p-2.5 rounded-xl max-w-[80%] leading-relaxed ${item.sender === 'user' ? 'bg-orange-600 text-white font-bold' : 'bg-white text-gray-800 shadow-sm'}`}
+                  className={`p-2.5 rounded-xl max-w-[80%] leading-relaxed ${item.sender === 'user' ? 'bg-brand-600 text-white font-bold' : 'bg-white text-gray-800 shadow-sm'}`}
                   style={item.sender === 'user' ? { backgroundColor: colors.primary } : {}}
                 >
                   {item.text}
@@ -1694,10 +1768,11 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig): React.
   const colors = theme.colors;
   const fonts = theme.fonts;
   const spacingClass = getSpacingClass(theme.spacing);
+  const variantStyles = getVariantStyles(theme.layoutVariant);
 
   switch (section.type) {
     case 'header':
-      return <HeaderSection props={section.props} colors={colors} fonts={fonts} />;
+      return <HeaderSection props={section.props} colors={colors} fonts={fonts} headerClass={variantStyles.headerClass} />;
     case 'announcement-bar':
       return <AnnouncementBarSection props={section.props} colors={colors} fonts={fonts} />;
     case 'hero':

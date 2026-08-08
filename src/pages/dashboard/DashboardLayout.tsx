@@ -64,7 +64,7 @@ export default function DashboardLayout() {
                       to={item.to}
                       end={item.end}
                       onClick={() => setSidebarOpen(false)}
-                      className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-orange-50 text-orange-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+                      className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                     >
                       <Icon size={16} /> {item.label}
                     </NavLink>
@@ -90,11 +90,11 @@ export default function DashboardLayout() {
           </div>
           <button className="p-2 rounded-lg hover:bg-gray-50 relative">
             <Bell size={18} className="text-gray-600" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full" />
           </button>
           <div className="relative">
             <button onClick={() => setUserMenu(!userMenu)} className="flex items-center gap-2 p-1 pr-2 rounded-lg hover:bg-gray-50">
-              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center font-semibold text-orange-700 text-sm">
+              <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center font-semibold text-brand-700 text-sm">
                 {user?.email?.charAt(0).toUpperCase() || 'V'}
               </div>
               <ChevronDown size={14} className="text-gray-400" />

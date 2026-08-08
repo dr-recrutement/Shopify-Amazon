@@ -20,7 +20,7 @@ export default function Customers() {
           <h3 className="font-semibold text-gray-900 mb-3">Segments</h3>
           <div className="space-y-2">
             {['Tous les clients', 'VIP', 'Nouveaux', 'Inactifs 60j', 'Acheteurs récents'].map((s, i) => (
-              <button key={s} className={`w-full text-left px-3 py-2 rounded-lg text-sm ${i === 0 ? 'bg-orange-50 text-orange-700 font-medium' : 'hover:bg-gray-50 text-gray-700'}`}>{s}</button>
+              <button key={s} className={`w-full text-left px-3 py-2 rounded-lg text-sm ${i === 0 ? 'bg-brand-50 text-brand-700 font-medium' : 'hover:bg-gray-50 text-gray-700'}`}>{s}</button>
             ))}
             <Button variant="secondary" size="sm" className="w-full mt-2"><Plus size={14} /> Nouveau segment</Button>
           </div>
@@ -33,8 +33,8 @@ export default function Customers() {
                 <td className="py-3 px-4 text-gray-500">{c.email}</td>
                 <td className="py-3 px-4 text-gray-700">{c.orders}</td>
                 <td className="py-3 px-4 text-gray-700">{c.spent}</td>
-                <td className="py-3 px-4"><Badge color={c.segment === 'VIP' ? 'orange' : c.segment === 'Nouveau' ? 'green' : 'gray'}>{c.segment}</Badge></td>
-                <td className="py-3 px-4"><button className="text-orange-600 text-sm font-medium hover:underline">Voir</button></td>
+                <td className="py-3 px-4"><Badge color={c.segment === 'VIP' ? 'brand' : c.segment === 'Nouveau' ? 'green' : 'gray'}>{c.segment}</Badge></td>
+                <td className="py-3 px-4"><button className="text-brand-600 text-sm font-medium hover:underline">Voir</button></td>
               </tr>
             ))}
           </Table>

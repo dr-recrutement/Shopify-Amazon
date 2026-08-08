@@ -17,7 +17,7 @@ export default function AdminStores() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Total</p><p className="text-2xl font-bold">12 348</p></Card>
         <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Actives</p><p className="text-2xl font-bold text-green-600">11 892</p></Card>
-        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">En essai</p><p className="text-2xl font-bold text-orange-600">412</p></Card>
+        <Card className="p-4"><p className="text-xs text-gray-500 uppercase">En essai</p><p className="text-2xl font-bold text-brand-600">412</p></Card>
         <Card className="p-4"><p className="text-xs text-gray-500 uppercase">Suspendues</p><p className="text-2xl font-bold text-red-600">44</p></Card>
       </div>
       <Card>
@@ -32,12 +32,12 @@ export default function AdminStores() {
             <tr key={s.name} className="border-b border-gray-50 hover:bg-gray-50">
               <td className="py-3 px-4 font-medium text-gray-900">{s.name}</td>
               <td className="py-3 px-4 text-gray-500">{s.owner}</td>
-              <td className="py-3 px-4"><Badge color={s.plan === 'Entreprise' ? 'gray' : s.plan === 'Premium' ? 'orange' : 'blue'}>{s.plan}</Badge></td>
+              <td className="py-3 px-4"><Badge color={s.plan === 'Entreprise' ? 'gray' : s.plan === 'Premium' ? 'brand' : 'blue'}>{s.plan}</Badge></td>
               <td className="py-3 px-4 text-gray-500">{s.country}</td>
               <td className="py-3 px-4 text-gray-700">{s.revenue}</td>
               <td className="py-3 px-4 text-gray-500 text-xs">{s.created}</td>
-              <td className="py-3 px-4"><Badge color={s.status === 'active' ? 'green' : s.status === 'trial' ? 'orange' : 'red'}>{s.status === 'active' ? 'Active' : s.status === 'trial' ? 'Essai' : 'Suspendue'}</Badge></td>
-              <td className="py-3 px-4"><button className="text-orange-600 hover:underline text-sm flex items-center gap-1"><Eye size={14} /> Voir</button></td>
+              <td className="py-3 px-4"><Badge color={s.status === 'active' ? 'green' : s.status === 'trial' ? 'brand' : 'red'}>{s.status === 'active' ? 'Active' : s.status === 'trial' ? 'Essai' : 'Suspendue'}</Badge></td>
+              <td className="py-3 px-4"><button className="text-brand-600 hover:underline text-sm flex items-center gap-1"><Eye size={14} /> Voir</button></td>
             </tr>
           ))}
         </Table>

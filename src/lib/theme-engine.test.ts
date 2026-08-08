@@ -8,7 +8,11 @@ describe('theme engine', () => {
 
     expect(ecommerceTheme.preset).toBe('african');
     expect(landingTheme.preset).toBe('luxury');
-    expect(THEME_PRESETS.luxury.colors.primary).toBe('#B07C2D');
+    // Shopify-aligned palette — green #008060 family, no orange
+    expect(THEME_PRESETS.luxury.colors.primary).toBe('#1B1B1B');
+    expect(THEME_PRESETS.universal.colors.primary).toBe('#008060');
+    expect(landingTheme.layoutVariant).toBe('studio');
+    expect(ecommerceTheme.layoutVariant).toBe('crave');
   });
 
   it('renders sections with a theme object', () => {

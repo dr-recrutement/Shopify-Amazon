@@ -72,7 +72,7 @@ export default function Accounting() {
             <div className="flex justify-between p-2 bg-green-50 rounded"><span>Ventes (entrées)</span><span className="font-medium text-green-700">+125 000 XOF</span></div>
             <div className="flex justify-between p-2 bg-red-50 rounded"><span>Achats fournisseurs</span><span className="font-medium text-red-700">-77 500 XOF</span></div>
             <div className="flex justify-between p-2 bg-red-50 rounded"><span>Frais de livraison</span><span className="font-medium text-red-700">-8 200 XOF</span></div>
-            <div className="flex justify-between p-2 bg-orange-50 rounded font-semibold"><span>Solde net</span><span className="text-orange-700">39 300 XOF</span></div>
+            <div className="flex justify-between p-2 bg-brand-50 rounded font-semibold"><span>Solde net</span><span className="text-brand-700">39 300 XOF</span></div>
           </div>
         </Card>
       </div>
@@ -91,8 +91,8 @@ export default function Accounting() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-medium text-gray-900">{inv.amount}</span>
-                <Badge color={inv.status === 'paid' ? 'green' : 'orange'}>{inv.status === 'paid' ? 'Payée' : 'Envoyée'}</Badge>
-                <button onClick={() => exportReport('pdf')} className="text-orange-600 hover:underline text-sm"><Download size={14} /></button>
+                <Badge color={inv.status === 'paid' ? 'green' : 'brand'}>{inv.status === 'paid' ? 'Payée' : 'Envoyée'}</Badge>
+                <button onClick={() => exportReport('pdf')} className="text-brand-600 hover:underline text-sm"><Download size={14} /></button>
               </div>
             </div>
           ))}

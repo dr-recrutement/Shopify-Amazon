@@ -35,7 +35,7 @@ export default function AdminLayout() {
           <Logo white />
         </div>
         <div className="px-4 py-2">
-          <div className="flex items-center gap-2 px-2 py-1.5 bg-orange-900/30 text-orange-400 rounded-lg text-xs font-medium">
+          <div className="flex items-center gap-2 px-2 py-1.5 bg-brand-900/30 text-brand-400 rounded-lg text-xs font-medium">
             <Crown size={14} /> Master Console
           </div>
         </div>
@@ -44,7 +44,7 @@ export default function AdminLayout() {
             const Icon = item.icon;
             return (
               <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setOpen(false)}
-                className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-orange-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
+                className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
                 <Icon size={16} /> {item.label}
               </NavLink>
             );

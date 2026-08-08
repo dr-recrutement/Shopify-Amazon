@@ -111,8 +111,8 @@ export function Navbar({ transparent = false }: NavbarProps) {
               <button
                 onClick={() => setTheme('coral')}
                 title="Corail Éclatant"
-                className={`w-4.5 h-4.5 rounded-full transition-all ${theme === 'coral' ? 'ring-2 ring-orange-500 scale-115' : 'opacity-50 hover:opacity-100'}`}
-                style={{ backgroundColor: '#FF6B35', width: '16px', height: '16px' }}
+                className={`w-4.5 h-4.5 rounded-full transition-all ${theme === 'coral' ? 'ring-2 ring-brand-500 scale-115' : 'opacity-50 hover:opacity-100'}`}
+                style={{ backgroundColor: '#008060', width: '16px', height: '16px' }}
               />
             </div>
 
@@ -166,7 +166,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
               </button>
               <button
                 onClick={() => setTheme('coral')}
-                className={`px-3 py-1 text-xs rounded-full border transition-all ${theme === 'coral' ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
+                className={`px-3 py-1 text-xs rounded-full border transition-all ${theme === 'coral' ? 'bg-brand-500 text-white border-brand-500' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
               >
                 Corail
               </button>

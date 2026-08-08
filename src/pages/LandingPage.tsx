@@ -66,10 +66,10 @@ const boutiques = [
     title: "Afrik'Couture",
     location: "Abidjan, Côte d'Ivoire 🇨🇮",
     tagline: "Haute couture & créations d'exception en tissus Wax authentiques.",
-    themeColor: "from-[#B07C2D] to-[#111827]",
+    themeColor: "from-[#008060] to-[#111827]",
     animationClass: "animate-fade-in-up",
     bgPattern: "radial-gradient(circle, #FCF7ED 0%, #E6DFD3 100%)",
-    textColor: "text-[#B07C2D]",
+    textColor: "text-[#008060]",
     badge: "Luxe & Tradition",
     products: [
       { name: "Robe de Gala Impériale", price: "85,000 FCFA" },
@@ -81,10 +81,10 @@ const boutiques = [
     title: "Kente Heritage",
     location: "Accra, Ghana 🇬🇭",
     tagline: "L'authenticité et la noblesse du tissage Kente royal fait main.",
-    themeColor: "from-[#EF6B2A] to-[#0F766E]",
+    themeColor: "from-[#008060] to-[#0F766E]",
     animationClass: "scale-105 transition-transform duration-1000",
     bgPattern: "linear-gradient(135deg, #FFF9F2 0%, #FFEEDD 100%)",
-    textColor: "text-[#EF6B2A]",
+    textColor: "text-[#008060]",
     badge: "Héritage Royal",
     products: [
       { name: "Pagne Kente d'apparat 6 yards", price: "2,400 GHS" },
@@ -96,10 +96,10 @@ const boutiques = [
     title: "Sahara Treasures",
     location: "Marrakech, Maroc 🇲🇦",
     tagline: "Poteries d'art, tapis berbères authentiques et huiles cosmétiques précieuses.",
-    themeColor: "from-[#F59E0B] to-[#78350F]",
+    themeColor: "from-[#008060] to-[#78350F]",
     animationClass: "translate-x-0 transition-transform duration-700",
     bgPattern: "radial-gradient(circle, #FFFbeb 0%, #FEF3C7 100%)",
-    textColor: "text-[#D97706]",
+    textColor: "text-[#008060]",
     badge: "Artisanat d'Art",
     products: [
       { name: "Tapis Berbère Kilim", price: "3,200 MAD" },
@@ -111,7 +111,7 @@ const boutiques = [
     title: "Kilimanjaro Coffee",
     location: "Arusha, Tanzanie 🇹🇿",
     tagline: "Café d'exception 100% Arabica torréfié artisanalement au pied du volcan.",
-    themeColor: "from-green-700 to-amber-900",
+    themeColor: "from-green-700 to-brand-900",
     animationClass: "skew-y-0 transition-all duration-500",
     bgPattern: "linear-gradient(135deg, #F4FBF7 0%, #D1E7DD 100%)",
     textColor: "text-green-700",
@@ -156,10 +156,10 @@ const boutiques = [
     title: "Bantu Flavors",
     location: "Douala, Cameroun 🇨🇲",
     tagline: "Poivre de Penja rare, épices secrètes de la forêt équatoriale et thés locaux.",
-    themeColor: "from-amber-600 to-red-800",
+    themeColor: "from-brand-600 to-brand-900",
     animationClass: "rotate-0 transition-transform duration-700",
     bgPattern: "linear-gradient(135deg, #FFFDF0 0%, #FFF9C4 100%)",
-    textColor: "text-amber-700",
+    textColor: "text-brand-700",
     badge: "Gourmet Africain",
     products: [
       { name: "Poivre de Penja Blanc IGP (250g)", price: "15,000 FCFA" },
@@ -429,7 +429,7 @@ export default function LandingPage() {
 
             {/* Flutterwave SVG */}
             <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
-              <div className="w-10 h-10 rounded-full bg-[#FB923C] flex items-center justify-center font-black text-white text-base shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-[#36A18A] flex items-center justify-center font-black text-white text-base shadow-sm">
                 F
               </div>
               <span className="text-xs font-semibold text-gray-700 mt-2">Flutterwave</span>

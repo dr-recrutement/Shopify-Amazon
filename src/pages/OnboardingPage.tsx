@@ -77,7 +77,7 @@ export default function OnboardingPage() {
           <div className="text-sm text-gray-500">Étape {step} sur {total}</div>
         </div>
         <div className="h-1 bg-gray-100">
-          <div className="h-full bg-orange-600 transition-all duration-300" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-brand-600 transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
       </header>
 
@@ -88,7 +88,7 @@ export default function OnboardingPage() {
             const done = i + 1 < step;
             const active = i + 1 === step;
             return (
-              <div key={s.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${active ? 'bg-orange-600 text-white' : done ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+              <div key={s.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${active ? 'bg-brand-600 text-white' : done ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                 <Icon size={12} /> {s.label}
               </div>
             );
@@ -100,11 +100,11 @@ export default function OnboardingPage() {
             <div>
               <h1 className="font-serif-display text-2xl font-bold text-gray-900">Bienvenue !</h1>
               <p className="mt-1 text-gray-600">Configurons votre boutique en quelques étapes.</p>
-              <div className="mt-6 p-4 bg-orange-50 rounded-xl flex items-center gap-3">
-                <Sparkles className="text-orange-600" size={20} />
+              <div className="mt-6 p-4 bg-brand-50 rounded-xl flex items-center gap-3">
+                <Sparkles className="text-brand-600" size={20} />
                 <p className="text-sm text-gray-700">Vous bénéficiez de <strong>7 jours d'essai gratuit</strong> sur le plan choisi, sans carte bancaire.</p>
               </div>
-              <button onClick={next} className="mt-8 w-full py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
+              <button onClick={next} className="mt-8 w-full py-3 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
                 Commencer <ArrowRight size={16} />
               </button>
             </div>
@@ -117,20 +117,20 @@ export default function OnboardingPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la boutique</label>
                 <input value={data.shopName} onChange={e => setData({ ...data, shopName: e.target.value })} placeholder="Ex. Boutique Aïcha"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
                 {data.shopName && <p className="mt-2 text-xs text-gray-500">URL : {data.shopName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.os.liafrik.com</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
                 <select value={data.sector} onChange={e => setData({ ...data, sector: e.target.value })}
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
                   <option value="">Sélectionnez...</option>
                   {['Mode & vêtements', 'High-tech & électronique', 'Restauration', 'Pharmacie & santé', 'Artisanat', 'Beauté & cosmétiques', 'Services', 'Grossiste', 'Créateur de contenu', 'Autre'].map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} disabled={!data.shopName} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 disabled:opacity-50">Continuer</button>
+                <button onClick={next} disabled={!data.shopName} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 disabled:opacity-50">Continuer</button>
               </div>
             </div>
           )}
@@ -152,7 +152,7 @@ export default function OnboardingPage() {
                     onFocus={() => setCountryDropdownOpen(true)}
                     onBlur={() => setTimeout(() => setCountryDropdownOpen(false), 200)}
                     placeholder="Saisissez un pays pour rechercher..."
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10 bg-white"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 pr-10 bg-white"
                   />
                   <button
                     type="button"
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
                             setCountrySearch(`${c.flag} ${c.name} (${c.nameEn})`);
                             setCountryDropdownOpen(false);
                           }}
-                          className="w-full text-left px-3 py-2 hover:bg-orange-50 text-xs flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 hover:bg-brand-50 text-xs flex items-center gap-2"
                         >
                           <span className="text-sm">{c.flag}</span>
                           <span className="font-semibold text-gray-800">{c.name}</span>
@@ -194,18 +194,18 @@ export default function OnboardingPage() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Région / Province</label>
                       <input value={data.region} onChange={e => setData({ ...data, region: e.target.value })} placeholder="Ex. Abidjan, Lagos, Gauteng"
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
                       <input value={data.city} onChange={e => setData({ ...data, city: e.target.value })} placeholder="Ex. Abidjan, Lagos, Johannesburg"
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Landmark / Quartier de repère</label>
                     <input value={data.landmark} onChange={e => setData({ ...data, landmark: e.target.value })} placeholder="Ex. Mosquée Al Farouq, Abidjan"
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
                   </div>
                   <div className="p-3 bg-green-50 rounded-lg text-sm text-green-700">
                     Devise par défaut : <strong>{country.currency}</strong> ({country.name})
@@ -214,7 +214,7 @@ export default function OnboardingPage() {
               )}
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} disabled={!data.country} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 disabled:opacity-50">Continuer</button>
+                <button onClick={next} disabled={!data.country} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 disabled:opacity-50">Continuer</button>
               </div>
             </div>
           )}
@@ -231,10 +231,10 @@ export default function OnboardingPage() {
                   { id: 'food', name: 'Restauration', desc: 'Chaleureux, gourmand, pour restaurants' },
                 ].map(t => (
                   <button key={t.id} onClick={() => setData({ ...data, theme: t.id })}
-                    className={`text-left p-4 rounded-xl border-2 transition-all ${data.theme === t.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`text-left p-4 rounded-xl border-2 transition-all ${data.theme === t.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-gray-900 text-sm">{t.name}</span>
-                      {t.recommended && <span className="text-xs px-2 py-0.5 bg-orange-600 text-white rounded-full">Recommandé</span>}
+                      {t.recommended && <span className="text-xs px-2 py-0.5 bg-brand-600 text-white rounded-full">Recommandé</span>}
                     </div>
                     <p className="mt-1 text-xs text-gray-500">{t.desc}</p>
                   </button>
@@ -242,7 +242,7 @@ export default function OnboardingPage() {
               </div>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700">Continuer</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -254,19 +254,19 @@ export default function OnboardingPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom du produit</label>
                 <input value={data.productName} onChange={e => setData({ ...data, productName: e.target.value })} placeholder="Ex. Robe wax traditionnelle"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Prix ({data.currency || 'XOF'})</label>
                 <input type="number" value={data.productPrice} onChange={e => setData({ ...data, productPrice: e.target.value })} placeholder="15000"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
               </div>
-              <button className="w-full p-3 border-2 border-dashed border-orange-200 rounded-lg text-sm text-orange-700 hover:bg-orange-50 flex items-center justify-center gap-2">
+              <button className="w-full p-3 border-2 border-dashed border-brand-200 rounded-lg text-sm text-brand-700 hover:bg-brand-50 flex items-center justify-center gap-2">
                 <Sparkles size={16} /> Générer la description par IA
               </button>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700">Continuer</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -279,25 +279,25 @@ export default function OnboardingPage() {
                 {[
                   { id: 'flutterwave', name: 'Flutterwave', desc: 'Mobile Money + cartes' },
                   { id: 'paystack', name: 'Paystack', desc: 'Cartes + Mobile Money' },
-                  { id: 'orange', name: 'Orange Money', desc: 'Orange Money marchand' },
+                  { id: 'brand', name: 'Orange Money', desc: 'Orange Money marchand' },
                   { id: 'mtn', name: 'MTN MoMo', desc: 'MTN Mobile Money API' },
                   { id: 'cinetpay', name: 'CinetPay', desc: 'Multi-Mobile Money' },
                   { id: 'stripe', name: 'Stripe', desc: 'Cartes internationales' },
                 ].map(g => (
                   <button key={g.id} onClick={() => setData({ ...data, gateway: g.id })}
-                    className={`w-full text-left p-3 rounded-lg border-2 transition-all flex items-center justify-between ${data.gateway === g.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`w-full text-left p-3 rounded-lg border-2 transition-all flex items-center justify-between ${data.gateway === g.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div>
                       <div className="font-semibold text-gray-900 text-sm">{g.name}</div>
                       <div className="text-xs text-gray-500">{g.desc}</div>
                     </div>
-                    {data.gateway === g.id && <Check className="text-orange-600" size={18} />}
+                    {data.gateway === g.id && <Check className="text-brand-600" size={18} />}
                   </button>
                 ))}
               </div>
               <p className="text-xs text-gray-500">Vous pourrez configurer les clés API plus tard dans Paramètres {'>'} Payments.</p>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700">Continuer</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 {PLANS.map(p => (
                   <button key={p.id} onClick={() => setData({ ...data, plan: p.id })}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${data.plan === p.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${data.plan === p.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-semibold text-gray-900">{p.name}</div>
@@ -329,7 +329,7 @@ export default function OnboardingPage() {
               </div>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700">Continuer</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -349,7 +349,7 @@ export default function OnboardingPage() {
                 <div className="flex justify-between"><span className="text-gray-500">Paiement</span><span className="font-medium capitalize">{data.gateway}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Plan</span><span className="font-medium capitalize">{data.plan} ({data.billing})</span></div>
               </div>
-              <button onClick={finish} className="w-full py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
+              <button onClick={finish} className="w-full py-3 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
                 Lancer ma boutique <ChevronRight size={18} />
               </button>
             </div>

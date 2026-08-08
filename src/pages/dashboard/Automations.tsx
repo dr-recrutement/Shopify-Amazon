@@ -50,7 +50,7 @@ export default function Automations() {
         {automations.map((a, i) => (
           <Card key={i} className="p-5 hover:shadow-md transition-all">
             <div className="flex items-start justify-between">
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center"><Zap size={18} className="text-orange-600" /></div>
+              <div className="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center"><Zap size={18} className="text-brand-600" /></div>
               <div className="flex gap-1">
                 <button onClick={() => toggle(i)} className={`p-1 rounded ${a.active ? 'text-green-600' : 'text-gray-300'}`}><Power size={14} /></button>
                 <button onClick={() => remove(i)} className="p-1 rounded text-gray-400 hover:text-red-600"><Trash2 size={14} /></button>
@@ -59,7 +59,7 @@ export default function Automations() {
             <h3 className="mt-3 font-semibold text-gray-900">{a.title}</h3>
             <div className="mt-3 space-y-1 text-xs">
               <div className="flex items-center gap-1 text-gray-500"><span className="px-1.5 py-0.5 bg-gray-100 rounded font-mono">SI</span> {a.trigger}</div>
-              <div className="flex items-center gap-1 text-gray-500"><span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-mono">ALORS</span> {a.action}</div>
+              <div className="flex items-center gap-1 text-gray-500"><span className="px-1.5 py-0.5 bg-brand-100 text-brand-700 rounded font-mono">ALORS</span> {a.action}</div>
             </div>
             <div className="mt-3"><Badge color={a.active ? 'green' : 'gray'}>{a.active ? 'Active' : 'Inactive'}</Badge></div>
           </Card>
@@ -95,8 +95,8 @@ export default function Automations() {
 
               <div className="flex justify-center"><ArrowRight size={18} className="text-gray-400" /></div>
 
-              <div className="p-3 bg-orange-50 rounded-lg">
-                <div className="text-xs font-semibold text-orange-500 uppercase mb-2">Action (ALORS)</div>
+              <div className="p-3 bg-brand-50 rounded-lg">
+                <div className="text-xs font-semibold text-brand-500 uppercase mb-2">Action (ALORS)</div>
                 <div className="grid grid-cols-2 gap-2">
                   <select value={form.actionType} onChange={e => setForm({ ...form, actionType: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs">{actions.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}</select>
                   <input value={form.actionValue} onChange={e => setForm({ ...form, actionValue: e.target.value })} className="px-2 py-1.5 border border-gray-200 rounded text-xs" placeholder="paramètre" />

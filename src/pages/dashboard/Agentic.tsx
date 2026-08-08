@@ -15,7 +15,7 @@ export default function Agentic() {
       <PageHeader title="Agentic" subtitle="Vos assistants IA agentiques, prêts à travailler pour vous." />
       <Card className="mb-6 p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center"><Sparkles size={18} className="text-orange-600" /></div>
+          <div className="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center"><Sparkles size={18} className="text-brand-600" /></div>
           <div>
             <p className="text-sm font-medium text-gray-900">Quota IA ce mois</p>
             <p className="text-xs text-gray-500">12 / 20 générations utilisées (Starter)</p>
@@ -30,7 +30,7 @@ export default function Agentic() {
             <LockedFeature key={a.title} title={a.title} desc={a.desc} plan={a.plan} />
           ) : (
             <Card key={a.title} className="p-5 hover:shadow-md transition-all cursor-pointer">
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center mb-3"><Icon size={18} className="text-orange-600" /></div>
+              <div className="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center mb-3"><Icon size={18} className="text-brand-600" /></div>
               <h3 className="font-semibold text-gray-900">{a.title}</h3>
               <p className="mt-1 text-sm text-gray-500">{a.desc}</p>
               <Button variant="secondary" size="sm" className="mt-3">Lancer</Button>

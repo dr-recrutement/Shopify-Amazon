@@ -14,9 +14,9 @@ export function Card({ children, className = '' }: { children: React.ReactNode; 
   return <div className={`bg-white border border-gray-100 rounded-xl ${className}`}>{children}</div>;
 }
 
-export function StatCard({ label, value, change, icon: Icon, color = 'orange' }: { label: string; value: string; change?: string; icon: any; color?: string }) {
+export function StatCard({ label, value, change, icon: Icon, color = 'brand' }: { label: string; value: string; change?: string; icon: any; color?: string }) {
   const colors: any = {
-    orange: 'bg-orange-50 text-orange-600',
+    orange: 'bg-brand-50 text-brand-600',
     green: 'bg-green-50 text-green-600',
     blue: 'bg-blue-50 text-blue-600',
     purple: 'bg-purple-50 text-purple-600',
@@ -41,7 +41,7 @@ export function Badge({ children, color = 'gray' }: { children: React.ReactNode;
   const colors: any = {
     gray: 'bg-gray-100 text-gray-700',
     green: 'bg-green-100 text-green-700',
-    orange: 'bg-orange-100 text-orange-700',
+    orange: 'bg-brand-100 text-brand-700',
     red: 'bg-red-100 text-red-700',
     blue: 'bg-blue-100 text-blue-700',
   };
@@ -50,7 +50,7 @@ export function Badge({ children, color = 'gray' }: { children: React.ReactNode;
 
 export function Button({ children, variant = 'primary', size = 'md', className = '', ...props }: any) {
   const variants: any = {
-    primary: 'bg-orange-600 text-white hover:bg-orange-700',
+    primary: 'bg-brand-600 text-white hover:bg-brand-700',
     secondary: 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50',
     ghost: 'text-gray-700 hover:bg-gray-100',
     danger: 'bg-red-600 text-white hover:bg-red-700',

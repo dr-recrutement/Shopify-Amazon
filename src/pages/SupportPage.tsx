@@ -49,14 +49,14 @@ export default function SupportPage() {
             <Card className="p-5 mb-6">
               <div className="relative">
                 <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input placeholder="Recherchez dans le centre d'aide..." className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+                <input placeholder="Recherchez dans le centre d'aide..." className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
               </div>
             </Card>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {cats.map(c => (
                 <Card key={c} className="p-4 hover:shadow-md transition-all cursor-pointer flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <FileText size={18} className="text-orange-600" />
+                    <FileText size={18} className="text-brand-600" />
                     <span className="text-sm font-medium text-gray-900">{c}</span>
                   </div>
                   <ChevronRight size={16} className="text-gray-300" />
@@ -98,7 +98,7 @@ export default function SupportPage() {
                     <div className="text-sm font-medium text-gray-900">{ticket.subject}</div>
                     <div className="text-xs text-gray-500">{ticket.category} · {ticket.createdAt}</div>
                   </div>
-                  <span className={`rounded-full px-2 py-1 text-xs ${ticket.status === 'open' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>{ticket.status === 'open' ? 'Ouvert' : 'Résolu'}</span>
+                  <span className={`rounded-full px-2 py-1 text-xs ${ticket.status === 'open' ? 'bg-brand-100 text-brand-700' : 'bg-green-100 text-green-700'}`}>{ticket.status === 'open' ? 'Ouvert' : 'Résolu'}</span>
                 </div>
               ))}
             </div>

@@ -27,7 +27,7 @@ export default function Analytics() {
           <h3 className="font-semibold text-gray-900 mb-4">Ventes par jour</h3>
           <div className="h-48 flex items-end gap-1">
             {[30, 45, 38, 60, 52, 75, 68, 80, 72, 90, 85, 95].map((h, i) => (
-              <div key={i} className="flex-1 bg-orange-500 rounded-t" style={{ height: `${h}%`, opacity: 0.6 + (h / 200) }} />
+              <div key={i} className="flex-1 bg-brand-500 rounded-t" style={{ height: `${h}%`, opacity: 0.6 + (h / 200) }} />
             ))}
           </div>
         </Card>

@@ -25,7 +25,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <Card className="p-8 mb-8 bg-gradient-to-br from-orange-50 to-white">
+        <Card className="p-8 mb-8 bg-gradient-to-br from-brand-50 to-white">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             {fr ? 'Un manifeste, pas une adaptation' : 'A manifesto, not an adaptation'}
           </h2>
@@ -44,7 +44,7 @@ export default function AboutPage() {
             { icon: Zap, title: fr ? 'Optimisé connexions faibles' : 'Optimized for slow connections', desc: fr ? 'CDN, images compressées, PWA' : 'CDN, compressed images, PWA' },
           ].map((c, i) => (
             <Card key={i} className="p-5 flex items-start gap-3">
-              <c.icon size={20} className="text-orange-600 mt-1 flex-shrink-0" />
+              <c.icon size={20} className="text-brand-600 mt-1 flex-shrink-0" />
               <div>
                 <h3 className="font-semibold text-gray-900">{c.title}</h3>
                 <p className="text-sm text-gray-500 mt-1">{c.desc}</p>
@@ -54,7 +54,7 @@ export default function AboutPage() {
         </div>
 
         <Card className="p-8 text-center bg-gray-900 text-white">
-          <Sparkles size={24} className="text-orange-400 mx-auto mb-4" />
+          <Sparkles size={24} className="text-brand-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-3">
             {fr ? 'Construite ici. Pensée pour nous.' : 'Built here. Designed for us.'}
           </h2>

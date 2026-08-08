@@ -29,7 +29,7 @@ export default function CartPage() {
           <Card className="p-12 text-center">
             <ShoppingBag size={32} className="text-gray-300 mx-auto mb-4" />
             <h3 className="font-semibold text-gray-900">Votre panier est vide</h3>
-            <Link to="/marketplace" className="mt-4 inline-block text-orange-600 font-medium">Découvrir la marketplace</Link>
+            <Link to="/marketplace" className="mt-4 inline-block text-brand-600 font-medium">Découvrir la marketplace</Link>
           </Card>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -76,7 +76,7 @@ export default function CartPage() {
               <Card className="p-4 space-y-2 text-xs text-gray-500">
                 <div className="flex items-center gap-2"><Shield size={14} className="text-green-600" /> Paiement sécurisé</div>
                 <div className="flex items-center gap-2"><Truck size={14} className="text-blue-600" /> Suivi en temps réel</div>
-                <div className="flex items-center gap-2"><CreditCard size={14} className="text-orange-600" /> Mobile Money + cartes</div>
+                <div className="flex items-center gap-2"><CreditCard size={14} className="text-brand-600" /> Mobile Money + cartes</div>
               </Card>
             </div>
           </div>

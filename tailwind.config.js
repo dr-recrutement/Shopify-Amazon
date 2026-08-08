@@ -17,8 +17,8 @@ export default {
           900: 'var(--primary-900)',
         },
         accent: {
-          green: '#16a34a',
-          'green-dark': '#15803d',
+          green: '#008060',
+          'green-dark': '#004c3f',
         },
         ink: {
           900: '#111114',

@@ -6,7 +6,7 @@ import {
   Sparkles, Check, Send
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories } from '../../lib/app-state';
 
 interface CustomDomain {
@@ -21,87 +21,75 @@ interface CustomDomain {
 // preset. We mirror that model here so merchants pick a real Shopify theme.
 const CUSTOM_PRESETS = [
   {
-    id: 'dawn',
-    name: 'Dawn',
+    id: 'dawn', name: 'Dawn', layoutVariant: 'dawn' as const,
     description: 'Thème de référence Shopify OS 2.0. Minimal, rapide, polyvalent — idéal pour démarrer.',
-    colors: { primary: '#121212', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'refresh',
-    name: 'Refresh',
+    id: 'refresh', name: 'Refresh', layoutVariant: 'refresh' as const,
     description: 'Style éditorial centré produit, tiroir panier coulissant. Idéal petits catalogues.',
-    colors: { primary: '#4A4A4A', secondary: '#1A1A1A', accent: '#8A8A8A', background: '#FAFAFA', text: '#1A1A1A' },
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#8A8A8A', background: '#FAFAFA', text: '#1A1A1A' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'spotlight',
-    name: 'Spotlight',
+    id: 'spotlight', name: 'Spotlight', layoutVariant: 'spotlight' as const,
     description: 'Mise en avant visuelle, grandes images, parfait pour mettre un produit à l’honneur.',
-    colors: { primary: '#111111', secondary: '#2A2A2A', accent: '#A0A0A0', background: '#FFFFFF', text: '#111111' },
+    colors: { primary: '#008060', secondary: '#2A2A2A', accent: '#A0A0A0', background: '#FFFFFF', text: '#111111' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'crave',
-    name: 'Crave',
+    id: 'crave', name: 'Crave', layoutVariant: 'crave' as const,
     description: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons. Appétit visuel.',
-    colors: { primary: '#E65525', secondary: '#1A1A1A', accent: '#FF8A4C', background: '#FFF7F3', text: '#1A1A1A' },
+    colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5CC190', background: '#FBFBFB', text: '#1A1A1A' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'sense',
-    name: 'Sense',
+    id: 'sense', name: 'Sense', layoutVariant: 'sense' as const,
     description: 'Doux et minimaliste, dédié beauté & bien-être. Palette pastel apaisante.',
-    colors: { primary: '#9C8B7A', secondary: '#3A3530', accent: '#C9B8A6', background: '#FBF8F4', text: '#3A3530' },
+    colors: { primary: '#008060', secondary: '#3A3530', accent: '#9ED8C5', background: '#FBF8F4', text: '#3A3530' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'taste',
-    name: 'Taste',
+    id: 'taste', name: 'Taste', layoutVariant: 'taste' as const,
     description: 'Épuré et typographique, pour spécialités alimentaires et produits de niche.',
-    colors: { primary: '#1A1A1A', secondary: '#3A3A3A', accent: '#8A8A8A', background: '#FFFFFF', text: '#1A1A1A' },
+    colors: { primary: '#1A1A1A', secondary: '#3A3A3A', accent: '#008060', background: '#FFFFFF', text: '#1A1A1A' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'craft',
-    name: 'Craft',
+    id: 'craft', name: 'Craft', layoutVariant: 'craft' as const,
     description: 'Chaleureux et artisanal, met en valeur le savoir-faire et les matières.',
-    colors: { primary: '#6B5B4E', secondary: '#2A2520', accent: '#A8917A', background: '#F5F0EA', text: '#2A2520' },
+    colors: { primary: '#008060', secondary: '#2A2520', accent: '#36A18A', background: '#F5F0EA', text: '#2A2520' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'colorblock',
-    name: 'Colorblock',
+    id: 'colorblock', name: 'Colorblock', layoutVariant: 'colorblock' as const,
     description: 'Grille audacieuse et contrastée, mode & prêt-à-porter. Blocs de couleur vifs.',
-    colors: { primary: '#D63B3B', secondary: '#111111', accent: '#F5C518', background: '#FFFFFF', text: '#111111' },
+    colors: { primary: '#008060', secondary: '#111111', accent: '#004C3F', background: '#FFFFFF', text: '#111111' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'studio',
-    name: 'Studio',
+    id: 'studio', name: 'Studio', layoutVariant: 'studio' as const,
     description: 'Élégant et créatif, pour marques de design et studios artistiques.',
-    colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#C4A86A', background: '#FAFAFA', text: '#1B1B1B' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#008060', background: '#FAFAFA', text: '#1B1B1B' },
+    fonts: { heading: 'Playfair Display', body: 'Montserrat' }
   },
   {
-    id: 'origin',
-    name: 'Origin',
+    id: 'origin', name: 'Origin', layoutVariant: 'craft' as const,
     description: 'Authentique et naturel, pour marques durables et éco-responsables.',
-    colors: { primary: '#3A5A40', secondary: '#283618', accent: '#A3B18A', background: '#F4F1EA', text: '#283618' },
+    colors: { primary: '#008060', secondary: '#283618', accent: '#6BC4A8', background: '#F4F1EA', text: '#283618' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
   {
-    id: 'publisher',
-    name: 'Publisher',
+    id: 'publisher', name: 'Publisher', layoutVariant: 'publisher' as const,
     description: 'Éditorial et riche en contenu, livres, musique et marques à storytelling.',
-    colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#B8956A', background: '#F8F6F1', text: '#1A1A1A' },
-    fonts: { heading: 'Montserrat', body: 'Montserrat' }
+    colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#008060', background: '#F8F6F1', text: '#1A1A1A' },
+    fonts: { heading: 'Playfair Display', body: 'Lora' }
   },
   {
-    id: 'dawn-panafrican',
-    name: 'Dawn — African Vibrant',
-    description: 'Variante panafricaine de Dawn : couleurs dynamiques orientées commerce africain.',
-    colors: { primary: '#EF6B2A', secondary: '#0F766E', accent: '#F59E0B', background: '#FFF9F2', text: '#14213D' },
+    id: 'dawn-panafrican', name: 'Dawn — Panafrican', layoutVariant: 'dawn' as const,
+    description: 'Variante panafricaine de Dawn : vert Shopify appliqué au commerce africain.',
+    colors: { primary: '#008060', secondary: '#004C3F', accent: '#5CC190', background: '#FBFBFB', text: '#14213D' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }
   },
 ];
@@ -186,7 +174,7 @@ export default function OnlineStore() {
   const [isSearchingDomain, setIsSearchingDomain] = useState(false);
   const [domainSearchResult, setDomainSearchResult] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
   const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'orange' | 'card'>('wave');
+  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'brand' | 'card'>('wave');
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [externalDomainInput, setExternalDomainInput] = useState('');
   const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
@@ -263,7 +251,8 @@ export default function OnlineStore() {
     setTheme({
       ...theme,
       colors: { ...preset.colors },
-      fonts: { ...preset.fonts }
+      fonts: { ...preset.fonts },
+      layoutVariant: preset.layoutVariant,
     });
     showToast(`Thème "${preset.name}" appliqué avec succès !`);
   };
@@ -293,6 +282,31 @@ export default function OnlineStore() {
     [sections[idx], sections[newIdx]] = [sections[newIdx], sections[idx]];
     setTheme({ ...theme, sections });
   };
+
+  // --- Drag & drop reordering (native HTML5 DnD, no external deps) ---
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+
+  const handleDragStart = (id: string) => setDraggedId(id);
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    if (id !== dragOverId) setDragOverId(id);
+  };
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedId || draggedId === targetId) { setDraggedId(null); setDragOverId(null); return; }
+    const fromIdx = theme.sections.findIndex(s => s.id === draggedId);
+    const toIdx = theme.sections.findIndex(s => s.id === targetId);
+    if (fromIdx === -1 || toIdx === -1) { setDraggedId(null); setDragOverId(null); return; }
+    const sections = [...theme.sections];
+    const [moved] = sections.splice(fromIdx, 1);
+    sections.splice(toIdx, 0, moved);
+    setTheme({ ...theme, sections });
+    setDraggedId(null);
+    setDragOverId(null);
+    showToast('Section déplacée par glisser-déposer.');
+  };
+  const handleDragEnd = () => { setDraggedId(null); setDragOverId(null); };
 
   const updateColor = (key: keyof ThemeConfig['colors'], value: string) => {
     setTheme({ ...theme, colors: { ...theme.colors, [key]: value } });
@@ -586,14 +600,22 @@ export default function OnlineStore() {
               </div>
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                <p className="text-[10px] text-gray-400 mb-1 flex items-center gap-1"><GripVertical size={11} /> Glissez les sections pour réordonner (drag & drop)</p>
                 {theme.sections.map((s, i) => {
                   const lib = SECTION_LIBRARY.find(l => l.type === s.type);
+                  const isDragging = draggedId === s.id;
+                  const isDragOver = dragOverId === s.id && draggedId !== s.id;
                   return (
                     <div
                       key={s.id}
-                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'}`}
+                      draggable
+                      onDragStart={() => handleDragStart(s.id)}
+                      onDragOver={(e) => handleDragOver(e, s.id)}
+                      onDrop={(e) => handleDrop(e, s.id)}
+                      onDragEnd={handleDragEnd}
+                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-2 ring-2 ring-brand-200' : ''}`}
                     >
-                      <GripVertical size={14} className="text-gray-400 cursor-grab" />
+                      <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
                       <button
                         onClick={() => setSelectedSection(s.id)}
                         className="flex-1 text-left text-xs font-bold text-gray-800 truncate"
@@ -1413,6 +1435,19 @@ export default function OnlineStore() {
                 <p className="text-xs text-gray-500 mt-1">Réglez l’apparence fine de votre site : typographie, coins, ombres et animations.</p>
               </div>
 
+              {/* Layout variant — genuinely different template designs */}
+              <div className="space-y-2 p-3 rounded-xl bg-brand-50/50 border border-brand-100">
+                <label className="block text-xs font-bold text-gray-700 uppercase">Template (design visuel)</label>
+                <p className="text-[10px] text-gray-500">Chaque template produit un layout réellement différent (header, cartes, arrondis).</p>
+                <select
+                  value={theme.layoutVariant}
+                  onChange={e => setTheme({ ...theme, layoutVariant: e.target.value as any })}
+                  className="w-full px-2.5 py-2 border border-gray-200 rounded-lg text-xs bg-white font-medium"
+                >
+                  {LAYOUT_VARIANTS.map(v => <option key={v.id} value={v.id}>{v.label} — {v.desc}</option>)}
+                </select>
+              </div>
+
               {/* Theme colors */}
               <div className="space-y-3">
                 <span className="text-xs font-bold text-gray-600 uppercase block mb-1">Éditeur de couleurs</span>
@@ -1627,13 +1662,13 @@ export default function OnlineStore() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Badge color={dom.status === 'active' ? 'green' : dom.status === 'dns_pending' ? 'orange' : 'red'}>
+                      <Badge color={dom.status === 'active' ? 'green' : dom.status === 'dns_pending' ? 'brand' : 'red'}>
                         {dom.status === 'active' ? 'Actif' : dom.status === 'dns_pending' ? 'Attente DNS' : 'Erreur DNS'}
                       </Badge>
                       {dom.status === 'dns_pending' && (
                         <button
                           onClick={() => setSelectedExternalDomain(dom)}
-                          className="px-2 py-0.5 bg-orange-100 text-orange-700 font-bold text-[9px] rounded hover:bg-orange-200"
+                          className="px-2 py-0.5 bg-brand-100 text-brand-700 font-bold text-[9px] rounded hover:bg-brand-200"
                         >
                           DNS
                         </button>
@@ -1654,7 +1689,7 @@ export default function OnlineStore() {
 
               {/* External Domain DNS Verification Card popup */}
               {selectedExternalDomain && (
-                <div className="border border-orange-200 bg-orange-50/30 rounded-xl p-3 space-y-3 text-left">
+                <div className="border border-brand-200 bg-brand-50/30 rounded-xl p-3 space-y-3 text-left">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-extrabold text-xs text-gray-900">DNS pour {selectedExternalDomain.domain}</p>
@@ -1664,16 +1699,16 @@ export default function OnlineStore() {
                   </div>
 
                   <div className="font-mono text-[9px] text-gray-700 space-y-1 bg-white p-2 rounded border border-gray-200 leading-normal">
-                    <div><span className="font-bold text-orange-700">A:</span> @ → 104.21.43.201</div>
-                    <div><span className="font-bold text-orange-700">CNAME:</span> www → os.liafrik.com</div>
-                    <div><span className="font-bold text-orange-700">TXT:</span> _liafrik-challenge → {getDomainChallenge(selectedExternalDomain.domain)}</div>
+                    <div><span className="font-bold text-brand-700">A:</span> @ → 104.21.43.201</div>
+                    <div><span className="font-bold text-brand-700">CNAME:</span> www → os.liafrik.com</div>
+                    <div><span className="font-bold text-brand-700">TXT:</span> _liafrik-challenge → {getDomainChallenge(selectedExternalDomain.domain)}</div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleVerifyDns(selectedExternalDomain)}
                       disabled={isVerifyingDns}
-                      className="px-3 py-1.5 bg-orange-600 text-white rounded-lg text-[10px] font-black hover:bg-orange-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+                      className="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-[10px] font-black hover:bg-brand-700 transition-colors flex items-center gap-1 disabled:opacity-50"
                     >
                       {isVerifyingDns ? 'Vérification...' : 'Vérifier maintenant'}
                     </button>
@@ -1738,7 +1773,7 @@ export default function OnlineStore() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-1">
-                      {[['wave', 'Wave'], ['orange', 'Orange'], ['card', 'Carte CB']].map(([mId, mLabel]) => (
+                      {[['wave', 'Wave'], ['brand', 'Orange'], ['card', 'Carte CB']].map(([mId, mLabel]) => (
                         <button
                           key={mId}
                           onClick={() => setPaymentMethod(mId as any)}
@@ -1942,7 +1977,7 @@ export default function OnlineStore() {
             {/* Mockup controller header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
-                <Badge color={theme.isPublished ? 'green' : 'orange'}>
+                <Badge color={theme.isPublished ? 'green' : 'brand'}>
                   {theme.isPublished ? 'Publié' : 'Brouillon'}
                 </Badge>
                 <span className="text-xs font-semibold text-gray-500 capitalize">{theme.siteType} Editor</span>
@@ -1979,7 +2014,7 @@ export default function OnlineStore() {
               }
               .preview-element {
                 font-family: '${theme.fonts.heading}', sans-serif;
-                ${bgGradient === 'sunset' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #FFF5F2 100%) !important;' : bgGradient === 'ocean' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F0F9FF 100%) !important;' : bgGradient === 'lavender' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #FAF5FF 100%) !important;' : ''}
+                ${bgGradient === 'sunset' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #E0F2EE 100%) !important;' : bgGradient === 'ocean' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F0F9FF 100%) !important;' : bgGradient === 'lavender' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F5F3FF 100%) !important;' : ''}
               }
               header {
                 ${headerSticky ? 'position: sticky !important; top: 0 !important; z-index: 30 !important;' : ''}

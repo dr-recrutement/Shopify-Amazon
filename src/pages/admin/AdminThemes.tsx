@@ -23,9 +23,9 @@ export default function AdminThemes() {
   return (
     <div>
       <PageHeader title="Thèmes" subtitle="Bibliothèque de thèmes — Shopify Theme Store (Online Store 2.0) — gestion Super Admin." action={<Button><Upload size={16} /> Uploader un thème</Button>} />
-      <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-orange-50 to-white">
+      <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-brand-50 to-white">
         <div className="flex items-center gap-3">
-          <Star className="text-orange-600" size={20} />
+          <Star className="text-brand-600" size={20} />
           <div>
             <p className="text-sm font-medium text-gray-900">Tous les thèmes sont basés sur Dawn (Shopify OS 2.0)</p>
             <p className="text-xs text-gray-500">Même codebase, sections et blocs — chaque thème est un preset de couleurs & typographie.</p>
@@ -38,7 +38,7 @@ export default function AdminThemes() {
           {themes.map(t => (
             <tr key={t.name} className="border-b border-gray-50 hover:bg-gray-50">
               <td className="py-3 px-4 font-medium text-gray-900 flex items-center gap-2">
-                {t.universal && <Star size={14} className="text-orange-500" />}
+                {t.universal && <Star size={14} className="text-brand-500" />}
                 {t.name}
                 {t.universal && <Badge color="orange">Référence</Badge>}
               </td>
@@ -46,7 +46,7 @@ export default function AdminThemes() {
               <td className="py-3 px-4 text-gray-700">{t.stores.toLocaleString()}</td>
               <td className="py-3 px-4"><Badge color={t.status === 'published' ? 'green' : 'gray'}>{t.status === 'published' ? 'Publié' : 'Brouillon'}</Badge></td>
               <td className="py-3 px-4 flex gap-2">
-                <button className="text-orange-600 hover:underline text-sm flex items-center gap-1"><Eye size={14} /> Aperçu</button>
+                <button className="text-brand-600 hover:underline text-sm flex items-center gap-1"><Eye size={14} /> Aperçu</button>
                 <button className="text-gray-600 hover:underline text-sm">Éditer</button>
               </td>
             </tr>

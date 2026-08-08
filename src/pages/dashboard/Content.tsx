@@ -1,6 +1,6 @@
 import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
-import { FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2, GripVertical, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
 import { createCmsPage, getCmsPages, saveCmsPage, type CmsPage } from '../../lib/cms';
 import { SHOPIFY_TEMPLATES, SHOPIFY_BLOCK_TYPES } from '../../lib/cms';
 
@@ -8,6 +8,9 @@ export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
   const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
   const [draft, setDraft] = useState<CmsPage | null>(null);
+  // Drag-and-drop state for CMS blocks
+  const [draggedBlockId, setDraggedBlockId] = useState<string | null>(null);
+  const [dragOverBlockId, setDragOverBlockId] = useState<string | null>(null);
 
   useEffect(() => {
     const initial = getCmsPages();
@@ -46,7 +49,7 @@ export default function Content() {
                 <h3 className="font-semibold text-gray-900">Pages</h3>
                 <p className="text-xs text-gray-500">Structurez votre contenu comme une vraie plateforme éditoriale.</p>
               </div>
-              <div className="flex items-center gap-2 text-orange-600 text-xs font-medium"><Sparkles size={14} /> Pro</div>
+              <div className="flex items-center gap-2 text-brand-600 text-xs font-medium"><Sparkles size={14} /> Pro</div>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px]">
               <div className="relative">
@@ -64,7 +67,7 @@ export default function Content() {
           ) : (
             <div className="divide-y divide-gray-50">
               {pages.map(p => (
-                <button key={p.id} onClick={() => selectPage(p)} className={`w-full text-left p-4 flex items-center justify-between hover:bg-gray-50 ${selectedPageId === p.id ? 'bg-orange-50' : ''}`}>
+                <button key={p.id} onClick={() => selectPage(p)} className={`w-full text-left p-4 flex items-center justify-between hover:bg-gray-50 ${selectedPageId === p.id ? 'bg-brand-50' : ''}`}>
                   <div>
                     <div className="font-medium text-gray-900">{p.title}</div>
                     <div className="text-xs text-gray-500">/{p.slug}</div>
@@ -90,7 +93,7 @@ export default function Content() {
               <p className="text-sm text-gray-500">Modifiez le titre, le slug, le statut, le template et les blocs de contenu.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge color={draft?.status === 'published' ? 'green' : 'orange'}>{draft?.status === 'published' ? 'Publié' : 'Brouillon'}</Badge>
+              <Badge color={draft?.status === 'published' ? 'green' : 'brand'}>{draft?.status === 'published' ? 'Publié' : 'Brouillon'}</Badge>
               <span className="text-xs text-gray-500">Mis à jour le {draft?.updatedAt}</span>
             </div>
           </div>
@@ -133,23 +136,69 @@ export default function Content() {
               <h4 className="font-medium text-gray-900">Blocs</h4>
               <span className="text-xs text-gray-500">{draft.sections.length} blocs</span>
             </div>
-            {draft.sections.map((section, index) => (
-              <div key={section.id} className="border border-gray-100 rounded-lg p-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{section.title}</div>
-                    <div className="text-xs text-gray-500">{section.type}</div>
+            <p className="text-[10px] text-gray-400 flex items-center gap-1"><GripVertical size={11} /> Glissez les blocs pour réordonner (drag & drop)</p>
+            {draft.sections.map((section, index) => {
+              const isDragging = draggedBlockId === section.id;
+              const isDragOver = dragOverBlockId === section.id && draggedBlockId !== section.id;
+              return (
+              <div
+                key={section.id}
+                draggable
+                onDragStart={() => setDraggedBlockId(section.id)}
+                onDragOver={(e) => { e.preventDefault(); if (section.id !== dragOverBlockId) setDragOverBlockId(section.id); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (!draggedBlockId || draggedBlockId === section.id) { setDraggedBlockId(null); setDragOverBlockId(null); return; }
+                  const from = draft.sections.findIndex(s => s.id === draggedBlockId);
+                  const to = draft.sections.findIndex(s => s.id === section.id);
+                  if (from === -1 || to === -1) { setDraggedBlockId(null); setDragOverBlockId(null); return; }
+                  const next = [...draft.sections];
+                  const [moved] = next.splice(from, 1);
+                  next.splice(to, 0, moved);
+                  setDraft({ ...draft, sections: next });
+                  setDraggedBlockId(null); setDragOverBlockId(null);
+                }}
+                onDragEnd={() => { setDraggedBlockId(null); setDragOverBlockId(null); }}
+                className={`border rounded-lg p-3 transition-all ${isDragging ? 'opacity-40' : 'border-gray-100'} ${isDragOver ? 'border-brand-500 ring-2 ring-brand-200' : ''}`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-1">
+                    <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{section.title}</div>
+                      <div className="text-xs text-gray-500">{section.type}</div>
+                    </div>
                   </div>
-                  <button onClick={() => {
-                    const nextSections = draft.sections.filter(item => item.id !== section.id);
-                    setDraft({ ...draft, sections: nextSections });
-                  }} className="text-xs text-gray-500 hover:text-red-600">Supprimer</button>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => {
+                      if (index === 0) return;
+                      const next = [...draft.sections];
+                      [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                      setDraft({ ...draft, sections: next });
+                    }} disabled={index === 0} className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded disabled:opacity-30" title="Monter">
+                      <ArrowUp size={13} />
+                    </button>
+                    <button onClick={() => {
+                      if (index === draft.sections.length - 1) return;
+                      const next = [...draft.sections];
+                      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+                      setDraft({ ...draft, sections: next });
+                    }} disabled={index === draft.sections.length - 1} className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded disabled:opacity-30" title="Descendre">
+                      <ArrowDown size={13} />
+                    </button>
+                    <button onClick={() => {
+                      const nextSections = draft.sections.filter(item => item.id !== section.id);
+                      setDraft({ ...draft, sections: nextSections });
+                    }} className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded" title="Supprimer">
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-3 grid gap-2 md:grid-cols-[1fr_180px]">
                   <textarea value={section.content} onChange={e => {
                     const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, content: e.target.value } : item);
                     setDraft({ ...draft, sections: nextSections });
-                  }} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                  }} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-200 focus:outline-none" />
                   <div className="space-y-2">
                     <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" defaultValue={section.type}>
                       {SHOPIFY_BLOCK_TYPES.map(bt => <option key={bt.type} value={bt.type}>{bt.label}</option>)}
@@ -157,17 +206,18 @@ export default function Content() {
                     <input value={section.title} onChange={e => {
                       const nextSections = draft.sections.map(item => item.id === section.id ? { ...item, title: e.target.value } : item);
                       setDraft({ ...draft, sections: nextSections });
-                    }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                    }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-200 focus:outline-none" />
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
             <button onClick={() => {
               setDraft({
                 ...draft,
                 sections: [...draft.sections, { id: `block-${Date.now()}`, type: 'text', title: 'Nouveau bloc', content: 'Contenu du bloc' }],
               });
-            }} className="flex items-center gap-2 text-sm text-orange-600 font-medium"><Edit3 size={14} /> Ajouter un bloc</button>
+            }} className="flex items-center gap-2 text-sm text-brand-600 font-medium"><Edit3 size={14} /> Ajouter un bloc</button>
           </div>
 
           <Card className="mt-5 border border-gray-200 bg-slate-50 p-4">

@@ -6,7 +6,7 @@ export default function AdminHome() {
   const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('month');
 
   const stats = [
-    { label: 'Boutiques actives', value: '12 348', change: '+8.2%', icon: Store, color: 'orange' },
+    { label: 'Boutiques actives', value: '12 348', change: '+8.2%', icon: Store, color: 'brand' },
     { label: 'Vendeurs', value: '12 210', change: '+7.5%', icon: Users, color: 'green' },
     { label: 'MRR (SaaS)', value: '$148 920', change: '+12%', icon: DollarSign, color: 'blue' },
     { label: 'ARR (SaaS)', value: '$1.79M', change: '+11%', icon: TrendingUp, color: 'purple' },
@@ -14,7 +14,7 @@ export default function AdminHome() {
 
   const planData = [
     { plan: 'Starter', count: 8420, pct: 68, color: 'bg-gray-400' },
-    { plan: 'Premium', count: 3120, pct: 25, color: 'bg-orange-500' },
+    { plan: 'Premium', count: 3120, pct: 25, color: 'bg-brand-500' },
     { plan: 'Entreprise', count: 808, pct: 7, color: 'bg-gray-900' },
   ];
 
@@ -38,7 +38,7 @@ export default function AdminHome() {
     { store: 'Douala Mart', plan: 'Premium', country: '🇨🇲 CM', revenue: '$19', date: '18 Jul 16:10', status: 'active' },
   ];
 
-  const colors: any = { orange: 'text-orange-600 bg-orange-50', green: 'text-green-600 bg-green-50', blue: 'text-blue-600 bg-blue-50', purple: 'text-purple-600 bg-purple-50' };
+  const colors: any = { orange: 'text-brand-600 bg-brand-50', green: 'text-green-600 bg-green-50', blue: 'text-blue-600 bg-blue-50', purple: 'text-purple-600 bg-purple-50' };
 
   return (
     <div>
@@ -85,7 +85,7 @@ export default function AdminHome() {
           <div className="h-48 flex items-end gap-2">
             {[40, 55, 48, 62, 70, 65, 78, 82, 75, 88, 92, 95].map((h, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-orange-500 rounded-t" style={{ height: `${h}%`, opacity: 0.5 + h / 200 }} />
+                <div className="w-full bg-brand-500 rounded-t" style={{ height: `${h}%`, opacity: 0.5 + h / 200 }} />
                 <span className="text-[10px] text-gray-400">{['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]}</span>
               </div>
             ))}
@@ -120,7 +120,7 @@ export default function AdminHome() {
               <div key={c.country} className="flex items-center gap-3">
                 <span className="text-sm w-40 truncate">{c.country}</span>
                 <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-orange-500" style={{ width: `${c.pct}%` }} />
+                  <div className="h-full bg-brand-500" style={{ width: `${c.pct}%` }} />
                 </div>
                 <span className="text-xs text-gray-500 w-20 text-right">{c.count.toLocaleString()}</span>
               </div>
@@ -158,11 +158,11 @@ export default function AdminHome() {
           {recent.map(r => (
             <tr key={r.store} className="border-b border-gray-50 hover:bg-gray-50">
               <td className="py-3 px-4 font-medium text-gray-900">{r.store}</td>
-              <td className="py-3 px-4"><Badge color={r.plan === 'Entreprise' ? 'gray' : r.plan === 'Premium' ? 'orange' : 'blue'}>{r.plan}</Badge></td>
+              <td className="py-3 px-4"><Badge color={r.plan === 'Entreprise' ? 'gray' : r.plan === 'Premium' ? 'brand' : 'blue'}>{r.plan}</Badge></td>
               <td className="py-3 px-4 text-gray-500">{r.country}</td>
               <td className="py-3 px-4 text-gray-700">{r.revenue}</td>
               <td className="py-3 px-4 text-gray-500 text-xs">{r.date}</td>
-              <td className="py-3 px-4"><Badge color={r.status === 'active' ? 'green' : 'orange'}>{r.status === 'active' ? 'Active' : 'Essai'}</Badge></td>
+              <td className="py-3 px-4"><Badge color={r.status === 'active' ? 'green' : 'brand'}>{r.status === 'active' ? 'Active' : 'Essai'}</Badge></td>
             </tr>
           ))}
         </Table>
@@ -172,7 +172,7 @@ export default function AdminHome() {
         <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Activity size={16} /> Activité plateforme</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           <div className="flex items-center gap-2"><div className="w-2 h-2 bg-green-500 rounded-full" /><span className="text-gray-700">Systèmes opérationnels</span></div>
-          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-orange-500 rounded-full" /><span className="text-gray-700">3 essais expirant</span></div>
+          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-brand-500 rounded-full" /><span className="text-gray-700">3 essais expirant</span></div>
           <div className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full" /><span className="text-gray-700">1 nouveau thème</span></div>
           <div className="flex items-center gap-2"><div className="w-2 h-2 bg-purple-500 rounded-full" /><span className="text-gray-700">MRR +12%</span></div>
         </div>

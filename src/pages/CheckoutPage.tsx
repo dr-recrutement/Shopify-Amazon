@@ -53,7 +53,7 @@ export default function CheckoutPage() {
               <h3 className="font-semibold text-gray-900 mb-4">Mode de livraison</h3>
               <div className="space-y-2">
                 {[{ id: 'standard', name: 'Standard', desc: '2-3 jours', price: 1000 }, { id: 'express', name: 'Express', desc: '24h', price: 2500 }, { id: 'pickup', name: 'Point de retrait', desc: 'Gratuit', price: 0 }].map(s => (
-                  <button key={s.id} onClick={() => setShipping(s.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${shipping === s.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
+                  <button key={s.id} onClick={() => setShipping(s.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${shipping === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200'}`}>
                     <div><div className="font-medium text-sm">{s.name}</div><div className="text-xs text-gray-500">{s.desc}</div></div>
                     <span className="font-medium text-sm">{s.price === 0 ? 'Gratuit' : `${fmt(s.price)}`}</span>
                   </button>
@@ -65,13 +65,13 @@ export default function CheckoutPage() {
               <div className="space-y-2">
                 {[
                   { id: 'flutterwave', name: 'Flutterwave', desc: 'Mobile Money + cartes' },
-                  { id: 'orange', name: 'Orange Money', desc: 'Orange Money marchand' },
+                  { id: 'brand', name: 'Orange Money', desc: 'Orange Money marchand' },
                   { id: 'paystack', name: 'Paystack', desc: 'Cartes + Mobile Money' },
                   { id: 'mtn', name: 'MTN MoMo', desc: 'MTN Mobile Money' },
                 ].map(p => (
-                  <button key={p.id} onClick={() => setPayment(p.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${payment === p.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
+                  <button key={p.id} onClick={() => setPayment(p.id)} className={`w-full text-left p-3 rounded-lg border-2 flex items-center justify-between ${payment === p.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200'}`}>
                     <div><div className="font-medium text-sm">{p.name}</div><div className="text-xs text-gray-500">{p.desc}</div></div>
-                    {payment === p.id && <CheckCircle2 size={18} className="text-orange-600" />}
+                    {payment === p.id && <CheckCircle2 size={18} className="text-brand-600" />}
                   </button>
                 ))}
               </div>
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
               <div className="mt-4 space-y-2 text-xs text-gray-500">
                 <div className="flex items-center gap-2"><Shield size={12} className="text-green-600" /> Paiement sécurisé</div>
                 <div className="flex items-center gap-2"><Truck size={12} className="text-blue-600" /> Suivi en temps réel</div>
-                <div className="flex items-center gap-2"><CreditCard size={12} className="text-orange-600" /> 0% commission</div>
+                <div className="flex items-center gap-2"><CreditCard size={12} className="text-brand-600" /> 0% commission</div>
               </div>
             </Card>
           </div>

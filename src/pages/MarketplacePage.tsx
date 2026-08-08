@@ -30,8 +30,8 @@ export default function MarketplacePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {shops.map(s => (
             <Card key={s.name} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer">
-              <div className="aspect-[4/3] bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
-                <ShoppingBag size={40} className="text-orange-600" />
+              <div className="aspect-[4/3] bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
+                <ShoppingBag size={40} className="text-brand-600" />
               </div>
               <div className="p-5">
                 <div className="flex items-center justify-between mb-1">
@@ -40,7 +40,7 @@ export default function MarketplacePage() {
                 </div>
                 <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
                   <span className="flex items-center gap-1"><MapPin size={12} /> {s.country}</span>
-                  <span className="flex items-center gap-1"><Star size={12} className="text-orange-500" fill="currentColor" /> {s.rating}</span>
+                  <span className="flex items-center gap-1"><Star size={12} className="text-brand-500" fill="currentColor" /> {s.rating}</span>
                   <span>{s.products} produits</span>
                 </div>
                 <Button variant="secondary" size="sm" className="w-full">Visiter <ArrowRight size={14} /></Button>

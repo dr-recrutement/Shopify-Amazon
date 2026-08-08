@@ -12,7 +12,7 @@ export default function Discounts() {
       <PageHeader title="Discounts" subtitle="Codes promo et réductions automatiques." action={<Button><Plus size={16} /> Créer une réduction</Button>} />
       <Card className="mb-6 p-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Sparkles size={16} className="text-orange-600" />
+          <Sparkles size={16} className="text-brand-600" />
           <span>L'IA peut générer automatiquement des promotions selon votre stock et votre saison.</span>
           <Button variant="secondary" size="sm" className="ml-auto">Générer une promo</Button>
         </div>
@@ -28,8 +28,8 @@ export default function Discounts() {
                 <td className="py-3 px-4 text-gray-500">{c.type}</td>
                 <td className="py-3 px-4 text-gray-700">{c.value}</td>
                 <td className="py-3 px-4 text-gray-700">{c.uses}</td>
-                <td className="py-3 px-4"><Badge color={c.status === 'active' ? 'green' : 'orange'}>{c.status === 'active' ? 'Actif' : 'Programmé'}</Badge></td>
-                <td className="py-3 px-4"><button className="text-orange-600 text-sm font-medium hover:underline">Éditer</button></td>
+                <td className="py-3 px-4"><Badge color={c.status === 'active' ? 'green' : 'brand'}>{c.status === 'active' ? 'Actif' : 'Programmé'}</Badge></td>
+                <td className="py-3 px-4"><button className="text-brand-600 text-sm font-medium hover:underline">Éditer</button></td>
               </tr>
             ))}
           </Table>

@@ -27,15 +27,15 @@ export default function Marketing() {
       <PageHeader title="Marketing" subtitle="Campagnes, automatisations et performance." action={<Button onClick={() => setShowEditor(true)}><Plus size={16} /> Créer une campagne</Button>} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4"><Mail size={18} className="text-orange-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'Email').length}</p></Card>
+        <Card className="p-4"><Mail size={18} className="text-brand-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'Email').length}</p></Card>
         <Card className="p-4"><MessageSquare size={18} className="text-green-600 mb-2" /><p className="text-xs text-gray-500">Campagnes WhatsApp</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'WhatsApp').length}</p></Card>
         <Card className="p-4"><Calendar size={18} className="text-blue-600 mb-2" /><p className="text-xs text-gray-500">Programmées</p><p className="text-xl font-bold">{campaigns.filter(c => c.status === 'scheduled').length}</p></Card>
         <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-bold">50%</p></Card>
       </div>
 
-      <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-orange-50 to-white">
+      <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-brand-50 to-white">
         <div className="flex items-center gap-3">
-          <Sparkles className="text-orange-600" size={20} />
+          <Sparkles className="text-brand-600" size={20} />
           <p className="text-sm text-gray-700">L'assistant marketing IA peut générer vos textes, segments et calendrier.</p>
         </div>
         <Button variant="secondary" size="sm">Lancer l'assistant IA</Button>
@@ -51,8 +51,8 @@ export default function Marketing() {
               <td className="py-3 px-4 text-gray-500">{c.audience}</td>
               <td className="py-3 px-4 text-gray-700">{c.sent}</td>
               <td className="py-3 px-4 text-gray-700">{c.opens}</td>
-              <td className="py-3 px-4"><Badge color={c.status === 'sent' ? 'green' : c.status === 'active' ? 'orange' : c.status === 'scheduled' ? 'blue' : 'gray'}>{c.status === 'sent' ? 'Envoyée' : c.status === 'active' ? 'Active' : c.status === 'scheduled' ? 'Programmée' : 'Brouillon'}</Badge></td>
-              <td className="py-3 px-4"><button className="text-orange-600 text-sm font-medium hover:underline">Voir</button></td>
+              <td className="py-3 px-4"><Badge color={c.status === 'sent' ? 'green' : c.status === 'active' ? 'brand' : c.status === 'scheduled' ? 'blue' : 'gray'}>{c.status === 'sent' ? 'Envoyée' : c.status === 'active' ? 'Active' : c.status === 'scheduled' ? 'Programmée' : 'Brouillon'}</Badge></td>
+              <td className="py-3 px-4"><button className="text-brand-600 text-sm font-medium hover:underline">Voir</button></td>
             </tr>
           ))}
         </Table>
@@ -105,7 +105,7 @@ export default function Marketing() {
                   <div className="text-xs text-gray-400 mb-1">Aperçu</div>
                   <div className="font-semibold text-gray-900">{form.subject || '(Objet)'}</div>
                   <p className="mt-2 text-sm text-gray-700">{form.content || '(Contenu)'}</p>
-                  <div className="mt-3 inline-block px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-semibold">{form.cta}</div>
+                  <div className="mt-3 inline-block px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-semibold">{form.cta}</div>
                 </div>
               )}
             </div>

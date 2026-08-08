@@ -168,7 +168,7 @@ export default function Settings() {
   const [searchResults, setSearchResults] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'orange' | 'card'>('wave');
+  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'brand' | 'card'>('wave');
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   // external domain states
@@ -295,7 +295,7 @@ export default function Settings() {
         <Card className="p-2 h-fit lg:sticky lg:top-20">
           {SECTIONS.map(s => (
             <button key={s.id} onClick={() => setActive(s.id)}
-              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${active === s.id ? 'bg-orange-50 text-orange-700' : 'text-gray-700 hover:bg-gray-50'}`}>
+              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${active === s.id ? 'bg-brand-50 text-brand-700' : 'text-gray-700 hover:bg-gray-50'}`}>
               {s.label}
             </button>
           ))}
@@ -323,7 +323,7 @@ export default function Settings() {
                     onFocus={() => setCountryDropdownOpen(true)}
                     onBlur={() => setTimeout(() => setCountryDropdownOpen(false), 200)}
                     placeholder="Recherchez un pays..."
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 pr-8 bg-white"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 pr-8 bg-white"
                   />
                   <button
                     type="button"
@@ -348,7 +348,7 @@ export default function Settings() {
                             setCountrySearch(`${c.flag} ${c.name} (${c.nameEn})`);
                             setCountryDropdownOpen(false);
                           }}
-                          className="w-full text-left px-3 py-2 hover:bg-orange-50 text-xs flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 hover:bg-brand-50 text-xs flex items-center gap-2"
                         >
                           <span className="text-sm">{c.flag}</span>
                           <span className="font-semibold text-gray-800">{c.name}</span>
@@ -365,13 +365,13 @@ export default function Settings() {
           {active === 'plan' && (
             <div className="space-y-4">
               <h3 className="font-bold text-gray-900 text-sm">Plan actuel</h3>
-              <div className="p-4 bg-orange-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
-                <div><p className="font-extrabold text-orange-800">Plan Premium</p><p className="text-gray-500">19$/mois · Custom Domains illimités</p></div>
+              <div className="p-4 bg-brand-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
+                <div><p className="font-extrabold text-brand-800">Plan Premium</p><p className="text-gray-500">19$/mois · Custom Domains illimités</p></div>
                 <Button size="sm">Changer de plan</Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {[{n:'Starter',p:'$9'},{n:'Premium',p:'$19',pop:true},{n:'Entreprise',p:'$69'}].map(p => (
-                  <div key={p.n} className={`p-4 rounded-xl border-2 text-center ${p.pop ? 'border-orange-500 bg-orange-50/20' : 'border-gray-200 bg-white'}`}>
+                  <div key={p.n} className={`p-4 rounded-xl border-2 text-center ${p.pop ? 'border-brand-500 bg-brand-50/20' : 'border-gray-200 bg-white'}`}>
                     {p.pop && <Badge color="orange">Recommandé</Badge>}
                     <p className="font-bold mt-1 text-xs text-gray-900">{p.n}</p>
                     <p className="text-2xl font-black text-gray-900 mt-1">{p.p}</p>
@@ -436,9 +436,9 @@ export default function Settings() {
               {activeGatewayModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                   <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-gray-100 animate-in fade-in zoom-in duration-150">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-orange-50/50">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-brand-50/50">
                       <div className="flex items-center gap-1.5">
-                        <CreditCard className="text-orange-600 w-5 h-5" />
+                        <CreditCard className="text-brand-600 w-5 h-5" />
                         <h4 className="font-extrabold text-gray-900 text-sm">Passerelle {activeGatewayModal}</h4>
                       </div>
                       <button onClick={() => setActiveGatewayModal(null)} className="text-gray-400 hover:text-gray-600">✕</button>
@@ -520,7 +520,7 @@ export default function Settings() {
             <div className="space-y-6 text-xs sm:text-sm">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-3">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Globe className="w-5 h-5 text-orange-600" /> Gestion des Domaines</h3>
+                  <h3 className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Globe className="w-5 h-5 text-brand-600" /> Gestion des Domaines</h3>
                   <p className="text-xs text-gray-500 mt-0.5">Bâtissez votre crédibilité avec votre propre extension de domaine.</p>
                 </div>
                 <Badge color="green">Intégration Cloudflare Connectée</Badge>
@@ -539,14 +539,14 @@ export default function Settings() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge color={d.status === 'active' ? 'green' : d.status === 'dns_pending' ? 'orange' : 'red'}>
+                      <Badge color={d.status === 'active' ? 'green' : d.status === 'dns_pending' ? 'brand' : 'red'}>
                         {d.status === 'active' ? 'Actif' : d.status === 'dns_pending' ? 'En attente DNS' : 'Erreur DNS'}
                       </Badge>
 
                       {d.status === 'dns_pending' && (
                         <button
                           onClick={() => setSelectedExternalDomain(d)}
-                          className="px-2.5 py-1 rounded bg-orange-100 text-orange-700 font-bold text-[10px] hover:bg-orange-200"
+                          className="px-2.5 py-1 rounded bg-brand-100 text-brand-700 font-bold text-[10px] hover:bg-brand-200"
                         >
                           Configurer DNS
                         </button>
@@ -567,7 +567,7 @@ export default function Settings() {
 
               {/* External Domain DNS Verification Card popup */}
               {selectedExternalDomain && (
-                <div className="border border-orange-200 bg-orange-50/30 rounded-2xl p-4 space-y-4 animate-slide-up">
+                <div className="border border-brand-200 bg-brand-50/30 rounded-2xl p-4 space-y-4 animate-slide-up">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-extrabold text-gray-900">Configurer les DNS pour {selectedExternalDomain.domain}</p>
@@ -589,19 +589,19 @@ export default function Settings() {
                       </thead>
                       <tbody className="divide-y divide-gray-100 font-mono">
                         <tr>
-                          <td className="p-2 font-black text-orange-700">A</td>
+                          <td className="p-2 font-black text-brand-700">A</td>
                           <td className="p-2">@</td>
                           <td className="p-2">104.21.43.201</td>
                           <td className="p-2">Auto</td>
                         </tr>
                         <tr>
-                          <td className="p-2 font-black text-orange-700">CNAME</td>
+                          <td className="p-2 font-black text-brand-700">CNAME</td>
                           <td className="p-2">www</td>
                           <td className="p-2">os.liafrik.com</td>
                           <td className="p-2">Auto</td>
                         </tr>
                         <tr>
-                          <td className="p-2 font-black text-orange-700">TXT</td>
+                          <td className="p-2 font-black text-brand-700">TXT</td>
                           <td className="p-2">_liafrik-challenge</td>
                           <td className="p-2 font-mono text-[10px] bg-gray-50 border border-gray-100 rounded px-1">{getDomainChallenge(selectedExternalDomain.domain)}</td>
                           <td className="p-2">Auto</td>
@@ -614,7 +614,7 @@ export default function Settings() {
                     <button
                       onClick={() => handleVerifyDns(selectedExternalDomain)}
                       disabled={isVerifyingDns}
-                      className="px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-black hover:bg-orange-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                      className="px-4 py-2 bg-brand-600 text-white rounded-lg text-xs font-black hover:bg-brand-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
                     >
                       {isVerifyingDns ? (
                         <>
@@ -652,13 +652,13 @@ export default function Settings() {
                       onChange={e => setSearchQuery(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') handleDomainSearch(); }}
                       placeholder="Ex. maboutique-royal"
-                      className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
                     />
                   </div>
                   <button
                     onClick={handleDomainSearch}
                     disabled={isSearching}
-                    className="px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-black flex items-center gap-1.5 hover:bg-orange-700 disabled:opacity-50"
+                    className="px-4 py-2 bg-brand-600 text-white rounded-lg text-xs font-black flex items-center gap-1.5 hover:bg-brand-700 disabled:opacity-50"
                   >
                     {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
                     Rechercher
@@ -674,7 +674,7 @@ export default function Settings() {
                         const domainName = `${searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${res.ext}`;
                         const isSelected = selectedExtension?.ext === res.ext;
                         return (
-                          <div key={res.ext} className={`p-3 flex items-center justify-between transition-colors ${isSelected ? 'bg-orange-50/30' : ''}`}>
+                          <div key={res.ext} className={`p-3 flex items-center justify-between transition-colors ${isSelected ? 'bg-brand-50/30' : ''}`}>
                             <div>
                               <span className="font-bold text-gray-900">{domainName}</span>
                               <p className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-0.5"><Check className="w-3 h-3" /> Disponible instantanément</p>
@@ -684,7 +684,7 @@ export default function Settings() {
                               <button
                                 onClick={() => setSelectedExtension(res)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                  isSelected ? 'bg-orange-600 text-white shadow-sm' : 'border border-gray-200 text-gray-700 hover:border-gray-300'
+                                  isSelected ? 'bg-brand-600 text-white shadow-sm' : 'border border-gray-200 text-gray-700 hover:border-gray-300'
                                 }`}
                               >
                                 {isSelected ? 'Sélectionné' : 'Choisir'}
@@ -708,13 +708,13 @@ export default function Settings() {
                     <div className="grid grid-cols-3 gap-2">
                       {[
                         { id: 'wave', label: 'Wave', desc: 'Sénégal, CI' },
-                        { id: 'orange', label: 'Orange Money', desc: 'Afrique de l\'Ouest' },
+                        { id: 'brand', label: 'Orange Money', desc: 'Afrique de l\'Ouest' },
                         { id: 'card', label: 'Carte Bancaire', desc: 'Visa / Mastercard' },
                       ].map(method => (
                         <button
                           key={method.id}
                           onClick={() => setPaymentMethod(method.id as any)}
-                          className={`p-3 border rounded-xl text-left transition-all ${paymentMethod === method.id ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}
+                          className={`p-3 border rounded-xl text-left transition-all ${paymentMethod === method.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}
                         >
                           <p className="text-xs font-extrabold text-gray-900 flex items-center gap-1">
                             <CreditCard className="w-3.5 h-3.5 text-gray-400" /> {method.label}
@@ -765,7 +765,7 @@ export default function Settings() {
                     value={externalDomainInput}
                     onChange={e => setExternalDomainInput(e.target.value)}
                     placeholder="Ex. maboutique.com"
-                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                   <button
                     onClick={handleAddExternalDomain}

@@ -16,7 +16,7 @@ export default function AdminGeneric({ title, subtitle }: { title: string; subti
               <td className="py-3 px-4 text-gray-500">Donnée {i}</td>
               <td className="py-3 px-4 text-gray-700">{(i * 1000).toLocaleString()}</td>
               <td className="py-3 px-4"><Badge color="green">Actif</Badge></td>
-              <td className="py-3 px-4"><button className="text-orange-600 text-sm hover:underline">Gérer</button></td>
+              <td className="py-3 px-4"><button className="text-brand-600 text-sm hover:underline">Gérer</button></td>
             </tr>
           ))}
         </Table>

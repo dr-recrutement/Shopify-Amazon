@@ -12,7 +12,7 @@ export default function Reports() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {reports.map(r => (
           <Card key={r} className="p-5 hover:shadow-md transition-all cursor-pointer">
-            <FileBarChart size={20} className="text-orange-600 mb-3" />
+            <FileBarChart size={20} className="text-brand-600 mb-3" />
             <h3 className="font-semibold text-gray-900">{r}</h3>
             <p className="text-xs text-gray-500 mt-1">Générez et exportez ce rapport en PDF/Excel/CSV.</p>
             <div className="mt-3 flex gap-2">

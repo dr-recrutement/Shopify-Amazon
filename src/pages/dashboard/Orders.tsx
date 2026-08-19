@@ -1,22 +1,37 @@
-import { PageHeader, Card, Badge, Button, EmptyState, Table } from './ui';
+import { PageHeader, Card, Button, EmptyState, Table } from './ui';
 import { ShoppingCart, Plus, Filter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getOrders, saveOrder, saveOrdersList, type StoreOrder } from '../../lib/app-state';
+import { fetchCloudOrders, pushCloudOrders, ensureUuidId } from '../../lib/tenant-sync';
 
 export default function Orders() {
   const [orders, setOrders] = useState<StoreOrder[]>([]);
   const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'paid' | 'shipped' | 'cancelled'>('all');
 
   useEffect(() => {
-    setOrders(getOrders());
+    // Normalize legacy non-UUID ids once so they can sync to Supabase, then
+    // load from the local cache immediately for a snappy UI...
+    const local = getOrders().map(o => ({ ...o, id: ensureUuidId(o.id), orderNumber: o.orderNumber || o.id }));
+    setOrders(local);
+    saveOrdersList(local);
+
+    // ...then reconcile with the tenant's real data in Supabase, if
+    // configured. Falls back silently to the local cache otherwise.
+    fetchCloudOrders().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setOrders(cloud);
+        saveOrdersList(cloud);
+      } else {
+        pushCloudOrders(local);
+      }
+    });
   }, []);
 
-  const statusColors: any = { pending: 'brand', paid: 'green', shipped: 'blue', cancelled: 'red' };
-  const statusLabels: any = { pending: 'En attente', paid: 'Payée', shipped: 'Expédiée', cancelled: 'Annulée' };
-
   const addOrder = () => {
+    const id = crypto.randomUUID();
     const draft: StoreOrder = {
-      id: `LA-${Date.now()}`,
+      id,
+      orderNumber: `LA-${Date.now()}`,
       customer: 'Client nouveau',
       date: new Date().toLocaleDateString('fr-FR'),
       total: 25000,
@@ -26,7 +41,9 @@ export default function Orders() {
       items: [{ name: 'Produit ajouté', qty: 1, price: 25000 }],
     };
     saveOrder(draft);
-    setOrders(getOrders());
+    const next = getOrders();
+    setOrders(next);
+    pushCloudOrders(next);
   };
 
   const handleUpdateStatus = (id: string, newStatus: StoreOrder['status']) => {
@@ -38,6 +55,7 @@ export default function Orders() {
     });
     setOrders(updated);
     saveOrdersList(updated);
+    pushCloudOrders(updated);
   };
 
   const filteredOrders = orders.filter(o => activeTab === 'all' || o.status === activeTab);
@@ -72,7 +90,7 @@ export default function Orders() {
           <Table headers={['Commande', 'Client', 'Date', 'Total', 'Paiement', 'Modifier Statut', 'Actions']}>
             {filteredOrders.map(o => (
               <tr key={o.id} className="border-b border-gray-50 hover:bg-gray-50">
-                <td className="py-3 px-4 font-semibold text-gray-900">{o.id}</td>
+                <td className="py-3 px-4 font-semibold text-gray-900">{o.orderNumber || o.id}</td>
                 <td className="py-3 px-4 text-gray-700 font-medium">{o.customer}</td>
                 <td className="py-3 px-4 text-gray-400 font-medium">{o.date}</td>
                 <td className="py-3 px-4 font-semibold text-gray-900">{o.total.toLocaleString('fr-FR')} {o.currency}</td>
@@ -80,7 +98,7 @@ export default function Orders() {
                 <td className="py-3 px-4">
                   <select
                     value={o.status}
-                    onChange={e => handleUpdateStatus(o.id, e.target.value as any)}
+                    onChange={e => handleUpdateStatus(o.id, e.target.value as StoreOrder['status'])}
                     className="text-xs px-2 py-1 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-500 font-bold"
                     style={{ color: o.status === 'paid' ? '#008060' : o.status === 'pending' ? '#008060' : o.status === 'shipped' ? '#2563eb' : '#dc2626' }}
                   >
@@ -91,7 +109,7 @@ export default function Orders() {
                   </select>
                 </td>
                 <td className="py-3 px-4">
-                  <button onClick={() => alert(`🔍 Commande ${o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
+                  <button onClick={() => alert(`🔍 Commande ${o.orderNumber || o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
                     Détail
                   </button>
                 </td>

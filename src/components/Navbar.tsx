@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Logo } from './Logo';
 import { useLang } from '../lib/i18n';
-import { Menu, X, ChevronDown, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, ChevronDown, Globe } from 'lucide-react';
 
 interface NavbarProps {
   transparent?: boolean;

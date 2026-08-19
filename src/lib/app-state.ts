@@ -35,6 +35,10 @@ export type StoreOrder = {
   payment: string;
   currency: string;
   items: Array<{ name: string; qty: number; price: number }>;
+  /** Human-readable order number shown to the merchant/customer (e.g.
+   *  "LA-1755..."). Kept separate from `id` because `id` must be a valid
+   *  UUID once synced to Supabase. Falls back to `id` when absent. */
+  orderNumber?: string;
 };
 
 export type SupportTicket = {

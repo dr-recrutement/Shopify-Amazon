@@ -1,6 +1,6 @@
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { Card, Button } from '../pages/dashboard/ui';
+import { Card } from '../pages/dashboard/ui';
 import { CheckCircle2 } from 'lucide-react';
 import { PLANS } from '../lib/constants';
 import { Link } from 'react-router-dom';

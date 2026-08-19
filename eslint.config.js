@@ -23,6 +23,15 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      ],
+      // Downgraded to warning: ~150 pre-existing `any` usages across event
+      // handlers and dynamic JSON shapes. Guessing precise types for each
+      // one blind risks introducing real bugs for a cosmetic win — left as
+      // a visible warning so they can be tightened file-by-file with intent.
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   }
 );

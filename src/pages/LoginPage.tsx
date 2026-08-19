@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase, setLocalAuthMode } from '../lib/supabase';
 import { Logo } from '../components/Logo';
-import { Mail, Lock, ArrowRight, AlertCircle, Sparkles, ShieldAlert } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const nav = useNavigate();

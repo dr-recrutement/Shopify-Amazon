@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Logo } from '../components/Logo';
-import { AFRICAN_COUNTRIES, GLOBAL_COUNTRIES, PLANS } from '../lib/constants';
+import { GLOBAL_COUNTRIES, PLANS } from '../lib/constants';
 import { saveShopProfile } from '../lib/app-state';
 import { Check, ChevronRight, Store, MapPin, Palette, Package, CreditCard, Sparkles, ArrowRight, ChevronDown } from 'lucide-react';
 

@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button } from './ui';
-import { TrendingUp, Sparkles, ArrowRight, Target, Mail, Package } from 'lucide-react';
+import { Sparkles, ArrowRight, Target, Mail, Package } from 'lucide-react';
 
 export default function Growth() {
   const recs = [

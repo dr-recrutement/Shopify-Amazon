@@ -1,7 +1,8 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
-import { GLOBAL_COUNTRIES } from '../../lib/constants';
+import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
 import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
+import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
@@ -40,6 +41,35 @@ interface CustomDomain {
 
 export default function Settings() {
   const planAccess = usePlanAccess();
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const handleUpgradePlan = async (planId: string) => {
+    if (planId === 'starter') return; // no downgrade flow yet — avoid a dead click
+    setIsUpgrading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) {
+        alert('Session expirée, reconnecte-toi.');
+        return;
+      }
+      const res = await fetch('/api/subscriptions/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ plan: planId, billingCycle: 'monthly' }),
+      });
+      const result = await res.json();
+      if (!res.ok || !result.paymentLink) {
+        alert(result.error || "Impossible de démarrer le paiement pour l'instant.");
+        return;
+      }
+      window.location.href = result.paymentLink;
+    } catch {
+      alert('Le service de paiement est momentanément indisponible. Réessaie dans un instant.');
+    } finally {
+      setIsUpgrading(false);
+    }
+  };
   const [active, setActive] = useState('general');
   const shopProfile = getShopProfile();
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
@@ -230,8 +260,12 @@ export default function Settings() {
     }, 2000);
   };
 
-  // Add External Domain
-  const handleAddExternalDomain = () => {
+  // Add External Domain — calls the real Cloudflare Pages custom-domain API
+  // (functions/api/domains/connect.ts). Falls back to local-only tracking
+  // if the backend call fails (e.g. env vars not yet configured), so the UI
+  // doesn't hard-break for merchants while that's being set up.
+  const [isConnectingDomain, setIsConnectingDomain] = useState(false);
+  const handleAddExternalDomain = async () => {
     if (!externalDomainInput.trim()) return;
     if (!planAccess.unrestricted && !planAccess.isSuperAdmin && !planAccess.plan.customDomain) {
       alert(`Le domaine personnalisé n'est pas inclus dans le plan ${planAccess.plan.name}. Passe au plan Premium ou Entreprise pour l'activer.`);
@@ -245,16 +279,49 @@ export default function Settings() {
       return;
     }
 
-    const newDomain: CustomDomain = {
-      domain: cleanDomain,
-      type: 'external',
-      status: 'dns_pending',
-      createdAt: new Date().toLocaleDateString('fr-FR')
-    };
+    setIsConnectingDomain(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('no session');
 
-    setDomains([...domains, newDomain]);
-    setSelectedExternalDomain(newDomain);
-    setExternalDomainInput('');
+      const res = await fetch('/api/domains/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ domain: cleanDomain }),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        alert(result.error || "Erreur lors de la connexion du domaine.");
+        setIsConnectingDomain(false);
+        return;
+      }
+
+      const newDomain: CustomDomain = {
+        domain: cleanDomain,
+        type: 'external',
+        status: 'dns_pending',
+        createdAt: new Date().toLocaleDateString('fr-FR')
+      };
+      setDomains([...domains, newDomain]);
+      setSelectedExternalDomain(newDomain);
+      setExternalDomainInput('');
+    } catch {
+      // Backend not reachable/configured yet — keep working locally so the
+      // merchant isn't blocked, but the domain isn't really attached on
+      // Cloudflare until the backend call succeeds on a retry.
+      const newDomain: CustomDomain = {
+        domain: cleanDomain,
+        type: 'external',
+        status: 'dns_pending',
+        createdAt: new Date().toLocaleDateString('fr-FR')
+      };
+      setDomains([...domains, newDomain]);
+      setSelectedExternalDomain(newDomain);
+      setExternalDomainInput('');
+    } finally {
+      setIsConnectingDomain(false);
+    }
   };
 
   const getDomainChallenge = (domain: string): string => {
@@ -375,20 +442,44 @@ export default function Settings() {
           {active === 'plan' && (
             <div className="space-y-4">
               <h3 className="font-bold text-gray-900 text-sm">Plan actuel</h3>
-              <div className="p-4 bg-brand-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
-                <div><p className="font-extrabold text-brand-800">Plan Premium</p><p className="text-gray-500">19$/mois · Custom Domains illimités</p></div>
-                <Button size="sm">Changer de plan</Button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {[{n:'Starter',p:'$9'},{n:'Premium',p:'$19',pop:true},{n:'Entreprise',p:'$69'}].map(p => (
-                  <div key={p.n} className={`p-4 rounded-xl border-2 text-center ${p.pop ? 'border-brand-500 bg-brand-50/20' : 'border-gray-200 bg-white'}`}>
-                    {p.pop && <Badge color="orange">Recommandé</Badge>}
-                    <p className="font-bold mt-1 text-xs text-gray-900">{p.n}</p>
-                    <p className="text-2xl font-black text-gray-900 mt-1">{p.p}</p>
-                    <p className="text-[10px] text-gray-400">/mois</p>
+              {planAccess.isSuperAdmin ? (
+                <div className="p-4 bg-gray-900 rounded-xl text-xs sm:text-sm">
+                  <p className="font-extrabold text-white">Super Admin</p>
+                  <p className="text-gray-300">Accès illimité à toutes les fonctionnalités — aucun abonnement facturé.</p>
+                </div>
+              ) : (
+                <div className="p-4 bg-brand-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
+                  <div>
+                    <p className="font-extrabold text-brand-800">Plan {planAccess.plan.name}</p>
+                    <p className="text-gray-500">
+                      {planAccess.plan.price}$/mois
+                      {planAccess.plan.customDomain ? ' · Domaine personnalisé inclus' : ' · Domaine personnalisé non inclus'}
+                    </p>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+              {!planAccess.isSuperAdmin && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {PLANS.map(p => {
+                    const isCurrent = p.id === planAccess.plan.id;
+                    return (
+                      <div key={p.id} className={`p-4 rounded-xl border-2 text-center ${p.id === 'premium' ? 'border-brand-500 bg-brand-50/20' : 'border-gray-200 bg-white'}`}>
+                        {p.id === 'premium' && <Badge color="orange">Recommandé</Badge>}
+                        <p className="font-bold mt-1 text-xs text-gray-900">{p.name}</p>
+                        <p className="text-2xl font-black text-gray-900 mt-1">${p.price}</p>
+                        <p className="text-[10px] text-gray-400 mb-3">/mois</p>
+                        {isCurrent ? (
+                          <Badge color="green">Plan actuel</Badge>
+                        ) : (
+                          <Button size="sm" disabled={isUpgrading} onClick={() => handleUpgradePlan(p.id)} className="w-full justify-center">
+                            {isUpgrading ? '...' : 'Choisir ce plan'}
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
           {active === 'payments' && (
@@ -779,9 +870,10 @@ export default function Settings() {
                   />
                   <button
                     onClick={handleAddExternalDomain}
-                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-black hover:bg-slate-800 transition-colors flex items-center gap-1"
+                    disabled={isConnectingDomain}
+                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-black hover:bg-slate-800 transition-colors flex items-center gap-1 disabled:opacity-50"
                   >
-                    <Plus className="w-3.5 h-3.5" /> Connecter
+                    <Plus className="w-3.5 h-3.5" /> {isConnectingDomain ? 'Connexion...' : 'Connecter'}
                   </button>
                 </div>
               </div>

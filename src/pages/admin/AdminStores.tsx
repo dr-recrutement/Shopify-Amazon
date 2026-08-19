@@ -1,5 +1,5 @@
 import { PageHeader, Card, Badge, Button, Table } from '../dashboard/ui';
-import { Store, Search, MoreVertical, Eye } from 'lucide-react';
+import { Search, Eye } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AdminStores() {

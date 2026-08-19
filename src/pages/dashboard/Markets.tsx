@@ -1,5 +1,5 @@
-import { PageHeader, Card, Badge, Button } from './ui';
-import { Globe, Check } from 'lucide-react';
+import { PageHeader, Card } from './ui';
+import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getMarketConfig, saveMarketConfig, type MarketConfig } from '../../lib/app-state';
 import { AFRICAN_COUNTRIES } from '../../lib/constants';
@@ -23,7 +23,6 @@ export default function Markets() {
     const activeCountries = isActive
       ? config.activeCountries.filter(c => c !== code)
       : [...config.activeCountries, code];
-    const country = AFRICAN_COUNTRIES.find(c => c.code === code);
     const currencies = Array.from(new Set([
       ...activeCountries.map(c => AFRICAN_COUNTRIES.find(ac => ac.code === c)?.currency).filter(Boolean),
     ])) as string[];

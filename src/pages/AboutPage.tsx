@@ -2,7 +2,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card } from '../pages/dashboard/ui';
 import { useLang } from '../lib/i18n';
-import { Sparkles, Globe, CreditCard, Smartphone, Zap, Shield } from 'lucide-react';
+import { Sparkles, Globe, CreditCard, Smartphone, Zap } from 'lucide-react';
 
 export default function AboutPage() {
   const { lang } = useLang();

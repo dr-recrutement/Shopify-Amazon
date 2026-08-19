@@ -1,7 +1,7 @@
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
-import { Search, MessageSquare, Mail, FileText, ChevronRight, Send, Paperclip } from 'lucide-react';
+import { Search, MessageSquare, FileText, ChevronRight, Paperclip } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getSupportTickets, saveSupportTicket, type SupportTicket } from '../lib/app-state';
 

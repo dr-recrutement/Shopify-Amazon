@@ -5,8 +5,8 @@ import { Footer } from '../components/Footer';
 import { useLang } from '../lib/i18n';
 import {
   ShoppingBag, Globe, Smartphone, Bot, BarChart3, Palette, Zap, Shield,
-  CheckCircle2, ArrowRight, Star, Truck, CreditCard, MessageCircle, TrendingUp, Sparkles,
-  ChevronLeft, ChevronRight, Check
+  CheckCircle2, ArrowRight, Star, Truck, CreditCard, MessageCircle, Sparkles,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 function useInView<T extends HTMLElement>() {

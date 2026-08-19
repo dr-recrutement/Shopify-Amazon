@@ -1,10 +1,10 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
-import { AFRICAN_COUNTRIES, GLOBAL_COUNTRIES } from '../../lib/constants';
+import { GLOBAL_COUNTRIES } from '../../lib/constants';
 import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
-  Trash2, Plus, Check, AlertCircle, ArrowRight, HelpCircle, ChevronDown
+  Trash2, Plus, Check, ChevronDown
 } from 'lucide-react';
 
 const SECTIONS = [
@@ -48,7 +48,7 @@ export default function Settings() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
+      } catch {
         // fallback
       }
     }
@@ -107,7 +107,7 @@ export default function Settings() {
   const [chatValue, setChatValue] = useState(() => localStorage.getItem(getTenantStorageKey('chat_value')) || '+2250700000000');
 
   // Global country selection autocomplete state
-  const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
+  const [_selectedCountryCode, setSelectedCountryCode] = useState(() => {
     const found = GLOBAL_COUNTRIES.find(c => c.code === shopProfile.country || c.name === shopProfile.country);
     return found ? found.code : 'CI';
   });
@@ -131,7 +131,7 @@ export default function Settings() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
+      } catch {
         // fallback
       }
     }
@@ -154,7 +154,7 @@ export default function Settings() {
       if (saved) {
         try {
           setDomains(JSON.parse(saved));
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
@@ -184,7 +184,6 @@ export default function Settings() {
     setSelectedExtension(null);
 
     setTimeout(() => {
-      const cleanName = searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
       setSearchResults([
         { ext: `.com`, price: '$10.98 / year', available: true },
         { ext: `.net`, price: '$14.58 / year', available: true },
@@ -205,8 +204,7 @@ export default function Settings() {
     setIsPurchasing(true);
 
     setTimeout(() => {
-      const cleanName = searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
-      const domainName = `${cleanName}${selectedExtension.ext}`;
+      const domainName = `${searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${selectedExtension.ext}`;
 
       const newDomain: CustomDomain = {
         domain: domainName,

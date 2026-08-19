@@ -1,14 +1,14 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
-  GripVertical, Upload, FileText, Settings as SettingsIcon, ArrowUp, ArrowDown,
-  Globe, Search, ChevronRight, CheckCircle, HelpCircle, MessageSquare, Code,
-  Sparkles, Check, Send, ExternalLink
+  GripVertical, FileText, ArrowUp, ArrowDown,
+  Globe, Search, ChevronRight, CheckCircle, MessageSquare, Code,
+  Sparkles, Send, ExternalLink
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, SiteType, ThemeSection, SITE_TYPES, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
-import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getPrimaryDomain, getProductImage, getProductImages } from '../../lib/app-state';
+import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { ImageUploadField } from '../../components/ImageUpload';
 
 interface CustomDomain {
@@ -41,7 +41,7 @@ export default function OnlineStore() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
@@ -79,7 +79,7 @@ export default function OnlineStore() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
+      } catch {
         // fallback
       }
     }
@@ -101,7 +101,7 @@ export default function OnlineStore() {
       if (saved) {
         try {
           setMyDomains(JSON.parse(saved));
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
@@ -299,7 +299,6 @@ export default function OnlineStore() {
     setSelectedExtension(null);
 
     setTimeout(() => {
-      const cleanName = domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
       setDomainSearchResult([
         { ext: `.com`, price: '$10.98 / year', available: true },
         { ext: `.net`, price: '$14.58 / year', available: true },
@@ -319,8 +318,7 @@ export default function OnlineStore() {
     setIsPurchasing(true);
 
     setTimeout(() => {
-      const cleanName = domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '');
-      const domainName = `${cleanName}${selectedExtension.ext}`;
+      const domainName = `${domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${selectedExtension.ext}`;
 
       const newDomain: CustomDomain = {
         domain: domainName,
@@ -574,7 +572,7 @@ export default function OnlineStore() {
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                 <p className="text-[10px] text-gray-400 mb-1 flex items-center gap-1"><GripVertical size={11} /> Glissez les sections pour réordonner (drag & drop)</p>
-                {theme.sections.map((s, i) => {
+                {theme.sections.map((s) => {
                   const lib = SECTION_LIBRARY.find(l => l.type === s.type);
                   const isDragging = draggedId === s.id;
                   const isDragOver = dragOverId === s.id && draggedId !== s.id;
@@ -2027,7 +2025,7 @@ export default function OnlineStore() {
                 style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
               >
                 {theme.sections.filter(s => s.visible).map(s => {
-                  let sectionWithRealData = { ...s };
+                  const sectionWithRealData = { ...s };
                   if (s.type === 'product-grid' || s.type === 'featured-collection') {
                     // Inject REAL catalog products (active only) into the storefront
                     // preview — an active product appears on the site automatically.

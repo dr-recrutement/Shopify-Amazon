@@ -27,13 +27,13 @@ function createLocalSupabaseClient() {
   };
 
   const auth = {
-    async signUp({ email, password, options }: { email: string; password: string; options?: { data?: Record<string, unknown> } }) {
+    async signUp({ email, options }: { email: string; password: string; options?: { data?: Record<string, unknown> } }) {
       const user = { id: `local-${Date.now()}`, email, app_metadata: {}, user_metadata: options?.data ?? {} };
       const session = { access_token: `local-${email}`, user };
       saveSession(session);
       return { data: { user, session }, error: null };
     },
-    async signInWithPassword({ email, password }: { email: string; password: string }) {
+    async signInWithPassword({ email }: { email: string; password: string }) {
       const existing = loadSession();
       if (existing?.user?.email === email) {
         return { data: { session: existing, user: existing.user }, error: null };
@@ -209,8 +209,17 @@ export const supabase = {
           return localClient.from(table).insert(values);
         }
       },
-      select() {
-        return originalFrom.select();
+      select(columns?: string) {
+        return (originalFrom.select as any)(columns);
+      },
+      update(values: any) {
+        return originalFrom.update(values);
+      },
+      upsert(values: any) {
+        return originalFrom.upsert(values);
+      },
+      delete() {
+        return originalFrom.delete();
       }
     } as any;
   }

@@ -2,7 +2,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Star, MapPin, ShoppingBag, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 const shops = [
   { name: 'Boutique Aïcha', country: '🇨🇮 Côte d\'Ivoire', category: 'Mode', rating: 4.8, products: 124, verified: true },

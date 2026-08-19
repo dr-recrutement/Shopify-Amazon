@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, LockedFeature, Badge } from './ui';
-import { Download, FileText, Bot, TrendingUp, Plus, X } from 'lucide-react';
+import { Download, FileText, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Accounting() {

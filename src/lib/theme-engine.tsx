@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Search, ShoppingBag, User, Star, Check, Mail, Phone, MapPin,
-  Facebook, Instagram, Twitter, Clock, ArrowRight, Lock,
-  ShieldCheck, AlertCircle, MessageCircle, Plus, Minus, Heart, Send,
-  ChevronLeft, ChevronRight, Play, Quote, Megaphone, X
+  Search, ShoppingBag, User, Star, Check, Mail, Phone,
+  Facebook, Instagram, Twitter, ArrowRight, Lock,
+  ShieldCheck, MessageCircle, Plus, Minus, Heart, Send,
+  ChevronLeft, ChevronRight, Play, Megaphone
 } from 'lucide-react';
 import { getShopProfile } from './app-state';
 
@@ -54,7 +54,6 @@ export function placeholderGradient(seed: string | number): string {
 
 /** Inline SVG data URI placeholder — no external requests at all. */
 export function placeholderImg(seed: string | number, w = 300, h = 300): string {
-  const grad = placeholderGradient(seed);
   // CSS gradients can't be used in <img src>, so we return empty string and
   // callers should use gradientStyle() instead. This keeps the API explicit.
   void w; void h;
@@ -535,9 +534,6 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
   const fonts = presetConfig.fonts;
   const layoutVariant = presetConfig.layoutVariant;
 
-  // Let's populate sections with highly rich defaults
-  const sections: ThemeSection[] = [];
-
   // Header Default Props
   const headerSection: ThemeSection = {
     id: 'header-1',
@@ -907,6 +903,11 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
       productDetailSection, testimonialsSection, collapsibleContentSection,
       contactFormSection, emailSignupSection, newsletterSection, paymentsSection,
       footerSection, socialBarSection, chatFloatSection, slideshowSection,
+      // NOTE: faqSection and filtersListSection are fully built with content
+      // but no layout variant currently places them (pre-existing gap, not
+      // introduced here) — passed through so they're available the day a
+      // variant opts in, without changing any current storefront output.
+      faqSection, filtersListSection,
     });
   }
 
@@ -1207,7 +1208,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass }: { props: an
   );
 }
 
-function CountdownSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+function CountdownSection({ props, colors, fonts }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const bgColor = props.bgColor || colors.primary;
   const textColor = props.textColor || '#ffffff';
 
@@ -1380,7 +1381,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
   );
 }
 
-function PaymentsSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+function PaymentsSection({ props, colors, fonts }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const list = props.list || ['Orange Money', 'Wave', 'MTN MoMo', 'Visa', 'Mastercard'];
   return (
     <div className={`text-center py-8 border-y px-4`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, borderColor: `${colors.text}10` }}>
@@ -1590,7 +1591,7 @@ function FooterSection({ props, colors, fonts }: { props: any; colors: any; font
   );
 }
 
-function SocialBarSection({ props, colors }: { props: any; colors: any }) {
+function SocialBarSection({ props }: { props: any; colors: any }) {
   const fb = props.facebook || 'https://facebook.com';
   const ig = props.instagram || 'https://instagram.com';
   const tw = props.twitter || 'https://twitter.com';

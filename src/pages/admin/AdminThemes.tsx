@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, Badge, Table, LockedFeature } from '../dashboard/ui';
-import { Palette, Plus, Upload, Eye, Star, Check } from 'lucide-react';
+import { Upload, Eye, Star, Check } from 'lucide-react';
 
 // Official Shopify Theme Store catalog — all free Shopify themes are built on
 // the Dawn (Online Store 2.0) codebase and share the same sections/blocks.

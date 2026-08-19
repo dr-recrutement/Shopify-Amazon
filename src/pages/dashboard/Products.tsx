@@ -3,6 +3,7 @@ import { Package, Plus, Sparkles, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, 
 import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
 import { MultiImageUpload } from '../../components/ImageUpload';
+import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId } from '../../lib/tenant-sync';
 
 export default function Products() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -29,8 +30,23 @@ export default function Products() {
   const [newSubcategoryName, setNewSubcategoryName] = useState('');
 
   useEffect(() => {
-    setProducts(getProducts());
+    // Normalize legacy non-UUID ids once so they can sync to Supabase, then
+    // load from the local cache immediately for a snappy UI...
+    const local = getProducts().map(p => ({ ...p, id: ensureUuidId(p.id) }));
+    setProducts(local);
+    saveProducts(local);
     setCategories(getCategories());
+
+    // ...then reconcile with the tenant's real data in Supabase, if
+    // configured. Falls back silently to the local cache otherwise.
+    fetchCloudProducts().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setProducts(cloud);
+        saveProducts(cloud);
+      } else {
+        pushCloudProducts(local);
+      }
+    });
   }, []);
 
   const formatPrice = (product: StoreProduct) => {
@@ -98,7 +114,7 @@ export default function Products() {
       });
     } else {
       const newProd: StoreProduct = {
-        id: `p-${Date.now()}`,
+        id: crypto.randomUUID(),
         name: prodName,
         price: Number(prodPrice),
         stock: Number(prodStock),
@@ -120,6 +136,7 @@ export default function Products() {
     }
     setProducts(updatedList);
     setIsModalOpen(false);
+    pushCloudProducts(updatedList);
   };
 
   const handleDeleteProduct = (id: string) => {
@@ -127,6 +144,7 @@ export default function Products() {
       const updated = products.filter(p => p.id !== id);
       setProducts(updated);
       saveProducts(updated);
+      deleteCloudProduct(id);
     }
   };
 

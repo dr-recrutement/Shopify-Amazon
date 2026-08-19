@@ -1,6 +1,6 @@
 import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
 import {
-  FileText, Plus, Layout, Edit3, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
+  FileText, Plus, Layout, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
   ChevronDown, ChevronRight, Settings as SettingsIcon, MousePointerClick, PanelLeft,
   Palette, Type,
 } from 'lucide-react';
@@ -9,7 +9,7 @@ import {
   createCmsPage, getCmsPages, saveCmsPage, type CmsPage, type CmsBlockType,
   SHOPIFY_TEMPLATES, SHOPIFY_BLOCK_TYPES, SECTION_PALETTE,
   addOsSection, removeOsSection, reorderOsSections, updateOsSectionSettings,
-  addOsBlock, removeBlock, updateOsBlockSettings, reorderOsBlocks,
+  addOsBlock, removeBlock, updateOsBlockSettings,
 } from '../../lib/cms';
 import { ImageUploadField } from '../../components/ImageUpload';
 import {
@@ -116,7 +116,11 @@ export default function Content() {
   const toggleExpand = (id: string) => {
     setExpandedSections(prev => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   };
@@ -351,7 +355,7 @@ export default function Content() {
                       {/* Blocks under section */}
                       {isExpanded && (
                         <div className="ml-7 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
-                          {sec.blocks.map((blk, bIdx) => {
+                          {sec.blocks.map((blk) => {
                             const isBlkSelected = selectedNodeId === blk.id;
                             const blkLabel = SHOPIFY_BLOCK_TYPES.find(b => b.type === blk.type)?.label || blk.type;
                             return (

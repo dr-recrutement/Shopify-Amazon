@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { BarChart3, Download, TrendingUp, TrendingDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getOrders, getProducts, getProductImage } from '../../lib/app-state';
+import { getOrders, getProducts } from '../../lib/app-state';
 
 export default function Analytics() {
   const [orders, setOrders] = useState<any[]>([]);

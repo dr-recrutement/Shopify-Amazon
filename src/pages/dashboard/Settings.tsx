@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
 import { GLOBAL_COUNTRIES } from '../../lib/constants';
 import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
+import { usePlanAccess } from '../../lib/plan-access';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
   Trash2, Plus, Check, ChevronDown
@@ -38,6 +39,7 @@ interface CustomDomain {
 }
 
 export default function Settings() {
+  const planAccess = usePlanAccess();
   const [active, setActive] = useState('general');
   const shopProfile = getShopProfile();
   const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
@@ -198,9 +200,15 @@ export default function Settings() {
     }, 1200);
   };
 
-  // Buy domain simulation
+  // ⚠️ Buy domain is still a UI simulation — no real registrar/Cloudflare
+  // purchase API is wired in. Gated by plan so at least access is coherent;
+  // the purchase itself needs a real registrar integration (separate work).
   const handleBuyDomain = () => {
     if (!selectedExtension) return;
+    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && !planAccess.plan.customDomain) {
+      alert(`Le domaine personnalisé n'est pas inclus dans le plan ${planAccess.plan.name}. Passe au plan Premium ou Entreprise pour l'activer.`);
+      return;
+    }
     setIsPurchasing(true);
 
     setTimeout(() => {
@@ -225,6 +233,10 @@ export default function Settings() {
   // Add External Domain
   const handleAddExternalDomain = () => {
     if (!externalDomainInput.trim()) return;
+    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && !planAccess.plan.customDomain) {
+      alert(`Le domaine personnalisé n'est pas inclus dans le plan ${planAccess.plan.name}. Passe au plan Premium ou Entreprise pour l'activer.`);
+      return;
+    }
     const cleanDomain = externalDomainInput.toLowerCase().trim().replace(/^(https?:\/\/)?(www\.)?/, '');
 
     // check duplicates

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
 import { MultiImageUpload } from '../../components/ImageUpload';
 import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId } from '../../lib/tenant-sync';
+import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
 
 export default function Products() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -53,7 +54,13 @@ export default function Products() {
     return `${product.price.toLocaleString('fr-FR')} ${product.currency || 'XOF'}`;
   };
 
+  const planAccess = usePlanAccess();
+
   const handleOpenAddModal = () => {
+    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && isOverLimit(planAccess.plan.products, products.length)) {
+      alert(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.products} produits). Passe à un plan supérieur dans Réglages > Abonnement pour ajouter plus de produits.`);
+      return;
+    }
     setEditingProduct(null);
     setProdName('');
     setProdPrice(10000);
@@ -196,7 +203,11 @@ export default function Products() {
     <div className="space-y-6">
       <PageHeader
         title="Produits"
-        subtitle="Gérez votre catalogue, vos stocks et vos catégories."
+        subtitle={
+          !planAccess.unrestricted && !planAccess.isSuperAdmin && planAccess.plan.products !== -1
+            ? `Gérez votre catalogue, vos stocks et vos catégories. (${products.length}/${planAccess.plan.products} produits — plan ${planAccess.plan.name})`
+            : 'Gérez votre catalogue, vos stocks et vos catégories.'
+        }
         action={
           <Button onClick={handleOpenAddModal} className="flex items-center gap-2">
             <Plus size={16} /> Ajouter un produit

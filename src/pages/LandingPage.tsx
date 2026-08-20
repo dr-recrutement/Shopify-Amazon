@@ -179,17 +179,17 @@ const features = [
   { icon: Shield, title: 'Sécurité multi-tenant', desc: 'Isolation RLS, MFA, RBAC granulaire, audit, anti-fraude, chiffrement bout en bout.' },
 ];
 
-const testimonials = [
-  { name: 'Aïcha Diallo', shop: 'Boutique Aïcha', country: "🇨🇮 Côte d'Ivoire", text: "J'ai lancé ma boutique en 10 minutes. Le Mobile Money était configuré immédiatement, et l'IA a rédigé toutes mes descriptions produits." },
-  { name: 'Kwame Mensah', shop: 'Accra Tech Hub', country: '🇬🇭 Ghana', text: "Enfin une plateforme pensée pour l'Afrique. Aucune commission, mes paiements arrivent directement sur mon compte Paystack." },
-  { name: 'Fatou Ndiaye', shop: 'Fatou Couture', country: '🇸🇳 Sénégal', text: "L'éditeur de thème est magnifique. Ma boutique a l'air d'une marque internationale, et le chatbot IA répond à mes clients la nuit." },
+const productHighlights = [
+  { title: 'Zéro commission, toujours', text: "Vos paiements clients arrivent directement sur votre propre compte Flutterwave, Paystack, Orange Money ou autre — Os ne prélève rien sur vos ventes." },
+  { title: 'Pensé pour l\'Afrique', text: "Mobile Money natif, multilingue, connexions lentes optimisées, logistique informelle prise en compte — pas une adaptation à la marge d'un produit occidental." },
+  { title: 'IA incluse selon votre plan', text: "Génération de descriptions produits, visuels, publicités et chatbot client — pour vendre plus vite sans agence ni designer." },
 ];
 
 const stats = [
-  { value: 12000, suffix: '+', label: 'Boutiques actives' },
-  { value: 54, suffix: '', label: 'Pays couverts' },
-  { value: 8, suffix: 'M+', label: 'Vendeurs accompagnés' },
   { value: 0, suffix: '%', label: 'Commission sur ventes' },
+  { value: 143, suffix: '', label: 'Pays pris en charge' },
+  { value: 8, suffix: '+', label: 'Moyens de paiement intégrables' },
+  { value: 10, suffix: ' min', label: 'Pour lancer votre boutique' },
 ];
 
 const faqs = [
@@ -286,14 +286,13 @@ export default function LandingPage() {
                   className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ${boutiques[activeSlide].animationClass}`}
                   style={{ background: boutiques[activeSlide].bgPattern, minHeight: '340px' }}
                 >
-                  {/* Floating active shop badge */}
+                  {/* Floating example-design badge (not a live/real store) */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
                     <span className={boutiques[activeSlide].textColor}>{boutiques[activeSlide].badge}</span>
                   </div>
 
                   <div className="text-left mt-4">
-                    <span className="text-xs font-bold text-gray-500 tracking-widest uppercase">Boutique active</span>
+                    <span className="text-xs font-bold text-gray-500 tracking-widest uppercase">Exemple de design</span>
                     <h3 className="text-3xl font-extrabold text-gray-900 mt-1">{boutiques[activeSlide].title}</h3>
                     <p className="text-xs font-semibold text-gray-600 flex items-center gap-1 mt-0.5">
                       <Globe size={12} /> {boutiques[activeSlide].location}
@@ -307,7 +306,7 @@ export default function LandingPage() {
                   <div className="mt-6 border-t border-gray-200/50 pt-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Produits en vedette</span>
-                      <span className="text-[10px] text-gray-400">Paiement Mobile Money Activé ⚡</span>
+                      <span className="text-[10px] text-gray-400">Compatible Mobile Money ⚡</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       {boutiques[activeSlide].products.map((prod, idx) => (
@@ -600,29 +599,20 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Product highlights (no fabricated customer testimonials — Os is
+          pre-launch and has no real merchants to quote yet) */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Ils vendent déjà avec Os</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi vendre avec Os</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((tm, i) => (
-              <Section key={tm.name} delay={i * 80}>
+            {productHighlights.map((h, i) => (
+              <Section key={h.title} delay={i * 80}>
                 <div className="h-full p-6 bg-gray-50 rounded-2xl border border-gray-100">
-                  <div className="flex gap-0.5 mb-4">
-                    {[...Array(5)].map((_, j) => <Star key={j} size={14} className="text-brand-500" fill="currentColor" />)}
-                  </div>
-                  <p className="text-gray-700 leading-relaxed font-medium">"{tm.text}"</p>
-                  <div className="mt-6 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center font-semibold text-brand-700">
-                      {tm.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">{tm.name}</div>
-                      <div className="text-xs text-gray-500">{tm.shop} · {tm.country}</div>
-                    </div>
-                  </div>
+                  <Sparkles size={20} className="text-brand-500 mb-4" />
+                  <h3 className="font-bold text-gray-900 mb-2">{h.title}</h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">{h.text}</p>
                 </div>
               </Section>
             ))}

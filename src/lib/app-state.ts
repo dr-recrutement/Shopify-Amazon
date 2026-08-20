@@ -1,5 +1,5 @@
 export type CartItem = {
-  id: number;
+  id: string;
   name: string;
   variant: string;
   price: number;
@@ -91,10 +91,7 @@ function writeStorage<T>(key: string, value: T) {
 }
 
 export function getCartItems(): CartItem[] {
-  return readStorage<CartItem[]>(CART_KEY, [
-    { id: 1, name: 'Robe wax traditionnelle', variant: 'Taille M', price: 15000, qty: 1, currency: 'XOF' },
-    { id: 2, name: 'Sac en cuir artisanal', variant: 'Marron', price: 25000, qty: 2, currency: 'XOF' },
-  ]);
+  return readStorage<CartItem[]>(CART_KEY, []);
 }
 
 export function saveCartItems(items: CartItem[]) {

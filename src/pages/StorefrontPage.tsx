@@ -18,7 +18,9 @@ import {
   getProductImage,
   saveOrder,
   type CartItem,
+  type StoreProduct,
 } from '../lib/app-state';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, type PublicTenant } from '../lib/tenant-sync';
 
 type CartDrawerItem = CartItem & { image?: string };
 
@@ -26,6 +28,14 @@ type CartDrawerItem = CartItem & { image?: string };
  * Public storefront — renders the merchant's live theme + sections with REAL
  * catalog products (active only). This is what a visitor sees at
  * /s/:slug (temporary domain) or a connected custom domain.
+ *
+ * Resolves the tenant from the URL slug via Supabase (public/anon read) so
+ * a visitor sees the CORRECT merchant's store regardless of their own
+ * browser's local session — this used to silently read the visitor's own
+ * localStorage instead, which meant a real customer on their own device
+ * never saw the merchant's actual catalog. Falls back to local storage
+ * only when no slug is present or Supabase isn't configured (local/demo
+ * preview from within the dashboard).
  *
  * Fully functional e-commerce: add to cart, cart drawer, checkout with
  * Mobile Money / card, and real order creation that appears in the
@@ -41,6 +51,8 @@ export default function StorefrontPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [orderConfirmed, setOrderConfirmed] = useState<string | null>(null);
+  const [resolvedTenant, setResolvedTenant] = useState<PublicTenant | null>(null);
+  const [publicProducts, setPublicProducts] = useState<StoreProduct[] | null>(null);
 
   // Checkout form state
   const [custName, setCustName] = useState('');
@@ -51,27 +63,61 @@ export default function StorefrontPage() {
   const [paymentMethod, setPaymentMethod] = useState('orange_money');
 
   useEffect(() => {
-    const stored = getShopTheme<ThemeConfig | null>(null);
-    setTheme(stored || defaultThemeForType('ecommerce'));
-    setCart(getCartItems().map(c => {
-      const prod = getActiveCatalogProducts().find(p => p.id === String(c.id));
+    let cancelled = false;
+    (async () => {
+      if (slug) {
+        const tenant = await resolvePublicTenant(slug);
+        if (!cancelled && tenant) {
+          setResolvedTenant(tenant);
+          const [products, cloudTheme] = await Promise.all([
+            fetchPublicProducts(tenant.id),
+            fetchPublicTheme<ThemeConfig>(tenant.id),
+          ]);
+          if (!cancelled) {
+            setPublicProducts(products || []);
+            setTheme(cloudTheme || defaultThemeForType('ecommerce'));
+          }
+        } else if (!cancelled) {
+          // No slug match in Supabase (unpublished store, or local/demo
+          // mode) — fall back to whatever's in this browser's local state,
+          // same behavior as before this fix.
+          const stored = getShopTheme<ThemeConfig | null>(null);
+          setTheme(stored || defaultThemeForType('ecommerce'));
+        }
+      } else {
+        const stored = getShopTheme<ThemeConfig | null>(null);
+        setTheme(stored || defaultThemeForType('ecommerce'));
+      }
+    })();
+    setCart(getCartItems());
+    return () => { cancelled = true; };
+  }, [slug]);
+
+  // Attach product images to cart items once we know which catalog we're
+  // rendering against (local preview vs resolved tenant).
+  useEffect(() => {
+    const catalog = publicProducts ?? getActiveCatalogProducts();
+    setCart(prev => prev.map(c => {
+      const prod = catalog.find(p => p.id === c.id);
       return { ...c, image: prod?.image || undefined };
     }));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publicProducts]);
 
   const domainLabel = useMemo(() => slug ? `${slug}.os.liafrik.com` : getPrimaryDomain(), [slug]);
-  const profile = useMemo(() => getShopProfile(), []);
-  const shopName = profile?.name || 'Boutique';
+  const localProfile = useMemo(() => getShopProfile(), []);
+  const shopName = resolvedTenant?.name || localProfile?.name || 'Boutique';
+  const currency = resolvedTenant?.currency || localProfile?.currency || 'XOF';
 
   const handleAddToCart = useCallback((product: any) => {
     setCart(prev => {
-      const existing = prev.find(i => i.id === Number(product.id));
+      const existing = prev.find(i => i.id === String(product.id));
       let updated: CartDrawerItem[];
       if (existing) {
-        updated = prev.map(i => i.id === Number(product.id) ? { ...i, qty: i.qty + 1 } : i);
+        updated = prev.map(i => i.id === String(product.id) ? { ...i, qty: i.qty + 1 } : i);
       } else {
         updated = [...prev, {
-          id: Number(product.id),
+          id: String(product.id),
           name: product.name || 'Produit',
           variant: product.subcategory || product.category || '',
           price: product.price || 0,
@@ -86,7 +132,7 @@ export default function StorefrontPage() {
     setCartOpen(true);
   }, []);
 
-  const updateQty = (id: number, delta: number) => {
+  const updateQty = (id: string, delta: number) => {
     setCart(prev => {
       const updated = prev.map(i => i.id === id ? { ...i, qty: Math.max(0, i.qty + delta) } : i).filter(i => i.qty > 0);
       saveCartItems(updated);
@@ -94,7 +140,7 @@ export default function StorefrontPage() {
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: string) => {
     setCart(prev => {
       const updated = prev.filter(i => i.id !== id);
       saveCartItems(updated);
@@ -104,11 +150,10 @@ export default function StorefrontPage() {
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const currency = profile?.currency || 'XOF';
 
   const sectionsWithCatalog: ThemeSection[] = useMemo(() => {
     if (!theme) return [];
-    const products = getActiveCatalogProducts();
+    const products = publicProducts ?? getActiveCatalogProducts();
     const categories = getCatalogCategories();
     return theme.sections.map(s => {
       if (s.type === 'product-grid' || s.type === 'featured-collection') {
@@ -119,20 +164,21 @@ export default function StorefrontPage() {
       }
       return s;
     });
-  }, [theme]);
+  }, [theme, publicProducts]);
 
   // Search results
-  const allProducts = useMemo(() => getActiveCatalogProducts(), [theme]);
+  const allProducts = useMemo(() => publicProducts ?? getActiveCatalogProducts(), [publicProducts]);
   const searchResults = searchQuery
     ? allProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!custName.trim() || !custPhone.trim() || cart.length === 0) return;
-    const orderId = `LA-${Date.now().toString().slice(-6)}`;
+    const orderId = resolvedTenant ? crypto.randomUUID() : `LA-${Date.now().toString().slice(-6)}`;
     const order = {
       id: orderId,
+      orderNumber: `LA-${Date.now().toString().slice(-6)}`,
       customer: custName,
       date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
       total: cartTotal,
@@ -141,8 +187,16 @@ export default function StorefrontPage() {
       currency,
       items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
     };
-    saveOrder(order);
-    setOrderConfirmed(orderId);
+    // Real customer on a resolved public tenant → write directly to that
+    // tenant's Supabase orders (anon insert, status locked to 'pending' by
+    // RLS). Local preview (no resolved tenant) keeps the old local-only
+    // behavior so the dashboard's "preview my store" still works offline.
+    if (resolvedTenant) {
+      await createPublicOrder(resolvedTenant.id, order);
+    } else {
+      saveOrder(order);
+    }
+    setOrderConfirmed(order.orderNumber || orderId);
     setCart([]);
     saveCartItems([]);
   };

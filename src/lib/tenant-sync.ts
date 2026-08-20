@@ -385,3 +385,104 @@ export async function pushCloudCampaigns(campaigns: Campaign[]): Promise<void> {
   await pushCloudRows('marketing_campaigns', campaigns.map(c => campaignToRow(tenantId, c)));
 }
 export const deleteCloudCampaign = (id: string) => deleteCloudRow('marketing_campaigns', id);
+
+// ---------------------------------------------------------------------------
+// Theme config (single JSON blob per tenant — mirrors the exact shape
+// already used in localStorage via getShopTheme/saveShopTheme, no
+// relational redesign).
+// ---------------------------------------------------------------------------
+
+export async function fetchCloudTheme<T = any>(): Promise<T | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from('theme_configs').select('config').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  return data.config as T;
+}
+
+export async function pushCloudTheme(config: unknown): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  try {
+    await supabase.from('theme_configs').upsert({ tenant_id: tenantId, config, updated_at: new Date().toISOString() });
+  } catch {
+    // ignore — local cache still authoritative.
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CMS pages (single JSON blob per tenant, mirrors src/lib/cms.ts exactly).
+// ---------------------------------------------------------------------------
+
+export async function fetchCloudCmsPages<T = any>(): Promise<T[] | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from('cms_pages').select('pages').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  return data.pages as T[];
+}
+
+export async function pushCloudCmsPages(pages: unknown[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  try {
+    await supabase.from('cms_pages').upsert({ tenant_id: tenantId, pages, updated_at: new Date().toISOString() });
+  } catch {
+    // ignore
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PUBLIC storefront resolution — the critical piece that was missing.
+// These need NO authentication: any visitor must be able to resolve a
+// merchant's public store by slug and read their catalog/theme/pages.
+// Relies on the anon RLS policies added alongside tenants.slug.
+// ---------------------------------------------------------------------------
+
+export type PublicTenant = { id: string; name: string; currency: string; plan: string };
+
+/** Resolves a merchant's public storefront by its slug
+ *  (maboutique.os.liafrik.com → slug "maboutique"). Returns null if the
+ *  slug doesn't exist, isn't published yet, or Supabase isn't configured
+ *  (local/demo mode) — callers should fall back to local behavior then. */
+export async function resolvePublicTenant(slug: string): Promise<PublicTenant | null> {
+  if (isLocalAuthMode() || !slug) return null;
+  try {
+    const { data, error } = await supabase.from('tenants').select('id,name,currency,plan').eq('slug', slug).maybeSingle();
+    if (error || !data) return null;
+    return data as PublicTenant;
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchPublicProducts(tenantId: string) {
+  const { data, error } = await supabase.from('products').select('*').eq('tenant_id', tenantId).eq('status', 'active');
+  if (error || !data) return null;
+  return (data as Record<string, any>[]).map(rowToProduct);
+}
+
+export async function fetchPublicTheme<T = any>(tenantId: string): Promise<T | null> {
+  const { data, error } = await supabase.from('theme_configs').select('config').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  return data.config as T;
+}
+
+export async function fetchPublicCmsPages<T = any>(tenantId: string): Promise<T[] | null> {
+  const { data, error } = await supabase.from('cms_pages').select('pages').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  return data.pages as T[];
+}
+
+/** Creates an order directly against a specific tenant — used by the
+ *  public storefront checkout, where the buyer is anonymous and there is
+ *  no logged-in session to resolve a tenant from (unlike the merchant
+ *  dashboard's pushCloudOrders, which uses the current session). */
+export async function createPublicOrder(tenantId: string, order: StoreOrder): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('orders').insert(orderToRow(tenantId, order));
+    return !error;
+  } catch {
+    return false;
+  }
+}

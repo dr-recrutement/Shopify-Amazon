@@ -42,9 +42,25 @@ export default function OnboardingPage() {
   const back = () => setStep(s => Math.max(s - 1, 1));
   const finish = async () => {
     const { data: { user } } = await supabase.auth.getUser();
+    let resolvedSlug: string | undefined;
     if (user) {
+      const baseSlug = (data.shopName || 'boutique').toLowerCase().trim()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip accents
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'boutique';
+      let slug = baseSlug;
+      // Ensure uniqueness — try base, then base-2, base-3... up to a
+      // reasonable bound before falling back to a random suffix.
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const candidate = attempt === 0 ? baseSlug : `${baseSlug}-${attempt + 1}`;
+        const { data: existing } = await supabase.from('tenants').select('id').eq('slug', candidate).maybeSingle();
+        if (!existing) { slug = candidate; break; }
+        if (attempt === 19) slug = `${baseSlug}-${Math.random().toString(36).slice(2, 7)}`;
+      }
+      resolvedSlug = slug;
+
       await supabase.from('tenants').insert({
         owner_id: user.id,
+        slug,
         name: data.shopName || 'Ma Boutique',
         sector: data.sector,
         country: data.country,
@@ -63,6 +79,7 @@ export default function OnboardingPage() {
       country: data.country,
       plan: data.plan,
       currency: data.currency || 'XOF',
+      slug: resolvedSlug,
     });
     nav('/app');
   };

@@ -85,7 +85,7 @@ export default function OnlineStore() {
   const [metaDescInput, setMetaDescInput] = useState('Mode chic et tendances de marque.');
   const [faviconUrlInput, setFaviconUrlInput] = useState('');
   const [logoUrlInput, setLogoUrlInput] = useState('');
-  const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
+  const shopSubdomain = getShopSubdomain();
 
   const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
     const saved = localStorage.getItem(getTenantStorageKey('liafrikos_domains'));
@@ -440,7 +440,7 @@ export default function OnlineStore() {
         subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
           <div className="flex gap-2">
-            <Link to="/store" target="_blank" rel="noopener noreferrer">
+            <Link to={`/s/${shopProfile.slug || getShopSubdomain().replace('.os.liafrik.com', '')}`} target="_blank" rel="noopener noreferrer">
               <Button variant="secondary" size="sm">
                 <ExternalLink size={14} /> Voir la boutique
               </Button>

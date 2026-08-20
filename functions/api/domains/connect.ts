@@ -8,8 +8,6 @@
 // Variables d'environnement (Cloudflare Pages → Settings → Environment variables) :
 //   CF_API_TOKEN, CF_ACCOUNT_ID, CF_PAGES_PROJECT_NAME, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { planAllowsCustomDomain } from '../../lib/plans';
-
 interface Env {
   CF_API_TOKEN: string;
   CF_ACCOUNT_ID: string;
@@ -52,19 +50,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const tenant = tenants?.[0];
   if (!tenant) return json({ error: 'Boutique introuvable.' }, 404);
 
-  const adminRes = await fetch(`${env.SUPABASE_URL}/rest/v1/super_admins?select=id&user_id=eq.${user.id}&status=eq.active`, {
-    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
-  });
-  const admins = await adminRes.json();
-  const isSuperAdmin = Array.isArray(admins) && admins.length > 0;
-
-  // Real plan gating: only Premium/Entreprise include a custom domain,
-  // super admins always pass. (Previous version of this endpoint accepted
-  // every known plan code here, which meant the gate never actually
-  // blocked anyone — fixed.)
-  if (!planAllowsCustomDomain(tenant.plan, isSuperAdmin)) {
-    return json({ error: "Le domaine personnalisé n'est pas inclus dans votre plan actuel. Passez au plan Premium ou Entreprise." }, 403);
-  }
+  // Custom domains are available to every plan — not gated like other
+  // plan features (products cap, staff seats, etc).
 
   const insertRes = await fetch(`${env.SUPABASE_URL}/rest/v1/domains`, {
     method: 'POST',

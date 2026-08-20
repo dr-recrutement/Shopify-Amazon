@@ -556,8 +556,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              { name: 'Starter', price: 9, features: ['15 produits', 'Sous-domaine os.liafrik.com', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
-              { name: 'Premium', price: 19, popular: true, features: ['1000 produits', 'Domaine personnalisé', '5 staff', '200 générations IA/mois', 'Vidéos TikTok IA', 'Chatbot IA', 'Assistant comptable IA', 'Marketplace + badge vérifié'] },
+              { name: 'Starter', price: 9, features: ['15 produits', 'Domaine personnalisé inclus', '1 staff', '20 générations IA/mois', 'Marketing basique'] },
+              { name: 'Premium', price: 19, popular: true, features: ['1000 produits', 'Domaine personnalisé inclus', '5 staff', '200 générations IA/mois', 'Vidéos TikTok IA', 'Chatbot IA', 'Assistant comptable IA', 'Marketplace + badge vérifié'] },
               { name: 'Entreprise', price: 69, features: ['Produits illimités', 'Staff illimité', 'IA illimitée', 'Vidéos IA illimitées', 'API développeur', 'Support dédié + WhatsApp'] },
             ].map((p, i) => {
               const displayPrice = billingPeriod === 'monthly' ? p.price : parseFloat((p.price * 0.85).toFixed(2));

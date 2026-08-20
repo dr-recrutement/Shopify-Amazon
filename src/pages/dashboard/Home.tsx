@@ -2,7 +2,7 @@ import { PageHeader, StatCard, Card, Badge } from './ui';
 import { ShoppingCart, DollarSign, Package, Users, ArrowRight, CheckCircle2, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { getOrders, getProducts, getShopProfile, getCustomers, type StoreOrder } from '../../lib/app-state';
+import { getOrders, getProducts, getShopProfile, getCustomers, getShopSubdomain, type StoreOrder } from '../../lib/app-state';
 import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 
 export default function DashboardHome() {
@@ -85,7 +85,7 @@ export default function DashboardHome() {
           </div>
           <div className="mt-6 p-3 bg-brand-50 rounded-lg flex items-center gap-2 text-sm">
             <Store size={16} className="text-brand-600" />
-            <span className="text-gray-700">Boutique en ligne : <strong>{shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com</strong></span>
+            <span className="text-gray-700">Boutique en ligne : <strong>{getShopSubdomain()}</strong></span>
           </div>
         </Card>
       </div>

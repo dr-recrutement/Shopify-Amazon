@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
 import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
-import { getShopProfile, getTenantStorageKey } from '../../lib/app-state';
+import { getShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
 import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
 import {
@@ -72,7 +72,7 @@ export default function Settings() {
   };
   const [active, setActive] = useState('general');
   const shopProfile = getShopProfile();
-  const shopSubdomain = `${shopProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.os.liafrik.com`;
+  const shopSubdomain = getShopSubdomain();
 
   // Payment Gateways connections state
   const [gateways, setGateways] = useState<Record<string, { publicKey: string; secretKey: string; clientId: string; connected: boolean }>>(() => {
@@ -231,14 +231,12 @@ export default function Settings() {
   };
 
   // ⚠️ Buy domain is still a UI simulation — no real registrar/Cloudflare
-  // purchase API is wired in. Gated by plan so at least access is coherent;
-  // the purchase itself needs a real registrar integration (separate work).
+  // ⚠️ Buy domain is still a UI simulation — no real registrar/Cloudflare
+  // purchase API is wired in. Available to every plan (custom domains
+  // belong to everyone, not gated like other plan features) — the
+  // purchase itself needs a real registrar integration (separate work).
   const handleBuyDomain = () => {
     if (!selectedExtension) return;
-    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && !planAccess.plan.customDomain) {
-      alert(`Le domaine personnalisé n'est pas inclus dans le plan ${planAccess.plan.name}. Passe au plan Premium ou Entreprise pour l'activer.`);
-      return;
-    }
     setIsPurchasing(true);
 
     setTimeout(() => {
@@ -263,14 +261,11 @@ export default function Settings() {
   // Add External Domain — calls the real Cloudflare Pages custom-domain API
   // (functions/api/domains/connect.ts). Falls back to local-only tracking
   // if the backend call fails (e.g. env vars not yet configured), so the UI
-  // doesn't hard-break for merchants while that's being set up.
+  // doesn't hard-break for merchants while that's being set up. Available
+  // to every plan — custom domains belong to everyone.
   const [isConnectingDomain, setIsConnectingDomain] = useState(false);
   const handleAddExternalDomain = async () => {
     if (!externalDomainInput.trim()) return;
-    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && !planAccess.plan.customDomain) {
-      alert(`Le domaine personnalisé n'est pas inclus dans le plan ${planAccess.plan.name}. Passe au plan Premium ou Entreprise pour l'activer.`);
-      return;
-    }
     const cleanDomain = externalDomainInput.toLowerCase().trim().replace(/^(https?:\/\/)?(www\.)?/, '');
 
     // check duplicates
@@ -451,10 +446,7 @@ export default function Settings() {
                 <div className="p-4 bg-brand-50 rounded-xl flex items-center justify-between text-xs sm:text-sm">
                   <div>
                     <p className="font-extrabold text-brand-800">Plan {planAccess.plan.name}</p>
-                    <p className="text-gray-500">
-                      {planAccess.plan.price}$/mois
-                      {planAccess.plan.customDomain ? ' · Domaine personnalisé inclus' : ' · Domaine personnalisé non inclus'}
-                    </p>
+                    <p className="text-gray-500">{planAccess.plan.price}$/mois</p>
                   </div>
                 </div>
               )}

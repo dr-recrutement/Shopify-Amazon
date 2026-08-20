@@ -68,7 +68,7 @@ export default function PricingPage() {
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-600 mt-0.5" /> {p.products === -1 ? 'Produits illimités' : `${p.products} produits`}</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-600 mt-0.5" /> {p.staff === -1 ? 'Staff illimité' : `${p.staff} staff`}</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-600 mt-0.5" /> {p.aiGenerations === -1 ? 'IA illimitée' : `${p.aiGenerations} générations IA/mois`}</li>
-                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.customDomain ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Domaine personnalisé</li>
+                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-600 mt-0.5" /> Domaine personnalisé</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.videoAI ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Vidéos TikTok IA</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.chatbotAI ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Chatbot IA</li>
                     <li className="flex items-start gap-2"><CheckCircle2 size={16} className={p.marketplaceListing ? 'text-green-600 mt-0.5' : 'text-gray-300 mt-0.5'} /> Marketplace Os</li>

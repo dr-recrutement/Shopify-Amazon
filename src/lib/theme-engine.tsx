@@ -1044,7 +1044,7 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
   );
 }
 
-function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddToCart }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig; onAddToCart?: (p: any) => void }) {
+function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddToCart, cardClass }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig; onAddToCart?: (p: any) => void; cardClass?: string }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const products = props.products || [];
   const cols = Math.min(props.columns || 4, 4);
@@ -1120,9 +1120,14 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
             );
           }
 
-          // Default / African vibrants with shadow & badges
+          // Default / African vibrants with shadow & badges. Applies the
+          // template's declared cardClass (see LAYOUT_VARIANTS/
+          // getVariantStyles) so the 6 "pro" templates that fall through to
+          // this branch — ecommerce-pro, vitrine, business-corp, services,
+          // creative-magazine, dawn — actually look visually distinct from
+          // each other instead of sharing one hardcoded card style.
           return (
-            <div key={i} className={`group rounded-2xl border overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full bg-white relative ${isAfrican ? 'border-brand-100 shadow-sm' : 'border-gray-100'}`}>
+            <div key={i} className={`group overflow-hidden transition-all duration-300 flex flex-col h-full bg-white relative ${cardClass || (isAfrican ? 'rounded-2xl border-brand-100 shadow-sm hover:shadow-2xl' : 'rounded-2xl border border-gray-100 hover:shadow-2xl')}`}>
               {/* Image Wrap */}
               <div className="relative aspect-square overflow-hidden bg-gray-50">
                                   <MediaBox src={p.image} alt={p.name} seed={`prod-def-${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -2032,9 +2037,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'video':
       return <VideoSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'product-grid':
-      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} />;
+      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} />;
     case 'featured-collection':
-      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} />;
+      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} />;
     case 'category-grid':
       return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'collection-list':

@@ -13,15 +13,15 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
-            🌍 Conçu par LiAfrik basée à Dubai & Afrique 🌍
+            🌍 Conçu par LiAfrik 🌍
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
             {fr ? 'Notre histoire' : 'Our story'}
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
             {fr
-              ? "Os est né, conçu par LiAfrik pour les réalités du commerce africain et global. Notre ambition : donner à chaque entrepreneur les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
-              : "Os was born, designed by LiAfrik for the realities of global and African commerce. Our ambition: to give every entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
+              ? "Os est né, conçu par LiAfrik pour les réalités du commerce mondial. Notre ambition : donner à chaque entrepreneur les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
+              : "Os was born, designed by LiAfrik for the realities of global commerce. Our ambition: to give every entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
           </p>
         </div>
 
@@ -56,15 +56,15 @@ export default function AboutPage() {
         <Card className="p-8 text-center bg-gray-900 text-white">
           <Sparkles size={24} className="text-brand-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-3">
-            {fr ? 'Construite ici. Pensée pour nous.' : 'Built here. Designed for us.'}
+            {fr ? 'Construite pour vendre partout.' : 'Built to sell everywhere.'}
           </h2>
           <p className="text-gray-300 max-w-xl mx-auto">
             {fr
-              ? "Faite pour vendre partout en Afrique, sans compromis, sans commission, sans frontière africaine."
-              : "Made to sell everywhere in Africa, without compromise, without commission, without African borders."}
+              ? "Faite pour vendre partout dans le monde, sans compromis, sans commission, sans frontière."
+              : "Made to sell everywhere in the world, without compromise, without commission, without borders."}
           </p>
           <p className="mt-6 text-xs text-gray-500">
-            {fr ? 'Os — conçu et développé par LiAfrik basée à Dubai & Afrique' : 'Os — designed and developed by LiAfrik based in Dubai & Africa'}
+            {fr ? 'Os — conçu et développé par LiAfrik' : 'Os — designed and developed by LiAfrik'}
           </p>
         </Card>
       </div>

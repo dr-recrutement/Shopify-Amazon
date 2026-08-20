@@ -108,17 +108,17 @@ const boutiques = [
   },
   {
     id: 4,
-    title: "Kilimanjaro Coffee",
-    location: "Arusha, Tanzanie 🇹🇿",
-    tagline: "Café d'exception 100% Arabica torréfié artisanalement au pied du volcan.",
+    title: "Rio Café Artesanal",
+    location: "Rio de Janeiro, Brésil 🇧🇷",
+    tagline: "Café d'exception 100% Arabica torréfié artisanalement dans les collines de Rio.",
     themeColor: "from-green-700 to-brand-900",
     animationClass: "skew-y-0 transition-all duration-500",
     bgPattern: "linear-gradient(135deg, #F4FBF7 0%, #D1E7DD 100%)",
     textColor: "text-green-700",
     badge: "100% Bio & Équitable",
     products: [
-      { name: "Café Bourbon Noir (1kg)", price: "48,000 TZS" },
-      { name: "Coffret Dégustation Origine", price: "25,000 TZS" }
+      { name: "Café Bourbon Noir (1kg)", price: "R$85" },
+      { name: "Coffret Dégustation Origine", price: "R$45" }
     ]
   },
   {
@@ -138,17 +138,17 @@ const boutiques = [
   },
   {
     id: 6,
-    title: "Nairobi Tech Space",
-    location: "Nairobi, Kenya 🇰🇪",
-    tagline: "Innovations technologiques et accessoires connectés pensés pour l'Afrique.",
+    title: "Saigon Tech Space",
+    location: "Hô Chi Minh-Ville, Vietnam 🇻🇳",
+    tagline: "Innovations technologiques et accessoires connectés pensés pour la vie nomade.",
     themeColor: "from-blue-600 to-cyan-500",
     animationClass: "hover:scale-102 transition-transform",
     bgPattern: "linear-gradient(135deg, #F0F8FF 0%, #E6F2FF 100%)",
     textColor: "text-blue-600",
-    badge: "Smart Africa",
+    badge: "Smart Living",
     products: [
-      { name: "Chargeur Solaire Waterproof 20k", price: "4,500 KES" },
-      { name: "Écouteurs Bantu ANC v5.2", price: "3,800 KES" }
+      { name: "Chargeur Solaire Waterproof 20k", price: "1,200,000 VND" },
+      { name: "Écouteurs ANC v5.2", price: "890,000 VND" }
     ]
   },
   {
@@ -172,7 +172,7 @@ const features = [
   { icon: ShoppingBag, title: 'Boutique en ligne complète', desc: 'Catalogue, variantes, stock, collections — tout ce dont vous avez besoin pour vendre en ligne.' },
   { icon: Bot, title: 'IA agentique intégrée', desc: 'Descriptions produits, bannières, publicités, vidéos TikTok, chatbot 24/7 — générés par IA.' },
   { icon: CreditCard, title: 'Mobile Money natif', desc: 'Flutterwave, Paystack, Orange Money, MTN MoMo, Wave, Stripe, PayPal — connectez vos propres comptes.' },
-  { icon: Globe, title: '54 pays africains', desc: 'Multi-devises, multi-langues (FR/EN), marchés régionaux ou panafricains, livraison informelle.' },
+  { icon: Globe, title: '143 pays dans le monde', desc: 'Multi-devises, multi-langues (FR/EN), marchés régionaux ou internationaux, livraison adaptée aux réalités locales.' },
   { icon: Palette, title: 'Moteur de thème universel', desc: 'Éditeur visuel drag & drop, bibliothèque de blocs modulaires, landing page, e-commerce, vitrine, marketplace.' },
   { icon: BarChart3, title: 'Analytics & comptabilité', desc: 'Ventes, prévisions de stock, rapports financiers, assistant comptable IA, export PDF/Excel.' },
   { icon: MessageCircle, title: 'Boîte de réception unifiée', desc: 'WhatsApp Business, Messenger, Telegram, chat interne — tous vos canaux dans une seule boîte.' },
@@ -181,7 +181,7 @@ const features = [
 
 const productHighlights = [
   { title: 'Zéro commission, toujours', text: "Vos paiements clients arrivent directement sur votre propre compte Flutterwave, Paystack, Orange Money ou autre — Os ne prélève rien sur vos ventes." },
-  { title: 'Pensé pour l\'Afrique', text: "Mobile Money natif, multilingue, connexions lentes optimisées, logistique informelle prise en compte — pas une adaptation à la marge d'un produit occidental." },
+  { title: 'Pensé pour le monde entier', text: "Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, multilingue, optimisé pour les connexions lentes — une plateforme qui s'adapte à votre marché, pas l'inverse." },
   { title: 'IA incluse selon votre plan', text: "Génération de descriptions produits, visuels, publicités et chatbot client — pour vendre plus vite sans agence ni designer." },
 ];
 
@@ -198,7 +198,7 @@ const faqs = [
   { q: 'Puis-je vendre dans plusieurs pays ?', a: 'Oui. Le module Markets couvre de nombreux pays avec leurs devises locales. Activez les marchés que vous souhaitez desservir.' },
   { q: "L'IA est-elle vraiment incluse ?", a: 'Oui. Génération de descriptions, logos, bannières, publicités Facebook/Instagram, vidéos TikTok, chatbot client, assistant comptable — selon votre plan.' },
   { q: 'Quels moyens de paiement sont supportés ?', a: 'Flutterwave, Paystack, Orange Money, MTN MoMo, Wave, CinetPay, Stripe, PayPal, plus un champ générique pour toute autre passerelle. Vous connectez vos propres identifiants API.' },
-  { q: 'Pourquoi Os est-il différent ?', a: "Parce qu'il est conçu et développé par LiAfrik basée à Dubai & Afrique, pour les réalités du commerce — pas adapté après coup. Mobile Money natif, connexions faibles optimisées, adressage local." },
+  { q: 'Pourquoi Os est-il différent ?', a: "Parce qu'il est conçu et développé par LiAfrik pour les réalités du commerce mondial — pas adapté après coup. Mobile Money natif, paiements internationaux, connexions faibles optimisées, adressage local." },
 ];
 
 export default function LandingPage() {
@@ -380,7 +380,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center mb-10">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-              Compatible avec les paiements africains & internationaux
+              Compatible avec les paiements Mobile Money & internationaux
             </p>
           </Section>
 
@@ -475,11 +475,11 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-6">
-              🌍 Conçu par LiAfrik basée à Dubai & Afrique 🌍
+              🌍 Conçu par LiAfrik 🌍
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi Os ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed font-medium">
-              Os n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik basée à Dubai & Afrique, dès sa fondation. Mobile Money natif, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
+              Os n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik, dès sa fondation, pour vendre partout dans le monde. Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
             </p>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
@@ -504,8 +504,8 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre en Afrique</h2>
-            <p className="mt-4 text-gray-600">Une suite complète, pensée pour les réalités africaines — mobile money, connexions faibles, multilinguisme, livraison informelle.</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre dans le monde entier</h2>
+            <p className="mt-4 text-gray-600">Une suite complète, pensée pour les réalités du commerce mondial — mobile money là où ça compte, paiements internationaux, connexions faibles, multilinguisme.</p>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f, i) => (
@@ -672,11 +672,11 @@ export default function LandingPage() {
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
-          <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs africains. 7 jours d'essai gratuit, sans carte bancaire.</p>
+          <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs dans le monde entier. 7 jours d'essai gratuit, sans carte bancaire.</p>
           <Link to="/register" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.02] active:scale-95 shadow-xl">
             Créer ma boutique gratuitement <ArrowRight size={18} />
           </Link>
-          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍</p>
+          <p className="mt-6 text-xs text-gray-500 flex items-center justify-center gap-2"><Sparkles size={12} /> Conçu et développé par LiAfrik 🌍</p>
         </div>
       </section>
 

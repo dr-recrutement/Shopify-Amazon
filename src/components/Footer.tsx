@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 import { useLang } from '../lib/i18n';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, Globe2 } from 'lucide-react';
 
 export function Footer() {
   const { t } = useLang();
@@ -48,7 +48,7 @@ export function Footer() {
             <div className="mt-6 space-y-2 text-sm">
               <div className="flex items-center gap-2 text-gray-400"><Mail size={14} /> contact@os.liafrik.com</div>
               <div className="flex items-center gap-2 text-gray-400"><Phone size={14} /> +225 07 00 00 00 00</div>
-              <div className="flex items-center gap-2 text-gray-400"><MapPin size={14} /> Dubai & Afrique 🌍</div>
+              <div className="flex items-center gap-2 text-gray-400"><Globe2 size={14} /> Disponible dans le monde entier 🌍</div>
             </div>
           </div>
           {cols.map(col => (

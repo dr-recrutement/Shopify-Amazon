@@ -324,7 +324,7 @@ export default function StorefrontPage() {
           <div className="col-span-2 md:col-span-1">
             <div className="text-lg font-black mb-3" style={{ fontFamily: theme.fonts.heading, color: theme.colors.primary }}>{shopName}</div>
             <p className="text-xs opacity-60 leading-relaxed" style={{ color: theme.colors.text }}>
-              Boutique propulsée par LiAfrik Os — la plateforme e-commerce africaine.
+              Boutique propulsée par LiAfrik Os — la plateforme e-commerce mondiale.
             </p>
           </div>
           <div>

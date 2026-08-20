@@ -22,21 +22,21 @@ export const translations: Dict = {
   'hero.badge': { fr: '0% de commission — pour toujours', en: '0% commission — forever' },
   'hero.title1': { fr: 'Votre boutique en ligne,', en: 'Your online store,' },
   'hero.title2': { fr: 'à votre image.', en: 'in your image.' },
-  'hero.title3': { fr: 'Partout en Afrique.', en: 'Everywhere in Africa.' },
+  'hero.title3': { fr: 'Partout dans le monde.', en: 'Everywhere in the world.' },
   'hero.subtitle': {
-    fr: "Os, la plateforme SaaS e-commerce panafricaine, conçue par LiAfrik basée à Dubai & Afrique — Mobile Money natif, IA intégrée, 0% commission.",
-    en: "Os, the pan-African e-commerce SaaS platform, built by LiAfrik based in Dubai & Africa — native Mobile Money, built-in AI, 0% commission."
+    fr: "Os, la plateforme SaaS e-commerce mondiale conçue par LiAfrik — Mobile Money natif, paiements internationaux, IA intégrée, 0% commission.",
+    en: "Os, the global e-commerce SaaS platform built by LiAfrik — native Mobile Money, international payments, built-in AI, 0% commission."
   },
   'hero.cta.start': { fr: 'Créer ma boutique', en: 'Create my store' },
   'hero.cta.pricing': { fr: 'Voir les tarifs', en: 'See pricing' },
   'hero.trial': { fr: '7 jours d\'essai gratuit inclus — sans carte bancaire', en: '7-day free trial included — no credit card' },
   'footer.tagline': {
-    fr: 'Os, la plateforme SaaS e-commerce panafricaine. Votre boutique en ligne, à votre image. Partout en Afrique.',
-    en: 'Os, the pan-African e-commerce SaaS platform. Your online store, in your image. Everywhere in Africa.'
+    fr: 'Os, la plateforme SaaS e-commerce mondiale. Votre boutique en ligne, à votre image. Partout dans le monde.',
+    en: 'Os, the global e-commerce SaaS platform. Your online store, in your image. Everywhere in the world.'
   },
   'footer.origin': {
-    fr: 'Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍',
-    en: 'Designed and developed by LiAfrik based in Dubai & Africa 🌍'
+    fr: 'Conçu et développé par LiAfrik 🌍',
+    en: 'Designed and developed by LiAfrik 🌍'
   },
 };
 

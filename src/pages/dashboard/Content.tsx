@@ -16,6 +16,7 @@ import {
   TEMPLATE_PROFILES, FONT_OPTIONS, defaultThemeForType, type ThemePreset,
 } from '../../lib/theme-engine';
 import { getTenantStorageKey, getShopTheme, saveShopTheme } from '../../lib/app-state';
+import { fetchCloudCmsPages, pushCloudCmsPages } from '../../lib/tenant-sync';
 
 export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
@@ -86,6 +87,13 @@ export default function Content() {
     setPages(initial);
     setSelectedPageId(initial[0]?.id ?? null);
     setDraft(initial[0] ?? null);
+    fetchCloudCmsPages<CmsPage>().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setPages(cloud);
+        setSelectedPageId(cloud[0]?.id ?? null);
+        setDraft(cloud[0] ?? null);
+      }
+    });
   }, []);
 
   const createPage = () => {
@@ -95,12 +103,14 @@ export default function Content() {
     setSelectedPageId(newPage.id);
     setDraft(newPage);
     setSelectedNodeId(null);
+    pushCloudCmsPages(next);
   };
 
   const savePage = () => {
     if (!draft) return;
     const next = saveCmsPage(draft);
     setPages(next);
+    pushCloudCmsPages(next);
   };
 
   const selectPage = (page: CmsPage) => {

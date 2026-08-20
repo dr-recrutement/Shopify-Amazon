@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
+import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
 
 interface CustomDomain {
@@ -49,10 +50,22 @@ export default function OnlineStore() {
   });
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-  // Sync theme to localStorage
+  // Sync theme to localStorage (unchanged) + push to Supabase (debounced,
+  // best-effort) so the merchant's edits actually reach the public
+  // storefront, which now reads theme_configs instead of localStorage.
   useEffect(() => {
     localStorage.setItem(getTenantStorageKey('liafrikos_theme_config'), JSON.stringify(theme));
+    const timeout = setTimeout(() => { pushCloudTheme(theme); }, 800);
+    return () => clearTimeout(timeout);
   }, [theme]);
+
+  // On mount, prefer the cloud version if one exists (e.g. edited from
+  // another device) — otherwise keep whatever loaded from localStorage.
+  useEffect(() => {
+    fetchCloudTheme<ThemeConfig>().then(cloud => {
+      if (cloud) setTheme(cloud);
+    });
+  }, []);
 
   // Custom states
   const [panel, setPanel] = useState<'themes' | 'sections' | 'design' | 'pages' | 'domain' | 'inbox' | 'settings'>('themes');

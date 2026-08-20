@@ -1,98 +1,184 @@
 import { PageHeader, Card, Button, LockedFeature, Badge } from './ui';
 import { Download, FileText, Plus, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getOrders, getTenantStorageKey, type StoreOrder } from '../../lib/app-state';
+import { fetchCloudOrders } from '../../lib/tenant-sync';
+
+type Invoice = { id: string; client: string; amount: number; currency: string; date: string; status: 'paid' | 'sent' };
+
+function loadInvoices(): Invoice[] {
+  try {
+    const raw = window.localStorage.getItem(getTenantStorageKey('invoices'));
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveInvoices(invoices: Invoice[]) {
+  try {
+    window.localStorage.setItem(getTenantStorageKey('invoices'), JSON.stringify(invoices));
+  } catch {
+    // storage full — invoice list just won't persist this time, not fatal.
+  }
+}
+
+function downloadCsv(filename: string, rows: string[][]) {
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function Accounting() {
+  const [orders, setOrders] = useState<StoreOrder[]>([]);
   const [showInvoice, setShowInvoice] = useState(false);
-  const [invoices, setInvoices] = useState([
-    { id: 'INV-2026-001', client: 'Aïcha Diallo', amount: '15 000 XOF', date: '19 Jul 2026', status: 'paid' },
-    { id: 'INV-2026-002', client: 'Kwame Mensah', amount: '320 GHS', date: '18 Jul 2026', status: 'paid' },
-  ]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [invForm, setInvForm] = useState({ client: '', amount: '', currency: 'XOF' });
+
+  useEffect(() => {
+    const local = getOrders();
+    setOrders(local);
+    fetchCloudOrders().then(cloud => {
+      if (cloud && cloud.length > 0) setOrders(cloud);
+    });
+    setInvoices(loadInvoices());
+  }, []);
+
+  // Real KPIs computed from actual orders. No invented "marge"/"taux de
+  // retour" — those need cost-price and returns data this schema doesn't
+  // have yet, so they're left out rather than faked.
+  const stats = useMemo(() => {
+    const paid = orders.filter(o => o.status === 'paid' || o.status === 'shipped');
+    const revenue = paid.reduce((sum, o) => sum + (o.total || 0), 0);
+    const avgBasket = paid.length > 0 ? revenue / paid.length : 0;
+    const currency = orders[0]?.currency || 'XOF';
+
+    const byMonth: Record<string, number> = {};
+    for (const o of paid) {
+      const key = o.date || 'N/A';
+      byMonth[key] = (byMonth[key] || 0) + o.total;
+    }
+
+    const productRevenue: Record<string, number> = {};
+    for (const o of paid) {
+      for (const item of o.items || []) {
+        productRevenue[item.name] = (productRevenue[item.name] || 0) + item.qty * item.price;
+      }
+    }
+    const topProducts = Object.entries(productRevenue).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    return { revenue, avgBasket, currency, orderCount: paid.length, byMonth, topProducts };
+  }, [orders]);
 
   const generateInvoice = () => {
     if (!invForm.client || !invForm.amount) return;
-    const id = `INV-2026-${String(invoices.length + 1).padStart(3, '0')}`;
-    setInvoices([{ id, client: invForm.client, amount: `${invForm.amount} ${invForm.currency}`, date: new Date().toLocaleDateString('fr-FR'), status: 'sent' }, ...invoices]);
+    const id = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(3, '0')}`;
+    const next: Invoice[] = [
+      { id, client: invForm.client, amount: Number(invForm.amount), currency: invForm.currency, date: new Date().toLocaleDateString('fr-FR'), status: 'sent' },
+      ...invoices,
+    ];
+    setInvoices(next);
+    saveInvoices(next);
     setShowInvoice(false);
     setInvForm({ client: '', amount: '', currency: 'XOF' });
   };
 
-  const exportReport = (format: string) => {
-    const data = 'Période,CA,Marge,Produits rentables\n2026-07,125000 XOF,38%,Robe wax;Sac cuir';
-    const blob = new Blob([data], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `rapport-comptable.${format}`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportRevenueCsv = () => {
+    downloadCsv('chiffre-affaires.csv', [
+      ["Mois/Date", "Chiffre d'affaires"],
+      ...Object.entries(stats.byMonth).map(([date, rev]) => [date, String(rev)]),
+    ]);
+  };
+
+  const exportTopProductsCsv = () => {
+    downloadCsv('produits-rentables.csv', [
+      ['Produit', 'Revenu généré'],
+      ...stats.topProducts.map(([name, rev]) => [name, String(rev)]),
+    ]);
+  };
+
+  const exportInvoicesCsv = () => {
+    downloadCsv('factures.csv', [
+      ['ID', 'Client', 'Montant', 'Devise', 'Date', 'Statut'],
+      ...invoices.map(i => [i.id, i.client, String(i.amount), i.currency, i.date, i.status]),
+    ]);
   };
 
   return (
     <div>
-      <PageHeader title="Comptabilité & Rapports" subtitle="Rapports financiers, livre de comptes, factures." action={
+      <PageHeader title="Comptabilité & Rapports" subtitle="Calculé à partir de vos commandes réelles." action={
         <div className="flex gap-2">
-          <Button variant="secondary" size="sm" onClick={() => exportReport('csv')}><Download size={14} /> Export CSV</Button>
+          <Button variant="secondary" size="sm" onClick={exportRevenueCsv}><Download size={14} /> Export CSV</Button>
           <Button size="sm" onClick={() => setShowInvoice(true)}><Plus size={14} /> Facture</Button>
         </div>
       } />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">CA (mois)</p><p className="mt-2 text-2xl font-bold">125 000 XOF</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marge</p><p className="mt-2 text-2xl font-bold text-green-600">38%</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-bold">5 200 XOF</p></Card>
-        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Taux retour</p><p className="mt-2 text-2xl font-bold">2.1%</p></Card>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">CA (commandes payées)</p><p className="mt-2 text-2xl font-bold">{stats.revenue.toLocaleString('fr-FR')} {stats.currency}</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Panier moyen</p><p className="mt-2 text-2xl font-bold">{Math.round(stats.avgBasket).toLocaleString('fr-FR')} {stats.currency}</p></Card>
+        <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Commandes payées</p><p className="mt-2 text-2xl font-bold">{stats.orderCount}</p></Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Rapports automatiques</h3>
-          <div className="space-y-2">
-            {[
-              { name: "Chiffre d'affaires", data: '125 000 XOF' },
-              { name: 'Marge par produit', data: '38%' },
-              { name: 'Panier moyen', data: '5 200 XOF' },
-              { name: 'Taux de retour', data: '2.1%' },
-              { name: 'Produits rentables', data: 'Robe wax, Sac cuir' },
-            ].map(r => (
-              <div key={r.name} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                <span className="text-sm text-gray-700 flex items-center gap-2"><FileText size={14} /> {r.name}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">{r.data}</span>
-                  <Button variant="ghost" size="sm" onClick={() => exportReport('csv')}>Export</Button>
+          <h3 className="font-semibold text-gray-900 mb-3">Produits les plus rentables</h3>
+          {stats.topProducts.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune commande payée pour l'instant.</p>
+          ) : (
+            <div className="space-y-2">
+              {stats.topProducts.map(([name, rev]) => (
+                <div key={name} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                  <span className="text-sm text-gray-700 flex items-center gap-2"><FileText size={14} /> {name}</span>
+                  <span className="text-xs text-gray-500">{rev.toLocaleString('fr-FR')} {stats.currency}</span>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+              <Button variant="ghost" size="sm" onClick={exportTopProductsCsv}>Exporter en CSV</Button>
+            </div>
+          )}
         </Card>
 
         <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Livre de comptes simplifié</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between p-2 bg-green-50 rounded"><span>Ventes (entrées)</span><span className="font-medium text-green-700">+125 000 XOF</span></div>
-            <div className="flex justify-between p-2 bg-red-50 rounded"><span>Achats fournisseurs</span><span className="font-medium text-red-700">-77 500 XOF</span></div>
-            <div className="flex justify-between p-2 bg-red-50 rounded"><span>Frais de livraison</span><span className="font-medium text-red-700">-8 200 XOF</span></div>
-            <div className="flex justify-between p-2 bg-brand-50 rounded font-semibold"><span>Solde net</span><span className="text-brand-700">39 300 XOF</span></div>
-          </div>
+          <h3 className="font-semibold text-gray-900 mb-3">Chiffre d'affaires par date</h3>
+          {Object.keys(stats.byMonth).length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune donnée pour l'instant.</p>
+          ) : (
+            <div className="space-y-2 text-sm">
+              {Object.entries(stats.byMonth).map(([date, rev]) => (
+                <div key={date} className="flex justify-between p-2 bg-green-50 rounded">
+                  <span>{date}</span>
+                  <span className="font-medium text-green-700">+{rev.toLocaleString('fr-FR')} {stats.currency}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
       </div>
 
       <Card className="mb-6">
         <div className="p-4 border-b border-gray-100 flex items-center justify-between">
           <h3 className="font-semibold text-gray-900">Factures</h3>
-          <Button variant="secondary" size="sm" onClick={() => setShowInvoice(true)}><Plus size={14} /> Générer</Button>
+          <div className="flex items-center gap-2">
+            {invoices.length > 0 && <Button variant="ghost" size="sm" onClick={exportInvoicesCsv}><Download size={14} /> Export</Button>}
+            <Button variant="secondary" size="sm" onClick={() => setShowInvoice(true)}><Plus size={14} /> Générer</Button>
+          </div>
         </div>
         <div className="divide-y divide-gray-50">
-          {invoices.map(inv => (
+          {invoices.length === 0 ? (
+            <p className="p-4 text-sm text-gray-400">Aucune facture générée pour l'instant.</p>
+          ) : invoices.map(inv => (
             <div key={inv.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
               <div>
                 <div className="font-mono font-medium text-gray-900">{inv.id}</div>
                 <div className="text-xs text-gray-500">{inv.client} · {inv.date}</div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-900">{inv.amount}</span>
+                <span className="font-medium text-gray-900">{inv.amount.toLocaleString('fr-FR')} {inv.currency}</span>
                 <Badge color={inv.status === 'paid' ? 'green' : 'brand'}>{inv.status === 'paid' ? 'Payée' : 'Envoyée'}</Badge>
-                <button onClick={() => exportReport('pdf')} className="text-brand-600 hover:underline text-sm"><Download size={14} /></button>
               </div>
             </div>
           ))}
@@ -101,7 +187,6 @@ export default function Accounting() {
 
       <LockedFeature title="Assistant comptable IA" desc="Catégorisation automatique, alertes anomalies, résumés mensuels." plan="Premium" />
 
-      {/* Invoice modal */}
       {showInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowInvoice(false)}>
           <div className="bg-white rounded-2xl max-w-md w-full" onClick={e => e.stopPropagation()}>

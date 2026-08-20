@@ -433,6 +433,30 @@ export async function pushCloudCmsPages(pages: unknown[]): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Generic tenant settings (checkout prefs, customer accounts mode, tax
+// rate, notification toggles, language, privacy text — small blob, one row
+// per tenant, same pattern as theme_configs).
+// ---------------------------------------------------------------------------
+
+export async function fetchCloudSettings<T = Record<string, any>>(): Promise<T | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from('tenants').select('settings').eq('id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  return (data.settings || {}) as T;
+}
+
+export async function pushCloudSettings(settings: Record<string, any>): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  try {
+    await supabase.from('tenants').update({ settings }).eq('id', tenantId);
+  } catch {
+    // ignore — local cache still authoritative.
+  }
+}
+
+// ---------------------------------------------------------------------------
 // PUBLIC storefront resolution — the critical piece that was missing.
 // These need NO authentication: any visitor must be able to resolve a
 // merchant's public store by slug and read their catalog/theme/pages.

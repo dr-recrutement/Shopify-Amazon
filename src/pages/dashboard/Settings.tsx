@@ -1,9 +1,12 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useLang } from '../../lib/i18n';
 import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
 import { getShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
 import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
+import { fetchCloudSettings, pushCloudSettings } from '../../lib/tenant-sync';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
   Trash2, Plus, Check, ChevronDown
@@ -41,6 +44,7 @@ interface CustomDomain {
 
 export default function Settings() {
   const planAccess = usePlanAccess();
+  const { lang, setLang } = useLang();
   const [isUpgrading, setIsUpgrading] = useState(false);
 
   const handleUpgradePlan = async (planId: string) => {
@@ -73,6 +77,23 @@ export default function Settings() {
   const [active, setActive] = useState('general');
   const shopProfile = getShopProfile();
   const shopSubdomain = getShopSubdomain();
+
+  // Generic settings blob (checkout prefs, customer accounts mode, tax
+  // rate, notifications, language) — one row per tenant in Supabase.
+  const [settings, setSettings] = useState<Record<string, any>>({});
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  useEffect(() => {
+    fetchCloudSettings().then(cloud => { if (cloud) setSettings(cloud); });
+  }, []);
+  const updateSetting = (key: string, value: any) => {
+    setSettings(prev => {
+      const next = { ...prev, [key]: value };
+      pushCloudSettings(next);
+      return next;
+    });
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 2000);
+  };
 
   // Payment Gateways connections state
   const [gateways, setGateways] = useState<Record<string, { publicKey: string; secretKey: string; clientId: string; connected: boolean }>>(() => {
@@ -926,6 +947,94 @@ export default function Settings() {
                   Sauvegarder les politiques
                 </button>
               </div>
+            </div>
+          )}
+          {active === 'billing' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Facturation</h3>
+              {planAccess.isSuperAdmin ? (
+                <p className="text-gray-500">Compte super admin — aucune facturation.</p>
+              ) : (
+                <>
+                  <div className="p-4 bg-gray-50 rounded-xl flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-gray-900">Plan {planAccess.plan.name}</p>
+                      <p className="text-gray-500">{planAccess.plan.price}$/mois</p>
+                    </div>
+                    <Button size="sm" onClick={() => setActive('plan')}>Gérer le plan</Button>
+                  </div>
+                  <p className="text-gray-500">L'historique des paiements de souscription apparaîtra ici après votre premier paiement Flutterwave.</p>
+                </>
+              )}
+            </div>
+          )}
+          {active === 'users' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Utilisateurs & équipe</h3>
+              <p className="text-gray-500">La gestion complète des membres de l'équipe (invitations, rôles, permissions) se fait dans Équipe, dans le menu principal.</p>
+              <Link to="/app/team"><Button size="sm">Aller à Équipe</Button></Link>
+            </div>
+          )}
+          {active === 'checkout' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Réglages du checkout</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={settings.guestCheckout !== false} onChange={e => updateSetting('guestCheckout', e.target.checked)} />
+                Autoriser le paiement sans compte client
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={!!settings.requireTermsAcceptance} onChange={e => updateSetting('requireTermsAcceptance', e.target.checked)} />
+                Exiger l'acceptation des conditions générales avant paiement
+              </label>
+            </div>
+          )}
+          {active === 'accounts' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Comptes clients</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <div className="space-y-2">
+                {[{ id: 'disabled', label: 'Désactivés — commande sans compte uniquement' }, { id: 'optional', label: 'Optionnels — le client choisit' }, { id: 'required', label: 'Obligatoires — compte requis pour commander' }].map(o => (
+                  <label key={o.id} className="flex items-center gap-2">
+                    <input type="radio" name="accountMode" checked={(settings.accountMode || 'optional') === o.id} onChange={() => updateSetting('accountMode', o.id)} />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+          {active === 'taxes' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Taxes et droits</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Taux de taxe par défaut (%)</label>
+                <input type="number" min={0} max={100} value={settings.taxRate ?? 0} onChange={e => updateSetting('taxRate', Number(e.target.value))} className="w-32 px-3 py-2 border border-gray-200 rounded-lg" />
+              </div>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={!!settings.pricesIncludeTax} onChange={e => updateSetting('pricesIncludeTax', e.target.checked)} />
+                Les prix affichés incluent déjà la taxe
+              </label>
+              <p className="text-gray-400 text-[11px]">Ce taux est appliqué comme référence pour vos calculs — le calcul automatique par produit/pays n'est pas encore branché.</p>
+            </div>
+          )}
+          {active === 'languages' && (
+            <div className="space-y-5 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Langues</h3>
+              <p className="text-gray-500">Langue d'affichage du tableau de bord.</p>
+              <div className="flex gap-2">
+                {(['fr', 'en'] as const).map(l => (
+                  <button key={l} onClick={() => setLang(l)} className={`px-4 py-2 rounded-lg text-xs font-bold border-2 ${lang === l ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600'}`}>
+                    {l === 'fr' ? 'Français' : 'English'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {(['locations', 'apps', 'channels', 'events', 'notifications', 'metafields'] as const).includes(active as any) && (
+            <div className="space-y-3 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
+              <p className="text-gray-500">Cette section n'est pas encore construite. Plutôt que d'afficher un panneau vide, on préfère te le dire clairement — dis-nous ce dont tu as besoin ici et on la développe pour de vrai.</p>
             </div>
           )}
           {active === 'chat' && (

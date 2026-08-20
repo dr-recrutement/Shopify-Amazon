@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, Table, Badge, EmptyState } from './ui';
 import { Tag, Plus, Sparkles, X, Edit2, Trash2, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getDiscounts, saveDiscounts, type Discount, type DiscountType, type DiscountStatus } from '../../lib/app-state';
+import { fetchCloudDiscounts, pushCloudDiscounts, deleteCloudDiscount, ensureUuidId } from '../../lib/tenant-sync';
 
 const TYPE_LABELS: Record<DiscountType, string> = { percentage: 'Pourcentage', fixed_amount: 'Montant fixe', free_shipping: 'Livraison' };
 const STATUS_LABELS: Record<DiscountStatus, string> = { active: 'Actif', scheduled: 'Programmé', expired: 'Expiré' };
@@ -20,7 +21,19 @@ export default function Discounts() {
   const [dUsageLimit, setDUsageLimit] = useState(100);
   const [dStatus, setDStatus] = useState<DiscountStatus>('active');
 
-  useEffect(() => { setDiscounts(getDiscounts()); }, []);
+  useEffect(() => {
+    const local = getDiscounts().map(d => ({ ...d, id: ensureUuidId(d.id) }));
+    setDiscounts(local);
+    saveDiscounts(local);
+    fetchCloudDiscounts().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setDiscounts(cloud);
+        saveDiscounts(cloud);
+      } else {
+        pushCloudDiscounts(local);
+      }
+    });
+  }, []);
 
   const openAdd = () => {
     setEditing(null); setDCode(''); setDTitle(''); setDType('percentage'); setDValue(10);
@@ -37,11 +50,11 @@ export default function Discounts() {
     if (!dCode.trim() || !dTitle.trim()) return;
     if (editing) {
       const updated = discounts.map(d => d.id === editing.id ? { ...d, code: dCode.toUpperCase(), title: dTitle, type: dType, value: Number(dValue), minOrder: Number(dMinOrder), usageLimit: Number(dUsageLimit), status: dStatus } : d);
-      setDiscounts(updated); saveDiscounts(updated);
+      setDiscounts(updated); saveDiscounts(updated); pushCloudDiscounts(updated);
     } else {
-      const newD: Discount = { id: `d-${Date.now()}`, code: dCode.toUpperCase(), title: dTitle, type: dType, value: Number(dValue), currency: 'XOF', minOrder: Number(dMinOrder), usageLimit: Number(dUsageLimit), usedCount: 0, status: dStatus, createdAt: new Date().toISOString().slice(0, 10) };
+      const newD: Discount = { id: crypto.randomUUID(), code: dCode.toUpperCase(), title: dTitle, type: dType, value: Number(dValue), currency: 'XOF', minOrder: Number(dMinOrder), usageLimit: Number(dUsageLimit), usedCount: 0, status: dStatus, createdAt: new Date().toISOString().slice(0, 10) };
       const updated = [newD, ...discounts];
-      setDiscounts(updated); saveDiscounts(updated);
+      setDiscounts(updated); saveDiscounts(updated); pushCloudDiscounts(updated);
     }
     setIsModalOpen(false);
   };
@@ -49,7 +62,7 @@ export default function Discounts() {
   const handleDelete = (id: string) => {
     if (confirm('Supprimer ce code promo ?')) {
       const updated = discounts.filter(d => d.id !== id);
-      setDiscounts(updated); saveDiscounts(updated);
+      setDiscounts(updated); saveDiscounts(updated); deleteCloudDiscount(id);
     }
   };
 

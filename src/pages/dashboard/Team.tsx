@@ -2,6 +2,8 @@ import { PageHeader, Card, Button, Badge, Table, EmptyState } from './ui';
 import { UserCog, Plus, Shield, X, Trash2, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getStaff, saveStaff, type StaffMember, type StaffRole } from '../../lib/app-state';
+import { fetchCloudStaff, pushCloudStaff, deleteCloudStaff, ensureUuidId } from '../../lib/tenant-sync';
+import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
 
 const ROLE_LABELS: Record<StaffRole, string> = { admin: 'Admin', manager: 'Gestionnaire', staff: 'Personnel', support: 'Support' };
 const ROLE_COLORS: Record<StaffRole, string> = { admin: 'brand', manager: 'green', staff: 'gray', support: 'gray' };
@@ -19,29 +21,49 @@ export default function Team() {
   const [sEmail, setSEmail] = useState('');
   const [sRole, setSRole] = useState<StaffRole>('manager');
 
-  useEffect(() => { setStaff(getStaff()); }, []);
+  const planAccess = usePlanAccess();
 
-  const openAdd = () => { setSName(''); setSEmail(''); setSRole('manager'); setIsModalOpen(true); };
+  useEffect(() => {
+    const local = getStaff().map(s => ({ ...s, id: ensureUuidId(s.id) }));
+    setStaff(local);
+    saveStaff(local);
+    fetchCloudStaff().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setStaff(cloud);
+        saveStaff(cloud);
+      } else {
+        pushCloudStaff(local);
+      }
+    });
+  }, []);
+
+  const openAdd = () => {
+    if (!planAccess.unrestricted && !planAccess.isSuperAdmin && isOverLimit(planAccess.plan.staff, staff.length)) {
+      alert(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.staff} membre(s)). Passe à un plan supérieur pour inviter plus de personnes.`);
+      return;
+    }
+    setSName(''); setSEmail(''); setSRole('manager'); setIsModalOpen(true);
+  };
 
   const handleInvite = (e: React.FormEvent) => {
     e.preventDefault();
     if (!sName.trim() || !sEmail.trim()) return;
-    const newMember: StaffMember = { id: `s-${Date.now()}`, name: sName, email: sEmail, role: sRole, status: 'invited', permissions: ROLE_PERMISSIONS[sRole], createdAt: new Date().toISOString().slice(0, 10) };
+    const newMember: StaffMember = { id: crypto.randomUUID(), name: sName, email: sEmail, role: sRole, status: 'invited', permissions: ROLE_PERMISSIONS[sRole], createdAt: new Date().toISOString().slice(0, 10) };
     const updated = [...staff, newMember];
-    setStaff(updated); saveStaff(updated);
+    setStaff(updated); saveStaff(updated); pushCloudStaff(updated);
     setIsModalOpen(false);
   };
 
   const handleRemove = (id: string) => {
     if (confirm('Retirer ce membre de l\'équipe ?')) {
       const updated = staff.filter(s => s.id !== id);
-      setStaff(updated); saveStaff(updated);
+      setStaff(updated); saveStaff(updated); deleteCloudStaff(id);
     }
   };
 
   const toggleRole = (id: string, role: StaffRole) => {
     const updated = staff.map(s => s.id === id ? { ...s, role, permissions: ROLE_PERMISSIONS[role] } : s);
-    setStaff(updated); saveStaff(updated);
+    setStaff(updated); saveStaff(updated); pushCloudStaff(updated);
   };
 
   return (

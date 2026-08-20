@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, Table, Badge, EmptyState } from './ui';
 import { Users, Plus, Filter, UserPlus, X, Edit2, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getCustomers, saveCustomers, type Customer, type CustomerSegment } from '../../lib/app-state';
+import { fetchCloudCustomers, pushCloudCustomers, deleteCloudCustomer, ensureUuidId } from '../../lib/tenant-sync';
 
 const SEGMENT_LABELS: Record<CustomerSegment, string> = { vip: 'VIP', new: 'Nouveau', regular: 'Régulier', inactive: 'Inactif' };
 const SEGMENT_COLORS: Record<CustomerSegment, string> = { vip: 'brand', new: 'green', regular: 'gray', inactive: 'gray' };
@@ -21,7 +22,19 @@ export default function Customers() {
   const [cSegment, setCSegment] = useState<CustomerSegment>('new');
   const [cNotes, setCNotes] = useState('');
 
-  useEffect(() => { setCustomers(getCustomers()); }, []);
+  useEffect(() => {
+    const local = getCustomers().map(c => ({ ...c, id: ensureUuidId(c.id) }));
+    setCustomers(local);
+    saveCustomers(local);
+    fetchCloudCustomers().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setCustomers(cloud);
+        saveCustomers(cloud);
+      } else {
+        pushCloudCustomers(local);
+      }
+    });
+  }, []);
 
   const stats = {
     total: customers.length,
@@ -51,11 +64,11 @@ export default function Customers() {
     if (!cName.trim() || !cEmail.trim()) return;
     if (editing) {
       const updated = customers.map(c => c.id === editing.id ? { ...c, name: cName, email: cEmail, phone: cPhone, country: cCountry, city: cCity, segment: cSegment, notes: cNotes } : c);
-      setCustomers(updated); saveCustomers(updated);
+      setCustomers(updated); saveCustomers(updated); pushCloudCustomers(updated);
     } else {
-      const newC: Customer = { id: `c-${Date.now()}`, name: cName, email: cEmail, phone: cPhone, country: cCountry, city: cCity, ordersCount: 0, totalSpent: 0, currency: 'XOF', segment: cSegment, createdAt: new Date().toISOString().slice(0, 10), tags: [], notes: cNotes };
+      const newC: Customer = { id: crypto.randomUUID(), name: cName, email: cEmail, phone: cPhone, country: cCountry, city: cCity, ordersCount: 0, totalSpent: 0, currency: 'XOF', segment: cSegment, createdAt: new Date().toISOString().slice(0, 10), tags: [], notes: cNotes };
       const updated = [newC, ...customers];
-      setCustomers(updated); saveCustomers(updated);
+      setCustomers(updated); saveCustomers(updated); pushCloudCustomers(updated);
     }
     setIsModalOpen(false);
   };
@@ -63,7 +76,7 @@ export default function Customers() {
   const handleDelete = (id: string) => {
     if (confirm('Supprimer ce client ?')) {
       const updated = customers.filter(c => c.id !== id);
-      setCustomers(updated); saveCustomers(updated);
+      setCustomers(updated); saveCustomers(updated); deleteCloudCustomer(id);
     }
   };
 

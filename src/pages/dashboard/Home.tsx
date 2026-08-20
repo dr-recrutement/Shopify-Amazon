@@ -2,55 +2,72 @@ import { PageHeader, StatCard, Card, Badge } from './ui';
 import { ShoppingCart, DollarSign, Package, Users, ArrowRight, CheckCircle2, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { getOrders, getProducts, getShopProfile } from '../../lib/app-state';
+import { getOrders, getProducts, getShopProfile, getCustomers, type StoreOrder } from '../../lib/app-state';
+import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 
 export default function DashboardHome() {
   const [shopProfile, setShopProfile] = useState(getShopProfile());
-  const [products] = useState(getProducts());
-  const [orders] = useState(getOrders());
+  const [products, setProducts] = useState(getProducts());
+  const [orders, setOrders] = useState(getOrders());
+  const [customerCount, setCustomerCount] = useState(getCustomers().length);
 
   useEffect(() => {
     setShopProfile(getShopProfile());
+    fetchCloudProducts().then(cloud => { if (cloud) setProducts(cloud); });
+    fetchCloudOrders().then(cloud => { if (cloud) setOrders(cloud); });
+    fetchCloudCustomers().then(cloud => { if (cloud) setCustomerCount(cloud.length); });
   }, []);
 
+  // Only items we can actually verify are marked done — no more permanently
+  // stuck "not done" checklist for things merchants already did.
   const checklist = [
     { label: 'Ajouter votre logo', done: false, link: '/app/online-store' },
     { label: 'Configurer un moyen de paiement', done: false, link: '/app/settings' },
-    { label: 'Ajouter un produit', done: false, link: '/app/products' },
+    { label: 'Ajouter un produit', done: products.length > 0, link: '/app/products' },
     { label: 'Personnaliser votre thème', done: false, link: '/app/online-store' },
     { label: 'Définir vos zones de livraison', done: false, link: '/app/settings' },
   ];
 
   const pendingOrders = useMemo(() => orders.filter(order => order.status === 'pending').length, [orders]);
   const activeProducts = useMemo(() => products.filter(product => product.status === 'active').length, [products]);
-  const salesValue = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
+  const totalSales = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
+  const recentOrders = useMemo<StoreOrder[]>(() => orders.slice(0, 6), [orders]);
 
   return (
     <div>
-      <PageHeader title={`Bonjour 👋 ${shopProfile.name}`} subtitle="Voici l'activité de votre boutique aujourd'hui." />
+      <PageHeader title={`Bonjour 👋 ${shopProfile.name}`} subtitle="Voici l'activité de votre boutique." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Ventes du jour" value={`${salesValue.toLocaleString('fr-FR')} ${shopProfile.currency}`} icon={DollarSign} color="green" />
+        <StatCard label="Ventes totales" value={`${totalSales.toLocaleString('fr-FR')} ${shopProfile.currency}`} icon={DollarSign} color="green" />
         <StatCard label="Commandes en attente" value={String(pendingOrders)} icon={ShoppingCart} color="orange" />
         <StatCard label="Produits actifs" value={String(activeProducts)} icon={Package} color="blue" />
-        <StatCard label="Clients" value="3" icon={Users} color="purple" />
+        <StatCard label="Clients" value={String(customerCount)} icon={Users} color="purple" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Performance</h3>
-            <Badge color="green">7 jours d'essai restants</Badge>
+            <h3 className="font-semibold text-gray-900">Commandes récentes</h3>
           </div>
-          <div className="h-64 flex items-end justify-around gap-2 pt-4">
-            {[40, 65, 50, 80, 55, 70, 90].map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                <div className="w-full bg-brand-100 rounded-t-lg" style={{ height: `${h}%` }}>
-                  <div className="w-full h-full bg-brand-500 rounded-t-lg opacity-70" style={{ height: '60%' }} />
+          {recentOrders.length === 0 ? (
+            <p className="text-sm text-gray-400 py-8 text-center">Aucune commande pour l'instant.</p>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {recentOrders.map(o => (
+                <div key={o.id} className="py-3 flex items-center justify-between text-sm">
+                  <div>
+                    <p className="font-medium text-gray-900">{o.orderNumber || o.id}</p>
+                    <p className="text-xs text-gray-500">{o.customer} · {o.date}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-gray-900">{o.total.toLocaleString('fr-FR')} {o.currency}</span>
+                    <Badge color={o.status === 'paid' ? 'green' : o.status === 'shipped' ? 'blue' : o.status === 'cancelled' ? 'red' : 'brand'}>
+                      {o.status === 'pending' ? 'En attente' : o.status === 'paid' ? 'Payée' : o.status === 'shipped' ? 'Expédiée' : 'Annulée'}
+                    </Badge>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-400">{['L', 'M', 'M', 'J', 'V', 'S', 'D'][i]}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         <Card className="p-6">

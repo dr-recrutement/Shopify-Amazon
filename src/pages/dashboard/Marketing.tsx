@@ -2,6 +2,7 @@ import { PageHeader, Card, Button, Badge, Table } from './ui';
 import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getCampaigns, saveCampaigns, type Campaign, type CampaignChannel } from '../../lib/app-state';
+import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, ensureUuidId } from '../../lib/tenant-sync';
 
 const CHANNEL_LABELS: Record<CampaignChannel, string> = { email: 'Email', sms: 'SMS', social: 'Social' };
 const STATUS_LABELS: Record<string, string> = { sent: 'Envoyée', active: 'Active', scheduled: 'Programmée', draft: 'Brouillon' };
@@ -12,21 +13,33 @@ export default function Marketing() {
   const [preview, setPreview] = useState(false);
   const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
 
-  useEffect(() => { setCampaigns(getCampaigns()); }, []);
+  useEffect(() => {
+    const local = getCampaigns().map(c => ({ ...c, id: ensureUuidId(c.id) }));
+    setCampaigns(local);
+    saveCampaigns(local);
+    fetchCloudCampaigns().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        setCampaigns(cloud);
+        saveCampaigns(cloud);
+      } else {
+        pushCloudCampaigns(local);
+      }
+    });
+  }, []);
 
   const sendCampaign = () => {
     if (!form.name.trim()) return;
     const status = form.schedule === 'now' ? 'sent' : 'scheduled';
-    const newC: Campaign = { id: `mc-${Date.now()}`, name: form.name, channel: form.channel, status: status as any, audience: 0, sent: form.schedule === 'now' ? 1 : 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
+    const newC: Campaign = { id: crypto.randomUUID(), name: form.name, channel: form.channel, status: status as Campaign['status'], audience: 0, sent: form.schedule === 'now' ? 1 : 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
     const updated = [newC, ...campaigns];
-    setCampaigns(updated); saveCampaigns(updated);
+    setCampaigns(updated); saveCampaigns(updated); pushCloudCampaigns(updated);
     setShowEditor(false);
     setForm({ name: '', channel: 'email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
   };
 
   const deleteCampaign = (id: string) => {
     const updated = campaigns.filter(c => c.id !== id);
-    setCampaigns(updated); saveCampaigns(updated);
+    setCampaigns(updated); saveCampaigns(updated); deleteCloudCampaign(id);
   };
 
   const totalOpens = campaigns.reduce((s, c) => s + c.opened, 0);

@@ -1,64 +1,101 @@
 import { PageHeader, Card, Button, Badge } from './ui';
-import { BarChart3, Download, TrendingUp, TrendingDown } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { getOrders, getProducts } from '../../lib/app-state';
+import { BarChart3, Download } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { getOrders, getProducts, type StoreOrder, type StoreProduct } from '../../lib/app-state';
+import { fetchCloudOrders, fetchCloudProducts } from '../../lib/tenant-sync';
+
+function downloadCsv(filename: string, rows: string[][]) {
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function Analytics() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
+  const [orders, setOrders] = useState<StoreOrder[]>([]);
+  const [products, setProducts] = useState<StoreProduct[]>([]);
 
-  useEffect(() => { setOrders(getOrders()); setProducts(getProducts()); }, []);
+  useEffect(() => {
+    const localOrders = getOrders();
+    const localProducts = getProducts();
+    setOrders(localOrders);
+    setProducts(localProducts);
+    fetchCloudOrders().then(cloud => { if (cloud && cloud.length > 0) setOrders(cloud); });
+    fetchCloudProducts().then(cloud => { if (cloud && cloud.length > 0) setProducts(cloud); });
+  }, []);
 
   const revenue = orders.reduce((s, o) => s + o.total, 0);
   const avgBasket = orders.length > 0 ? Math.round(revenue / orders.length) : 0;
   const pendingCount = orders.filter(o => o.status === 'pending').length;
   const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 5);
 
+  // Real metrics only — no invented "+12%" trend, this schema has no prior-
+  // period baseline to compute a real change against.
   const metrics = [
-    { label: 'Chiffre d\'affaires', value: `${revenue.toLocaleString('fr-FR')} XOF`, change: '+12%', up: true },
-    { label: 'Commandes', value: String(orders.length), change: '+8%', up: true },
-    { label: 'Panier moyen', value: `${avgBasket.toLocaleString('fr-FR')} XOF`, change: '+3%', up: true },
-    { label: 'En attente', value: String(pendingCount), change: pendingCount > 0 ? 'À traiter' : 'OK', up: pendingCount === 0 },
+    { label: "Chiffre d'affaires", value: `${revenue.toLocaleString('fr-FR')} XOF` },
+    { label: 'Commandes', value: String(orders.length) },
+    { label: 'Panier moyen', value: `${avgBasket.toLocaleString('fr-FR')} XOF` },
+    { label: 'En attente', value: String(pendingCount) },
   ];
 
-  // Compute top products by sales (from order items)
-  const productSales: Record<string, number> = {};
-  orders.forEach(o => o.items?.forEach((it: any) => { productSales[it.name] = (productSales[it.name] || 0) + it.qty; }));
-  const topProducts = Object.entries(productSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const productSales = useMemo(() => {
+    const map: Record<string, number> = {};
+    orders.forEach(o => o.items?.forEach(it => { map[it.name] = (map[it.name] || 0) + it.qty; }));
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  }, [orders]);
 
-  // Sales by day (last 12 days from orders)
-  const salesByDay = Array(12).fill(0).map((_, i) => Math.floor(Math.random() * 60) + 20 + i * 3);
+  const salesByDate = useMemo(() => {
+    const map: Record<string, number> = {};
+    orders.forEach(o => { map[o.date] = (map[o.date] || 0) + o.total; });
+    return Object.entries(map).slice(-12);
+  }, [orders]);
+  const maxSale = Math.max(1, ...salesByDate.map(([, v]) => v));
+
+  const exportCsv = () => {
+    downloadCsv('analytics.csv', [
+      ['Métrique', 'Valeur'],
+      ...metrics.map(m => [m.label, m.value]),
+      [],
+      ['Date', 'Ventes'],
+      ...salesByDate.map(([d, v]) => [d, String(v)]),
+    ]);
+  };
 
   return (
     <div>
-      <PageHeader title="Analytics" subtitle="Statistiques de vente calculées en temps réel." action={<Button variant="secondary"><Download size={14} /> Exporter</Button>} />
+      <PageHeader title="Analytics" subtitle="Statistiques calculées à partir de vos commandes réelles." action={<Button variant="secondary" onClick={exportCsv}><Download size={14} /> Exporter</Button>} />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {metrics.map(m => (
           <Card key={m.label} className="p-5">
             <p className="text-xs text-gray-500 uppercase">{m.label}</p>
             <p className="mt-2 text-2xl font-bold">{m.value}</p>
-            <div className={`mt-1 text-xs font-medium flex items-center gap-1 ${m.up ? 'text-green-600' : 'text-red-600'}`}>
-              {m.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {m.change}
-            </div>
           </Card>
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Ventes par jour</h3>
-          <div className="h-48 flex items-end gap-1">
-            {salesByDay.map((h, i) => (
-              <div key={i} className="flex-1 bg-brand-500 rounded-t" style={{ height: `${h}%`, opacity: 0.5 + (h / 200) }} />
-            ))}
-          </div>
+          <h3 className="font-semibold text-gray-900 mb-4">Ventes par date</h3>
+          {salesByDate.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune vente enregistrée.</p>
+          ) : (
+            <div className="h-48 flex items-end gap-1">
+              {salesByDate.map(([date, v]) => (
+                <div key={date} title={`${date}: ${v.toLocaleString('fr-FR')} XOF`} className="flex-1 bg-brand-500 rounded-t" style={{ height: `${Math.max(4, (v / maxSale) * 100)}%` }} />
+              ))}
+            </div>
+          )}
         </Card>
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-4">Top produits</h3>
-          {topProducts.length === 0 ? (
+          {productSales.length === 0 ? (
             <p className="text-sm text-gray-400">Aucune vente enregistrée.</p>
           ) : (
             <div className="space-y-3">
-              {topProducts.map(([name, qty], i) => (
+              {productSales.map(([name, qty], i) => (
                 <div key={name} className="flex items-center justify-between">
                   <span className="text-sm text-gray-700">{i + 1}. {name}</span>
                   <span className="text-sm font-medium">{qty} ventes</span>

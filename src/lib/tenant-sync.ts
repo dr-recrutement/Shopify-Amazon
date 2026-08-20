@@ -172,3 +172,216 @@ export async function pushCloudOrders(orders: StoreOrder[]): Promise<void> {
     // ignore — local cache still authoritative.
   }
 }
+
+// ---------------------------------------------------------------------------
+// Generic helper: builds a fetch/push/delete triplet for a simple tenant-
+// scoped table, following the exact same best-effort pattern as products
+// and orders above. Keeps the per-entity code below to just field mapping.
+// ---------------------------------------------------------------------------
+
+async function fetchCloudRows<T>(table: string, mapRow: (row: Record<string, any>) => T): Promise<T[] | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from(table).select('*').eq('tenant_id', tenantId).order('created_at', { ascending: false });
+  if (error || !data) return null;
+  return (data as Record<string, any>[]).map(mapRow);
+}
+
+async function pushCloudRows(table: string, rows: Record<string, any>[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId || rows.length === 0) return;
+  try {
+    await supabase.from(table).upsert(rows);
+  } catch {
+    // ignore — local cache still authoritative.
+  }
+}
+
+async function deleteCloudRow(table: string, id: string): Promise<void> {
+  if (!(await getCurrentTenantId())) return;
+  try {
+    await supabase.from(table).delete().eq('id', id);
+  } catch {
+    // ignore
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Customers
+// ---------------------------------------------------------------------------
+import type { Customer, Discount, StaffMember, Campaign } from './app-state';
+
+function customerToRow(tenantId: string, c: Customer) {
+  return {
+    id: ensureUuidId(c.id),
+    tenant_id: tenantId,
+    name: c.name,
+    email: c.email,
+    phone: c.phone || null,
+    country: c.country || null,
+    city: c.city || null,
+    segment: c.segment,
+    tags: c.tags || [],
+    notes: c.notes || null,
+    total_spent_cents: Math.round((c.totalSpent || 0) * 100),
+    orders_count: c.ordersCount || 0,
+  };
+}
+
+function rowToCustomer(row: Record<string, any>): Customer {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone || undefined,
+    country: row.country || undefined,
+    city: row.city || undefined,
+    ordersCount: row.orders_count || 0,
+    totalSpent: (row.total_spent_cents || 0) / 100,
+    currency: 'XOF',
+    segment: row.segment || 'new',
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : '',
+    notes: row.notes || undefined,
+  };
+}
+
+export const fetchCloudCustomers = () => fetchCloudRows('customers', rowToCustomer);
+export async function pushCloudCustomers(customers: Customer[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  await pushCloudRows('customers', customers.map(c => customerToRow(tenantId, c)));
+}
+export const deleteCloudCustomer = (id: string) => deleteCloudRow('customers', id);
+
+// ---------------------------------------------------------------------------
+// Discounts
+// ---------------------------------------------------------------------------
+
+function discountToRow(tenantId: string, d: Discount) {
+  return {
+    id: ensureUuidId(d.id),
+    tenant_id: tenantId,
+    code: d.code,
+    title: d.title,
+    type: d.type,
+    value: d.value,
+    currency: d.currency || null,
+    min_order: d.minOrder ?? null,
+    usage_limit: d.usageLimit ?? null,
+    used_count: d.usedCount || 0,
+    status: d.status,
+    starts_at: d.startsAt || null,
+    ends_at: d.endsAt || null,
+  };
+}
+
+function rowToDiscount(row: Record<string, any>): Discount {
+  return {
+    id: row.id,
+    code: row.code,
+    title: row.title || '',
+    type: row.type,
+    value: Number(row.value) || 0,
+    currency: row.currency || undefined,
+    minOrder: row.min_order ?? undefined,
+    usageLimit: row.usage_limit ?? undefined,
+    usedCount: row.used_count || 0,
+    status: row.status,
+    startsAt: row.starts_at || undefined,
+    endsAt: row.ends_at || undefined,
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : '',
+  };
+}
+
+export const fetchCloudDiscounts = () => fetchCloudRows('discounts', rowToDiscount);
+export async function pushCloudDiscounts(discounts: Discount[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  await pushCloudRows('discounts', discounts.map(d => discountToRow(tenantId, d)));
+}
+export const deleteCloudDiscount = (id: string) => deleteCloudRow('discounts', id);
+
+// ---------------------------------------------------------------------------
+// Staff
+// ---------------------------------------------------------------------------
+
+function staffToRow(tenantId: string, s: StaffMember) {
+  return {
+    id: ensureUuidId(s.id),
+    tenant_id: tenantId,
+    name: s.name,
+    email: s.email,
+    role: s.role,
+    status: s.status,
+    permissions: s.permissions || [],
+    last_active: s.lastActive || null,
+  };
+}
+
+function rowToStaff(row: Record<string, any>): StaffMember {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    role: row.role,
+    status: row.status,
+    permissions: Array.isArray(row.permissions) ? row.permissions : [],
+    lastActive: row.last_active || undefined,
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : '',
+  };
+}
+
+export const fetchCloudStaff = () => fetchCloudRows('staff_members', rowToStaff);
+export async function pushCloudStaff(staff: StaffMember[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  await pushCloudRows('staff_members', staff.map(s => staffToRow(tenantId, s)));
+}
+export const deleteCloudStaff = (id: string) => deleteCloudRow('staff_members', id);
+
+// ---------------------------------------------------------------------------
+// Marketing campaigns
+// ---------------------------------------------------------------------------
+
+function campaignToRow(tenantId: string, c: Campaign) {
+  return {
+    id: ensureUuidId(c.id),
+    tenant_id: tenantId,
+    name: c.name,
+    channel: c.channel,
+    audience: c.audience || 0,
+    status: c.status,
+    sent_count: c.sent || 0,
+    open_rate: c.sent > 0 ? Math.round((c.opened / c.sent) * 1000) / 10 : 0,
+    clicked_count: c.clicked || 0,
+    revenue_cents: Math.round((c.revenue || 0) * 100),
+    currency: c.currency || 'XOF',
+  };
+}
+
+function rowToCampaign(row: Record<string, any>): Campaign {
+  const sent = row.sent_count || 0;
+  const opened = Math.round(((row.open_rate || 0) / 100) * sent);
+  return {
+    id: row.id,
+    name: row.name,
+    channel: row.channel || 'email',
+    status: row.status,
+    audience: row.audience || sent,
+    sent,
+    opened,
+    clicked: row.clicked_count || 0,
+    revenue: (row.revenue_cents || 0) / 100,
+    currency: row.currency || 'XOF',
+    createdAt: row.created_at ? row.created_at.slice(0, 10) : '',
+  };
+}
+
+export const fetchCloudCampaigns = () => fetchCloudRows('marketing_campaigns', rowToCampaign);
+export async function pushCloudCampaigns(campaigns: Campaign[]): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  await pushCloudRows('marketing_campaigns', campaigns.map(c => campaignToRow(tenantId, c)));
+}
+export const deleteCloudCampaign = (id: string) => deleteCloudRow('marketing_campaigns', id);

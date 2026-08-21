@@ -119,6 +119,8 @@ export interface ThemeConfig {
   // Layout variant drives visually distinct templates (header style, card style,
   // radius, dividers) — mirrors how Shopify themes differ beyond colour.
   layoutVariant: LayoutVariant;
+  /** Browser tab icon, site-wide (not header-specific). Optional. */
+  faviconUrl?: string;
   sections: ThemeSection[];
   isPublished: boolean;
 }

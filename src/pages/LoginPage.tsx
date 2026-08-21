@@ -56,33 +56,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Brand panel — real product visual, not a stock photo pretending to
+          be a customer. Desktop only; keeps mobile focused on the form. */}
+      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-gray-900 items-center justify-center p-12">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div className="relative text-white max-w-sm">
+          <Logo size="lg" white />
+          <h2 className="mt-8 text-3xl font-bold leading-tight">Votre boutique, en ligne, partout dans le monde.</h2>
+          <p className="mt-4 text-brand-100 text-sm leading-relaxed">Mobile Money natif, IA intégrée, 0% commission. Rejoignez les vendeurs qui vendent déjà avec Os.</p>
+        </div>
+      </div>
+
+      <div className="flex-1 flex items-center justify-center px-4 py-12 bg-gray-50">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 lg:hidden">
             <Link to="/"><Logo size="lg" /></Link>
           </div>
           <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
             <h1 className="font-serif-display text-2xl font-bold text-gray-900">Connexion</h1>
             <p className="mt-1 text-sm text-gray-500">Accédez à votre boutique</p>
-
-            {/* Demo mode quick access badge */}
-            <div className="mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-emerald-600 animate-pulse" />
-                <div className="text-left">
-                  <div className="text-xs font-bold text-emerald-800">Pas de connexion Supabase ?</div>
-                  <div className="text-[11px] text-emerald-600">Accédez instantanément avec le Mode Démo</div>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleDemoMode}
-                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-all"
-              >
-                Explorer Démo
-              </button>
-            </div>
 
             <form onSubmit={submit} className="mt-6 space-y-4">
               {error && (

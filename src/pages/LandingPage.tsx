@@ -258,7 +258,7 @@ export default function LandingPage() {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-100 text-brand-800 rounded-full text-sm font-semibold mb-6 animate-bounce">
                 <Star size={14} fill="currentColor" className="text-brand-600" /> {t('hero.badge')}
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.05] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] tracking-tight">
                 {t('hero.title1')}<br />
                 <span className="italic text-brand-600 font-bold">{t('hero.title2')}</span><br />
                 {t('hero.title3')}
@@ -477,7 +477,7 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-6">
               🌍 Conçu par LiAfrik 🌍
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi Os ?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi Os ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed font-medium">
               Os n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik, dès sa fondation, pour vendre partout dans le monde. Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
             </p>
@@ -504,7 +504,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre dans le monde entier</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Tout ce qu'il faut pour vendre dans le monde entier</h2>
             <p className="mt-4 text-gray-600">Une suite complète, pensée pour les réalités du commerce mondial — mobile money là où ça compte, paiements internationaux, connexions faibles, multilinguisme.</p>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -527,7 +527,7 @@ export default function LandingPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Des tarifs simples, sans commission</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Des tarifs simples, sans commission</h2>
             <p className="mt-4 text-gray-600">Choisissez votre plan, bénéficiez de 7 jours d'essai gratuit. L'argent de vos ventes va directement dans votre compte.</p>
 
             {/* Landing Page billing period switch */}
@@ -604,7 +604,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Pourquoi vendre avec Os</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi vendre avec Os</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {productHighlights.map((h, i) => (
@@ -646,7 +646,7 @@ export default function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Questions fréquentes</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Questions fréquentes</h2>
           </Section>
           <div className="space-y-4">
             {faqs.map((f, i) => (
@@ -671,7 +671,7 @@ export default function LandingPage() {
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-emerald-500 rounded-full mix-blend-overlay filter blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
+          <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">Lancez votre boutique aujourd'hui</h2>
           <p className="mt-4 text-gray-300 text-lg">Rejoignez des milliers de vendeurs dans le monde entier. 7 jours d'essai gratuit, sans carte bancaire.</p>
           <Link to="/register" className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.02] active:scale-95 shadow-xl">
             Créer ma boutique gratuitement <ArrowRight size={18} />

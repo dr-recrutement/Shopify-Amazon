@@ -5,7 +5,7 @@ import {
   Globe, Search, ChevronRight, CheckCircle, MessageSquare, Code,
   Sparkles, Send, ExternalLink
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
@@ -85,6 +85,18 @@ export default function OnlineStore() {
   const [metaDescInput, setMetaDescInput] = useState('Mode chic et tendances de marque.');
   const [faviconUrlInput, setFaviconUrlInput] = useState('');
   const [logoUrlInput, setLogoUrlInput] = useState('');
+  const brandFieldsInitialized = useRef(false);
+  useEffect(() => {
+    // Only seed once from the loaded theme (local, then possibly replaced
+    // by the cloud version a moment later) — don't stomp on the merchant's
+    // in-progress edits if the cloud fetch resolves after they've already
+    // started typing.
+    if (brandFieldsInitialized.current) return;
+    const headerSection = theme.sections.find(s => s.type === 'header');
+    if (headerSection?.props?.logoUrl) setLogoUrlInput(headerSection.props.logoUrl);
+    if (theme.faviconUrl) setFaviconUrlInput(theme.faviconUrl);
+    brandFieldsInitialized.current = true;
+  }, [theme]);
   const shopSubdomain = getShopSubdomain();
 
   const [myDomains, setMyDomains] = useState<CustomDomain[]>(() => {
@@ -1939,7 +1951,14 @@ export default function OnlineStore() {
                 type="button"
                 onClick={() => {
                   saveShopProfile({ ...shopProfile, name: shopNameInput });
-                  showToast('Préférences générales de marque sauvegardées !');
+                  setTheme(prev => ({
+                    ...prev,
+                    faviconUrl: faviconUrlInput || prev.faviconUrl,
+                    sections: prev.sections.map(s => s.type === 'header'
+                      ? { ...s, props: { ...s.props, logoText: shopNameInput, logoUrl: logoUrlInput || s.props?.logoUrl } }
+                      : s),
+                  }));
+                  showToast('Préférences de marque sauvegardées !');
                 }}
                 className="w-full py-1.5 mt-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-black shadow"
               >

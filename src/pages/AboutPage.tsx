@@ -15,7 +15,7 @@ export default function AboutPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-4">
             🌍 Conçu par LiAfrik 🌍
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">
             {fr ? 'Notre histoire' : 'Our story'}
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">

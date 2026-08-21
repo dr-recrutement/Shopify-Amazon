@@ -457,6 +457,46 @@ export async function pushCloudSettings(settings: Record<string, any>): Promise<
 }
 
 // ---------------------------------------------------------------------------
+// Vendor payment gateways — each merchant's own Flutterwave/Paystack/Stripe
+// etc. credentials, used for THEIR storefront checkout (separate from the
+// platform's own Flutterwave subscription billing in functions/api/
+// subscriptions/). Table has *_encrypted column names, but no client-side
+// encryption is implemented here — encrypting with a key embedded in
+// shipped JS is security theater, not real protection. Real encryption at
+// rest needs a server-side step (e.g. a Cloudflare Function holding a KMS
+// key) — noted as a follow-up, not done in this pass. Access is still
+// RLS-scoped to the owning tenant only, same as every other table here.
+// ---------------------------------------------------------------------------
+
+export type VendorGateway = { gateway: string; apiKey: string; apiSecret: string; isActive: boolean };
+
+export async function fetchCloudGateways(): Promise<VendorGateway[] | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from('vendor_payment_gateways').select('*').eq('tenant_id', tenantId);
+  if (error || !data) return null;
+  return (data as Record<string, any>[]).map(row => ({
+    gateway: row.gateway,
+    apiKey: row.api_key_encrypted || '',
+    apiSecret: row.api_secret_encrypted || '',
+    isActive: !!row.is_active,
+  }));
+}
+
+export async function pushCloudGateway(g: VendorGateway): Promise<void> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return;
+  try {
+    await supabase.from('vendor_payment_gateways').upsert(
+      { tenant_id: tenantId, gateway: g.gateway, api_key_encrypted: g.apiKey, api_secret_encrypted: g.apiSecret, is_active: g.isActive, status: g.isActive ? 'active' : 'pending' },
+      { onConflict: 'tenant_id,gateway' }
+    );
+  } catch {
+    // ignore — local cache still authoritative.
+  }
+}
+
+// ---------------------------------------------------------------------------
 // PUBLIC storefront resolution — the critical piece that was missing.
 // These need NO authentication: any visitor must be able to resolve a
 // merchant's public store by slug and read their catalog/theme/pages.

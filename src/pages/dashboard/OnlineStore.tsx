@@ -538,7 +538,7 @@ export default function OnlineStore() {
                     <button
                       key={p.id}
                       onClick={() => selectPreset(p)}
-                      className={`w-full text-left p-3.5 rounded-xl border transition-all bg-white group ${isActive ? 'border-brand-500 ring-2 ring-brand-200' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
+                      className={`w-full text-left p-3.5 rounded-xl border transition-all bg-white group ${isActive ? 'border-brand-500 bg-brand-50/40' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 min-w-0">

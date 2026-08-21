@@ -109,6 +109,23 @@ export default function StorefrontPage() {
   const shopName = resolvedTenant?.name || localProfile?.name || 'Boutique';
   const currency = resolvedTenant?.currency || localProfile?.currency || 'XOF';
 
+  // Real header content is CMS-editable via the theme's 'header' section
+  // (logo, nav links, announcement banner, search/cart visibility) —
+  // merged into the one functional header instead of a second decorative
+  // copy (see sectionsWithCatalog filter above).
+  const headerProps = useMemo(() => {
+    const headerSection = theme?.sections.find(s => s.type === 'header');
+    return {
+      logoText: headerSection?.props?.logoText || shopName,
+      logoUrl: headerSection?.props?.logoUrl || '',
+      nav: (headerSection?.props?.nav as string[] | undefined) || ['Accueil', 'Boutique', 'À propos', 'Contact'],
+      showSearch: headerSection?.props?.showSearch !== false,
+      showCart: headerSection?.props?.showCart !== false,
+      showAnnouncement: !!headerSection?.props?.showAnnouncement,
+      announcementText: headerSection?.props?.announcementText || '',
+    };
+  }, [theme, shopName]);
+
   const handleAddToCart = useCallback((product: any) => {
     setCart(prev => {
       const existing = prev.find(i => i.id === String(product.id));
@@ -155,15 +172,21 @@ export default function StorefrontPage() {
     if (!theme) return [];
     const products = publicProducts ?? getActiveCatalogProducts();
     const categories = getCatalogCategories();
-    return theme.sections.map(s => {
-      if (s.type === 'product-grid' || s.type === 'featured-collection') {
-        return { ...s, props: { ...s.props, products } };
-      }
-      if (s.type === 'category-grid' || s.type === 'collection-list') {
-        return { ...s, props: { ...s.props, categories } };
-      }
-      return s;
-    });
+    return theme.sections
+      // The 'header' section is rendered by the functional <header> above
+      // (sourced from this same section's props) — rendering it again here
+      // produced two stacked headers: a decorative CMS one with dead
+      // buttons, directly above the real one with working cart/search.
+      .filter(s => s.type !== 'header')
+      .map(s => {
+        if (s.type === 'product-grid' || s.type === 'featured-collection') {
+          return { ...s, props: { ...s.props, products } };
+        }
+        if (s.type === 'category-grid' || s.type === 'collection-list') {
+          return { ...s, props: { ...s.props, categories } };
+        }
+        return s;
+      });
   }, [theme, publicProducts]);
 
   // Search results
@@ -215,7 +238,6 @@ export default function StorefrontPage() {
   }
 
   const visibleSections = sectionsWithCatalog.filter(s => s.visible);
-  const hasProducts = allProducts.length > 0;
 
   return (
     <div className="min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>
@@ -238,40 +260,45 @@ export default function StorefrontPage() {
       )}
 
       {/* Sticky storefront header */}
+      {headerProps.showAnnouncement && headerProps.announcementText && (
+        <div className="text-center py-1.5 px-4 text-xs font-semibold tracking-wide text-white" style={{ backgroundColor: theme.colors.accent }}>
+          {headerProps.announcementText}
+        </div>
+      )}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-white/85 border-b" style={{ borderColor: `${theme.colors.text}10` }}>
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <button className="lg:hidden p-1" onClick={() => setMobileNavOpen(v => !v)} aria-label="Menu">
             {mobileNavOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <Link to="#" className="text-xl md:text-2xl font-black tracking-tight flex-shrink-0" style={{ fontFamily: theme.fonts.heading, color: theme.colors.primary }}>
-            {shopName}
+          <Link to="#" className="text-xl md:text-2xl font-black tracking-tight flex-shrink-0 flex items-center gap-2" style={{ fontFamily: theme.fonts.heading, color: theme.colors.primary }}>
+            {headerProps.logoUrl ? <img src={headerProps.logoUrl} alt={headerProps.logoText} className="h-8 max-w-[140px] object-contain" /> : headerProps.logoText}
           </Link>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium" style={{ color: theme.colors.text }}>
-            <Link to="#" className="hover:opacity-70 transition-opacity">Accueil</Link>
-            <Link to="#" className="hover:opacity-70 transition-opacity">Boutique</Link>
-            {hasProducts && <Link to="#" className="hover:opacity-70 transition-opacity">Nouveautés</Link>}
-            <Link to="#" className="hover:opacity-70 transition-opacity">À propos</Link>
-            <Link to="#" className="hover:opacity-70 transition-opacity">Contact</Link>
+            {headerProps.nav.map(item => (
+              <Link key={item} to="#" className="hover:opacity-70 transition-opacity">{item}</Link>
+            ))}
           </nav>
           <div className="flex items-center gap-3">
-            <button className="p-1.5 hover:opacity-70 transition-opacity" aria-label="Rechercher" onClick={() => setSearchOpen(v => !v)}>
-              <Search size={20} />
-            </button>
-            <button className="relative p-1.5 hover:opacity-70 transition-opacity" aria-label="Panier" onClick={() => setCartOpen(true)}>
-              <ShoppingCart size={20} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center text-white" style={{ backgroundColor: theme.colors.primary }}>{cartCount}</span>
-              )}
-            </button>
+            {headerProps.showSearch && (
+              <button className="p-1.5 hover:opacity-70 transition-opacity" aria-label="Rechercher" onClick={() => setSearchOpen(v => !v)}>
+                <Search size={20} />
+              </button>
+            )}
+            {headerProps.showCart && (
+              <button className="relative p-1.5 hover:opacity-70 transition-opacity" aria-label="Panier" onClick={() => setCartOpen(true)}>
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center text-white" style={{ backgroundColor: theme.colors.primary }}>{cartCount}</span>
+                )}
+              </button>
+            )}
           </div>
         </div>
         {mobileNavOpen && (
           <nav className="lg:hidden border-t px-4 py-3 flex flex-col gap-3 text-sm font-medium" style={{ borderColor: `${theme.colors.text}10`, color: theme.colors.text }}>
-            <Link to="#" onClick={() => setMobileNavOpen(false)}>Accueil</Link>
-            <Link to="#" onClick={() => setMobileNavOpen(false)}>Boutique</Link>
-            {hasProducts && <Link to="#" onClick={() => setMobileNavOpen(false)}>Nouveautés</Link>}
-            <Link to="#" onClick={() => setMobileNavOpen(false)}>À propos</Link>
-            <Link to="#" onClick={() => setMobileNavOpen(false)}>Contact</Link>
+            {headerProps.nav.map(item => (
+              <Link key={item} to="#" onClick={() => setMobileNavOpen(false)}>{item}</Link>
+            ))}
           </nav>
         )}
         {/* Search bar */}

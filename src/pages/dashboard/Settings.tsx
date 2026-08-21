@@ -6,7 +6,7 @@ import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
 import { getShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
 import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
-import { fetchCloudSettings, pushCloudSettings } from '../../lib/tenant-sync';
+import { fetchCloudSettings, pushCloudSettings, fetchCloudGateways, pushCloudGateway } from '../../lib/tenant-sync';
 import {
   Globe, Search, CreditCard, ShieldCheck, RefreshCw,
   Trash2, Plus, Check, ChevronDown
@@ -108,10 +108,22 @@ export default function Settings() {
     return {};
   });
 
-  // Sync Gateways with local storage
+  // Sync Gateways with local storage + pull real cloud state on mount
   useEffect(() => {
     localStorage.setItem(getTenantStorageKey('liafrikos_gateways'), JSON.stringify(gateways));
   }, [gateways]);
+
+  useEffect(() => {
+    fetchCloudGateways().then(cloud => {
+      if (cloud && cloud.length > 0) {
+        const asMap: typeof gateways = {};
+        for (const g of cloud) {
+          asMap[g.gateway] = { publicKey: g.apiKey, secretKey: g.apiSecret, clientId: '', connected: g.isActive };
+        }
+        setGateways(prev => ({ ...prev, ...asMap }));
+      }
+    });
+  }, []);
 
   // Modal for Payment connection
   const [activeGatewayModal, setActiveGatewayModal] = useState<string | null>(null);
@@ -139,6 +151,7 @@ export default function Settings() {
         connected: true
       }
     });
+    pushCloudGateway({ gateway: activeGatewayModal, apiKey: modalPublicKey, apiSecret: modalSecretKey, isActive: true });
     setActiveGatewayModal(null);
   };
 
@@ -147,6 +160,7 @@ export default function Settings() {
       const next = { ...gateways };
       delete next[gateway];
       setGateways(next);
+      pushCloudGateway({ gateway, apiKey: '', apiSecret: '', isActive: false });
     }
   };
 

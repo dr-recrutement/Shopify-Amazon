@@ -534,7 +534,12 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
   const fonts = presetConfig.fonts;
   const layoutVariant = presetConfig.layoutVariant;
 
-  // Header Default Props
+  // Header Default Props — showCart/showSearch default to off for the 3
+  // non-commerce layouts (vitrine, business-corp, services: no product
+  // sections in their default arrangement at all, see
+  // sectionsForVariantPublic above), on for every commerce-capable one.
+  // Always editable per-store afterwards via the CMS header section.
+  const isNonCommerceLayout = layoutVariant === 'vitrine' || layoutVariant === 'business-corp' || layoutVariant === 'services';
   const headerSection: ThemeSection = {
     id: 'header-1',
     type: 'header',
@@ -542,11 +547,13 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
     props: {
       logoText: 'Ma Superbe Boutique',
       logoUrl: '',
-      nav: ['Accueil', 'Nouveautés', 'Collections', 'À Propos', 'FAQ', 'Contact'],
-      showSearch: true,
-      showCart: true,
-      announcementText: '✨ LIVRAISON GRATUITE dès 35 000 FCFA avec Orange Money et Wave ! ✨',
-      showAnnouncement: true,
+      nav: isNonCommerceLayout
+        ? ['Accueil', 'À Propos', 'Services', 'Témoignages', 'Contact']
+        : ['Accueil', 'Nouveautés', 'Collections', 'À Propos', 'FAQ', 'Contact'],
+      showSearch: !isNonCommerceLayout,
+      showCart: !isNonCommerceLayout,
+      announcementText: '✨ Livraison rapide, paiement sécurisé ! ✨',
+      showAnnouncement: false,
     }
   };
 
@@ -758,8 +765,8 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
     props: {
       messages: [
         '✨ Livraison gratuite dès 35 000 FCFA',
-        '💳 Paiement Mobile Money accepté — Orange Money, Wave, MTN MoMo',
-        '🚚 Expédition en 24-48h dans toute l’Afrique de l’Ouest',
+        '💳 Mobile Money accepté — Orange Money, Wave, MTN MoMo',
+        '🚚 Expédition rapide, où que vous soyez',
       ],
       bgColor: colors.secondary,
       textColor: '#ffffff',

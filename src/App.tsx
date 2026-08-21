@@ -72,9 +72,9 @@ export default function App() {
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
         {/* Public content pages */}
-        <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre en Afrique." />} />
-        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce africain." />} />
-        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce africain, success stories, conseils marketing." />} />
+        <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre dans le monde entier." />} />
+        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce." />} />
+        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce, success stories, conseils marketing." />} />
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez-nous." />} />

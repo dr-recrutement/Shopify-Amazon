@@ -18,7 +18,7 @@ export default function AdminThemes() {
     { name: 'Publisher', category: 'Dawn-based', stores: 6700, status: 'published', industry: 'Éditorial & contenu', free: true },
     { name: 'Trade', category: 'Dawn-based', stores: 7300, status: 'published', industry: 'B2B & wholesale', free: true },
     { name: 'Ride', category: 'Dawn-based', stores: 5200, status: 'published', industry: 'Sport & outdoor', free: true },
-    { name: 'Dawn — African Vibrant', category: 'Variante panafricaine', stores: 1240, status: 'published', industry: 'Commerce panafricain', free: true },
+    { name: 'Dawn — African Vibrant', category: 'Style coloré & vibrant', stores: 1240, status: 'published', industry: 'Commerce international', free: true },
   ];
   return (
     <div>

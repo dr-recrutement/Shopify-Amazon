@@ -63,7 +63,7 @@ export default function AdminLayout() {
           <button className="lg:hidden p-2 text-gray-400" onClick={() => setOpen(!open)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <div className="text-sm text-gray-400">LiAfrik (Dubai & Afrique) — Os Master Console</div>
+          <div className="text-sm text-gray-400">LiAfrik — Os Master Console</div>
           <div className="ml-auto text-xs text-gray-500">{new Date().toLocaleDateString('fr-FR')}</div>
         </header>
         <main className="p-4 sm:p-6 lg:p-8"><Outlet /></main>

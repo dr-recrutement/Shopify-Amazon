@@ -75,7 +75,7 @@ export default function OnlineStore() {
 
   // Custom Pages State
   const [customPages, setCustomPages] = useState([
-    { id: '1', title: 'À propos de nous', content: 'Nous créons les plus beaux vêtements d’Afrique.' },
+    { id: '1', title: 'À propos de nous', content: 'Nous créons les plus beaux produits, pensés pour vous.' },
     { id: '2', title: 'Conditions de livraison', content: 'Livraison gratuite par moto-taxi dans Abidjan et Douala.' }
   ]);
   const [newPageTitle, setNewPageTitle] = useState('');

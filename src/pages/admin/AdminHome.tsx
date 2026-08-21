@@ -1,181 +1,161 @@
 import { PageHeader, Card, Badge, Button, Table } from '../dashboard/ui';
-import { Store, Users, DollarSign, TrendingUp, Activity, Download, Filter } from 'lucide-react';
-import { useState } from 'react';
+import { Store, Users, DollarSign, Download } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { supabase } from '../../lib/supabase';
+import { GLOBAL_COUNTRIES } from '../../lib/constants';
 
+type TenantRow = { id: string; name: string; plan: string; status: string; country: string; created_at: string };
+
+function downloadCsv(filename: string, rows: string[][]) {
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Real platform-wide stats for super admins. This used to show entirely
+ * fabricated numbers (12,348 stores, $148,920 MRR, 2.1% churn, fake
+ * "recent stores" reusing the landing page's fictional example shop
+ * names as if they were real signups) — shown to the actual platform
+ * owner as if it were real business data. Now computed from the real
+ * tenants + subscription_events tables (requires the super-admin-wide
+ * RLS policy added alongside this fix — without it every query below
+ * would silently return zero rows for a real super admin too).
+ */
 export default function AdminHome() {
-  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('month');
+  const [tenants, setTenants] = useState<TenantRow[]>([]);
+  const [mrr, setMrr] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: 'Boutiques actives', value: '12 348', change: '+8.2%', icon: Store, color: 'brand' },
-    { label: 'Vendeurs', value: '12 210', change: '+7.5%', icon: Users, color: 'green' },
-    { label: 'MRR (SaaS)', value: '$148 920', change: '+12%', icon: DollarSign, color: 'blue' },
-    { label: 'ARR (SaaS)', value: '$1.79M', change: '+11%', icon: TrendingUp, color: 'purple' },
-  ];
+  useEffect(() => {
+    (async () => {
+      const { data: tenantData } = await supabase.from('tenants').select('id,name,plan,status,country,created_at').order('created_at', { ascending: false });
+      if (tenantData) setTenants(tenantData as TenantRow[]);
 
-  const planData = [
-    { plan: 'Starter', count: 8420, pct: 68, color: 'bg-gray-400' },
-    { plan: 'Premium', count: 3120, pct: 25, color: 'bg-brand-500' },
-    { plan: 'Entreprise', count: 808, pct: 7, color: 'bg-gray-900' },
-  ];
+      const startOfMonth = new Date(); startOfMonth.setDate(1); startOfMonth.setHours(0, 0, 0, 0);
+      const { data: events } = await supabase.from('subscription_events').select('amount').gte('created_at', startOfMonth.toISOString());
+      if (events) setMrr(events.reduce((s: number, e: any) => s + (Number(e.amount) || 0), 0));
+      setLoading(false);
+    })();
+  }, []);
 
-  const countryData = [
-    { country: '🇨🇮 Côte d\'Ivoire', count: 2840, pct: 23 },
-    { country: '🇳🇬 Nigeria', count: 2410, pct: 19 },
-    { country: '🇬🇭 Ghana', count: 1820, pct: 15 },
-    { country: '🇨🇲 Cameroun', count: 1560, pct: 13 },
-    { country: '🇸🇳 Sénégal', count: 1240, pct: 10 },
-    { country: '🇰🇪 Kenya', count: 980, pct: 8 },
-    { country: 'Autres', count: 1498, pct: 12 },
-  ];
+  const planCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const t of tenants) counts[t.plan] = (counts[t.plan] || 0) + 1;
+    return counts;
+  }, [tenants]);
 
-  const churnData = { rate: '2.1%', trend: '-0.3%', ltv: '$340' };
+  const countryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const t of tenants) if (t.country) counts[t.country] = (counts[t.country] || 0) + 1;
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 7);
+  }, [tenants]);
 
-  const recent = [
-    { store: 'Boutique Aïcha', plan: 'Premium', country: '🇨🇮 CI', revenue: '$19', date: '19 Jul 14:32', status: 'active' },
-    { store: 'Accra Tech Hub', plan: 'Entreprise', country: '🇬🇭 GH', revenue: '$69', date: '19 Jul 12:10', status: 'active' },
-    { store: 'Fatou Couture', plan: 'Starter', country: '🇸🇳 SN', revenue: '$9', date: '19 Jul 10:45', status: 'trial' },
-    { store: 'Lagos Beauty', plan: 'Premium', country: '🇳🇬 NG', revenue: '$19', date: '18 Jul 18:22', status: 'active' },
-    { store: 'Douala Mart', plan: 'Premium', country: '🇨🇲 CM', revenue: '$19', date: '18 Jul 16:10', status: 'active' },
-  ];
+  const trialCount = tenants.filter(t => t.status === 'trial').length;
+  const activeCount = tenants.filter(t => t.status === 'active').length;
 
-  const colors: any = { orange: 'text-brand-600 bg-brand-50', green: 'text-green-600 bg-green-50', blue: 'text-blue-600 bg-blue-50', purple: 'text-purple-600 bg-purple-50' };
+  const exportCsv = () => {
+    downloadCsv('boutiques.csv', [
+      ['Nom', 'Plan', 'Statut', 'Pays', 'Créée le'],
+      ...tenants.map(t => [t.name, t.plan, t.status, t.country, t.created_at]),
+    ]);
+  };
 
   return (
     <div>
       <PageHeader
         title="Vue globale"
-        subtitle="Santé de la plateforme Os en temps réel."
-        action={
-          <div className="flex gap-2">
-            <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
-              {(['day', 'week', 'month', 'year'] as const).map(p => (
-                <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1 rounded text-xs font-medium ${period === p ? 'bg-white shadow-sm' : 'text-gray-500'}`}>
-                  {p === 'day' ? 'Jour' : p === 'week' ? 'Semaine' : p === 'month' ? 'Mois' : 'Année'}
-                </button>
-              ))}
-            </div>
-            <Button variant="secondary" size="sm"><Filter size={14} /> Filtrer</Button>
-            <Button variant="secondary" size="sm"><Download size={14} /> Exporter</Button>
-          </div>
-        }
+        subtitle="Données réelles de la plateforme Os."
+        action={<Button variant="secondary" size="sm" onClick={exportCsv}><Download size={14} /> Exporter</Button>}
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {stats.map(s => {
-          const Icon = s.icon;
-          return (
-            <Card key={s.label} className="p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase">{s.label}</p>
-                  <p className="mt-2 text-2xl font-bold">{s.value}</p>
-                  <p className="mt-1 text-xs text-green-600 font-medium">{s.change}</p>
-                </div>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colors[s.color]}`}><Icon size={20} /></div>
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* MRR chart */}
-        <Card className="lg:col-span-2 p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">MRR / ARR (période: {period})</h3>
-          <div className="h-48 flex items-end gap-2">
-            {[40, 55, 48, 62, 70, 65, 78, 82, 75, 88, 92, 95].map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-brand-500 rounded-t" style={{ height: `${h}%`, opacity: 0.5 + h / 200 }} />
-                <span className="text-[10px] text-gray-400">{['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]}</span>
-              </div>
-            ))}
+        <Card className="p-5">
+          <div className="flex items-start justify-between">
+            <div><p className="text-xs text-gray-500 uppercase">Boutiques</p><p className="mt-2 text-2xl font-bold">{loading ? '…' : tenants.length}</p></div>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-brand-600 bg-brand-50"><Store size={20} /></div>
           </div>
         </Card>
+        <Card className="p-5">
+          <div className="flex items-start justify-between">
+            <div><p className="text-xs text-gray-500 uppercase">Actives</p><p className="mt-2 text-2xl font-bold">{loading ? '…' : activeCount}</p><p className="mt-1 text-xs text-gray-400">{trialCount} en essai</p></div>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-green-600 bg-green-50"><Users size={20} /></div>
+          </div>
+        </Card>
+        <Card className="p-5 lg:col-span-2">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-xs text-gray-500 uppercase">Revenu d'abonnement ce mois</p>
+              <p className="mt-2 text-2xl font-bold">${loading ? '…' : mrr.toLocaleString('fr-FR')}</p>
+              <p className="mt-1 text-xs text-gray-400">Basé sur les paiements Flutterwave confirmés (subscription_events)</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-blue-600 bg-blue-50"><DollarSign size={20} /></div>
+          </div>
+        </Card>
+      </div>
 
-        {/* Plan distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-4">Répartition par plan</h3>
-          <div className="space-y-3">
-            {planData.map(p => (
-              <div key={p.plan}>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="font-medium text-gray-700">{p.plan}</span>
-                  <span className="text-gray-500">{p.count.toLocaleString()} ({p.pct}%)</span>
+          {tenants.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune boutique inscrite pour l'instant.</p>
+          ) : (
+            <div className="space-y-3">
+              {Object.entries(planCounts).map(([plan, count]) => (
+                <div key={plan}>
+                  <div className="flex justify-between text-xs mb-1"><span className="font-medium text-gray-700 capitalize">{plan}</span><span className="text-gray-500">{count} ({Math.round((count / tenants.length) * 100)}%)</span></div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-brand-500" style={{ width: `${(count / tenants.length) * 100}%` }} /></div>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className={`h-full ${p.color}`} style={{ width: `${p.pct}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Geographic distribution */}
-        <Card className="lg:col-span-2 p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Répartition géographique</h3>
-          <div className="space-y-2">
-            {countryData.map(c => (
-              <div key={c.country} className="flex items-center gap-3">
-                <span className="text-sm w-40 truncate">{c.country}</span>
-                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-500" style={{ width: `${c.pct}%` }} />
-                </div>
-                <span className="text-xs text-gray-500 w-20 text-right">{c.count.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Churn & LTV */}
         <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-4">Métriques SaaS</h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-xs text-gray-500 uppercase">Taux de churn</p>
-              <p className="text-2xl font-bold text-gray-900">{churnData.rate}</p>
-              <p className="text-xs text-green-600">{churnData.trend}</p>
+          <h3 className="font-semibold text-gray-900 mb-4">Répartition géographique</h3>
+          {countryCounts.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune donnée pour l'instant.</p>
+          ) : (
+            <div className="space-y-2">
+              {countryCounts.map(([code, count]) => {
+                const c = GLOBAL_COUNTRIES.find(g => g.code === code);
+                return (
+                  <div key={code} className="flex items-center gap-3">
+                    <span className="text-sm w-40 truncate">{c ? `${c.flag} ${c.name}` : code}</span>
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-brand-500" style={{ width: `${(count / tenants.length) * 100}%` }} /></div>
+                    <span className="text-xs text-gray-500 w-10 text-right">{count}</span>
+                  </div>
+                );
+              })}
             </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase">LTV moyenne</p>
-              <p className="text-2xl font-bold text-gray-900">{churnData.ltv}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase">Nouvelles inscriptions ({period})</p>
-              <p className="text-2xl font-bold text-green-600">+847</p>
-            </div>
-          </div>
+          )}
         </Card>
       </div>
 
       <Card>
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">Boutiques récentes</h3>
-          <Button variant="secondary" size="sm">Voir tout</Button>
-        </div>
-        <Table headers={['Boutique', 'Plan', 'Pays', 'Revenu', 'Date', 'Statut']}>
-          {recent.map(r => (
-            <tr key={r.store} className="border-b border-gray-50 hover:bg-gray-50">
-              <td className="py-3 px-4 font-medium text-gray-900">{r.store}</td>
-              <td className="py-3 px-4"><Badge color={r.plan === 'Entreprise' ? 'gray' : r.plan === 'Premium' ? 'brand' : 'blue'}>{r.plan}</Badge></td>
-              <td className="py-3 px-4 text-gray-500">{r.country}</td>
-              <td className="py-3 px-4 text-gray-700">{r.revenue}</td>
-              <td className="py-3 px-4 text-gray-500 text-xs">{r.date}</td>
-              <td className="py-3 px-4"><Badge color={r.status === 'active' ? 'green' : 'brand'}>{r.status === 'active' ? 'Active' : 'Essai'}</Badge></td>
-            </tr>
-          ))}
-        </Table>
-      </Card>
-
-      <Card className="mt-6 p-5">
-        <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Activity size={16} /> Activité plateforme</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-green-500 rounded-full" /><span className="text-gray-700">Systèmes opérationnels</span></div>
-          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-brand-500 rounded-full" /><span className="text-gray-700">3 essais expirant</span></div>
-          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-blue-500 rounded-full" /><span className="text-gray-700">1 nouveau thème</span></div>
-          <div className="flex items-center gap-2"><div className="w-2 h-2 bg-purple-500 rounded-full" /><span className="text-gray-700">MRR +12%</span></div>
-        </div>
+        <div className="p-4 border-b border-gray-100"><h3 className="font-semibold text-gray-900">Boutiques récentes</h3></div>
+        {tenants.length === 0 ? (
+          <p className="p-6 text-sm text-gray-400 text-center">Aucune boutique inscrite pour l'instant.</p>
+        ) : (
+          <Table headers={['Boutique', 'Plan', 'Pays', 'Créée le', 'Statut']}>
+            {tenants.slice(0, 10).map(t => {
+              const c = GLOBAL_COUNTRIES.find(g => g.code === t.country);
+              return (
+                <tr key={t.id} className="border-b border-gray-50 hover:bg-gray-50">
+                  <td className="py-3 px-4 font-medium text-gray-900">{t.name}</td>
+                  <td className="py-3 px-4"><Badge color={t.plan === 'enterprise' ? 'gray' : t.plan === 'premium' ? 'brand' : 'blue'}>{t.plan}</Badge></td>
+                  <td className="py-3 px-4 text-gray-500">{c ? `${c.flag} ${c.code}` : t.country || '—'}</td>
+                  <td className="py-3 px-4 text-gray-500 text-xs">{new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
+                  <td className="py-3 px-4"><Badge color={t.status === 'active' ? 'green' : 'brand'}>{t.status === 'active' ? 'Active' : t.status === 'trial' ? 'Essai' : t.status}</Badge></td>
+                </tr>
+              );
+            })}
+          </Table>
+        )}
       </Card>
     </div>
   );

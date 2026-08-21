@@ -54,7 +54,14 @@ export default function OnlineStore() {
   // best-effort) so the merchant's edits actually reach the public
   // storefront, which now reads theme_configs instead of localStorage.
   useEffect(() => {
-    localStorage.setItem(getTenantStorageKey('liafrikos_theme_config'), JSON.stringify(theme));
+    try {
+      localStorage.setItem(getTenantStorageKey('liafrikos_theme_config'), JSON.stringify(theme));
+    } catch {
+      // Quota exceeded (e.g. a large base64 video background) — the local
+      // cache write is best-effort only; Supabase (pushCloudTheme below)
+      // has no such 5MB browser limit and remains the real source of
+      // truth, so this is silently skipped rather than crashing the editor.
+    }
     const timeout = setTimeout(() => { pushCloudTheme(theme); }, 800);
     return () => clearTimeout(timeout);
   }, [theme]);
@@ -768,6 +775,35 @@ export default function OnlineStore() {
                         value={activeSection.props.image || ''}
                         onChange={dataUrl => updateSectionProp(activeSection.id, 'image', dataUrl)}
                       />
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Vidéo de fond (optionnelle)</label>
+                        <input
+                          type="file"
+                          accept="video/mp4,video/webm"
+                          onChange={e => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            if (file.size > 15 * 1024 * 1024) {
+                              alert('Vidéo trop lourde (max 15 Mo) — compressez-la avant de la téléverser.');
+                              return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = () => updateSectionProp(activeSection.id, 'backgroundVideoUrl', reader.result as string);
+                            reader.readAsDataURL(file);
+                          }}
+                          className="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-brand-50 file:text-brand-700 file:text-xs file:font-bold"
+                        />
+                        {activeSection.props.backgroundVideoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => updateSectionProp(activeSection.id, 'backgroundVideoUrl', '')}
+                            className="mt-1.5 text-[11px] text-red-600 hover:underline"
+                          >
+                            Retirer la vidéo (revenir à l'image)
+                          </button>
+                        )}
+                        <p className="mt-1 text-[10px] text-gray-400">MP4/WebM, 15 Mo max. Lue en boucle, sans son, derrière le texte — remplaçable à tout moment.</p>
+                      </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Bouton CTA texte</label>
                         <input

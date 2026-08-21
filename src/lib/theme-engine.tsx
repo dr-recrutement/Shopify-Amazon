@@ -1020,12 +1020,30 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
   const alignClass = props.align === 'left' ? 'text-left items-start' : props.align === 'right' ? 'text-right items-end' : 'text-center items-center';
   const overlayOpacity = Number(props.overlayOpacity || 50) / 100;
   const imageSrc = props.image || '';
+  const videoSrc = props.backgroundVideoUrl || '';
 
   return (
     <div
       className={`relative min-h-[420px] flex items-center justify-center ${spacingClass} text-white overflow-hidden bg-cover bg-center transition-all duration-300`}
-      style={{ backgroundImage: `url(${imageSrc})` }}
+      style={{ backgroundImage: videoSrc ? undefined : `url(${imageSrc})` }}
     >
+      {/* Optional video background — merchant-uploaded via the Design panel
+          in OnlineStore.tsx (props.backgroundVideoUrl). Autoplay requires
+          muted + playsInline on every browser; the poster image (or a
+          plain color) covers the first paint before the video loads, and
+          silently falls back to the static image if the video 404s. */}
+      {videoSrc && (
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={videoSrc}
+          poster={imageSrc || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+        />
+      )}
       {/* Visual Overlay */}
       <div className="absolute inset-0 bg-black transition-opacity" style={{ opacity: overlayOpacity }} />
 

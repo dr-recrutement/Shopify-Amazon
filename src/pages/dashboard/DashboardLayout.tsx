@@ -1,8 +1,10 @@
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
 import { signOut } from '../../lib/auth';
+import { getOrders } from '../../lib/app-state';
+import { fetchCloudOrders } from '../../lib/tenant-sync';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Bot, Store, Megaphone, Calculator, UserCog, MessageSquare,
@@ -41,6 +43,15 @@ export default function DashboardLayout() {
   const nav = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
+  const [pendingOrderCount, setPendingOrderCount] = useState(0);
+
+  useEffect(() => {
+    const count = () => setPendingOrderCount(getOrders().filter(o => o.status === 'pending').length);
+    count();
+    fetchCloudOrders().then(cloud => {
+      if (cloud) setPendingOrderCount(cloud.filter(o => o.status === 'pending').length);
+    });
+  }, []);
 
   const logout = async () => { await signOut(); nav('/'); };
 
@@ -86,11 +97,13 @@ export default function DashboardLayout() {
           </button>
           <div className="flex-1 max-w-md relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input placeholder="Rechercher..." className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-gray-200" />
+            <input disabled placeholder="Recherche globale — bientôt disponible" className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-transparent rounded-lg text-sm cursor-not-allowed text-gray-400" />
           </div>
-          <button className="p-2 rounded-lg hover:bg-gray-50 relative">
+          <button onClick={() => nav('/app/orders')} className="p-2 rounded-lg hover:bg-gray-50 relative" title={pendingOrderCount > 0 ? `${pendingOrderCount} commande(s) en attente` : 'Aucune notification'}>
             <Bell size={18} className="text-gray-600" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full" />
+            {pendingOrderCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-brand-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">{pendingOrderCount}</span>
+            )}
           </button>
           <div className="relative">
             <button onClick={() => setUserMenu(!userMenu)} className="flex items-center gap-2 p-1 pr-2 rounded-lg hover:bg-gray-50">

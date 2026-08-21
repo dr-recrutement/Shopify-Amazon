@@ -1,8 +1,9 @@
 import { PageHeader, Card, Button, Badge, Table } from './ui';
 import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getCampaigns, saveCampaigns, type Campaign, type CampaignChannel } from '../../lib/app-state';
-import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, ensureUuidId } from '../../lib/tenant-sync';
+import { getCampaigns, saveCampaigns, getDiscounts, type Campaign, type CampaignChannel } from '../../lib/app-state';
+import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, fetchCloudDiscounts, ensureUuidId } from '../../lib/tenant-sync';
 
 const CHANNEL_LABELS: Record<CampaignChannel, string> = { email: 'Email', sms: 'SMS', social: 'Social' };
 const STATUS_LABELS: Record<string, string> = { sent: 'Envoyée', active: 'Active', scheduled: 'Programmée', draft: 'Brouillon' };
@@ -11,7 +12,8 @@ export default function Marketing() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [showEditor, setShowEditor] = useState(false);
   const [preview, setPreview] = useState(false);
-  const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
+  const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '', discountCode: '' });
+  const [discountCodes, setDiscountCodes] = useState<string[]>([]);
 
   useEffect(() => {
     const local = getCampaigns().map(c => ({ ...c, id: ensureUuidId(c.id) }));
@@ -25,6 +27,8 @@ export default function Marketing() {
         pushCloudCampaigns(local);
       }
     });
+    setDiscountCodes(getDiscounts().map(d => d.code));
+    fetchCloudDiscounts().then(cloud => { if (cloud) setDiscountCodes(cloud.map(d => d.code)); });
   }, []);
 
   const sendCampaign = () => {
@@ -34,7 +38,7 @@ export default function Marketing() {
     const updated = [newC, ...campaigns];
     setCampaigns(updated); saveCampaigns(updated); pushCloudCampaigns(updated);
     setShowEditor(false);
-    setForm({ name: '', channel: 'email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '' });
+    setForm({ name: '', channel: 'email', audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '', discountCode: '' });
   };
 
   const deleteCampaign = (id: string) => {
@@ -62,7 +66,7 @@ export default function Marketing() {
           <Sparkles className="text-brand-600" size={20} />
           <p className="text-sm text-gray-700">L'assistant marketing IA peut générer vos textes, segments et calendrier.</p>
         </div>
-        <Button variant="secondary" size="sm">Lancer l'assistant IA</Button>
+        <Button variant="secondary" size="sm" disabled title="Bientôt disponible">Assistant IA — bientôt</Button>
       </Card>
 
       <Card>
@@ -91,7 +95,7 @@ export default function Marketing() {
           {['Panier abandonné', 'Bienvenue nouveau client', 'Relance post-achat', 'Anniversaire client'].map(a => (
             <div key={a} className="p-3 border border-gray-100 rounded-lg flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">{a}</span>
-              <Button variant="secondary" size="sm">Activer</Button>
+              <Button variant="secondary" size="sm" disabled title="Bientôt disponible">Bientôt</Button>
             </div>
           ))}
         </div>
@@ -117,9 +121,16 @@ export default function Marketing() {
                 <div><label className="block text-sm font-medium mb-1">Programmation</label><select value={form.schedule} onChange={e => setForm({ ...form, schedule: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500"><option value="now">Immédiate</option><option value="later">Différée</option></select></div>
                 {form.schedule === 'later' && <div><label className="block text-sm font-medium mb-1">Date</label><input type="datetime-local" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500" /></div>}
               </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-xs text-gray-500">Code promo lié (optionnel)</span>
-                <Button variant="secondary" size="sm">Associer</Button>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-3">
+                <span className="text-xs text-gray-500 flex-shrink-0">Code promo lié (optionnel)</span>
+                {discountCodes.length > 0 ? (
+                  <select value={form.discountCode} onChange={e => setForm({ ...form, discountCode: e.target.value })} className="px-2 py-1 border border-gray-200 rounded-md text-xs bg-white">
+                    <option value="">Aucun</option>
+                    {discountCodes.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                ) : (
+                  <Link to="/app/discounts" className="text-xs text-brand-600 hover:underline">Créer un code promo</Link>
+                )}
               </div>
               <div className="flex gap-2 pt-2">
                 <Button variant="secondary" onClick={() => setPreview(!preview)} className="flex items-center gap-1"><Eye size={14} /> Aperçu</Button>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLang } from '../../lib/i18n';
 import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
-import { getShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
 import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
 import { fetchCloudSettings, pushCloudSettings, fetchCloudGateways, pushCloudGateway } from '../../lib/tenant-sync';
@@ -174,7 +174,7 @@ export default function Settings() {
   const [chatValue, setChatValue] = useState(() => localStorage.getItem(getTenantStorageKey('chat_value')) || '+2250700000000');
 
   // Global country selection autocomplete state
-  const [_selectedCountryCode, setSelectedCountryCode] = useState(() => {
+  const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
     const found = GLOBAL_COUNTRIES.find(c => c.code === shopProfile.country || c.name === shopProfile.country);
     return found ? found.code : 'CI';
   });
@@ -466,7 +466,11 @@ export default function Settings() {
                   </div>
                 )}
               </div>
-              <Button size="sm">Sauvegarder</Button>
+              <Button size="sm" onClick={() => {
+                saveShopProfile({ ...shopProfile, country: selectedCountryCode });
+                setSettingsSaved(true);
+                setTimeout(() => setSettingsSaved(false), 2000);
+              }}>{settingsSaved ? 'Enregistré ✓' : 'Sauvegarder'}</Button>
             </div>
           )}
           {active === 'plan' && (
@@ -909,11 +913,30 @@ export default function Settings() {
           {active === 'shipping' && (
             <div className="space-y-4 text-xs sm:text-sm">
               <h3 className="font-bold text-gray-900 text-sm">Zones de livraison</h3>
-              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white shadow-sm">
-                <div><p className="font-bold text-gray-900 font-medium">Côte d'Ivoire</p><p className="text-[10px] text-gray-500">1 000 XOF · 2-3 jours</p></div>
-                <Button variant="ghost" size="sm">Éditer</Button>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              {(settings.shippingZones || []).length === 0 && (
+                <p className="text-gray-400">Aucune zone configurée — vos clients ne verront pas de frais de livraison précis au checkout.</p>
+              )}
+              {(settings.shippingZones || []).map((z: { id: string; name: string; price: number; days: string }) => (
+                <div key={z.id} className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white shadow-sm">
+                  <div><p className="font-bold text-gray-900 font-medium">{z.name}</p><p className="text-[10px] text-gray-500">{z.price.toLocaleString('fr-FR')} XOF · {z.days}</p></div>
+                  <Button variant="ghost" size="sm" onClick={() => updateSetting('shippingZones', (settings.shippingZones || []).filter((x: any) => x.id !== z.id))}>Retirer</Button>
+                </div>
+              ))}
+              <div className="flex flex-wrap gap-2 items-end p-3 bg-gray-50 rounded-lg">
+                <div><label className="block text-[10px] font-bold text-gray-500 mb-1">Zone</label><input id="newZoneName" placeholder="Ex. Sénégal" className="px-2 py-1.5 border border-gray-200 rounded-md text-xs w-32" /></div>
+                <div><label className="block text-[10px] font-bold text-gray-500 mb-1">Prix (XOF)</label><input id="newZonePrice" type="number" placeholder="1000" className="px-2 py-1.5 border border-gray-200 rounded-md text-xs w-24" /></div>
+                <div><label className="block text-[10px] font-bold text-gray-500 mb-1">Délai</label><input id="newZoneDays" placeholder="2-3 jours" className="px-2 py-1.5 border border-gray-200 rounded-md text-xs w-24" /></div>
+                <Button variant="secondary" size="sm" onClick={() => {
+                  const nameEl = document.getElementById('newZoneName') as HTMLInputElement;
+                  const priceEl = document.getElementById('newZonePrice') as HTMLInputElement;
+                  const daysEl = document.getElementById('newZoneDays') as HTMLInputElement;
+                  if (!nameEl.value.trim()) return;
+                  const zone = { id: crypto.randomUUID(), name: nameEl.value.trim(), price: Number(priceEl.value) || 0, days: daysEl.value.trim() || 'Non précisé' };
+                  updateSetting('shippingZones', [...(settings.shippingZones || []), zone]);
+                  nameEl.value = ''; priceEl.value = ''; daysEl.value = '';
+                }}>Ajouter une zone</Button>
               </div>
-              <Button variant="secondary" size="sm">Ajouter une zone</Button>
             </div>
           )}
           {active === 'policies' && (
@@ -1045,7 +1068,7 @@ export default function Settings() {
               </div>
             </div>
           )}
-          {(['locations', 'apps', 'channels', 'events', 'notifications', 'metafields'] as const).includes(active as any) && (
+          {(['locations', 'apps', 'channels', 'events', 'notifications', 'metafields', 'privacy'] as const).includes(active as any) && (
             <div className="space-y-3 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
               <p className="text-gray-500">Cette section n'est pas encore construite. Plutôt que d'afficher un panneau vide, on préfère te le dire clairement — dis-nous ce dont tu as besoin ici et on la développe pour de vrai.</p>
@@ -1095,14 +1118,6 @@ export default function Settings() {
                   Activer le Chat
                 </button>
               </div>
-            </div>
-          )}
-          {!['general','plan','payments','domains','shipping','policies','chat'].includes(active) && (
-            <div className="space-y-4 text-xs sm:text-sm">
-              <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
-              <p className="text-gray-500">Configuration de cette section.</p>
-              <div className="p-4 bg-gray-50 rounded-lg text-xs text-gray-600">Module opérationnel — données sauvegardées et appliquées à votre boutique.</div>
-              <Button size="sm">Sauvegarder</Button>
             </div>
           )}
         </Card>

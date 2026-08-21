@@ -15,7 +15,7 @@ import { ImageUploadField } from '../../components/ImageUpload';
 import {
   TEMPLATE_PROFILES, FONT_OPTIONS, defaultThemeForType, type ThemePreset,
 } from '../../lib/theme-engine';
-import { getTenantStorageKey, getShopTheme, saveShopTheme } from '../../lib/app-state';
+import { getTenantStorageKey, getShopTheme, saveShopTheme, getShopSubdomain } from '../../lib/app-state';
 import { fetchCloudCmsPages, pushCloudCmsPages } from '../../lib/tenant-sync';
 
 export default function Content() {
@@ -299,7 +299,7 @@ export default function Content() {
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Globe2 size={14} /> Metaobjects</h3>
           <p className="text-sm text-gray-500 mb-4">Créez des types de contenu personnalisés (témoignages, partenaires, carrousel, collections).</p>
-          <Button variant="secondary" size="sm" className="w-full"><Layout size={14} /> Créer un metaobject</Button>
+          <Button variant="secondary" size="sm" className="w-full" disabled title="Bientôt disponible"><Layout size={14} /> Metaobjects — bientôt</Button>
         </Card>
       </div>
 
@@ -320,7 +320,9 @@ export default function Content() {
                 {SHOPIFY_TEMPLATES.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
               </select>
               <Badge color={draft.status === 'published' ? 'green' : 'brand'}>{draft.status === 'published' ? 'Publié' : 'Brouillon'}</Badge>
-              <Button variant="secondary" size="sm"><Eye size={14} /> Aperçu</Button>
+              <a href={`/s/${getShopSubdomain().replace('.os.liafrik.com', '')}`} target="_blank" rel="noopener noreferrer">
+                <Button variant="secondary" size="sm"><Eye size={14} /> Aperçu</Button>
+              </a>
               <Button onClick={savePage} size="sm"><Save size={14} /> Enregistrer</Button>
             </div>
           </div>

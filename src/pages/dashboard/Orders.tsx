@@ -1,5 +1,6 @@
 import { PageHeader, Card, Button, EmptyState, Table } from './ui';
-import { ShoppingCart, Plus, Filter } from 'lucide-react';
+import { ShoppingCart, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getOrders, saveOrder, saveOrdersList, type StoreOrder } from '../../lib/app-state';
 import { fetchCloudOrders, pushCloudOrders, ensureUuidId } from '../../lib/tenant-sync';
@@ -81,7 +82,6 @@ export default function Orders() {
             {tab.label}
           </button>
         ))}
-        <button className="px-3 py-1.5 rounded-lg text-sm font-medium bg-white border border-gray-200 hover:bg-gray-50 flex items-center gap-1"><Filter size={14} /> Filtrer</button>
       </div>
       <Card>
         {filteredOrders.length === 0 ? (
@@ -122,12 +122,12 @@ export default function Orders() {
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-2">Draft orders</h3>
           <p className="text-sm text-gray-500">Créez des commandes manuelles (vente téléphonique, sur devis).</p>
-          <Button variant="secondary" size="sm" className="mt-3">Créer un brouillon</Button>
+          <Button variant="secondary" size="sm" className="mt-3" onClick={addOrder}>Créer un brouillon</Button>
         </Card>
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-2">Abandoned checkouts</h3>
           <p className="text-sm text-gray-500">Relancez les paniers abandonnés via le module Marketing.</p>
-          <Button variant="secondary" size="sm" className="mt-3">Voir les paniers</Button>
+          <Link to="/app/marketing"><Button variant="secondary" size="sm" className="mt-3">Voir les paniers</Button></Link>
         </Card>
       </div>
     </div>

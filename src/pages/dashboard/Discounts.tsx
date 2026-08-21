@@ -83,7 +83,7 @@ export default function Discounts() {
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Sparkles size={16} className="text-brand-600" />
           <span>L'IA peut générer automatiquement des promotions selon votre stock et votre saison.</span>
-          <Button variant="secondary" size="sm" className="ml-auto">Générer une promo</Button>
+          <Button variant="secondary" size="sm" className="ml-auto" disabled title="Bientôt disponible">Générer une promo — bientôt</Button>
         </div>
       </Card>
       <Card>

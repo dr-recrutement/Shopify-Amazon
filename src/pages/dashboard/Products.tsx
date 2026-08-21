@@ -231,8 +231,8 @@ export default function Products() {
       <Card>
         <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-gray-900">Tous les produits</h3>
-          <Button variant="secondary" size="sm" className="flex items-center gap-1.5">
-            <Sparkles size={14} /> Générer par IA
+          <Button variant="secondary" size="sm" className="flex items-center gap-1.5" disabled title="Bientôt disponible">
+            <Sparkles size={14} /> Générer par IA — bientôt
           </Button>
         </div>
         {products.length === 0 ? (

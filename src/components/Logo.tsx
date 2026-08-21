@@ -20,7 +20,7 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
         <span style={{ fontSize: sizes[size].img * 0.5 }}>O</span>
       </div>
       {!iconOnly && (
-        <span className={`font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
+        <span translate="no" lang="und" className={`notranslate font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
           Os <span className="text-brand-600">🛒</span>
         </span>
       )}

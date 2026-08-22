@@ -144,15 +144,15 @@ export const LAYOUT_VARIANTS: { id: LayoutVariant; label: string; desc: string; 
   { id: 'services', label: 'Services Pro', desc: 'Consultants, freelances, cabinets — réservation et contact', radius: 'rounded-md', headerStyle: 'warm', cardStyle: 'bordered' },
   { id: 'creative-magazine', label: 'Créatif / Magazine', desc: 'Éditorial, médias, blogs, créateurs — design typographique', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
   // Legacy variants (kept for backward compat)
-  { id: 'dawn', label: 'Dawn', desc: 'Minimal, bannière plein cadre, cartes nettes', radius: 'rounded-none', headerStyle: 'thin', cardStyle: 'flat' },
+  { id: 'dawn', label: 'Aurora', desc: 'Minimal, bannière plein cadre, cartes nettes', radius: 'rounded-none', headerStyle: 'thin', cardStyle: 'flat' },
   { id: 'refresh', label: 'Refresh', desc: 'Éditorial centré, cartes arrondies', radius: 'rounded-2xl', headerStyle: 'centered', cardStyle: 'rounded' },
   { id: 'spotlight', label: 'Spotlight', desc: 'Grandes images, nav overlay', radius: 'rounded-lg', headerStyle: 'overlay', cardStyle: 'shadowed' },
-  { id: 'crave', label: 'Crave', desc: 'Vibrant arrondi, badges ludiques', radius: 'rounded-full', headerStyle: 'pill', cardStyle: 'rounded-bold' },
+  { id: 'crave', label: 'Savory', desc: 'Vibrant arrondi, badges ludiques', radius: 'rounded-full', headerStyle: 'pill', cardStyle: 'rounded-bold' },
   { id: 'sense', label: 'Sense', desc: 'Pastel doux, radius gentle', radius: 'rounded-xl', headerStyle: 'airy', cardStyle: 'soft' },
   { id: 'craft', label: 'Craft', desc: 'Artisanal chaleureux, bordures texturées', radius: 'rounded-md', headerStyle: 'warm', cardStyle: 'bordered' },
   { id: 'colorblock', label: 'Colorblock', desc: 'Blocs audacieux, contraste fort', radius: 'rounded-none', headerStyle: 'block', cardStyle: 'hard' },
-  { id: 'studio', label: 'Studio', desc: 'Créatif asymétrique, accent or', radius: 'rounded-lg', headerStyle: 'asymmetric', cardStyle: 'mixed' },
-  { id: 'publisher', label: 'Publisher', desc: 'Colonnes éditoriales, serif dense', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
+  { id: 'studio', label: 'Atelier', desc: 'Créatif asymétrique, accent or', radius: 'rounded-lg', headerStyle: 'asymmetric', cardStyle: 'mixed' },
+  { id: 'publisher', label: 'Chronicle', desc: 'Colonnes éditoriales, serif dense', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
   { id: 'taste', label: 'Taste', desc: 'Typographique, grille serrée monochrome', radius: 'rounded-none', headerStyle: 'minimal', cardStyle: 'tight' },
 ];
 
@@ -200,22 +200,22 @@ export const SECTION_LIBRARY: { type: SectionType; label: string; icon: string; 
 
 export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts']; layoutVariant: LayoutVariant }> = {
   universal: {
-    label: 'Dawn', desc: 'Thème de référence Shopify OS 2.0 — minimal, rapide, polyvalent',
+    label: 'Aurora', desc: 'Thème de référence — minimal, rapide, polyvalent',
     colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5C5C5C', background: '#FFFFFF', text: '#121212' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }, layoutVariant: 'dawn',
   },
   luxury: {
-    label: 'Studio', desc: 'Élégant et créatif, pour marques de design et studios artistiques',
+    label: 'Atelier', desc: 'Élégant et créatif, pour marques de design et studios artistiques',
     colors: { primary: '#1B1B1B', secondary: '#3A3A3A', accent: '#C4A86A', background: '#FAFAFA', text: '#1B1B1B' },
     fonts: { heading: 'Playfair Display', body: 'Montserrat' }, layoutVariant: 'studio',
   },
   african: {
-    label: 'Crave', desc: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons',
+    label: 'Savory', desc: 'Vibrant et gourmand, pensé pour l’alimentaire et les boissons',
     colors: { primary: '#008060', secondary: '#1A1A1A', accent: '#5CC190', background: '#FBFBFB', text: '#1A1A1A' },
     fonts: { heading: 'Montserrat', body: 'Montserrat' }, layoutVariant: 'crave',
   },
   editorial: {
-    label: 'Publisher', desc: 'Éditorial et riche en contenu, livres, musique et storytelling',
+    label: 'Chronicle', desc: 'Éditorial et riche en contenu, livres, musique et storytelling',
     colors: { primary: '#2B2B2B', secondary: '#1A1A1A', accent: '#6B6B6B', background: '#F8F6F1', text: '#1A1A1A' },
     fonts: { heading: 'Playfair Display', body: 'Lora' }, layoutVariant: 'publisher',
   },

@@ -1,25 +1,22 @@
-import { PageHeader, Card, Badge, Button, Table } from '../dashboard/ui';
+import { PageHeader, Card } from '../dashboard/ui';
+import { Construction } from 'lucide-react';
 
+// Every section using this component (Utilisateurs, Facturation SaaS, CMS
+// Plateforme, Modération, Statistiques globales, Audit & Logs,
+// Configuration) used to show 5 identical fake rows ('Élément 1'...'Élément
+// 5', a fake 'Actif' badge on all of them) with dead Export/Manage buttons
+// — the same fabricated placeholder regardless of which section you were
+// on. Rather than keep faking it, this states plainly that it isn't built
+// yet. AdminHome and AdminStores already show real data (tenants,
+// subscription_events); the rest need their own real data model each,
+// not one shared fake table.
 export default function AdminGeneric({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div>
       <PageHeader title={title} subtitle={subtitle} />
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">Données</h3>
-          <Button variant="secondary" size="sm">Exporter</Button>
-        </div>
-        <Table headers={['Colonne 1', 'Colonne 2', 'Colonne 3', 'Statut', '']}>
-          {[1, 2, 3, 4, 5].map(i => (
-            <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
-              <td className="py-3 px-4 font-medium text-gray-900">Élément {i}</td>
-              <td className="py-3 px-4 text-gray-500">Donnée {i}</td>
-              <td className="py-3 px-4 text-gray-700">{(i * 1000).toLocaleString()}</td>
-              <td className="py-3 px-4"><Badge color="green">Actif</Badge></td>
-              <td className="py-3 px-4"><button className="text-brand-600 text-sm hover:underline">Gérer</button></td>
-            </tr>
-          ))}
-        </Table>
+      <Card className="p-10 flex flex-col items-center text-center gap-3">
+        <Construction size={28} className="text-gray-300" />
+        <p className="text-sm text-gray-500 max-w-md">Cette section n'est pas encore construite. Les vraies données (boutiques, plans, revenus) sont déjà disponibles dans Vue globale et Boutiques — celle-ci a besoin de son propre modèle de données.</p>
       </Card>
     </div>
   );

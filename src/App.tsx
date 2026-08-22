@@ -13,6 +13,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import SupportPage from './pages/SupportPage';
 import GenericPage from './pages/GenericPage';
+import { ContactPageContent, FeaturesPageContent, ComingSoonContent } from './pages/StaticPageContent';
 import AboutPage from './pages/AboutPage';
 import StorefrontPage from './pages/StorefrontPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -75,12 +76,12 @@ export default function App() {
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
         {/* Public content pages */}
-        <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre dans le monde entier." />} />
-        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce." />} />
-        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce, success stories, conseils marketing." />} />
+        <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre dans le monde entier."><FeaturesPageContent /></GenericPage>} />
+        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce."><ComingSoonContent /></GenericPage>} />
+        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce, success stories, conseils marketing."><ComingSoonContent /></GenericPage>} />
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez-nous." />} />
+        <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez directement au bon service."><ContactPageContent /></GenericPage>} />
         <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Sellia." />} />
         <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées." />} />
         <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="Sellia — LiAfrik." />} />

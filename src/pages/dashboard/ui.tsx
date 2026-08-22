@@ -10,8 +10,8 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
   );
 }
 
-export function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`bg-white border border-gray-100 rounded-xl ${className}`}>{children}</div>;
+export function Card({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
+  return <div className={`bg-white border border-gray-100 rounded-xl ${className}`} onClick={onClick}>{children}</div>;
 }
 
 export function StatCard({ label, value, change, icon: Icon, color = 'brand' }: { label: string; value: string; change?: string; icon: any; color?: string }) {

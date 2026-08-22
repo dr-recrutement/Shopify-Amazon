@@ -1,4 +1,4 @@
-# Os — SaaS E-commerce Panafricain
+# Sellia — SaaS E-commerce Mondial
 
 Plateforme SaaS multi-tenant e-commerce, conçue et développée par **LiAfrik** basée à Dubai & Afrique 🌍.
 

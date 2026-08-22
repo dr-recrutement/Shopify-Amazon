@@ -70,7 +70,7 @@ export default function AdminHome() {
     <div>
       <PageHeader
         title="Vue globale"
-        subtitle="Données réelles de la plateforme Os."
+        subtitle="Données réelles de la plateforme Sellia."
         action={<Button variant="secondary" size="sm" onClick={exportCsv}><Download size={14} /> Exporter</Button>}
       />
 

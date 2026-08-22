@@ -24,15 +24,15 @@ export const translations: Dict = {
   'hero.title2': { fr: 'à votre image.', en: 'in your image.' },
   'hero.title3': { fr: 'Partout dans le monde.', en: 'Everywhere in the world.' },
   'hero.subtitle': {
-    fr: "Os, la plateforme SaaS e-commerce mondiale conçue par LiAfrik — Mobile Money natif, paiements internationaux, IA intégrée, 0% commission.",
-    en: "Os, the global e-commerce SaaS platform built by LiAfrik — native Mobile Money, international payments, built-in AI, 0% commission."
+    fr: "Sellia, la plateforme SaaS e-commerce mondiale conçue par LiAfrik — Mobile Money natif, paiements internationaux, IA intégrée, 0% commission.",
+    en: "Sellia, the global e-commerce SaaS platform built by LiAfrik — native Mobile Money, international payments, built-in AI, 0% commission."
   },
   'hero.cta.start': { fr: 'Créer ma boutique', en: 'Create my store' },
   'hero.cta.pricing': { fr: 'Voir les tarifs', en: 'See pricing' },
   'hero.trial': { fr: '7 jours d\'essai gratuit inclus — sans carte bancaire', en: '7-day free trial included — no credit card' },
   'footer.tagline': {
-    fr: 'Os, la plateforme SaaS e-commerce mondiale. Votre boutique en ligne, à votre image. Partout dans le monde.',
-    en: 'Os, the global e-commerce SaaS platform. Your online store, in your image. Everywhere in the world.'
+    fr: 'Sellia, la plateforme SaaS e-commerce mondiale. Votre boutique en ligne, à votre image. Partout dans le monde.',
+    en: 'Sellia, the global e-commerce SaaS platform. Your online store, in your image. Everywhere in the world.'
   },
   'footer.origin': {
     fr: 'Conçu et développé par LiAfrik 🌍',

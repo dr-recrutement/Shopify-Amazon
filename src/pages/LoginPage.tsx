@@ -64,7 +64,7 @@ export default function LoginPage() {
         <div className="relative text-white max-w-sm">
           <Logo size="lg" white />
           <h2 className="mt-8 text-3xl font-bold leading-tight">Votre boutique, en ligne, partout dans le monde.</h2>
-          <p className="mt-4 text-brand-100 text-sm leading-relaxed">Mobile Money natif, IA intégrée, 0% commission. Rejoignez les vendeurs qui vendent déjà avec Os.</p>
+          <p className="mt-4 text-brand-100 text-sm leading-relaxed">Mobile Money natif, IA intégrée, 0% commission. Rejoignez les vendeurs qui vendent déjà avec Sellia.</p>
         </div>
       </div>
 

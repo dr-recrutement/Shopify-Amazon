@@ -78,9 +78,9 @@ export default function App() {
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez-nous." />} />
-        <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Os." />} />
+        <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Sellia." />} />
         <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées." />} />
-        <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="Os — LiAfrik." />} />
+        <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="Sellia — LiAfrik." />} />
 
         {/* Vendor dashboard */}
         <Route path="/app" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

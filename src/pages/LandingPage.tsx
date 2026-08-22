@@ -180,7 +180,7 @@ const features = [
 ];
 
 const productHighlights = [
-  { title: 'Zéro commission, toujours', text: "Vos paiements clients arrivent directement sur votre propre compte Flutterwave, Paystack, Orange Money ou autre — Os ne prélève rien sur vos ventes." },
+  { title: 'Zéro commission, toujours', text: "Vos paiements clients arrivent directement sur votre propre compte Flutterwave, Paystack, Orange Money ou autre — Sellia ne prélève rien sur vos ventes." },
   { title: 'Pensé pour le monde entier', text: "Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, multilingue, optimisé pour les connexions lentes — une plateforme qui s'adapte à votre marché, pas l'inverse." },
   { title: 'IA incluse selon votre plan', text: "Génération de descriptions produits, visuels, publicités et chatbot client — pour vendre plus vite sans agence ni designer." },
 ];
@@ -193,12 +193,12 @@ const stats = [
 ];
 
 const faqs = [
-  { q: 'Os prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Orange Money, etc.).' },
+  { q: 'Sellia prélève-t-il une commission sur mes ventes ?', a: 'Non. Jamais. Aucune commission, quel que soit votre plan. Les paiements clients vont directement dans votre propre compte (Flutterwave, Paystack, Orange Money, etc.).' },
   { q: 'Combien de temps pour créer ma boutique ?', a: 'Moins de 10 minutes. Notre onboarding guidé vous accompagne : compte, nom, localisation, thème, premier produit, moyen de paiement, plan — puis votre boutique est en ligne.' },
   { q: 'Puis-je vendre dans plusieurs pays ?', a: 'Oui. Le module Markets couvre de nombreux pays avec leurs devises locales. Activez les marchés que vous souhaitez desservir.' },
   { q: "L'IA est-elle vraiment incluse ?", a: 'Oui. Génération de descriptions, logos, bannières, publicités Facebook/Instagram, vidéos TikTok, chatbot client, assistant comptable — selon votre plan.' },
   { q: 'Quels moyens de paiement sont supportés ?', a: 'Flutterwave, Paystack, Orange Money, MTN MoMo, Wave, CinetPay, Stripe, PayPal, plus un champ générique pour toute autre passerelle. Vous connectez vos propres identifiants API.' },
-  { q: 'Pourquoi Os est-il différent ?', a: "Parce qu'il est conçu et développé par LiAfrik pour les réalités du commerce mondial — pas adapté après coup. Mobile Money natif, paiements internationaux, connexions faibles optimisées, adressage local." },
+  { q: 'Pourquoi Sellia est-il différent ?', a: "Parce qu'il est conçu et développé par LiAfrik pour les réalités du commerce mondial — pas adapté après coup. Mobile Money natif, paiements internationaux, connexions faibles optimisées, adressage local." },
 ];
 
 export default function LandingPage() {
@@ -487,16 +487,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why Os - mission */}
+      {/* Why Sellia - mission */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-6">
               🌍 Conçu par LiAfrik 🌍
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi Os ?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi Sellia ?</h2>
             <p className="mt-6 text-lg text-gray-600 leading-relaxed font-medium">
-              Os n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik, dès sa fondation, pour vendre partout dans le monde. Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
+              Sellia n'est pas une adaptation d'un outil étranger — c'est pensé et construit par LiAfrik, dès sa fondation, pour vendre partout dans le monde. Mobile Money natif là où ça compte, paiements internationaux partout ailleurs, connexions faibles optimisées, adressage local, multilinguisme FR/EN : chaque décision technique répond aux réalités du commerce moderne.
             </p>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
@@ -616,12 +616,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Product highlights (no fabricated customer testimonials — Os is
+      {/* Product highlights (no fabricated customer testimonials — Sellia is
           pre-launch and has no real merchants to quote yet) */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Section className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi vendre avec Os</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Pourquoi vendre avec Sellia</h2>
           </Section>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {productHighlights.map((h, i) => (

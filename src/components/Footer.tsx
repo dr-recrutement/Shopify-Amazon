@@ -65,7 +65,7 @@ export function Footer() {
           ))}
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-500">© {new Date().getFullYear()} Os — Conçu et développé par LiAfrik. Tous droits réservés.</p>
+          <p className="text-xs text-gray-500">© {new Date().getFullYear()} Sellia — Conçu et développé par LiAfrik. Tous droits réservés.</p>
           <p className="text-xs text-gray-500 mt-1 md:mt-0">{t('footer.origin')}</p>
           <div className="flex gap-4 text-xs text-gray-500">
             <Link to="/legal/terms" className="hover:text-brand-500">CGU</Link>

@@ -20,8 +20,8 @@ export default function AboutPage() {
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
             {fr
-              ? "Os est né, conçu par LiAfrik pour les réalités du commerce mondial. Notre ambition : donner à chaque entrepreneur les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
-              : "Os was born, designed by LiAfrik for the realities of global commerce. Our ambition: to give every entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
+              ? "Sellia est né, conçu par LiAfrik pour les réalités du commerce mondial. Notre ambition : donner à chaque entrepreneur les mêmes outils que les plus grandes marques mondiales, sans barrière financière ni technique."
+              : "Sellia was born, designed by LiAfrik for the realities of global commerce. Our ambition: to give every entrepreneur the same tools as the world's largest brands, without financial or technical barriers."}
           </p>
         </div>
 
@@ -31,8 +31,8 @@ export default function AboutPage() {
           </h2>
           <p className="text-gray-700 leading-relaxed">
             {fr
-              ? "Le commerce en ligne mérite des outils construits pour ses réalités, pas des traductions. Mobile Money, connexions variables, diversité linguistique, logistique locale — autant de contraintes que les outils étrangers ignorent ou traitent en annexe. Os les aborde dès la conception."
-              : "Online commerce deserves tools built for its realities, not translations. Mobile Money, variable connections, linguistic diversity, local logistics — constraints that foreign tools ignore or treat as an afterthought. Os addresses them from the ground up."}
+              ? "Le commerce en ligne mérite des outils construits pour ses réalités, pas des traductions. Mobile Money, connexions variables, diversité linguistique, logistique locale — autant de contraintes que les outils étrangers ignorent ou traitent en annexe. Sellia les aborde dès la conception."
+              : "Online commerce deserves tools built for its realities, not translations. Mobile Money, variable connections, linguistic diversity, local logistics — constraints that foreign tools ignore or treat as an afterthought. Sellia addresses them from the ground up."}
           </p>
         </Card>
 
@@ -64,7 +64,7 @@ export default function AboutPage() {
               : "Made to sell everywhere in the world, without compromise, without commission, without borders."}
           </p>
           <p className="mt-6 text-xs text-gray-500">
-            {fr ? 'Os — conçu et développé par LiAfrik' : 'Os — designed and developed by LiAfrik'}
+            {fr ? 'Sellia — conçu et développé par LiAfrik' : 'Sellia — designed and developed by LiAfrik'}
           </p>
         </Card>
       </div>

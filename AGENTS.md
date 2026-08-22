@@ -1,4 +1,4 @@
-# LiAfrik "Os" — Shopify-aligned SaaS e-commerce platform
+# LiAfrik "Sellia" — Shopify-aligned SaaS e-commerce platform
 
 ## Stack
 - React 18 + TypeScript + Vite + Tailwind CSS

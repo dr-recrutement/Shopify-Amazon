@@ -879,7 +879,7 @@ export default function Settings() {
                         Annuler
                       </button>
                     </div>
-                    <p className="text-[10px] text-gray-400">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Os.</p>
+                    <p className="text-[10px] text-gray-400">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Sellia.</p>
                   </div>
                 )}
               </div>

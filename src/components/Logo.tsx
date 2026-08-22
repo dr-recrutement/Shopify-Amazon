@@ -13,15 +13,17 @@ export function Logo({ size = 'md', iconOnly = false, white = false }: LogoProps
 
   return (
     <div className="flex items-center gap-2">
-      <div
-        className="rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold"
-        style={{ width: sizes[size].img, height: sizes[size].img, background: 'linear-gradient(135deg, #008060 0%, #004C3F 100%)' }}
-      >
-        <span style={{ fontSize: sizes[size].img * 0.5 }}>O</span>
-      </div>
+      <img
+        src="/logo.png"
+        alt="Sellia"
+        width={sizes[size].img}
+        height={sizes[size].img}
+        className="flex-shrink-0 object-contain"
+        style={{ width: sizes[size].img, height: sizes[size].img, filter: white ? 'brightness(0) invert(1)' : undefined }}
+      />
       {!iconOnly && (
         <span translate="no" lang="und" className={`notranslate font-bold ${sizes[size].text} ${white ? 'text-white' : 'text-gray-900'} tracking-tight`}>
-          Os <span className="text-brand-600">🛒</span>
+          Sellia
         </span>
       )}
     </div>

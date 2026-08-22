@@ -15,12 +15,12 @@ export default function AdminThemes() {
   const presets = Object.entries(THEME_PRESETS);
   return (
     <div>
-      <PageHeader title="Thèmes" subtitle="Les presets réels du moteur de thème Os." />
+      <PageHeader title="Thèmes" subtitle="Les presets réels du moteur de thème Sellia." />
       <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-brand-50 to-white">
         <div className="flex items-center gap-3">
           <Star className="text-brand-600" size={20} />
           <div>
-            <p className="text-sm font-medium text-gray-900">Moteur de thème propre à Os</p>
+            <p className="text-sm font-medium text-gray-900">Moteur de thème propre à Sellia</p>
             <p className="text-xs text-gray-500">Sections, blocs et éditeur visuel développés pour la plateforme — pas une adaptation d'un thème tiers.</p>
           </div>
         </div>

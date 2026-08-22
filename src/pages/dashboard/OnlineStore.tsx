@@ -364,7 +364,7 @@ export default function OnlineStore() {
       setDomainQuery('');
       setDomainSearchResult([]);
       setSelectedExtension(null);
-      showToast(`Félicitations ! Le domaine ${domainName} a été enregistré avec succès via Os.`);
+      showToast(`Félicitations ! Le domaine ${domainName} a été enregistré avec succès via Sellia.`);
     }, 2000);
   };
 
@@ -1687,7 +1687,7 @@ export default function OnlineStore() {
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                   <Globe size={16} className="text-brand-600" /> Domaine Personnalisé
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Connectez votre propre domaine (ex. ma-boutique.com) ou achetez-en un via Os pour remplacer l'adresse temporaire.</p>
+                <p className="text-xs text-gray-500 mt-1">Connectez votre propre domaine (ex. ma-boutique.com) ou achetez-en un via Sellia pour remplacer l'adresse temporaire.</p>
               </div>
 
               {/* Active domain list */}
@@ -1698,7 +1698,7 @@ export default function OnlineStore() {
                     <div className="text-left">
                       <div className="text-xs font-bold text-gray-800">{dom.domain}</div>
                       <div className="text-[10px] text-gray-500 mt-0.5">
-                        {dom.type === 'platform' ? 'Base de la plateforme' : dom.type === 'purchased' ? 'Enregistré via Os' : 'Liaison externe'}
+                        {dom.type === 'platform' ? 'Base de la plateforme' : dom.type === 'purchased' ? 'Enregistré via Sellia' : 'Liaison externe'}
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -1764,7 +1764,7 @@ export default function OnlineStore() {
 
               {/* Buy a new domain */}
               <div className="border-t border-gray-150 pt-3 space-y-2">
-                <span className="text-xs font-bold text-gray-600 uppercase block">Acheter un domaine via Os</span>
+                <span className="text-xs font-bold text-gray-600 uppercase block">Acheter un domaine via Sellia</span>
                 <form onSubmit={handleDomainSearch} className="flex gap-1">
                   <input
                     type="text"
@@ -1831,7 +1831,7 @@ export default function OnlineStore() {
                     >
                       {isPurchasing ? 'Enregistrement Cloudflare...' : `Payer ${selectedExtension.price}`}
                     </button>
-                    <p className="text-[9px] text-gray-400 mt-1">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Os.</p>
+                    <p className="text-[9px] text-gray-400 mt-1">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Sellia.</p>
                   </div>
                 )}
               </div>

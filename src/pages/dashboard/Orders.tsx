@@ -1,23 +1,30 @@
 import { PageHeader, Card, Button, EmptyState, Table } from './ui';
-import { ShoppingCart, Plus } from 'lucide-react';
+import { ShoppingCart, Plus, X, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getOrders, saveOrder, saveOrdersList, type StoreOrder } from '../../lib/app-state';
-import { fetchCloudOrders, pushCloudOrders, ensureUuidId } from '../../lib/tenant-sync';
+import { getOrders, saveOrder, saveOrdersList, getProducts, type StoreOrder, type StoreProduct } from '../../lib/app-state';
+import { fetchCloudOrders, pushCloudOrders, fetchCloudProducts, ensureUuidId } from '../../lib/tenant-sync';
+
+const PAYMENT_METHODS = ['Orange Money', 'Wave', 'MTN MoMo', 'Carte bancaire', 'Virement', 'Espèces à la livraison'];
 
 export default function Orders() {
   const [orders, setOrders] = useState<StoreOrder[]>([]);
+  const [products, setProducts] = useState<StoreProduct[]>([]);
   const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'paid' | 'shipped' | 'cancelled'>('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // New order form state — real customer + real product line items instead
+  // of a one-click generator that used to create the identical fake order
+  // ('Client nouveau', 'Produit ajouté', 25 000 XOF) every single time.
+  const [customerName, setCustomerName] = useState('');
+  const [payment, setPayment] = useState(PAYMENT_METHODS[0]);
+  const [lineItems, setLineItems] = useState<Array<{ name: string; qty: number; price: number }>>([]);
+  const [selectedProductId, setSelectedProductId] = useState('');
 
   useEffect(() => {
-    // Normalize legacy non-UUID ids once so they can sync to Supabase, then
-    // load from the local cache immediately for a snappy UI...
     const local = getOrders().map(o => ({ ...o, id: ensureUuidId(o.id), orderNumber: o.orderNumber || o.id }));
     setOrders(local);
     saveOrdersList(local);
-
-    // ...then reconcile with the tenant's real data in Supabase, if
-    // configured. Falls back silently to the local cache otherwise.
     fetchCloudOrders().then(cloud => {
       if (cloud && cloud.length > 0) {
         setOrders(cloud);
@@ -26,34 +33,55 @@ export default function Orders() {
         pushCloudOrders(local);
       }
     });
+
+    const localProducts = getProducts();
+    setProducts(localProducts);
+    fetchCloudProducts().then(cloud => { if (cloud && cloud.length > 0) setProducts(cloud); });
   }, []);
 
-  const addOrder = () => {
-    const id = crypto.randomUUID();
+  const openCreateModal = () => {
+    setCustomerName('');
+    setPayment(PAYMENT_METHODS[0]);
+    setLineItems([]);
+    setSelectedProductId('');
+    setIsModalOpen(true);
+  };
+
+  const addLineItem = () => {
+    const product = products.find(p => p.id === selectedProductId);
+    if (!product) return;
+    setLineItems(prev => {
+      const existing = prev.find(i => i.name === product.name);
+      if (existing) return prev.map(i => i.name === product.name ? { ...i, qty: i.qty + 1 } : i);
+      return [...prev, { name: product.name, qty: 1, price: product.price }];
+    });
+  };
+
+  const removeLineItem = (name: string) => setLineItems(prev => prev.filter(i => i.name !== name));
+  const orderTotal = lineItems.reduce((sum, i) => sum + i.qty * i.price, 0);
+
+  const createOrder = () => {
+    if (!customerName.trim() || lineItems.length === 0) return;
     const draft: StoreOrder = {
-      id,
+      id: crypto.randomUUID(),
       orderNumber: `LA-${Date.now()}`,
-      customer: 'Client nouveau',
+      customer: customerName.trim(),
       date: new Date().toLocaleDateString('fr-FR'),
-      total: 25000,
+      total: orderTotal,
       status: 'pending',
-      payment: 'Orange Money',
-      currency: 'XOF',
-      items: [{ name: 'Produit ajouté', qty: 1, price: 25000 }],
+      payment,
+      currency: products[0]?.currency || 'XOF',
+      items: lineItems,
     };
     saveOrder(draft);
     const next = getOrders();
     setOrders(next);
     pushCloudOrders(next);
+    setIsModalOpen(false);
   };
 
   const handleUpdateStatus = (id: string, newStatus: StoreOrder['status']) => {
-    const updated = orders.map(o => {
-      if (o.id === id) {
-        return { ...o, status: newStatus };
-      }
-      return o;
-    });
+    const updated = orders.map(o => (o.id === id ? { ...o, status: newStatus } : o));
     setOrders(updated);
     saveOrdersList(updated);
     pushCloudOrders(updated);
@@ -69,9 +97,11 @@ export default function Orders() {
     { id: 'cancelled', label: 'Annulées' }
   ];
 
+  const currency = products[0]?.currency || 'XOF';
+
   return (
     <div>
-      <PageHeader title="Commandes" subtitle="Gérez toutes vos commandes." action={<Button onClick={addOrder}><Plus size={16} /> Créer une commande</Button>} />
+      <PageHeader title="Commandes" subtitle="Gérez toutes vos commandes." action={<Button onClick={openCreateModal}><Plus size={16} /> Créer une commande</Button>} />
       <div className="flex gap-2 mb-4 flex-wrap text-left">
         {tabs.map(tab => (
           <button
@@ -85,7 +115,7 @@ export default function Orders() {
       </div>
       <Card>
         {filteredOrders.length === 0 ? (
-          <EmptyState icon={ShoppingCart} title="Aucune commande" desc="Vos commandes apparaîtront ici." action={<Button onClick={addOrder}><Plus size={16} /> Créer</Button>} />
+          <EmptyState icon={ShoppingCart} title="Aucune commande" desc="Vos commandes apparaîtront ici." action={<Button onClick={openCreateModal}><Plus size={16} /> Créer</Button>} />
         ) : (
           <Table headers={['Commande', 'Client', 'Date', 'Total', 'Paiement', 'Modifier Statut', 'Actions']}>
             {filteredOrders.map(o => (
@@ -109,7 +139,7 @@ export default function Orders() {
                   </select>
                 </td>
                 <td className="py-3 px-4">
-                  <button onClick={() => alert(`🔍 Commande ${o.orderNumber || o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
+                  <button onClick={() => alert(`🔍 Commande ${o.orderNumber || o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nArticles : ${o.items.map(i => `${i.qty}x ${i.name}`).join(', ') || 'aucun'}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
                     Détail
                   </button>
                 </td>
@@ -122,7 +152,7 @@ export default function Orders() {
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-2">Draft orders</h3>
           <p className="text-sm text-gray-500">Créez des commandes manuelles (vente téléphonique, sur devis).</p>
-          <Button variant="secondary" size="sm" className="mt-3" onClick={addOrder}>Créer un brouillon</Button>
+          <Button variant="secondary" size="sm" className="mt-3" onClick={openCreateModal}>Créer un brouillon</Button>
         </Card>
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-2">Abandoned checkouts</h3>
@@ -130,6 +160,61 @@ export default function Orders() {
           <Link to="/app/marketing"><Button variant="secondary" size="sm" className="mt-3">Voir les paniers</Button></Link>
         </Card>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setIsModalOpen(false)}>
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
+              <h3 className="font-semibold text-gray-900">Créer une commande</h3>
+              <button onClick={() => setIsModalOpen(false)}><X size={18} /></button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Client</label>
+                <input value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Nom du client" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Mode de paiement</label>
+                <select value={payment} onChange={e => setPayment(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                  {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Articles</label>
+                {products.length === 0 ? (
+                  <p className="text-xs text-gray-400">Aucun produit dans votre catalogue — <Link to="/app/products" className="text-brand-600 hover:underline">ajoutez-en un</Link> avant de créer une commande.</p>
+                ) : (
+                  <div className="flex gap-2">
+                    <select value={selectedProductId} onChange={e => setSelectedProductId(e.target.value)} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                      <option value="">Sélectionner un produit...</option>
+                      {products.map(p => <option key={p.id} value={p.id}>{p.name} — {p.price.toLocaleString('fr-FR')} {p.currency}</option>)}
+                    </select>
+                    <Button variant="secondary" size="sm" onClick={addLineItem} disabled={!selectedProductId}>Ajouter</Button>
+                  </div>
+                )}
+              </div>
+              {lineItems.length > 0 && (
+                <div className="border border-gray-100 rounded-lg divide-y divide-gray-50">
+                  {lineItems.map(item => (
+                    <div key={item.name} className="flex items-center justify-between p-2.5 text-sm">
+                      <span>{item.qty}x {item.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500">{(item.qty * item.price).toLocaleString('fr-FR')} {currency}</span>
+                        <button onClick={() => removeLineItem(item.name)}><Trash2 size={14} className="text-red-400 hover:text-red-600" /></button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between p-2.5 text-sm font-bold bg-gray-50">
+                    <span>Total</span>
+                    <span>{orderTotal.toLocaleString('fr-FR')} {currency}</span>
+                  </div>
+                </div>
+              )}
+              <Button onClick={createOrder} disabled={!customerName.trim() || lineItems.length === 0} className="w-full">Créer la commande</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

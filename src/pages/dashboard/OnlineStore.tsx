@@ -2121,7 +2121,7 @@ export default function OnlineStore() {
                     <div
                       key={s.id}
                       onClick={() => { setSelectedSection(s.id); setPanel('sections'); }}
-                      className={`relative cursor-pointer transition-all border ${selectedSection === s.id ? 'ring-2 ring-brand-500 z-10' : 'border-transparent hover:border-dashed hover:border-gray-300'}`}
+                      className={`relative cursor-pointer transition-all border-2 ${selectedSection === s.id ? 'border-brand-500 z-10' : 'border-transparent hover:border-dashed hover:border-gray-300'}`}
                     >
                       {renderSection(sectionWithRealData, theme)}
                     </div>

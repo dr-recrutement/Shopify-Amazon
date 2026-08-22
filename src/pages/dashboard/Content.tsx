@@ -197,7 +197,7 @@ export default function Content() {
                   <button
                     key={p.id}
                     onClick={() => persistTemplate(p.id)}
-                    className={`text-left p-4 rounded-xl border transition-all ${isActive ? 'border-brand-500 ring-2 ring-brand-200 bg-brand-50/30' : 'border-gray-200 hover:border-brand-300 hover:shadow-md bg-white'}`}
+                    className={`text-left p-4 rounded-xl border transition-all ${isActive ? 'border-brand-500 bg-brand-50/40' : 'border-gray-200 hover:border-brand-300 hover:shadow-md bg-white'}`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-2xl">{p.icon}</span>

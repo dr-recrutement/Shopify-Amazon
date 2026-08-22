@@ -241,13 +241,30 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar transparent />
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 overflow-hidden bg-gradient-to-b from-brand-50/50 via-white to-white">
+      {/* Full-bleed hero background — Shopify-style. To set your own video:
+          drop an MP4 at public/hero-background.mp4 (any resolution/length,
+          keep it under ~10MB for fast load) and redeploy. No CMS step
+          needed since this is the platform's own landing page, not
+          merchant content. Silently falls back to the gradient/blur
+          background below if the file is missing or fails to load — never
+          shows a broken video icon. */}
+      <section className="relative pt-32 pb-24 overflow-hidden bg-gray-950 text-white">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          src="/hero-background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-950/70 to-white pointer-events-none" />
         <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-brand-100 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" />
-          <div className="absolute top-40 right-10 w-72 h-72 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-brand-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" />
+          <div className="absolute top-40 right-10 w-72 h-72 bg-emerald-400 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1.5s' }} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -255,26 +272,26 @@ export default function LandingPage() {
 
             {/* Left Column: Headline and CTA */}
             <div className="lg:col-span-6 text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand-100 text-brand-800 rounded-full text-sm font-semibold mb-6 animate-bounce">
-                <Star size={14} fill="currentColor" className="text-brand-600" /> {t('hero.badge')}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full text-sm font-semibold mb-6 animate-bounce">
+                <Star size={14} fill="currentColor" className="text-brand-400" /> {t('hero.badge')}
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
                 {t('hero.title1')}<br />
-                <span className="italic text-brand-600 font-bold">{t('hero.title2')}</span><br />
+                <span className="italic text-brand-400 font-bold">{t('hero.title2')}</span><br />
                 {t('hero.title3')}
               </h1>
-              <p className="mt-6 text-lg text-gray-600 max-w-xl leading-relaxed">
+              <p className="mt-6 text-lg text-gray-200 max-w-xl leading-relaxed">
                 {t('hero.subtitle')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-brand-600/20">
+                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-brand-600/30">
                   {t('hero.cta.start')} <ArrowRight size={18} />
                 </Link>
-                <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 font-semibold rounded-xl border border-gray-200 hover:border-gray-300 transition-all hover:scale-[1.03] active:scale-95">
+                <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all hover:scale-[1.03] active:scale-95">
                   {t('hero.cta.pricing')}
                 </Link>
               </div>
-              <p className="mt-4 text-xs text-gray-500">{t('hero.trial')}</p>
+              <p className="mt-4 text-xs text-gray-300">{t('hero.trial')}</p>
             </div>
 
             {/* Right Column: Stunning Interactive 7-Boutique Carousel with custom designs & animations */}

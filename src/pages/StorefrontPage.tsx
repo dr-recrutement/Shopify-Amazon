@@ -341,7 +341,7 @@ export default function StorefrontPage() {
       {/* Rendered live theme sections */}
       <main>
         {visibleSections.map(section => (
-          <div key={section.id}>{renderSection(section, theme, { onAddToCart: handleAddToCart })}</div>
+          <div key={section.id}>{renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store' })}</div>
         ))}
       </main>
 

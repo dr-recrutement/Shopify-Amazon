@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search, ShoppingBag, User, Star, Check, Mail, Phone,
   Facebook, Instagram, Twitter, ArrowRight, Lock,
@@ -1071,7 +1072,7 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
   );
 }
 
-function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddToCart, cardClass }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig; onAddToCart?: (p: any) => void; cardClass?: string }) {
+function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddToCart, cardClass, productLinkBase }: { props: any; colors: any; fonts: any; spacingClass: string; theme: ThemeConfig; onAddToCart?: (p: any) => void; cardClass?: string; productLinkBase?: string }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const products = props.products || [];
   const cols = Math.min(props.columns || 4, 4);
@@ -1156,31 +1157,26 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
           return (
             <div key={i} className={`group overflow-hidden transition-all duration-300 flex flex-col h-full bg-white relative ${cardClass || (isAfrican ? 'rounded-2xl border-brand-100 shadow-sm hover:shadow-2xl' : 'rounded-2xl border border-gray-100 hover:shadow-2xl')}`}>
               {/* Image Wrap */}
-              <div className="relative aspect-square overflow-hidden bg-gray-50">
+              <Link to={productLinkBase ? `${productLinkBase}/products/${p.id}` : '#'} className="relative aspect-square overflow-hidden bg-gray-50 block">
                                   <MediaBox src={p.image} alt={p.name} seed={`prod-def-${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 {p.oldPrice > p.price && (
                   <span className="absolute top-3 left-3 text-[9px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse" style={{ backgroundColor: colors.primary }}>
                     PROMO
                   </span>
                 )}
-                <button className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full text-gray-700 shadow-sm transition-colors">
+                <button onClick={e => e.preventDefault()} className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full text-gray-700 shadow-sm transition-colors">
                   <Heart className="w-4 h-4" />
                 </button>
-              </div>
+              </Link>
 
               {/* Info */}
               <div className="p-4 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-0.5 mb-1 text-amber-500">
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                      <Star key={idx} className="w-3 h-3 fill-current" />
-                    ))}
-                    <span className="text-[10px] text-gray-400 font-medium ml-1">(5.0)</span>
-                  </div>
-
-                  <h4 className="font-bold text-xs md:text-sm line-clamp-2" style={{ color: colors.text, fontFamily: fonts.heading }}>
-                    {p.name}
-                  </h4>
+                  <Link to={productLinkBase ? `${productLinkBase}/products/${p.id}` : '#'}>
+                    <h4 className="font-bold text-xs md:text-sm line-clamp-2 hover:underline" style={{ color: colors.text, fontFamily: fonts.heading }}>
+                      {p.name}
+                    </h4>
+                  </Link>
                 </div>
 
                 <div className="mt-3 pt-3 border-t border-gray-50 flex items-center justify-between">
@@ -2044,7 +2040,7 @@ function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any;
 // ---------------------------------------------------------------------------
 // MAIN RENDER ROUTER
 // ---------------------------------------------------------------------------
-export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void }): React.ReactNode {
+export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void; productLinkBase?: string }): React.ReactNode {
   const colors = theme.colors;
   const fonts = theme.fonts;
   const spacingClass = getSpacingClass(theme.spacing);
@@ -2064,9 +2060,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'video':
       return <VideoSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'product-grid':
-      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} />;
+      return <ProductGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} productLinkBase={callbacks?.productLinkBase} />;
     case 'featured-collection':
-      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} />;
+      return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} productLinkBase={callbacks?.productLinkBase} />;
     case 'category-grid':
       return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'collection-list':

@@ -15,6 +15,7 @@ import SupportPage from './pages/SupportPage';
 import GenericPage from './pages/GenericPage';
 import AboutPage from './pages/AboutPage';
 import StorefrontPage from './pages/StorefrontPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import DashboardHome from './pages/dashboard/Home';
@@ -60,7 +61,9 @@ export default function App() {
         {/* Public storefront — temporary platform domain (/s/:slug) or the
             current merchant's own storefront preview (/store). */}
         <Route path="/s/:slug" element={<StorefrontPage />} />
+        <Route path="/s/:slug/products/:productId" element={<ProductDetailPage />} />
         <Route path="/store" element={<StorefrontPage />} />
+        <Route path="/store/products/:productId" element={<ProductDetailPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/cart" element={<CartPage />} />

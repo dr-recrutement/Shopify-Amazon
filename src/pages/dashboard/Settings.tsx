@@ -1068,10 +1068,126 @@ export default function Settings() {
               </div>
             </div>
           )}
-          {(['locations', 'apps', 'channels', 'events', 'notifications', 'metafields', 'privacy'] as const).includes(active as any) && (
+          {active === 'apps' && (
             <div className="space-y-3 text-xs sm:text-sm text-left">
-              <h3 className="font-bold text-gray-900 text-sm">{SECTIONS.find(s => s.id === active)?.label}</h3>
-              <p className="text-gray-500">Cette section n'est pas encore construite. Plutôt que d'afficher un panneau vide, on préfère te le dire clairement — dis-nous ce dont tu as besoin ici et on la développe pour de vrai.</p>
+              <h3 className="font-bold text-gray-900 text-sm">Apps</h3>
+              <p className="text-gray-500">La marketplace de connecteurs d'apps arrive dans un prochain lot — un peu de patience.</p>
+            </div>
+          )}
+          {active === 'locations' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Emplacements</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              {(settings.locations || []).length === 0 && <p className="text-gray-400">Aucun emplacement — votre adresse principale est utilisée par défaut.</p>}
+              {(settings.locations || []).map((l: { id: string; name: string; address: string }) => (
+                <div key={l.id} className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white">
+                  <div><p className="font-bold text-gray-900">{l.name}</p><p className="text-[10px] text-gray-500">{l.address}</p></div>
+                  <Button variant="ghost" size="sm" onClick={() => updateSetting('locations', (settings.locations || []).filter((x: any) => x.id !== l.id))}>Retirer</Button>
+                </div>
+              ))}
+              <div className="flex flex-wrap gap-2 items-end p-3 bg-gray-50 rounded-lg">
+                <div><label className="block text-[10px] font-bold text-gray-500 mb-1">Nom</label><input id="newLocName" placeholder="Entrepôt principal" className="px-2 py-1.5 border border-gray-200 rounded-md text-xs w-40" /></div>
+                <div><label className="block text-[10px] font-bold text-gray-500 mb-1">Adresse</label><input id="newLocAddress" placeholder="Adresse complète" className="px-2 py-1.5 border border-gray-200 rounded-md text-xs w-56" /></div>
+                <Button variant="secondary" size="sm" onClick={() => {
+                  const nameEl = document.getElementById('newLocName') as HTMLInputElement;
+                  const addrEl = document.getElementById('newLocAddress') as HTMLInputElement;
+                  if (!nameEl.value.trim()) return;
+                  updateSetting('locations', [...(settings.locations || []), { id: crypto.randomUUID(), name: nameEl.value.trim(), address: addrEl.value.trim() }]);
+                  nameEl.value = ''; addrEl.value = '';
+                }}>Ajouter</Button>
+              </div>
+            </div>
+          )}
+          {active === 'channels' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Canaux de vente</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white">
+                <div><p className="font-bold text-gray-900">Boutique en ligne</p><p className="text-[10px] text-gray-500">{getShopSubdomain()}</p></div>
+                <Badge color="green">Toujours actif</Badge>
+              </div>
+              <div className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white">
+                <div>
+                  <p className="font-bold text-gray-900">Marketplace Sellia</p>
+                  <p className="text-[10px] text-gray-500">Vos produits actifs apparaissent aussi sur la marketplace commune à toutes les boutiques.</p>
+                </div>
+                {planAccess.plan.marketplaceListing || planAccess.isSuperAdmin || planAccess.unrestricted ? (
+                  <label className="flex items-center gap-1.5">
+                    <input type="checkbox" checked={settings.marketplaceEnabled !== false} onChange={e => updateSetting('marketplaceEnabled', e.target.checked)} />
+                  </label>
+                ) : (
+                  <Badge color="gray">Plan Premium+</Badge>
+                )}
+              </div>
+            </div>
+          )}
+          {active === 'events' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Événements clients (Webhooks)</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <p className="text-gray-500">Recevez une notification HTTP (POST) sur votre propre serveur à chaque nouvelle commande — utile pour connecter Zapier, Make, ou votre propre système.</p>
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">URL du webhook</label>
+                <input
+                  value={settings.orderWebhookUrl || ''}
+                  onChange={e => updateSetting('orderWebhookUrl', e.target.value)}
+                  placeholder="https://votre-serveur.com/webhook"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs"
+                />
+              </div>
+              <p className="text-[10px] text-gray-400">Déclenché réellement à chaque commande créée (dashboard ou vitrine publique) — payload JSON avec les détails de la commande.</p>
+            </div>
+          )}
+          {active === 'metafields' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Metafields</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <p className="text-gray-500">Définissez des champs personnalisés qui apparaîtront dans le formulaire de chaque produit (ex. Matière, Poids, Origine).</p>
+              {(settings.metafieldDefinitions || []).length === 0 && <p className="text-gray-400 text-xs">Aucun champ personnalisé.</p>}
+              {(settings.metafieldDefinitions || []).map((m: { id: string; label: string }) => (
+                <div key={m.id} className="p-2.5 border border-gray-200 rounded-lg flex items-center justify-between bg-white">
+                  <span className="font-medium text-gray-900">{m.label}</span>
+                  <Button variant="ghost" size="sm" onClick={() => updateSetting('metafieldDefinitions', (settings.metafieldDefinitions || []).filter((x: any) => x.id !== m.id))}>Retirer</Button>
+                </div>
+              ))}
+              <div className="flex gap-2 p-3 bg-gray-50 rounded-lg">
+                <input id="newMetafieldLabel" placeholder="Ex. Matière" className="flex-1 px-2 py-1.5 border border-gray-200 rounded-md text-xs" />
+                <Button variant="secondary" size="sm" onClick={() => {
+                  const el = document.getElementById('newMetafieldLabel') as HTMLInputElement;
+                  if (!el.value.trim()) return;
+                  updateSetting('metafieldDefinitions', [...(settings.metafieldDefinitions || []), { id: crypto.randomUUID(), label: el.value.trim() }]);
+                  el.value = '';
+                }}>Ajouter le champ</Button>
+              </div>
+            </div>
+          )}
+          {active === 'notifications' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Notifications</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <p className="text-gray-500">Contrôle ce qui déclenche le badge de notification (la cloche) dans le dashboard — aucun système d'envoi d'email n'est encore branché, ces réglages pilotent uniquement les alertes internes.</p>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={settings.notifyPendingOrders !== false} onChange={e => updateSetting('notifyPendingOrders', e.target.checked)} />
+                Commandes en attente
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={!!settings.notifyLowStock} onChange={e => updateSetting('notifyLowStock', e.target.checked)} />
+                Alertes stock bas (≤ 5 unités)
+              </label>
+            </div>
+          )}
+          {active === 'privacy' && (
+            <div className="space-y-4 text-xs sm:text-sm text-left">
+              <h3 className="font-bold text-gray-900 text-sm">Confidentialité client</h3>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <label className="block font-bold text-gray-700 mb-1">Politique de confidentialité (affichée sur votre boutique)</label>
+              <textarea
+                value={settings.privacyPolicyText || ''}
+                onChange={e => updateSetting('privacyPolicyText', e.target.value)}
+                rows={6}
+                placeholder="Décrivez comment vous collectez et utilisez les données de vos clients..."
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs"
+              />
             </div>
           )}
           {active === 'chat' && (

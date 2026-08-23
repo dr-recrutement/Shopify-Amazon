@@ -1054,7 +1054,7 @@ function HeroSection({ props, colors, fonts, spacingClass }: { props: any; color
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.25em] font-black bg-white/10 backdrop-blur-md border border-white/20 mb-4 animate-pulse">
           ⚡ EXCLUSIVITÉ BOUTIQUE
         </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: props.textColor || '#ffffff' }}>
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: props.textColor || '#ffffff' }}>
           {props.title || 'Bannière Principale'}
         </h2>
         <p className="mt-4 text-sm md:text-base opacity-90 max-w-xl leading-relaxed" style={{ fontFamily: fonts.body, color: props.textColor || '#ffffff' }}>
@@ -1091,7 +1091,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background }}>
       <div className={`mb-8 max-w-lg mx-auto ${isEditorial ? 'text-left ml-0' : 'text-center'}`}>
-        <h3 className={`text-2xl font-extrabold ${isLuxury ? 'tracking-widest uppercase' : ''}`} style={headingStyle}>
+        <h3 className={`text-2xl font-bold ${isLuxury ? 'tracking-widest uppercase' : ''}`} style={headingStyle}>
           {props.title || 'Produits Vedettes'}
         </h3>
         {props.subtitle && <p className="text-xs text-gray-500 mt-2" style={{ fontFamily: fonts.body }}>{props.subtitle}</p>}
@@ -1216,7 +1216,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass, onCategoryCli
 
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background }}>
-      <h3 className="text-center text-xl font-extrabold mb-6" style={headingStyle}>
+      <h3 className="text-center text-xl font-bold mb-6" style={headingStyle}>
         {props.title || 'Parcourir les catégories'}
       </h3>
       <div className={`grid gap-4 ${colClasses}`}>
@@ -1251,7 +1251,7 @@ function CountdownSection({ props, colors, fonts }: { props: any; colors: any; f
         <span className="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-white/15 backdrop-blur-md">
           🔥 OFFRE À DURÉE TRÈS LIMITÉE
         </span>
-        <h3 className="text-xl md:text-3xl font-black leading-tight" style={{ fontFamily: fonts.heading }}>
+        <h3 className="text-xl md:text-3xl font-bold leading-tight" style={{ fontFamily: fonts.heading }}>
           {props.title || 'Vente flash !'}
         </h3>
         <p className="text-xs md:text-sm opacity-90 max-w-md mx-auto">
@@ -1349,7 +1349,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
               ))}
               <span className="text-xs text-gray-400 font-bold ml-1">({props.reviewsCount || 24} avis vérifiés)</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight" style={{ fontFamily: fonts.heading }}>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: fonts.heading }}>
               {props.title || 'Fiche Produit Premium'}
             </h2>
           </div>
@@ -1438,7 +1438,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
 
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background }}>
-      <h3 className="text-center text-2xl font-extrabold mb-8" style={headingStyle}>
+      <h3 className="text-center text-2xl font-bold mb-8" style={headingStyle}>
         {props.title || 'Ce que pensent nos clients'}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1489,7 +1489,7 @@ function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colo
               {props.badge}
             </span>
           )}
-          <h3 className="text-2xl md:text-3xl font-extrabold" style={headingStyle}>
+          <h3 className="text-2xl md:text-3xl font-bold" style={headingStyle}>
             {props.title || 'Notre Histoire'}
           </h3>
           <div className="w-12 h-1 rounded-full" style={{ backgroundColor: colors.primary }} />
@@ -1526,7 +1526,7 @@ function NewsletterSection({ props, colors, fonts, tenantId }: { props: any; col
     <div className="mx-4 my-6 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-lg" style={{ backgroundColor: `${colors.accent}12`, border: `1px solid ${colors.accent}30`, fontFamily: fonts.body }}>
       <div className="max-w-xl mx-auto space-y-4 relative z-10">
         <Mail className="w-10 h-10 mx-auto text-brand-600 animate-bounce" />
-        <h3 className="text-xl md:text-2xl font-extrabold" style={{ fontFamily: fonts.heading, color: colors.text }}>
+        <h3 className="text-xl md:text-2xl font-bold" style={{ fontFamily: fonts.heading, color: colors.text }}>
           {props.title || 'Inscrivez-vous à notre lettre'}
         </h3>
         <p className="text-xs md:text-sm text-gray-600 max-w-sm mx-auto">
@@ -1565,7 +1565,7 @@ function FaqSection({ props, colors, fonts, spacingClass }: { props: any; colors
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-2xl mx-auto">
-        <h3 className="text-center text-2xl font-extrabold mb-6" style={headingStyle}>
+        <h3 className="text-center text-2xl font-bold mb-6" style={headingStyle}>
           {props.title || 'Foire Aux Questions'}
         </h3>
         <div className="space-y-3">
@@ -1776,7 +1776,7 @@ function ImageBannerSection({ props, colors, fonts, spacingClass }: { props: any
             {props.subtitle}
           </span>
         )}
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: props.textColor || '#fff' }}>
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: props.textColor || '#fff' }}>
           {props.title || 'Bannière image'}
         </h2>
         {props.description && (
@@ -1840,7 +1840,7 @@ function SlideshowSection({ props, colors, fonts, spacingClass }: { props: any; 
         {slide.subtitle && (
           <span className="text-[10px] font-black uppercase tracking-[0.25em] mb-3" style={{ color: colors.accent }}>{slide.subtitle}</span>
         )}
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: slide.textColor || '#fff' }}>{slide.title}</h2>
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight" style={{ fontFamily: fonts.heading, color: slide.textColor || '#fff' }}>{slide.title}</h2>
         <p className="mt-3 text-sm opacity-90" style={{ color: slide.textColor || '#fff' }}>{slide.description}</p>
         {slide.cta && (
           <button className="mt-6 px-6 py-3 text-xs font-black uppercase tracking-wider shadow-lg hover:scale-105 transition-transform text-white" style={{ backgroundColor: colors.primary }}>{slide.cta}</button>
@@ -1873,7 +1873,7 @@ function MulticolumnSection({ props, colors, fonts, spacingClass }: { props: any
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className={`max-w-5xl mx-auto ${align === 'left' ? 'text-left' : 'text-center'}`}>
-        {props.title && <h3 className="text-2xl font-extrabold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.title && <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
         {props.subtitle && <p className="text-sm text-gray-500 mb-8 max-w-xl mx-auto">{props.subtitle}</p>}
       </div>
       <div className={`grid gap-6 ${grid} ${align === 'center' ? 'text-center' : ''}`}>
@@ -1903,7 +1903,7 @@ function ImageWithTextSection({ props, colors, fonts, spacingClass }: { props: a
         </div>
         <div className={`space-y-4 ${imageRight ? 'md:order-1' : ''}`}>
           {props.badge && <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: colors.primary }}>{props.badge}</span>}
-          <h3 className="text-2xl md:text-3xl font-extrabold" style={{ fontFamily: fonts.heading }}>{props.title || 'Texte avec image'}</h3>
+          <h3 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: fonts.heading }}>{props.title || 'Texte avec image'}</h3>
           <div className="w-12 h-1 rounded-full" style={{ backgroundColor: colors.primary }} />
           <p className="text-sm text-gray-600 leading-relaxed">{props.text || props.description || 'Décrivez ici votre marque, vos valeurs ou votre produit phare.'}</p>
           {props.cta && <button className="px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>{props.cta}</button>}
@@ -1920,7 +1920,7 @@ function RichTextSection({ props, colors, fonts, spacingClass }: { props: any; c
   return (
     <section className={`${spacingClass} ${align}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
       <div className={`${width} mx-auto space-y-4`}>
-        {props.title && <h3 className="text-2xl md:text-3xl font-extrabold" style={{ fontFamily: fonts.heading }}>{props.title}</h3>}
+        {props.title && <h3 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: fonts.heading }}>{props.title}</h3>}
         {props.text && <p className="text-sm md:text-base text-gray-600 leading-relaxed">{props.text}</p>}
         {props.cta && <button className="px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>{props.cta}</button>}
       </div>
@@ -1935,7 +1935,7 @@ function VideoSection({ props, colors, fonts, spacingClass }: { props: any; colo
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-5xl mx-auto">
-        {props.title && <h3 className="text-2xl font-extrabold text-center mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.title && <h3 className="text-2xl font-bold text-center mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
         <div className="relative aspect-video rounded-xl overflow-hidden bg-black group cursor-pointer" onClick={() => setPlaying(true)}>
           {playing && props.videoUrl ? (
             <iframe src={props.videoUrl} className="absolute inset-0 w-full h-full" allow="autoplay; encrypted-media" allowFullScreen title={props.title || 'Video'} />
@@ -1966,7 +1966,7 @@ function CollapsibleContentSection({ props, colors, fonts, spacingClass }: { pro
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-2xl mx-auto">
-        {props.title && <h3 className="text-center text-2xl font-extrabold mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.title && <h3 className="text-center text-2xl font-bold mb-6" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
         <div className="space-y-2">
           {rows.map((r, i) => {
             const isOpen = openIdx === i;
@@ -1992,7 +1992,7 @@ function ContactFormSection({ props, colors, fonts, spacingClass }: { props: any
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-xl mx-auto">
-        {props.title && <h3 className="text-center text-2xl font-extrabold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
+        {props.title && <h3 className="text-center text-2xl font-bold mb-2" style={{ fontFamily: fonts.heading, color: colors.text }}>{props.title}</h3>}
         {props.subtitle && <p className="text-center text-sm text-gray-500 mb-6">{props.subtitle}</p>}
         {sent ? (
           <div className="p-5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-bold text-center">
@@ -2037,7 +2037,7 @@ function EmailSignupSection({ props, colors, fonts, tenantId }: { props: any; co
   return (
     <div className="py-8 px-4 text-center" style={{ backgroundColor: colors.secondary, color: '#fff', fontFamily: fonts.body }}>
       <div className="max-w-md mx-auto">
-        <h3 className="text-lg font-extrabold mb-1" style={{ fontFamily: fonts.heading }}>{props.title || 'Inscrivez-vous à notre lettre d\'information'}</h3>
+        <h3 className="text-lg font-bold mb-1" style={{ fontFamily: fonts.heading }}>{props.title || 'Inscrivez-vous à notre lettre d\'information'}</h3>
         <p className="text-xs opacity-80 mb-4">{props.subtitle || 'Recevez nos offres et nouveautés.'}</p>
         {done ? (
           <p className="text-xs font-bold text-emerald-300">✓ Merci pour votre inscription !</p>

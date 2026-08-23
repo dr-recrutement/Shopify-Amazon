@@ -564,3 +564,27 @@ export async function subscribeToNewsletter(tenantId: string, email: string, sou
     return false;
   }
 }
+
+/** Fires the merchant's configured order webhook (Settings > Customer
+ *  events), if one is set. Best-effort, fire-and-forget — a failing or
+ *  slow webhook must never block order creation for the buyer. Reads the
+ *  URL from the tenant settings blob directly (works both from an
+ *  authenticated dashboard session and from an anonymous storefront
+ *  checkout, since it queries by tenantId rather than the current user). */
+export async function fireOrderWebhook(tenantId: string, order: StoreOrder): Promise<void> {
+  try {
+    const { data } = await supabase.from('tenants').select('settings').eq('id', tenantId).maybeSingle();
+    const url = data?.settings?.orderWebhookUrl;
+    if (!url) return;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'order.created', order }),
+    }).catch(() => {
+      // Best-effort — a merchant's own endpoint being down must never
+      // affect order creation.
+    });
+  } catch {
+    // ignore
+  }
+}

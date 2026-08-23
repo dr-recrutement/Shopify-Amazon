@@ -310,7 +310,7 @@ export default function LandingPage() {
 
                   <div className="text-left mt-4">
                     <span className="text-xs font-bold text-gray-500 tracking-widest uppercase">Exemple de design</span>
-                    <h3 className="text-3xl font-extrabold text-gray-900 mt-1">{boutiques[activeSlide].title}</h3>
+                    <h3 className="text-3xl font-bold text-gray-900 mt-1">{boutiques[activeSlide].title}</h3>
                     <p className="text-xs font-semibold text-gray-600 flex items-center gap-1 mt-0.5">
                       <Globe size={12} /> {boutiques[activeSlide].location}
                     </p>

@@ -20,7 +20,7 @@ import {
   type CartItem,
   type StoreProduct,
 } from '../lib/app-state';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, type PublicTenant } from '../lib/tenant-sync';
 
 type CartDrawerItem = CartItem & { image?: string };
 
@@ -228,6 +228,7 @@ export default function StorefrontPage() {
     // behavior so the dashboard's "preview my store" still works offline.
     if (resolvedTenant) {
       await createPublicOrder(resolvedTenant.id, order);
+      fireOrderWebhook(resolvedTenant.id, order);
     } else {
       saveOrder(order);
     }

@@ -3,7 +3,7 @@ import { ShoppingCart, Plus, X, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getOrders, saveOrder, saveOrdersList, getProducts, type StoreOrder, type StoreProduct } from '../../lib/app-state';
-import { fetchCloudOrders, pushCloudOrders, fetchCloudProducts, ensureUuidId } from '../../lib/tenant-sync';
+import { fetchCloudOrders, pushCloudOrders, fetchCloudProducts, fireOrderWebhook, getCurrentTenantId, ensureUuidId } from '../../lib/tenant-sync';
 
 const PAYMENT_METHODS = ['Orange Money', 'Wave', 'MTN MoMo', 'Carte bancaire', 'Virement', 'Espèces à la livraison'];
 
@@ -60,7 +60,7 @@ export default function Orders() {
   const removeLineItem = (name: string) => setLineItems(prev => prev.filter(i => i.name !== name));
   const orderTotal = lineItems.reduce((sum, i) => sum + i.qty * i.price, 0);
 
-  const createOrder = () => {
+  const createOrder = async () => {
     if (!customerName.trim() || lineItems.length === 0) return;
     const draft: StoreOrder = {
       id: crypto.randomUUID(),
@@ -77,6 +77,8 @@ export default function Orders() {
     const next = getOrders();
     setOrders(next);
     pushCloudOrders(next);
+    const tenantId = await getCurrentTenantId();
+    if (tenantId) fireOrderWebhook(tenantId, draft);
     setIsModalOpen(false);
   };
 

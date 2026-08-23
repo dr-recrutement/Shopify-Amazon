@@ -43,7 +43,7 @@ export default function Markets() {
 
   return (
     <div>
-      <PageHeader title="Markets" subtitle="Activez les pays et devises pour votre boutique. 143 pays supportés dans le monde." />
+      <PageHeader title="Markets" subtitle="Activez les pays et devises pour votre boutique. 193 pays supportés dans le monde." />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marché par défaut</p><p className="mt-2 text-lg font-bold">{defaultCountry?.flag} {defaultCountry?.name}</p><p className="text-xs text-gray-500">{config.defaultCurrency}</p></Card>
         <Card className="p-5"><p className="text-xs text-gray-500 uppercase">Marchés actifs</p><p className="mt-2 text-lg font-bold">{config.activeCountries.length} pays</p></Card>

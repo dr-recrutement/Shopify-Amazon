@@ -172,7 +172,7 @@ const features = [
   { icon: ShoppingBag, title: 'Boutique en ligne complète', desc: 'Catalogue, variantes, stock, collections — tout ce dont vous avez besoin pour vendre en ligne.' },
   { icon: Bot, title: 'IA agentique intégrée', desc: 'Descriptions produits, bannières, publicités, vidéos TikTok, chatbot 24/7 — générés par IA.' },
   { icon: CreditCard, title: 'Mobile Money natif', desc: 'Flutterwave, Paystack, Orange Money, MTN MoMo, Wave, Stripe, PayPal — connectez vos propres comptes.' },
-  { icon: Globe, title: '143 pays dans le monde', desc: 'Multi-devises, multi-langues (FR/EN), marchés régionaux ou internationaux, livraison adaptée aux réalités locales.' },
+  { icon: Globe, title: '193 pays dans le monde', desc: 'Multi-devises, multi-langues (FR/EN), marchés régionaux ou internationaux, livraison adaptée aux réalités locales.' },
   { icon: Palette, title: 'Moteur de thème universel', desc: 'Éditeur visuel drag & drop, bibliothèque de blocs modulaires, landing page, e-commerce, vitrine, marketplace.' },
   { icon: BarChart3, title: 'Analytics & comptabilité', desc: 'Ventes, prévisions de stock, rapports financiers, assistant comptable IA, export PDF/Excel.' },
   { icon: MessageCircle, title: 'Boîte de réception unifiée', desc: 'WhatsApp Business, Messenger, Telegram, chat interne — tous vos canaux dans une seule boîte.' },

@@ -42,9 +42,9 @@ BEGIN
   -- ⚠️ Keep this list in sync with SUPER_ADMIN_EMAILS in
   -- src/lib/constants.ts — this is the SQL-side mirror of that list.
   IF lower(NEW.email) IN ('webdxb1@gmail.com', 'vincentnogue@yahoo.com', 'vincentnogue2@gmail.com') THEN
-    INSERT INTO super_admins (user_id, status)
-    VALUES (NEW.id, 'active')
-    ON CONFLICT (user_id) DO UPDATE SET status = 'active';
+    INSERT INTO super_admins (user_id, email, status)
+    VALUES (NEW.id, lower(NEW.email), 'active')
+    ON CONFLICT (user_id) DO UPDATE SET status = 'active', email = lower(NEW.email);
   END IF;
   RETURN NEW;
 END;
@@ -57,7 +57,7 @@ CREATE TRIGGER trg_sync_super_admin
 
 -- Backfill: catch anyone who already signed up with one of these emails
 -- before this trigger existed.
-INSERT INTO super_admins (user_id, status)
-SELECT id, 'active' FROM auth.users
+INSERT INTO super_admins (user_id, email, status)
+SELECT id, lower(email), 'active' FROM auth.users
 WHERE lower(email) IN ('webdxb1@gmail.com', 'vincentnogue@yahoo.com', 'vincentnogue2@gmail.com')
-ON CONFLICT (user_id) DO UPDATE SET status = 'active';
+ON CONFLICT (user_id) DO UPDATE SET status = 'active', email = EXCLUDED.email;

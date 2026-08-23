@@ -41,6 +41,19 @@ Found during a full RLS audit requested to verify tenant isolation:
 -- missing `email` column that broke every insert.
 -- ---------------------------------------------------------------------
 
+-- Made this migration self-sufficient rather than assuming an earlier
+-- migration already created this constraint (it may not have applied
+-- cleanly against every project's migration history) — the ON CONFLICT
+-- clauses below need it to exist regardless.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'super_admins_user_id_key'
+  ) THEN
+    ALTER TABLE super_admins ADD CONSTRAINT super_admins_user_id_key UNIQUE (user_id);
+  END IF;
+END $$;
+
 DROP POLICY IF EXISTS "insert_super_admins" ON super_admins;
 DROP POLICY IF EXISTS "update_super_admins" ON super_admins;
 -- No replacement INSERT/UPDATE policy for `authenticated` — writes now

@@ -1221,6 +1221,18 @@ export default function OnlineStore() {
                                 rows={2}
                               />
                             </div>
+                            <label className="flex items-center gap-1.5 text-[10px] text-gray-600">
+                              <input
+                                type="checkbox"
+                                checked={!!t.verified}
+                                onChange={e => {
+                                  const nextList = [...activeSection.props.list];
+                                  nextList[idx] = { ...nextList[idx], verified: e.target.checked };
+                                  updateSectionProp(activeSection.id, 'list', nextList);
+                                }}
+                              />
+                              Coché uniquement si c'est un vrai acheteur (affiche "Acheteur Vérifié")
+                            </label>
                           </div>
                         ))}
                         <button

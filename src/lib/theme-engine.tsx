@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { subscribeToNewsletter } from './tenant-sync';
 import {
   Search, ShoppingBag, User, Star, Check, Mail, Phone,
   Facebook, Instagram, Twitter, ArrowRight, Lock,
@@ -1203,7 +1204,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
   );
 }
 
-function CategoryGridSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+function CategoryGridSection({ props, colors, fonts, spacingClass, onCategoryClick }: { props: any; colors: any; fonts: any; spacingClass: string; onCategoryClick?: (name: string) => void }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
   const categories = props.categories || [];
   const cols = Math.min(props.columns || 4, 4);
@@ -1220,7 +1221,11 @@ function CategoryGridSection({ props, colors, fonts, spacingClass }: { props: an
       </h3>
       <div className={`grid gap-4 ${colClasses}`}>
         {categories.map((c: any, i: number) => (
-          <div key={i} className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm cursor-pointer hover:shadow-lg transition-all duration-300">
+          <button
+            key={i}
+            onClick={() => onCategoryClick?.(c.name)}
+            className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm cursor-pointer hover:shadow-lg transition-all duration-300 text-left"
+          >
             <MediaBox src={c.image} alt={c.name} seed={`cat-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-3 left-3 right-3 text-white">
@@ -1229,7 +1234,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass }: { props: an
                 Voir la collection <ArrowRight className="w-3 h-3" />
               </span>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -1454,9 +1459,11 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
               <MediaBox src={t.avatar} alt={t.name} seed={`avatar-${i}`} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" />
               <div>
                 <p className="text-xs font-extrabold" style={{ color: colors.text, fontFamily: fonts.heading }}>{t.name}</p>
-                <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
-                  <Check className="w-3 h-3" /> Acheteur Vérifié
-                </span>
+                {t.verified && (
+                  <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                    <Check className="w-3 h-3" /> Acheteur Vérifié
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -1500,16 +1507,19 @@ function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colo
   );
 }
 
-function NewsletterSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+function NewsletterSection({ props, colors, fonts, tenantId }: { props: any; colors: any; fonts: any; tenantId?: string }) {
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSuccess(true);
-      setEmail('');
-    }
+    if (!email.trim() || submitting) return;
+    setSubmitting(true);
+    if (tenantId) await subscribeToNewsletter(tenantId, email.trim(), 'newsletter-section');
+    setSuccess(true);
+    setEmail('');
+    setSubmitting(false);
   };
 
   return (
@@ -2015,9 +2025,15 @@ function CollectionListSection(props: any) {
 }
 
 // Shopify "email-signup" — Dawn footer email capture, more minimal than newsletter.
-function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+function EmailSignupSection({ props, colors, fonts, tenantId }: { props: any; colors: any; fonts: any; tenantId?: string }) {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    if (tenantId) await subscribeToNewsletter(tenantId, email.trim(), 'email-signup-section');
+    setDone(true);
+  };
   return (
     <div className="py-8 px-4 text-center" style={{ backgroundColor: colors.secondary, color: '#fff', fontFamily: fonts.body }}>
       <div className="max-w-md mx-auto">
@@ -2026,7 +2042,7 @@ function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any;
         {done ? (
           <p className="text-xs font-bold text-emerald-300">✓ Merci pour votre inscription !</p>
         ) : (
-          <form onSubmit={e => { e.preventDefault(); if (email.trim()) setDone(true); }} className="flex gap-2 max-w-sm mx-auto">
+          <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm mx-auto">
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="flex-1 px-3 py-2 rounded-lg text-xs text-gray-900 bg-white" />
             <button type="submit" className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ backgroundColor: colors.primary }}>S'inscrire</button>
           </form>
@@ -2040,7 +2056,7 @@ function EmailSignupSection({ props, colors, fonts }: { props: any; colors: any;
 // ---------------------------------------------------------------------------
 // MAIN RENDER ROUTER
 // ---------------------------------------------------------------------------
-export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void; productLinkBase?: string }): React.ReactNode {
+export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void; productLinkBase?: string; tenantId?: string; onCategoryClick?: (name: string) => void }): React.ReactNode {
   const colors = theme.colors;
   const fonts = theme.fonts;
   const spacingClass = getSpacingClass(theme.spacing);
@@ -2064,9 +2080,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'featured-collection':
       return <FeaturedCollectionSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} theme={theme} onAddToCart={callbacks?.onAddToCart} cardClass={variantStyles.cardClass} productLinkBase={callbacks?.productLinkBase} />;
     case 'category-grid':
-      return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+      return <CategoryGridSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} onCategoryClick={callbacks?.onCategoryClick} />;
     case 'collection-list':
-      return <CollectionListSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+      return <CollectionListSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} onCategoryClick={callbacks?.onCategoryClick} />
     case 'multicolumn':
       return <MulticolumnSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'image-with-text':
@@ -2086,9 +2102,9 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'about':
       return <AboutSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'newsletter':
-      return <NewsletterSection props={section.props} colors={colors} fonts={fonts} />;
+      return <NewsletterSection props={section.props} colors={colors} fonts={fonts} tenantId={callbacks?.tenantId} />;
     case 'email-signup':
-      return <EmailSignupSection props={section.props} colors={colors} fonts={fonts} />;
+      return <EmailSignupSection props={section.props} colors={colors} fonts={fonts} tenantId={callbacks?.tenantId} />;
     case 'faq':
       return <FaqSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'collapsible-content':

@@ -51,6 +51,7 @@ export default function StorefrontPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [orderConfirmed, setOrderConfirmed] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [resolvedTenant, setResolvedTenant] = useState<PublicTenant | null>(null);
   const [publicProducts, setPublicProducts] = useState<StoreProduct[] | null>(null);
 
@@ -180,14 +181,25 @@ export default function StorefrontPage() {
       .filter(s => s.type !== 'header')
       .map(s => {
         if (s.type === 'product-grid' || s.type === 'featured-collection') {
-          return { ...s, props: { ...s.props, products } };
+          const filtered = categoryFilter ? products.filter(p => p.category === categoryFilter) : products;
+          return { ...s, props: { ...s.props, products: filtered } };
         }
         if (s.type === 'category-grid' || s.type === 'collection-list') {
           return { ...s, props: { ...s.props, categories } };
         }
         return s;
       });
-  }, [theme, publicProducts]);
+  }, [theme, publicProducts, categoryFilter]);
+
+  const handleCategoryClick = (name: string) => {
+    setCategoryFilter(prev => (prev === name ? null : name));
+    // Real category browsing on a single-page storefront: filter the
+    // product grid in place and scroll to it, rather than a dead click
+    // that went nowhere (there was no onClick at all before this).
+    requestAnimationFrame(() => {
+      document.getElementById('storefront-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   // Search results
   const allProducts = useMemo(() => publicProducts ?? getActiveCatalogProducts(), [publicProducts]);
@@ -340,9 +352,20 @@ export default function StorefrontPage() {
 
       {/* Rendered live theme sections */}
       <main>
-        {visibleSections.map(section => (
-          <div key={section.id}>{renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store' })}</div>
-        ))}
+        {categoryFilter && (
+          <div className="max-w-6xl mx-auto px-4 pt-4 flex items-center gap-2">
+            <span className="text-sm text-gray-600">Filtré par : <strong>{categoryFilter}</strong></span>
+            <button onClick={() => setCategoryFilter(null)} className="text-xs text-brand-600 hover:underline">Retirer le filtre</button>
+          </div>
+        )}
+        {visibleSections.map((section, idx) => {
+          const isFirstProductSection = section.type === 'product-grid' && !visibleSections.slice(0, idx).some(s => s.type === 'product-grid');
+          return (
+            <div key={section.id} id={isFirstProductSection ? 'storefront-products' : undefined}>
+              {renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store', tenantId: resolvedTenant?.id, onCategoryClick: handleCategoryClick })}
+            </div>
+          );
+        })}
       </main>
 
       {/* Footer */}

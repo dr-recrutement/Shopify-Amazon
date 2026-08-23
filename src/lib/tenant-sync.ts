@@ -550,3 +550,17 @@ export async function createPublicOrder(tenantId: string, order: StoreOrder): Pr
     return false;
   }
 }
+
+/** Real destination for the storefront's newsletter/email-signup
+ *  sections — previously showed a success message without saving the
+ *  email anywhere. Anonymous-safe (storefront visitors have no session). */
+export async function subscribeToNewsletter(tenantId: string, email: string, source?: string): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('newsletter_subscribers').insert({ tenant_id: tenantId, email: email.toLowerCase().trim(), source: source || null });
+    // Duplicate email (already subscribed) is not a failure from the
+    // visitor's point of view — they're already on the list either way.
+    return !error || error.message?.includes('duplicate') || error.code === '23505';
+  } catch {
+    return false;
+  }
+}

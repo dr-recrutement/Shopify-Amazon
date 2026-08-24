@@ -17,6 +17,7 @@ import { ContactPageContent, FeaturesPageContent, ComingSoonContent } from './pa
 import AboutPage from './pages/AboutPage';
 import StorefrontPage from './pages/StorefrontPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CmsPageView from './pages/CmsPageView';
 
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import DashboardHome from './pages/dashboard/Home';
@@ -63,8 +64,10 @@ export default function App() {
             current merchant's own storefront preview (/store). */}
         <Route path="/s/:slug" element={<StorefrontPage />} />
         <Route path="/s/:slug/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/s/:slug/pages/:pageSlug" element={<CmsPageView />} />
         <Route path="/store" element={<StorefrontPage />} />
         <Route path="/store/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/store/pages/:pageSlug" element={<CmsPageView />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/cart" element={<CartPage />} />

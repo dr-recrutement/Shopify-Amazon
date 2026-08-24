@@ -464,9 +464,44 @@ export default function Content() {
             <div className="border-l border-gray-100 bg-white p-4 overflow-y-auto max-h-[600px]">
               <h4 className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-1.5"><SettingsIcon size={12} /> Réglages</h4>
               {!selectedNodeId && (
-                <div className="text-center text-gray-400 text-xs py-8">
-                  <MousePointerClick size={24} className="mx-auto mb-2 opacity-40" />
-                  Sélectionnez une section ou un bloc pour voir ses réglages.
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">Titre de la page</label>
+                    <input
+                      value={draft.title}
+                      onChange={e => setDraft({ ...draft, title: e.target.value })}
+                      className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">URL (slug)</label>
+                    <div className="flex items-center text-xs text-gray-400">
+                      <span className="truncate">/{draft.slug}</span>
+                    </div>
+                  </div>
+                  <div className="pt-3 border-t border-gray-100">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Référencement (SEO)</p>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">Titre SEO</label>
+                    <input
+                      value={draft.seoTitle || ''}
+                      onChange={e => setDraft({ ...draft, seoTitle: e.target.value })}
+                      placeholder={draft.title}
+                      className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs mb-2"
+                    />
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">Description SEO</label>
+                    <textarea
+                      value={draft.seoDescription || ''}
+                      onChange={e => setDraft({ ...draft, seoDescription: e.target.value })}
+                      rows={3}
+                      placeholder="Résumé affiché dans les résultats de recherche Google..."
+                      className="w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs"
+                    />
+                    <p className="mt-1 text-[10px] text-gray-400">{(draft.seoDescription || '').length}/160 caractères recommandés</p>
+                  </div>
+                  <div className="text-center text-gray-400 text-xs pt-4 border-t border-gray-100">
+                    <MousePointerClick size={20} className="mx-auto mb-1.5 opacity-40" />
+                    Sélectionnez une section ou un bloc pour voir ses réglages.
+                  </div>
                 </div>
               )}
               {selectedSection && selectedNodeId === selectedSection.id && (

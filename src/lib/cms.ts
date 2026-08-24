@@ -36,6 +36,10 @@ export interface CmsPage {
   sections: Array<{ id: string; type: string; title: string; content: string }>;
   // OS 2.0 ordered section stack — each section holds its own blocks.
   osSections?: CmsSection[];
+  /** Search-engine title. Falls back to `title` when empty. */
+  seoTitle?: string;
+  /** Search-engine meta description. */
+  seoDescription?: string;
   updatedAt: string;
 }
 

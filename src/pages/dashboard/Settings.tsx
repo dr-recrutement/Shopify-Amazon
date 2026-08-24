@@ -118,7 +118,7 @@ export default function Settings() {
       if (cloud && cloud.length > 0) {
         const asMap: typeof gateways = {};
         for (const g of cloud) {
-          asMap[g.gateway] = { publicKey: g.apiKey, secretKey: g.apiSecret, clientId: '', connected: g.isActive };
+          asMap[g.gateway] = { publicKey: g.apiKey, secretKey: g.apiSecret, clientId: g.clientId || '', connected: g.isActive };
         }
         setGateways(prev => ({ ...prev, ...asMap }));
       }
@@ -151,7 +151,7 @@ export default function Settings() {
         connected: true
       }
     });
-    pushCloudGateway({ gateway: activeGatewayModal, apiKey: modalPublicKey, apiSecret: modalSecretKey, isActive: true });
+    pushCloudGateway({ gateway: activeGatewayModal, apiKey: modalPublicKey, apiSecret: modalSecretKey, clientId: modalClientId, isActive: true });
     setActiveGatewayModal(null);
   };
 
@@ -524,7 +524,7 @@ export default function Settings() {
               </div>
 
               <div className="grid grid-cols-1 gap-3">
-                {['Flutterwave', 'Paystack', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => {
+                {['Flutterwave', 'Paystack', 'PayUnit', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => {
                   const conn = gateways[g]?.connected;
                   return (
                     <div key={g} className="flex items-center justify-between p-4 border border-gray-150 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -584,13 +584,15 @@ export default function Settings() {
                       <div className="space-y-3">
                         {activeGatewayModal !== 'PayPal' && (
                           <div>
-                            <label className="block text-[11px] font-bold text-gray-500 uppercase">Clé Publique (Public API Key)</label>
+                            <label className="block text-[11px] font-bold text-gray-500 uppercase">
+                              {activeGatewayModal === 'PayUnit' ? 'API User' : 'Clé Publique (Public API Key)'}
+                            </label>
                             <input
                               type="text"
                               required
                               value={modalPublicKey}
                               onChange={e => setModalPublicKey(e.target.value)}
-                              placeholder="pk_live_..."
+                              placeholder={activeGatewayModal === 'PayUnit' ? 'api_user...' : 'pk_live_...'}
                               className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                             />
                           </div>
@@ -598,29 +600,29 @@ export default function Settings() {
 
                         <div>
                           <label className="block text-[11px] font-bold text-gray-500 uppercase">
-                            {activeGatewayModal === 'PayPal' ? 'Client Secret' : 'Clé Secrète (Secret Key / Token)'}
+                            {activeGatewayModal === 'PayPal' ? 'Client Secret' : activeGatewayModal === 'PayUnit' ? 'API Password' : 'Clé Secrète (Secret Key / Token)'}
                           </label>
                           <input
                             type="password"
                             required
                             value={modalSecretKey}
                             onChange={e => setModalSecretKey(e.target.value)}
-                            placeholder={activeGatewayModal === 'PayPal' ? 'PayPal Secret Key' : 'sk_live_...'}
+                            placeholder={activeGatewayModal === 'PayPal' ? 'PayPal Secret Key' : activeGatewayModal === 'PayUnit' ? 'api_password...' : 'sk_live_...'}
                             className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                           />
                         </div>
 
-                        {['PayPal', 'Stripe', 'CinetPay'].includes(activeGatewayModal) && (
+                        {['PayPal', 'Stripe', 'CinetPay', 'PayUnit'].includes(activeGatewayModal) && (
                           <div>
                             <label className="block text-[11px] font-bold text-gray-500 uppercase">
-                              {activeGatewayModal === 'PayPal' ? 'PayPal Client ID' : 'Merchant ID / Service ID'}
+                              {activeGatewayModal === 'PayPal' ? 'PayPal Client ID' : activeGatewayModal === 'PayUnit' ? 'Application Token (live ou sandbox)' : 'Merchant ID / Service ID'}
                             </label>
                             <input
                               type="text"
                               required
                               value={modalClientId}
                               onChange={e => setModalClientId(e.target.value)}
-                              placeholder="ID marchand officiel..."
+                              placeholder={activeGatewayModal === 'PayUnit' ? 'live_xxxxxxxxxxxxxxx' : 'ID marchand officiel...'}
                               className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                             />
                           </div>

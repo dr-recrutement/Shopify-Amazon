@@ -61,7 +61,7 @@ export default function StorefrontPage() {
   const [custPhone, setCustPhone] = useState('');
   const [custAddress, setCustAddress] = useState('');
   const [custCity, setCustCity] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('orange_money');
+  const [paymentMethod, setPaymentMethod] = useState('payunit');
 
   useEffect(() => {
     let cancelled = false;
@@ -207,9 +207,13 @@ export default function StorefrontPage() {
     ? allProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [redirectingToPayment, setRedirectingToPayment] = useState(false);
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!custName.trim() || !custPhone.trim() || cart.length === 0) return;
+    setCheckoutError(null);
     const orderId = resolvedTenant ? crypto.randomUUID() : `LA-${Date.now().toString().slice(-6)}`;
     const order = {
       id: orderId,
@@ -218,7 +222,7 @@ export default function StorefrontPage() {
       date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
       total: cartTotal,
       status: 'pending' as const,
-      payment: paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
+      payment: paymentMethod === 'payunit' ? 'PayUnit' : paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
       currency,
       items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
     };
@@ -229,6 +233,38 @@ export default function StorefrontPage() {
     if (resolvedTenant) {
       await createPublicOrder(resolvedTenant.id, order);
       fireOrderWebhook(resolvedTenant.id, order);
+
+      // PayUnit is the only real, redirect-based payment integration
+      // wired so far — this sends the buyer to PayUnit's own hosted
+      // checkout page, which is real money movement, not a decorative
+      // 'pending' order like the other unwired methods below.
+      if (paymentMethod === 'payunit') {
+        setRedirectingToPayment(true);
+        try {
+          const res = await fetch('/api/checkout/payunit-initialize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              tenantId: resolvedTenant.id,
+              orderId,
+              amount: cartTotal,
+              currency,
+              customerEmail: custEmail,
+              items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+            }),
+          });
+          const result = await res.json();
+          if (res.ok && result.redirect) {
+            window.location.href = result.redirect;
+            return;
+          }
+          setCheckoutError(result.error || "Ce marchand n'a pas encore activé PayUnit. Choisissez un autre mode de paiement.");
+        } catch {
+          setCheckoutError('Le service de paiement est momentanément indisponible. Réessayez dans un instant.');
+        }
+        setRedirectingToPayment(false);
+        return;
+      }
     } else {
       saveOrder(order);
     }
@@ -510,6 +546,7 @@ export default function StorefrontPage() {
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Mode de paiement</h3>
                     <div className="space-y-2">
                       {[
+                        { id: 'payunit', label: 'PayUnit', icon: CreditCard, desc: 'Mobile Money, carte — paiement sécurisé' },
                         { id: 'orange_money', label: 'Orange Money', icon: Smartphone, desc: 'Paiement via USSD' },
                         { id: 'wave', label: 'Wave', icon: Wallet, desc: 'Paiement instantané' },
                         { id: 'mtn', label: 'MTN MoMo', icon: Smartphone, desc: 'Mobile Money' },
@@ -548,8 +585,11 @@ export default function StorefrontPage() {
                     </div>
                   </div>
 
-                  <button type="submit" className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity" style={{ backgroundColor: theme.colors.primary }}>
-                    <Lock size={16} /> Confirmer la commande · {fmtPrice(cartTotal)}
+                  {checkoutError && (
+                    <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg p-3">{checkoutError}</p>
+                  )}
+                  <button type="submit" disabled={redirectingToPayment} className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60" style={{ backgroundColor: theme.colors.primary }}>
+                    <Lock size={16} /> {redirectingToPayment ? 'Redirection vers le paiement...' : `Confirmer la commande · ${fmtPrice(cartTotal)}`}
                   </button>
                   <p className="text-xs text-gray-400 text-center">Paiement sécurisé · Vos données sont protégées</p>
                 </form>

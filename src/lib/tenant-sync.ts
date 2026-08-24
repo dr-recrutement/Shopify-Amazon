@@ -468,7 +468,7 @@ export async function pushCloudSettings(settings: Record<string, any>): Promise<
 // RLS-scoped to the owning tenant only, same as every other table here.
 // ---------------------------------------------------------------------------
 
-export type VendorGateway = { gateway: string; apiKey: string; apiSecret: string; isActive: boolean };
+export type VendorGateway = { gateway: string; apiKey: string; apiSecret: string; clientId?: string; isActive: boolean };
 
 export async function fetchCloudGateways(): Promise<VendorGateway[] | null> {
   const tenantId = await getCurrentTenantId();
@@ -479,6 +479,7 @@ export async function fetchCloudGateways(): Promise<VendorGateway[] | null> {
     gateway: row.gateway,
     apiKey: row.api_key_encrypted || '',
     apiSecret: row.api_secret_encrypted || '',
+    clientId: row.client_id_encrypted || '',
     isActive: !!row.is_active,
   }));
 }
@@ -488,7 +489,7 @@ export async function pushCloudGateway(g: VendorGateway): Promise<void> {
   if (!tenantId) return;
   try {
     await supabase.from('vendor_payment_gateways').upsert(
-      { tenant_id: tenantId, gateway: g.gateway, api_key_encrypted: g.apiKey, api_secret_encrypted: g.apiSecret, is_active: g.isActive, status: g.isActive ? 'active' : 'pending' },
+      { tenant_id: tenantId, gateway: g.gateway, api_key_encrypted: g.apiKey, api_secret_encrypted: g.apiSecret, client_id_encrypted: g.clientId || null, is_active: g.isActive, status: g.isActive ? 'active' : 'pending' },
       { onConflict: 'tenant_id,gateway' }
     );
   } catch {

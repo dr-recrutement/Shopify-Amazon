@@ -38,6 +38,7 @@ import Chat from './pages/dashboard/Chat';
 import Reports from './pages/dashboard/Reports';
 import Automations from './pages/dashboard/Automations';
 import Settings from './pages/dashboard/Settings';
+import Apps from './pages/dashboard/Apps';
 
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
@@ -109,6 +110,7 @@ export default function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="automations" element={<Automations />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="apps" element={<Apps />} />
         </Route>
 
         {/* Super Admin Master Console */}

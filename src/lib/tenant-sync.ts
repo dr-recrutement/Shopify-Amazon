@@ -446,6 +446,20 @@ export async function fetchCloudSettings<T = Record<string, any>>(): Promise<T |
   return (data.settings || {}) as T;
 }
 
+/** Anon-safe variant for the public storefront — a visitor has no
+ *  session, so settings must be looked up by tenantId directly. Relies
+ *  on the same anon SELECT policy already used to resolve the tenant
+ *  itself (published tenants only). */
+export async function fetchCloudSettingsFor<T = Record<string, any>>(tenantId: string): Promise<T | null> {
+  try {
+    const { data, error } = await supabase.from('tenants').select('settings').eq('id', tenantId).maybeSingle();
+    if (error || !data) return null;
+    return (data.settings || {}) as T;
+  } catch {
+    return null;
+  }
+}
+
 export async function pushCloudSettings(settings: Record<string, any>): Promise<void> {
   const tenantId = await getCurrentTenantId();
   if (!tenantId) return;

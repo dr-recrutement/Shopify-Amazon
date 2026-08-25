@@ -20,7 +20,8 @@ import {
   type CartItem,
   type StoreProduct,
 } from '../lib/app-state';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
+import { injectAnalyticsScripts } from '../lib/analytics-injector';
 
 type CartDrawerItem = CartItem & { image?: string };
 
@@ -78,6 +79,11 @@ export default function StorefrontPage() {
             setPublicProducts(products || []);
             setTheme(cloudTheme || defaultThemeForType('ecommerce'));
           }
+          // Real analytics script injection — Apps.tsx stores these IDs,
+          // this is what actually makes them do something rather than
+          // just sit in a settings blob nobody reads.
+          const settings = await fetchCloudSettingsFor(tenant.id);
+          if (settings && !cancelled) injectAnalyticsScripts(settings);
         } else if (!cancelled) {
           // No slug match in Supabase (unpublished store, or local/demo
           // mode) — fall back to whatever's in this browser's local state,

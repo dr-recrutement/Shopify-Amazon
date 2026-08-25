@@ -616,7 +616,7 @@ export default function OnlineStore() {
                       onDragOver={(e) => handleDragOver(e, s.id)}
                       onDrop={(e) => handleDrop(e, s.id)}
                       onDragEnd={handleDragEnd}
-                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-2 ring-2 ring-brand-200' : ''}`}
+                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-4' : ''}`}
                     >
                       <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
                       <button

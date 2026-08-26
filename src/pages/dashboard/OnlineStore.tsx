@@ -2,7 +2,7 @@ import { PageHeader, Card, Button, Badge } from './ui';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown,
-  Globe, Search, ChevronRight, CheckCircle, MessageSquare, Code,
+  Globe, Search, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
   Sparkles, Send, ExternalLink
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -49,6 +49,32 @@ export default function OnlineStore() {
     return defaultThemeForType('ecommerce');
   });
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const toggleExpand = (id: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+  // Repeatable sub-items per section type — the same real concept as
+  // Shopify's "blocks" (Multicolumn's Column blocks, Collage's Collection/
+  // Product blocks). Sections without a matching array here just aren't
+  // expandable in the tree, same as a Shopify section with zero blocks.
+  const getSectionBlocks = (sec: ThemeSection): { label: string; preview: string }[] => {
+    switch (sec.type) {
+      case 'testimonials':
+        return (sec.props.list || []).map((t: any) => ({ label: 'Témoignage', preview: t.name || t.comment?.slice(0, 24) || '—' }));
+      case 'faq':
+        return (sec.props.list || []).map((f: any) => ({ label: 'Question', preview: f.question?.slice(0, 30) || '—' }));
+      case 'slideshow':
+        return (sec.props.slides || []).map((s: any) => ({ label: 'Diapositive', preview: s.title || '—' }));
+      case 'multicolumn':
+        return (sec.props.columns || []).map((c: any) => ({ label: 'Colonne', preview: c.title || '—' }));
+      default:
+        return [];
+    }
+  };
 
   // Sync theme to localStorage (unchanged) + push to Supabase (debounced,
   // best-effort) so the merchant's edits actually reach the public
@@ -608,53 +634,84 @@ export default function OnlineStore() {
                   const lib = SECTION_LIBRARY.find(l => l.type === s.type);
                   const isDragging = draggedId === s.id;
                   const isDragOver = dragOverId === s.id && draggedId !== s.id;
+                  const blocks = getSectionBlocks(s);
+                  const isExpanded = expandedSections.has(s.id);
                   return (
-                    <div
-                      key={s.id}
-                      draggable
-                      onDragStart={() => handleDragStart(s.id)}
-                      onDragOver={(e) => handleDragOver(e, s.id)}
-                      onDrop={(e) => handleDrop(e, s.id)}
-                      onDragEnd={handleDragEnd}
-                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-4' : ''}`}
-                    >
-                      <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
-                      <button
-                        onClick={() => setSelectedSection(s.id)}
-                        className="flex-1 text-left text-xs font-bold text-gray-800 truncate"
+                    <div key={s.id}>
+                      <div
+                        draggable
+                        onDragStart={() => handleDragStart(s.id)}
+                        onDragOver={(e) => handleDragOver(e, s.id)}
+                        onDrop={(e) => handleDrop(e, s.id)}
+                        onDragEnd={handleDragEnd}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-4' : ''}`}
                       >
-                        {lib?.icon} {lib?.label || s.type}
-                      </button>
-                      <div className="flex items-center gap-1">
+                        <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
+                        {blocks.length > 0 ? (
+                          <button onClick={() => toggleExpand(s.id)} className="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                            {isExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                          </button>
+                        ) : (
+                          <span className="w-[13px]" />
+                        )}
                         <button
-                          onClick={() => moveSection(s.id, -1)}
-                          className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded"
-                          title="Monter"
+                          onClick={() => { setSelectedSection(s.id); if (blocks.length > 0 && !isExpanded) toggleExpand(s.id); }}
+                          className="flex-1 text-left text-xs font-bold text-gray-800 truncate"
                         >
-                          <ArrowUp size={13} />
+                          {lib?.icon} {lib?.label || s.type}
                         </button>
-                        <button
-                          onClick={() => moveSection(s.id, 1)}
-                          className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded"
-                          title="Descendre"
-                        >
-                          <ArrowDown size={13} />
-                        </button>
-                        <button
-                          onClick={() => toggleSection(s.id)}
-                          className={`p-1 rounded ${s.visible ? 'text-green-600 bg-green-50' : 'text-gray-300 hover:text-gray-500'}`}
-                          title={s.visible ? "Masquer" : "Afficher"}
-                        >
-                          ●
-                        </button>
-                        <button
-                          onClick={() => removeSection(s.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                          title="Supprimer"
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => moveSection(s.id, -1)}
+                            className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded"
+                            title="Monter"
+                          >
+                            <ArrowUp size={13} />
+                          </button>
+                          <button
+                            onClick={() => moveSection(s.id, 1)}
+                            className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded"
+                            title="Descendre"
+                          >
+                            <ArrowDown size={13} />
+                          </button>
+                          <button
+                            onClick={() => toggleSection(s.id)}
+                            className={`p-1 rounded ${s.visible ? 'text-green-600 bg-green-50' : 'text-gray-300 hover:text-gray-500'}`}
+                            title={s.visible ? "Masquer" : "Afficher"}
+                          >
+                            ●
+                          </button>
+                          <button
+                            onClick={() => removeSection(s.id)}
+                            className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                            title="Supprimer"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
+
+                      {/* Nested blocks — same real concept as Shopify's
+                          Column/Collection/Product blocks under a section
+                          (Multicolumn's columns, Testimonials' list, etc.).
+                          Clicking one opens the parent section's panel,
+                          which already has per-item editing for these. */}
+                      {isExpanded && blocks.length > 0 && (
+                        <div className="ml-7 mt-0.5 mb-1 space-y-0.5 border-l border-gray-100 pl-2">
+                          {blocks.map((b, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setSelectedSection(s.id)}
+                              className="w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-left text-[11px] text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                            >
+                              <span className="text-gray-300">›</span>
+                              <span className="font-medium">{b.label}:</span>
+                              <span className="truncate">{b.preview}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

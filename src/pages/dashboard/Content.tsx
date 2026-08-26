@@ -351,7 +351,7 @@ export default function Content() {
                         onDrop={() => handleSectionDrop(idx)}
                         onDragEnd={() => { setDraggedSectionIdx(null); setDragOverSectionIdx(null); }}
                         onClick={() => { setSelectedNodeId(sec.id); if (!isExpanded) toggleExpand(sec.id); }}
-                        className={`group flex items-center gap-1 px-2 py-1.5 rounded-md cursor-pointer text-xs transition-colors ${isSelected ? 'bg-brand-50 text-brand-700 font-semibold' : 'hover:bg-gray-50 text-gray-700'} ${draggedSectionIdx === idx ? 'opacity-40' : ''} ${isDragOver ? 'ring-2 ring-brand-300' : ''}`}
+                        className={`group flex items-center gap-1 px-2 py-1.5 rounded-md cursor-pointer text-xs transition-colors ${isSelected ? 'bg-brand-50 text-brand-700 font-semibold' : 'hover:bg-gray-50 text-gray-700'} ${draggedSectionIdx === idx ? 'opacity-40' : ''} ${isDragOver ? 'border-t-2 border-brand-500' : ''}`}
                       >
                         <GripVertical size={12} className="text-gray-300 cursor-grab active:cursor-grabbing flex-shrink-0" />
                         <button onClick={(e) => { e.stopPropagation(); toggleExpand(sec.id); }} className="flex-shrink-0">

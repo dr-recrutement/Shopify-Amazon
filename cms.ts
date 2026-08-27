@@ -163,6 +163,15 @@ export function createCmsPage(): CmsPage {
   };
 }
 
+/** Overwrites the full local page list — used for deletion, where there's
+ *  no single page to run through saveCmsPage's upsert-by-id logic. Callers
+ *  are responsible for pushing the result to the cloud afterwards (same
+ *  as every other mutator in this file). */
+export function writeAllCmsPages(pages: CmsPage[]): CmsPage[] {
+  writeCmsPages(pages);
+  return pages;
+}
+
 // OS 2.0 block helpers — add/remove/reorder blocks within a section.
 export function addBlock(page: CmsPage, sectionId: string, block: CmsBlock): CmsPage {
   const osSections = (page.osSections || []).map(sec =>

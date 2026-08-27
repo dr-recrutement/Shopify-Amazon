@@ -580,6 +580,54 @@ export async function subscribeToNewsletter(tenantId: string, email: string, sou
   }
 }
 
+/** Real destination for the storefront's "contact-form" CMS section —
+ *  previously purely decorative on the editor canvas with no submit
+ *  handler on the live page. Anonymous-safe, same shape as
+ *  subscribeToNewsletter above. */
+export async function submitContactMessage(tenantId: string, name: string, email: string, message: string, source?: string): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('contact_messages').insert({
+      tenant_id: tenantId,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      message: message.trim(),
+      source: source || null,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/** Fetches a tenant's contact form submissions for the dashboard inbox. */
+export async function fetchContactMessages(): Promise<Array<{ id: string; name: string; email: string; message: string; status: string; createdAt: string }> | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase
+    .from('contact_messages')
+    .select('*')
+    .eq('tenant_id', tenantId)
+    .order('created_at', { ascending: false });
+  if (error || !data) return null;
+  return (data as Record<string, any>[]).map(row => ({
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    message: row.message,
+    status: row.status || 'new',
+    createdAt: row.created_at ? new Date(row.created_at).toLocaleDateString('fr-FR') : '',
+  }));
+}
+
+/** Marks a contact message as read/archived from the dashboard inbox. */
+export async function updateContactMessageStatus(id: string, status: 'new' | 'read' | 'archived'): Promise<void> {
+  try {
+    await supabase.from('contact_messages').update({ status }).eq('id', id);
+  } catch {
+    // ignore
+  }
+}
+
 /** Fires the merchant's configured order webhook (Settings > Customer
  *  events), if one is set. Best-effort, fire-and-forget — a failing or
  *  slow webhook must never block order creation for the buyer. Reads the

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ShoppingCart, Package } from 'lucide-react';
 import { getShopTheme, getShopProfile, getCartItems, getProductImages, type StoreProduct } from '../lib/app-state';
 import { getCmsPages, type CmsPage, type CmsBlock } from '../lib/cms';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, fetchPublicCmsPages, subscribeToNewsletter, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, fetchPublicCmsPages, subscribeToNewsletter, submitContactMessage, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
 
@@ -151,7 +151,7 @@ function CmsSectionView({ section, theme, tenantId, backLink }: { section: { typ
   const cta = s.cta;
   const ctaUrl = s.ctaUrl;
   const hasContent = heading || subtext || image || cta;
-  if (!hasContent && section.type !== 'email-signup') return null;
+  if (!hasContent && section.type !== 'email-signup' && section.type !== 'contact-form') return null;
 
   switch (section.type) {
     case 'image-banner':
@@ -199,6 +199,8 @@ function CmsSectionView({ section, theme, tenantId, backLink }: { section: { typ
       );
     case 'email-signup':
       return <EmailSignupSection heading={heading} subtext={subtext} tenantId={tenantId} theme={theme} />;
+    case 'contact-form':
+      return <ContactFormSection heading={heading} subtext={subtext} tenantId={tenantId} theme={theme} />;
     default:
       // Sections with no meaningful section-level fields (product/collection
       // grids, contact-form, video, spacer, etc.) rely entirely on their
@@ -258,6 +260,73 @@ function EmailSignupSection({ heading, subtext, tenantId, theme }: { heading?: s
         </form>
       )}
       {status === 'error' && <p className="mt-2 text-xs text-red-500">Une erreur est survenue, réessayez.</p>}
+    </div>
+  );
+}
+
+/** Real contact form — previously purely decorative on the editor canvas
+ *  (see EmailSignupSection above for the same gap on "email-signup").
+ *  Backed by the contact_messages table added alongside this change. */
+function ContactFormSection({ heading, subtext, tenantId, theme }: { heading?: string; subtext?: string; tenantId?: string; theme: ThemeConfig }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenantId || !name.trim() || !email.trim() || !message.trim()) return;
+    setStatus('sending');
+    const ok = await submitContactMessage(tenantId, name, email, message, 'cms-page');
+    setStatus(ok ? 'done' : 'error');
+    if (ok) { setName(''); setEmail(''); setMessage(''); }
+  };
+
+  return (
+    <div className="py-6">
+      {heading && <h2 className="text-xl font-bold text-center" style={{ fontFamily: theme.fonts.heading }}>{heading}</h2>}
+      {subtext && <p className="mt-2 text-sm text-gray-600 text-center max-w-md mx-auto">{subtext}</p>}
+      {status === 'done' ? (
+        <p className="mt-6 text-sm font-medium text-center" style={{ color: theme.colors.primary }}>Merci ! Votre message a bien été envoyé.</p>
+      ) : (
+        <form onSubmit={submit} className="mt-6 space-y-3 max-w-md mx-auto">
+          <input
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Votre nom"
+            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2"
+            style={{ ['--tw-ring-color' as any]: theme.colors.primary }}
+          />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="votre@email.com"
+            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2"
+            style={{ ['--tw-ring-color' as any]: theme.colors.primary }}
+          />
+          <textarea
+            required
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            placeholder="Votre message"
+            rows={4}
+            className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 resize-none"
+            style={{ ['--tw-ring-color' as any]: theme.colors.primary }}
+          />
+          <button
+            type="submit"
+            disabled={status === 'sending' || !tenantId}
+            className="w-full px-5 py-2.5 rounded-lg font-bold text-white text-sm disabled:opacity-50"
+            style={{ backgroundColor: theme.colors.primary }}
+          >
+            {status === 'sending' ? 'Envoi...' : 'Envoyer'}
+          </button>
+          {status === 'error' && <p className="text-xs text-red-500 text-center">Une erreur est survenue, réessayez.</p>}
+        </form>
+      )}
     </div>
   );
 }

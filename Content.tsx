@@ -1,12 +1,12 @@
-import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
+import { PageHeader, Card, Button, EmptyState } from './ui';
 import {
   FileText, Plus, Layout, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
   ChevronDown, ChevronRight, Settings as SettingsIcon, MousePointerClick, PanelLeft,
-  Palette, Type,
+  Palette, Type, Copy, UploadCloud, CloudOff,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
-  createCmsPage, getCmsPages, saveCmsPage, type CmsPage, type CmsBlockType,
+  createCmsPage, getCmsPages, saveCmsPage, writeAllCmsPages, type CmsPage, type CmsBlockType,
   SHOPIFY_TEMPLATES, SHOPIFY_BLOCK_TYPES, SECTION_PALETTE,
   addOsSection, removeOsSection, reorderOsSections, updateOsSectionSettings,
   addOsBlock, removeBlock, updateOsBlockSettings,
@@ -15,7 +15,7 @@ import { ImageUploadField } from '../../components/ImageUpload';
 import {
   TEMPLATE_PROFILES, FONT_OPTIONS, defaultThemeForType, type ThemePreset,
 } from '../../lib/theme-engine';
-import { getTenantStorageKey, getShopTheme, saveShopTheme, getShopSubdomain } from '../../lib/app-state';
+import { getTenantStorageKey, getShopTheme, saveShopTheme } from '../../lib/app-state';
 import { fetchCloudCmsPages, pushCloudCmsPages } from '../../lib/tenant-sync';
 
 export default function Content() {
@@ -110,6 +110,45 @@ export default function Content() {
     if (!draft) return;
     const next = saveCmsPage(draft);
     setPages(next);
+    pushCloudCmsPages(next);
+  };
+
+  const togglePublish = () => {
+    if (!draft) return;
+    const updated: CmsPage = { ...draft, status: draft.status === 'published' ? 'draft' : 'published' };
+    const next = saveCmsPage(updated);
+    setPages(next);
+    setDraft(updated);
+    pushCloudCmsPages(next);
+  };
+
+  const duplicatePage = () => {
+    if (!draft) return;
+    const copy: CmsPage = {
+      ...draft,
+      id: `page-${Date.now()}`,
+      title: `${draft.title} (copie)`,
+      slug: `${draft.slug}-copie-${Date.now().toString().slice(-4)}`,
+      status: 'draft',
+      updatedAt: new Date().toLocaleDateString('fr-FR'),
+    };
+    const next = saveCmsPage(copy);
+    setPages(next);
+    setSelectedPageId(copy.id);
+    setDraft(copy);
+    setSelectedNodeId(null);
+    pushCloudCmsPages(next);
+  };
+
+  const deletePage = () => {
+    if (!draft) return;
+    if (!window.confirm(`Supprimer définitivement la page "${draft.title}" ? Cette action est irréversible.`)) return;
+    const next = pages.filter(p => p.id !== draft.id);
+    writeAllCmsPages(next);
+    setPages(next);
+    setSelectedPageId(next[0]?.id ?? null);
+    setDraft(next[0] ?? null);
+    setSelectedNodeId(null);
     pushCloudCmsPages(next);
   };
 
@@ -319,10 +358,21 @@ export default function Content() {
               <select value={draft.template} onChange={e => setDraft({ ...draft, template: e.target.value as CmsPage['template'] })} className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs">
                 {SHOPIFY_TEMPLATES.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
               </select>
-              <Badge color={draft.status === 'published' ? 'green' : 'brand'}>{draft.status === 'published' ? 'Publié' : 'Brouillon'}</Badge>
-              <a href={`/s/${getShopSubdomain().replace('.os.liafrik.com', '')}`} target="_blank" rel="noopener noreferrer">
+              <button
+                onClick={togglePublish}
+                className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-colors ${draft.status === 'published' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                title={draft.status === 'published' ? 'Cliquer pour dépublier' : 'Cliquer pour publier'}
+              >
+                {draft.status === 'published' ? <><UploadCloud size={12} className="inline mr-1" />Publié</> : <><CloudOff size={12} className="inline mr-1" />Brouillon</>}
+              </button>
+              <a
+                href={draft.template === 'index' ? `/store` : `/store/pages/${draft.slug}`}
+                target="_blank" rel="noopener noreferrer"
+              >
                 <Button variant="secondary" size="sm"><Eye size={14} /> Aperçu</Button>
               </a>
+              <Button variant="secondary" size="sm" onClick={duplicatePage} title="Dupliquer cette page"><Copy size={14} /></Button>
+              <Button variant="secondary" size="sm" onClick={deletePage} title="Supprimer cette page"><Trash2 size={14} className="text-red-500" /></Button>
               <Button onClick={savePage} size="sm"><Save size={14} /> Enregistrer</Button>
             </div>
           </div>
@@ -547,6 +597,16 @@ export default function Content() {
                       onChange={e => setDraft(updateOsSectionSettings(draft, selectedSection.id, { cta: e.target.value }))}
                       className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:ring-2 focus:ring-brand-200 focus:outline-none"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-1">Lien du bouton (URL ou /chemin)</label>
+                    <input
+                      value={selectedSection.settings?.ctaUrl || ''}
+                      onChange={e => setDraft(updateOsSectionSettings(draft, selectedSection.id, { ctaUrl: e.target.value }))}
+                      placeholder="/store/products/... ou https://..."
+                      className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs focus:ring-2 focus:ring-brand-200 focus:outline-none"
+                    />
+                    <p className="mt-1 text-[10px] text-gray-400">Laissez vide pour revenir à la boutique.</p>
                   </div>
                   <div className="pt-2 border-t border-gray-100">
                     <div className="text-[10px] text-gray-400">{selectedSection.blocks.length} bloc(s) dans cette section</div>

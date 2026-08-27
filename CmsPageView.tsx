@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ShoppingCart, Package } from 'lucide-react';
 import { getShopTheme, getShopProfile, getCartItems, getProductImages, type StoreProduct } from '../lib/app-state';
 import { getCmsPages, type CmsPage, type CmsBlock } from '../lib/cms';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, fetchPublicCmsPages, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, fetchPublicCmsPages, subscribeToNewsletter, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
 
@@ -121,6 +121,12 @@ export default function CmsPageView() {
         <div className="space-y-8">
           {sections.map(section => (
             <div key={section.id} className="space-y-4">
+              {/* Section-level settings (heading/subtext/image/cta) configured
+                  in the theme editor's right-hand panel — previously only
+                  visible in the editor's canvas preview and never rendered
+                  here, so a merchant's banner/rich-text/image-with-text
+                  sections were saved but invisible to real visitors. */}
+              <CmsSectionView section={section} theme={theme} tenantId={resolvedTenant?.id} backLink={backLink} />
               {section.blocks.map(block => (
                 <CmsBlockView key={block.id} block={block} theme={theme} products={products} currency={currency} backLink={backLink} />
               ))}
@@ -128,6 +134,130 @@ export default function CmsPageView() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Renders a section's own settings (heading/subtext/image/cta) — the
+ *  fields a merchant fills in via "Add section" in the editor, distinct
+ *  from the section's child blocks (rendered separately by CmsBlockView).
+ *  Mirrors CanvasSection's editor preview so what the merchant sees while
+ *  editing matches what a real visitor sees. */
+function CmsSectionView({ section, theme, tenantId, backLink }: { section: { type: string; settings: Record<string, any> }; theme: ThemeConfig; tenantId?: string; backLink: string }) {
+  const s = section.settings || {};
+  const heading = s.heading || s.title;
+  const subtext = s.subtext;
+  const image = s.image;
+  const cta = s.cta;
+  const ctaUrl = s.ctaUrl;
+  const hasContent = heading || subtext || image || cta;
+  if (!hasContent && section.type !== 'email-signup') return null;
+
+  switch (section.type) {
+    case 'image-banner':
+    case 'slideshow':
+      return (
+        <div
+          className="rounded-2xl overflow-hidden flex flex-col items-center justify-center text-center text-white p-10 min-h-[220px]"
+          style={image ? { backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { backgroundColor: theme.colors.primary }}
+        >
+          {heading && <h2 className="text-2xl font-bold drop-shadow" style={{ fontFamily: theme.fonts.heading }}>{heading}</h2>}
+          {subtext && <p className="mt-2 text-sm opacity-90 max-w-md drop-shadow">{subtext}</p>}
+          {cta && (
+            <a href={ctaUrl || backLink} className="mt-5 inline-block px-6 py-3 rounded-lg font-bold text-sm bg-white" style={{ color: theme.colors.primary }}>
+              {cta}
+            </a>
+          )}
+        </div>
+      );
+    case 'image-with-text':
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+          {image && <img src={image} alt={heading || ''} className="w-full rounded-xl object-cover aspect-video" />}
+          <div>
+            {heading && <h3 className="text-xl font-bold mb-2" style={{ fontFamily: theme.fonts.heading }}>{heading}</h3>}
+            {subtext && <p className="text-sm text-gray-600 leading-relaxed">{subtext}</p>}
+            {cta && (
+              <a href={ctaUrl || backLink} className="mt-4 inline-block px-5 py-2.5 rounded-lg font-bold text-white text-sm" style={{ backgroundColor: theme.colors.primary }}>
+                {cta}
+              </a>
+            )}
+          </div>
+        </div>
+      );
+    case 'rich-text':
+      return (
+        <div className="text-center py-6">
+          {heading && <h2 className="text-xl font-bold" style={{ fontFamily: theme.fonts.heading }}>{heading}</h2>}
+          {subtext && <p className="mt-2 text-sm text-gray-600 leading-relaxed max-w-xl mx-auto">{subtext}</p>}
+          {cta && (
+            <a href={ctaUrl || backLink} className="mt-4 inline-block px-5 py-2.5 rounded-lg font-bold text-white text-sm" style={{ backgroundColor: theme.colors.primary }}>
+              {cta}
+            </a>
+          )}
+        </div>
+      );
+    case 'email-signup':
+      return <EmailSignupSection heading={heading} subtext={subtext} tenantId={tenantId} theme={theme} />;
+    default:
+      // Sections with no meaningful section-level fields (product/collection
+      // grids, contact-form, video, spacer, etc.) rely entirely on their
+      // blocks or on live product data, already rendered separately.
+      if (!heading && !subtext) return null;
+      return (
+        <div className="py-4">
+          {heading && <h2 className="text-xl font-bold" style={{ fontFamily: theme.fonts.heading }}>{heading}</h2>}
+          {subtext && <p className="mt-2 text-sm text-gray-600 leading-relaxed">{subtext}</p>}
+        </div>
+      );
+  }
+}
+
+/** Real email capture — previously any "email-signup" section was purely
+ *  decorative on the editor canvas and had nothing behind it on the live
+ *  storefront. Uses the newsletter_subscribers table that already backs
+ *  the rest of the platform (see subscribeToNewsletter in tenant-sync). */
+function EmailSignupSection({ heading, subtext, tenantId, theme }: { heading?: string; subtext?: string; tenantId?: string; theme: ThemeConfig }) {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenantId || !email.trim()) return;
+    setStatus('sending');
+    const ok = await subscribeToNewsletter(tenantId, email.trim(), 'cms-page');
+    setStatus(ok ? 'done' : 'error');
+    if (ok) setEmail('');
+  };
+
+  return (
+    <div className="text-center py-8 px-4 rounded-2xl" style={{ backgroundColor: `${theme.colors.primary}10` }}>
+      {heading && <h2 className="text-xl font-bold" style={{ fontFamily: theme.fonts.heading }}>{heading}</h2>}
+      {subtext && <p className="mt-2 text-sm text-gray-600">{subtext}</p>}
+      {status === 'done' ? (
+        <p className="mt-4 text-sm font-medium" style={{ color: theme.colors.primary }}>Merci ! Vous êtes inscrit(e).</p>
+      ) : (
+        <form onSubmit={submit} className="flex gap-2 mt-4 max-w-sm mx-auto">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="votre@email.com"
+            className="flex-1 px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2"
+            style={{ ['--tw-ring-color' as any]: theme.colors.primary }}
+          />
+          <button
+            type="submit"
+            disabled={status === 'sending' || !tenantId}
+            className="px-5 py-2.5 rounded-lg font-bold text-white text-sm disabled:opacity-50"
+            style={{ backgroundColor: theme.colors.primary }}
+          >
+            {status === 'sending' ? '...' : 'S\'inscrire'}
+          </button>
+        </form>
+      )}
+      {status === 'error' && <p className="mt-2 text-xs text-red-500">Une erreur est survenue, réessayez.</p>}
     </div>
   );
 }

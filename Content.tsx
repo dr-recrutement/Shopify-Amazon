@@ -2,7 +2,7 @@ import { PageHeader, Card, Button, EmptyState } from './ui';
 import {
   FileText, Plus, Layout, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
   ChevronDown, ChevronRight, Settings as SettingsIcon, MousePointerClick, PanelLeft,
-  Palette, Type, Copy, UploadCloud, CloudOff,
+  Palette, Type, Copy, UploadCloud, CloudOff, Mail, Archive, MailOpen,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -16,7 +16,7 @@ import {
   TEMPLATE_PROFILES, FONT_OPTIONS, defaultThemeForType, type ThemePreset,
 } from '../../lib/theme-engine';
 import { getTenantStorageKey, getShopTheme, saveShopTheme } from '../../lib/app-state';
-import { fetchCloudCmsPages, pushCloudCmsPages } from '../../lib/tenant-sync';
+import { fetchCloudCmsPages, pushCloudCmsPages, fetchContactMessages, updateContactMessageStatus } from '../../lib/tenant-sync';
 
 export default function Content() {
   const [pages, setPages] = useState<CmsPage[]>([]);
@@ -47,7 +47,27 @@ export default function Content() {
     return saved ? JSON.parse(saved) : profile.fonts;
   });
   // Toggle between "pages" view and "theme design" view in the CMS.
-  const [view, setView] = useState<'pages' | 'design'>('pages');
+  const [view, setView] = useState<'pages' | 'design' | 'messages'>('pages');
+
+  // Contact form submissions from the storefront's "contact-form" CMS
+  // section — previously had no dashboard screen at all despite the
+  // section rendering a real form on the public page.
+  const [messages, setMessages] = useState<Array<{ id: string; name: string; email: string; message: string; status: string; createdAt: string }>>([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+
+  useEffect(() => {
+    if (view !== 'messages') return;
+    setMessagesLoading(true);
+    fetchContactMessages().then(rows => {
+      setMessages(rows || []);
+      setMessagesLoading(false);
+    });
+  }, [view]);
+
+  const markMessageStatus = (id: string, status: 'new' | 'read' | 'archived') => {
+    setMessages(prev => prev.map(m => m.id === id ? { ...m, status } : m));
+    updateContactMessageStatus(id, status);
+  };
 
   const persistTemplate = (preset: ThemePreset) => {
     const profile = TEMPLATE_PROFILES.find(p => p.id === preset) || TEMPLATE_PROFILES[0];
@@ -220,7 +240,57 @@ export default function Content() {
         <button onClick={() => setView('design')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'design' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
           <Palette size={14} className="inline mr-1" /> Template & Design
         </button>
+        <button onClick={() => setView('messages')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'messages' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+          <Mail size={14} className="inline mr-1" /> Messages
+          {messages.filter(m => m.status === 'new').length > 0 && (
+            <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-bold">{messages.filter(m => m.status === 'new').length}</span>
+          )}
+        </button>
       </div>
+
+      {/* MESSAGES VIEW — contact-form submissions from the live storefront */}
+      {view === 'messages' && (
+        <Card className="p-0 overflow-hidden">
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="font-semibold text-gray-900">Messages reçus via le formulaire de contact</h3>
+            <p className="text-xs text-gray-500 mt-0.5">Envoyés par les visiteurs depuis une section "Formulaire de contact" publiée sur votre boutique.</p>
+          </div>
+          {messagesLoading ? (
+            <div className="p-8 text-center text-sm text-gray-400">Chargement...</div>
+          ) : messages.length === 0 ? (
+            <EmptyState icon={Mail} title="Aucun message" desc="Les messages envoyés depuis votre formulaire de contact apparaîtront ici." />
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {messages.map(m => (
+                <div key={m.id} className={`p-4 flex items-start justify-between gap-4 ${m.status === 'new' ? 'bg-brand-50/30' : ''}`}>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900 text-sm">{m.name}</span>
+                      <span className="text-xs text-gray-400">{m.email}</span>
+                      {m.status === 'new' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-brand-100 text-brand-700 font-bold">Nouveau</span>}
+                      {m.status === 'archived' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-bold">Archivé</span>}
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1.5 whitespace-pre-line">{m.message}</p>
+                    <p className="text-xs text-gray-400 mt-1.5">{m.createdAt}</p>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    {m.status !== 'read' && m.status !== 'archived' && (
+                      <button onClick={() => markMessageStatus(m.id, 'read')} title="Marquer comme lu" className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700">
+                        <MailOpen size={15} />
+                      </button>
+                    )}
+                    {m.status !== 'archived' && (
+                      <button onClick={() => markMessageStatus(m.id, 'archived')} title="Archiver" className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700">
+                        <Archive size={15} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* DESIGN VIEW — template selector + colors + fonts */}
       {view === 'design' && (

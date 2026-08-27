@@ -1,0 +1,10 @@
+# Single-page app fallback for Cloudflare Pages.
+# Without this, directly visiting or refreshing on any deep route
+# (e.g. /app/online-store, /s/some-shop, /s/some-shop/products/xyz)
+# can be served Cloudflare's default 404 instead of index.html — the
+# React app (and its CSS/JS bundle) never even loads, which can look
+# exactly like a broken/unstyled page.
+#
+# Cloudflare Pages Functions under /api/* already take priority over
+# this file automatically and are unaffected by the catch-all below.
+/*    /index.html   200

@@ -583,33 +583,36 @@ export default function OnlineStore() {
                     <button
                       key={p.id}
                       onClick={() => selectPreset(p)}
-                      className={`w-full text-left p-3.5 rounded-xl border transition-all bg-white group ${isActive ? 'border-brand-500 bg-brand-50/40' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
+                      className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-xl flex-shrink-0">{p.icon}</span>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors">{p.name}</span>
-                              {isActive && <span className="text-[9px] font-bold uppercase text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">Actif</span>}
-                            </div>
-                            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{p.useCase}</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-1 flex-shrink-0">
-                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.primary }} />
-                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.accent }} />
-                          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: p.colors.background }} />
-                        </div>
+                      {/* Real preview banner — built from the theme's actual
+                          colors/fonts, not a decorative dot cluster. Closer
+                          to how Shopify shows an actual thumbnail of the
+                          theme design when picking one. */}
+                      <div
+                        className="h-16 flex items-center px-4 gap-2"
+                        style={{ background: `linear-gradient(120deg, ${p.colors.primary}, ${p.colors.accent})` }}
+                      >
+                        <span className="text-2xl drop-shadow">{p.icon}</span>
+                        <span className="text-white text-xs font-bold drop-shadow" style={{ fontFamily: p.fonts?.heading }}>{p.name}</span>
+                        {isActive && (
+                          <span className="ml-auto text-[9px] font-bold uppercase text-white bg-black/25 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <CheckCircle size={10} /> Actif
+                          </span>
+                        )}
                       </div>
-                      <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{p.description}</p>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {p.features.map((f: string) => (
-                          <span key={f} className="text-[9px] px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
-                        ))}
-                      </div>
-                      <div className={`mt-2 text-[11px] font-medium flex items-center gap-1 ${isActive ? 'text-brand-600' : 'text-gray-400 group-hover:text-brand-600'}`}>
-                        {isActive ? <><CheckCircle size={12} /> Template activé</> : <><ChevronRight size={12} /> Activer ce template</>}
+
+                      <div className="p-3.5">
+                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{p.useCase}</span>
+                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">{p.description}</p>
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {p.features.map((f: string) => (
+                            <span key={f} className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
+                          ))}
+                        </div>
+                        <div className={`mt-2.5 text-[11px] font-medium flex items-center gap-1 ${isActive ? 'text-brand-600' : 'text-gray-400 group-hover:text-brand-600'}`}>
+                          {isActive ? <><CheckCircle size={12} /> Template activé</> : <><ChevronRight size={12} /> Activer ce template</>}
+                        </div>
                       </div>
                     </button>
                   );

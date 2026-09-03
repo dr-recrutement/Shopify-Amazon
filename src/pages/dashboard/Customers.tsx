@@ -95,7 +95,7 @@ export default function Customers() {
           <h3 className="font-semibold text-gray-900 mb-3">Segments</h3>
           <div className="space-y-2">
             {(['all', 'vip', 'new', 'regular', 'inactive'] as const).map(s => (
-              <button key={s} onClick={() => setActiveSegment(s)} className={`w-full text-left px-3 py-2 rounded-lg text-sm ${activeSegment === s ? 'bg-brand-50 text-brand-700 font-medium' : 'hover:bg-gray-50 text-gray-700'}`}>
+              <button key={s} onClick={() => setActiveSegment(s)} className={`w-full text-left px-3 py-2 rounded-full text-sm ${activeSegment === s ? 'bg-brand-50 text-brand-700 font-medium' : 'hover:bg-gray-50 text-gray-700'}`}>
                 {s === 'all' ? 'Tous les clients' : SEGMENT_LABELS[s]} ({s === 'all' ? customers.length : customers.filter(c => c.segment === s).length})
               </button>
             ))}

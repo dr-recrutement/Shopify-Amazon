@@ -374,7 +374,7 @@ export default function StorefrontPage() {
                   {searchResults.length === 0 ? (
                     <p className="text-sm opacity-60 col-span-full py-4 text-center">Aucun produit trouvé pour « {searchQuery} »</p>
                   ) : searchResults.map(p => (
-                    <button key={p.id} onClick={() => { handleAddToCart(p); setSearchOpen(false); setSearchQuery(''); }} className="text-left border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                    <button key={p.id} onClick={() => { handleAddToCart(p); setSearchOpen(false); setSearchQuery(''); }} className="text-left border rounded-full overflow-hidden hover:shadow-md transition-shadow">
                       {p.image ? (
                         <img src={p.image} alt={p.name} className="w-full h-24 object-cover" />
                       ) : (
@@ -594,7 +594,7 @@ export default function StorefrontPage() {
                   {checkoutError && (
                     <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg p-3">{checkoutError}</p>
                   )}
-                  <button type="submit" disabled={redirectingToPayment} className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60" style={{ backgroundColor: theme.colors.primary }}>
+                  <button type="submit" disabled={redirectingToPayment} className="w-full py-3 rounded-full font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60" style={{ backgroundColor: theme.colors.primary }}>
                     <Lock size={16} /> {redirectingToPayment ? 'Redirection vers le paiement...' : `Confirmer la commande · ${fmtPrice(cartTotal)}`}
                   </button>
                   <p className="text-xs text-gray-400 text-center">Paiement sécurisé · Vos données sont protégées</p>

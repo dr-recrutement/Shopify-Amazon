@@ -162,7 +162,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleAddToCart}
               disabled={product.status === 'out_of_stock' || product.stock === 0}
-              className="flex-1 py-3 rounded-lg font-bold text-white text-sm shadow-md hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 py-3 rounded-full font-bold text-white text-sm shadow-md hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ backgroundColor: theme.colors.primary }}
             >
               {added ? 'Ajouté ✓' : 'Ajouter au panier'}

@@ -57,7 +57,7 @@ export function Button({ children, variant = 'primary', size = 'md', className =
   };
   const sizes: any = { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2 text-sm', lg: 'px-6 py-3' };
   return (
-    <button className={`font-medium rounded-lg transition-all hover:scale-[1.01] active:scale-95 ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
+    <button className={`font-medium rounded-full transition-all hover:scale-[1.01] active:scale-95 ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
       {children}
     </button>
   );

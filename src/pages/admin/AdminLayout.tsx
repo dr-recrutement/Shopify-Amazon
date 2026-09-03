@@ -52,7 +52,7 @@ export default function AdminLayout() {
         </nav>
         <div className="p-3 border-t border-gray-800">
           <div className="text-xs text-gray-500 mb-2 truncate">{user?.email}</div>
-          <button onClick={logout} className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex items-center gap-2">
+          <button onClick={logout} className="w-full text-left px-3 py-2 rounded-full text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex items-center gap-2">
             <LogOut size={14} /> Déconnexion
           </button>
         </div>

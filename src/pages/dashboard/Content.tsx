@@ -175,10 +175,10 @@ export default function Content() {
 
       {/* Tab bar: Pages / Design du thème */}
       <div className="flex items-center gap-2 mb-4">
-        <button onClick={() => setView('pages')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'pages' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+        <button onClick={() => setView('pages')} className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${view === 'pages' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
           <FileText size={14} className="inline mr-1" /> Pages & Sections
         </button>
-        <button onClick={() => setView('design')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${view === 'design' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+        <button onClick={() => setView('design')} className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${view === 'design' ? 'bg-brand-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
           <Palette size={14} className="inline mr-1" /> Template & Design
         </button>
       </div>
@@ -407,7 +407,7 @@ export default function Content() {
                 <div className="mt-2 p-2 border border-brand-200 rounded-lg bg-brand-50/30 space-y-1">
                   <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 px-1 mb-1">Ajouter une section</div>
                   {SECTION_PALETTE.map(p => (
-                    <button key={p.type} onClick={() => handleAddSection(p.type)} className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white text-left text-xs text-gray-700 transition-colors">
+                    <button key={p.type} onClick={() => handleAddSection(p.type)} className="w-full flex items-center gap-2 px-2 py-1.5 rounded-full hover:bg-white text-left text-xs text-gray-700 transition-colors">
                       <span className="text-sm">{p.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate">{p.label}</div>
@@ -418,7 +418,7 @@ export default function Content() {
                   <button onClick={() => setShowSectionPalette(false)} className="w-full text-[10px] text-gray-400 hover:text-gray-600 py-1">Annuler</button>
                 </div>
               ) : (
-                <button onClick={() => setShowSectionPalette(true)} className="mt-2 w-full flex items-center justify-center gap-1.5 py-2 border border-dashed border-gray-300 rounded-md text-xs text-gray-500 hover:border-brand-400 hover:text-brand-600 transition-colors">
+                <button onClick={() => setShowSectionPalette(true)} className="mt-2 w-full flex items-center justify-center gap-1.5 py-2 border border-dashed border-gray-300 rounded-full text-xs text-gray-500 hover:border-brand-400 hover:text-brand-600 transition-colors">
                   <Plus size={14} /> Ajouter une section
                 </button>
               )}

@@ -31,8 +31,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Glacial Indifference"', 'Montserrat', 'sans-serif'],
-        serif: ['"Playfair Display"', 'serif'],
+        sans: ['"Poppins"', 'sans-serif'],
+        serif: ['"Poppins"', 'sans-serif'],
       },
     },
   },

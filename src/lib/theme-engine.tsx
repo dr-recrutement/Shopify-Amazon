@@ -1191,7 +1191,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
                       </span>
                     )}
                   </div>
-                  <button onClick={() => onAddToCart?.(p)} className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
+                  <button onClick={() => onAddToCart?.(p)} className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
                     Acheter
                   </button>
                 </div>
@@ -1298,7 +1298,7 @@ function FiltersListSection({ props, colors, fonts, spacingClass }: { props: any
           </h4>
           <div className="flex flex-wrap md:flex-col gap-2">
             {filters.map((f: string) => (
-              <button key={f} className="text-left px-3 py-2 bg-black/5 hover:bg-black/10 rounded-lg text-xs font-bold transition-colors w-fit md:w-full" style={{ color: colors.text }}>
+              <button key={f} className="text-left px-3 py-2 bg-black/5 hover:bg-black/10 rounded-full text-xs font-bold transition-colors w-fit md:w-full" style={{ color: colors.text }}>
                 {f}
               </button>
             ))}
@@ -1394,7 +1394,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
               <span className="flex-1 text-center font-bold text-sm w-8">{qty}</span>
               <button onClick={() => setQty(q => q + 1)} className="p-2 hover:bg-gray-100"><Plus className="w-3.5 h-3.5" /></button>
             </div>
-            <button className="flex-1 py-3 px-6 rounded-lg text-xs font-black uppercase tracking-wider text-white shadow-md hover:scale-[1.01] transition-transform flex items-center justify-center gap-2" style={{ backgroundColor: colors.primary }}>
+            <button className="flex-1 py-3 px-6 rounded-full text-xs font-black uppercase tracking-wider text-white shadow-md hover:scale-[1.01] transition-transform flex items-center justify-center gap-2" style={{ backgroundColor: colors.primary }}>
               <ShoppingBag className="w-4 h-4" /> Ajouter au Panier
             </button>
           </div>
@@ -1450,7 +1450,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
                   <Star key={starIdx} className="w-4 h-4 fill-current" />
                 ))}
               </div>
-              <p className="text-xs md:text-sm text-gray-600 leading-relaxed italic" style={{ fontFamily: fonts.body }}>
+              <p className="text-xs md:text-sm text-gray-600 leading-relaxed" style={{ fontFamily: fonts.body }}>
                 "{t.comment}"
               </p>
             </div>
@@ -1547,7 +1547,7 @@ function NewsletterSection({ props, colors, fonts, tenantId }: { props: any; col
               placeholder={props.placeholder || 'votre-email@adresse.com'}
               className="flex-1 px-4 py-2.5 rounded-xl text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
             />
-            <button type="submit" className="px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 transition-all" style={{ backgroundColor: colors.primary }}>
+            <button type="submit" className="px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-md active:scale-95 transition-all" style={{ backgroundColor: colors.primary }}>
               {props.buttonText || 'S’abonner'}
             </button>
           </form>
@@ -1719,7 +1719,7 @@ function ChatFloatSection({ props, colors, fonts }: { props: any; colors: any; f
               placeholder="Écrivez un message..."
               className="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 focus:outline-none"
             />
-            <button onClick={handleSend} className="p-2 rounded-lg text-white" style={{ backgroundColor: colors.primary }}>
+            <button onClick={handleSend} className="p-2 rounded-full text-white" style={{ backgroundColor: colors.primary }}>
               <Send className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -2044,7 +2044,7 @@ function EmailSignupSection({ props, colors, fonts, tenantId }: { props: any; co
         ) : (
           <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm mx-auto">
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="flex-1 px-3 py-2 rounded-lg text-xs text-gray-900 bg-white" />
-            <button type="submit" className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ backgroundColor: colors.primary }}>S'inscrire</button>
+            <button type="submit" className="px-4 py-2 rounded-full text-xs font-bold text-white" style={{ backgroundColor: colors.primary }}>S'inscrire</button>
           </form>
         )}
       </div>

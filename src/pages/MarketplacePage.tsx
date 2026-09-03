@@ -24,7 +24,7 @@ export default function MarketplacePage() {
         </div>
         <div className="flex gap-2 mb-6 flex-wrap">
           {['Tous', 'Mode', 'High-tech', 'Beauté', 'Artisanat', 'Restauration', 'Services'].map((c, i) => (
-            <button key={c} className={`px-4 py-2 rounded-lg text-sm font-medium ${i === 0 ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 hover:bg-gray-50'}`}>{c}</button>
+            <button key={c} className={`px-4 py-2 rounded-full text-sm font-medium ${i === 0 ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 hover:bg-gray-50'}`}>{c}</button>
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

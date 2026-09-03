@@ -363,22 +363,36 @@ export default function Settings() {
     return `liafrik-challenge-${Math.abs(hash).toString(16)}`;
   };
 
-  // Simulate DNS Verification
-  const handleVerifyDns = (dom: CustomDomain) => {
+  // Verify DNS — calls the real Cloudflare status API (functions/api/domains/status.ts)
+  // which re-checks the domain against Cloudflare edge and persists the real
+  // dns_status in Supabase, instead of faking success after a timeout.
+  const handleVerifyDns = async (dom: CustomDomain) => {
     setIsVerifyingDns(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('no session');
 
-    setTimeout(() => {
-      const updated = domains.map(d => {
-        if (d.domain === dom.domain) {
-          return { ...d, status: 'active' as const };
-        }
-        return d;
+      const res = await fetch(`/api/domains/status?domain=${encodeURIComponent(dom.domain)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error || 'status check failed');
+
+      const isVerified = result.status === 'verified';
+      const updated = domains.map(d => d.domain === dom.domain ? { ...d, status: isVerified ? ('active' as const) : ('dns_pending' as const) } : d);
       setDomains(updated);
-      setSelectedExternalDomain(null);
+      if (isVerified) {
+        setSelectedExternalDomain(null);
+        alert(`✅ Félicitations ! Les DNS de ${dom.domain} ont été résolus et vérifiés sur le réseau Cloudflare edge ! Le challenge TXT (${getDomainChallenge(dom.domain)}) a été validé. Le domaine est maintenant actif.`);
+      } else {
+        alert(`DNS de ${dom.domain} pas encore propagés. Réessayez dans quelques minutes.`);
+      }
+    } catch {
+      alert(`Impossible de vérifier ${dom.domain} pour le moment. Réessayez.`);
+    } finally {
       setIsVerifyingDns(false);
-      alert(`✅ Félicitations ! Les DNS de ${dom.domain} ont été résolus et vérifiés sur le réseau Cloudflare edge ! Le challenge TXT (${getDomainChallenge(dom.domain)}) a été validé. Le domaine est maintenant actif.`);
-    }, 2200);
+    }
   };
 
   // Delete Domain
@@ -444,7 +458,7 @@ export default function Settings() {
                 {countryDropdownOpen && (
                   <div className="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-xl divide-y divide-gray-50">
                     {filteredCountries.length === 0 ? (
-                      <div className="p-2.5 text-xs text-gray-500 italic">Aucun pays trouvé</div>
+                      <div className="p-2.5 text-xs text-gray-500">Aucun pays trouvé</div>
                     ) : (
                       filteredCountries.map(c => (
                         <button
@@ -639,7 +653,7 @@ export default function Settings() {
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-lg text-xs hover:bg-emerald-700 shadow-md transition-colors"
+                          className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-full text-xs hover:bg-emerald-700 shadow-md transition-colors"
                         >
                           Sauvegarder et Activer
                         </button>
@@ -792,7 +806,7 @@ export default function Settings() {
                   <button
                     onClick={handleDomainSearch}
                     disabled={isSearching}
-                    className="px-4 py-2 bg-brand-600 text-white rounded-lg text-xs font-black flex items-center gap-1.5 hover:bg-brand-700 disabled:opacity-50"
+                    className="px-4 py-2 bg-brand-600 text-white rounded-full text-xs font-black flex items-center gap-1.5 hover:bg-brand-700 disabled:opacity-50"
                   >
                     {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
                     Rechercher
@@ -862,7 +876,7 @@ export default function Settings() {
                       <button
                         onClick={handleBuyDomain}
                         disabled={isPurchasing}
-                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 animate-pulse"
+                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-full text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 animate-pulse"
                       >
                         {isPurchasing ? (
                           <>
@@ -904,7 +918,7 @@ export default function Settings() {
                   <button
                     onClick={handleAddExternalDomain}
                     disabled={isConnectingDomain}
-                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-black hover:bg-slate-800 transition-colors flex items-center gap-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-slate-900 text-white rounded-full text-xs font-black hover:bg-slate-800 transition-colors flex items-center gap-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" /> {isConnectingDomain ? 'Connexion...' : 'Connecter'}
                   </button>
@@ -1063,7 +1077,7 @@ export default function Settings() {
               <p className="text-gray-500">Langue d'affichage du tableau de bord.</p>
               <div className="flex gap-2">
                 {(['fr', 'en'] as const).map(l => (
-                  <button key={l} onClick={() => setLang(l)} className={`px-4 py-2 rounded-lg text-xs font-bold border-2 ${lang === l ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600'}`}>
+                  <button key={l} onClick={() => setLang(l)} className={`px-4 py-2 rounded-full text-xs font-bold border-2 ${lang === l ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600'}`}>
                     {l === 'fr' ? 'Français' : 'English'}
                   </button>
                 ))}

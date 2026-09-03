@@ -121,7 +121,7 @@ export default function OnboardingPage() {
                 <Sparkles className="text-brand-600" size={20} />
                 <p className="text-sm text-gray-700">Vous bénéficiez de <strong>7 jours d'essai gratuit</strong> sur le plan choisi, sans carte bancaire.</p>
               </div>
-              <button onClick={next} className="mt-8 w-full py-3 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
+              <button onClick={next} className="mt-8 w-full py-3 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
                 Commencer <ArrowRight size={16} />
               </button>
             </div>
@@ -146,8 +146,8 @@ export default function OnboardingPage() {
                 </select>
               </div>
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} disabled={!data.shopName} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 disabled:opacity-50">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} disabled={!data.shopName} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 disabled:opacity-50">Continuer</button>
               </div>
             </div>
           )}
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
                 {countryDropdownOpen && (
                   <div className="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-xl divide-y divide-gray-50">
                     {filteredCountries.length === 0 ? (
-                      <div className="p-2.5 text-xs text-gray-500 italic">Aucun pays trouvé</div>
+                      <div className="p-2.5 text-xs text-gray-500">Aucun pays trouvé</div>
                     ) : (
                       filteredCountries.map(c => (
                         <button
@@ -230,8 +230,8 @@ export default function OnboardingPage() {
                 </>
               )}
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} disabled={!data.country} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 disabled:opacity-50">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} disabled={!data.country} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 disabled:opacity-50">Continuer</button>
               </div>
             </div>
           )}
@@ -258,8 +258,8 @@ export default function OnboardingPage() {
                 ))}
               </div>
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -278,12 +278,12 @@ export default function OnboardingPage() {
                 <input type="number" value={data.productPrice} onChange={e => setData({ ...data, productPrice: e.target.value })} placeholder="15000"
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
               </div>
-              <button className="w-full p-3 border-2 border-dashed border-brand-200 rounded-lg text-sm text-brand-700 hover:bg-brand-50 flex items-center justify-center gap-2">
+              <button className="w-full p-3 border-2 border-dashed border-brand-200 rounded-full text-sm text-brand-700 hover:bg-brand-50 flex items-center justify-center gap-2">
                 <Sparkles size={16} /> Générer la description par IA
               </button>
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -313,8 +313,8 @@ export default function OnboardingPage() {
               </div>
               <p className="text-xs text-gray-500">Vous pourrez configurer les clés API plus tard dans Paramètres {'>'} Payments.</p>
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -324,8 +324,8 @@ export default function OnboardingPage() {
               <h2 className="font-serif-display text-2xl font-bold text-gray-900">Choisissez votre plan</h2>
               <p className="text-gray-600 text-sm">7 jours d'essai gratuit inclus. Aucune commission sur vos ventes.</p>
               <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
-                <button onClick={() => setData({ ...data, billing: 'monthly' })} className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${data.billing === 'monthly' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Mensuel</button>
-                <button onClick={() => setData({ ...data, billing: 'annual' })} className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${data.billing === 'annual' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Annuel (-2 mois)</button>
+                <button onClick={() => setData({ ...data, billing: 'monthly' })} className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${data.billing === 'monthly' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Mensuel</button>
+                <button onClick={() => setData({ ...data, billing: 'annual' })} className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${data.billing === 'annual' ? 'bg-white shadow-sm' : 'text-gray-500'}`}>Annuel (-2 mois)</button>
               </div>
               <div className="space-y-2">
                 {PLANS.map(p => (
@@ -345,8 +345,8 @@ export default function OnboardingPage() {
                 ))}
               </div>
               <div className="flex gap-2 pt-4">
-                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-lg font-medium hover:bg-gray-50">Retour</button>
-                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700">Continuer</button>
+                <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
+                <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700">Continuer</button>
               </div>
             </div>
           )}
@@ -366,7 +366,7 @@ export default function OnboardingPage() {
                 <div className="flex justify-between"><span className="text-gray-500">Paiement</span><span className="font-medium capitalize">{data.gateway}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Plan</span><span className="font-medium capitalize">{data.plan} ({data.billing})</span></div>
               </div>
-              <button onClick={finish} className="w-full py-3 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
+              <button onClick={finish} className="w-full py-3 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2">
                 Lancer ma boutique <ChevronRight size={18} />
               </button>
             </div>

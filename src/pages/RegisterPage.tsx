@@ -98,7 +98,7 @@ export default function RegisterPage() {
                       <button
                         type="button"
                         onClick={handleDemoMode}
-                        className="w-full py-1.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 text-xs transition-colors flex items-center justify-center gap-1"
+                        className="w-full py-1.5 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 text-xs transition-colors flex items-center justify-center gap-1"
                       >
                         <Sparkles size={12} /> Commencer en Mode Démo Local
                       </button>
@@ -131,7 +131,7 @@ export default function RegisterPage() {
                 </div>
               </div>
               <button type="submit" disabled={loading}
-                className="w-full py-2.5 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? 'Création...' : <>Commencer <ArrowRight size={16} /></>}
               </button>
             </form>

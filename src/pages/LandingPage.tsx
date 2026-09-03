@@ -277,7 +277,7 @@ export default function LandingPage() {
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
                 {t('hero.title1')}<br />
-                <span className="italic text-brand-400 font-bold">{t('hero.title2')}</span><br />
+                <span className="text-brand-400 font-bold">{t('hero.title2')}</span><br />
                 {t('hero.title3')}
               </h1>
               <p className="mt-6 text-lg text-gray-200 max-w-xl leading-relaxed">
@@ -487,7 +487,61 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why Sellia - mission */}
+      {/* Reach shoppers everywhere — original section, inspired by how modern
+          commerce platforms showcase omnichannel reach, built with Sellia's
+          own real channel features (WhatsApp/Messenger inbox, AI-generated
+          Facebook/Instagram ads) rather than a copy of any other product. */}
+      <section className="py-24 bg-gradient-to-br from-brand-50 via-white to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <Section>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Vendez partout où sont vos clients.</h2>
+              <div className="mt-6 space-y-5 text-gray-600">
+                <p><span className="font-semibold text-gray-900">Boîte de réception unifiée : </span>WhatsApp Business, Messenger et Telegram arrivent dans une seule boîte, avec vos ventes en ligne.</p>
+                <p><span className="font-semibold text-gray-900">Publicités générées par IA : </span>créez vos visuels et textes publicitaires pour Facebook et Instagram directement depuis le tableau de bord.</p>
+                <p><span className="font-semibold text-gray-900">Recherche optimisée : </span>vos fiches produits sont pensées pour bien référencer votre boutique sur Google.</p>
+                <p><span className="font-semibold text-gray-900">Multi-devises et multilingue : </span>une seule boutique, adaptée à chaque marché francophone et anglophone.</p>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link to="/register" className="px-6 py-3 rounded-full bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-all hover:scale-[1.02] active:scale-95">Toucher plus de clients</Link>
+                <Link to="/pricing" className="px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-gray-200 hover:bg-gray-50 transition-all">Voir les plans</Link>
+              </div>
+            </Section>
+
+            <Section delay={100}>
+              <div className="relative bg-white rounded-2xl border border-gray-100 shadow-xl p-6">
+                <div className="rounded-xl bg-gray-900 aspect-[4/3] relative overflow-hidden flex items-center justify-center">
+                  <div className="text-center text-white/80">
+                    <MessageCircle size={36} className="mx-auto mb-2 text-brand-400" />
+                    <p className="text-sm font-medium">Boîte de réception Sellia</p>
+                  </div>
+                  <div className="absolute top-3 left-3 bg-white rounded-lg px-2.5 py-1.5 shadow-lg flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                    <span className="text-[10px] font-semibold text-gray-800">Sponsorisé · Facebook</span>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-gray-500">Ajouter un canal</span>
+                  <div className="flex -space-x-2">
+                    {[
+                      { label: 'WA', bg: '#25D366' },
+                      { label: 'FB', bg: '#1877F2' },
+                      { label: 'IG', bg: '#E1306C' },
+                      { label: 'G', bg: '#4285F4' },
+                    ].map(ch => (
+                      <div key={ch.label} className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-black text-white shadow" style={{ backgroundColor: ch.bg }}>
+                        {ch.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Section>
+          </div>
+        </div>
+      </section>
+
+
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Section>

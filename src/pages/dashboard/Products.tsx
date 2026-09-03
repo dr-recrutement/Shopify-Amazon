@@ -276,7 +276,7 @@ export default function Products() {
                         )}
                       </div>
                     ) : (
-                      <span className="text-xs italic text-gray-400">Non classifié</span>
+                      <span className="text-xs text-gray-400">Non classifié</span>
                     )}
                   </td>
                   <td className="py-3.5 px-4 text-gray-700 font-semibold">{formatPrice(p)}</td>
@@ -463,7 +463,7 @@ export default function Products() {
                     <button
                       type="button"
                       onClick={handleCreateCategory}
-                      className="p-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                      className="p-1.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                       title="Enregistrer la catégorie"
                     >
                       <Check size={14} />
@@ -528,7 +528,7 @@ export default function Products() {
                         <button
                           type="button"
                           onClick={handleCreateSubcategory}
-                          className="p-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                          className="p-1.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                           title="Enregistrer la sous-catégorie"
                         >
                           <Check size={14} />

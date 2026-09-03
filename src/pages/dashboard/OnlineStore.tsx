@@ -11,6 +11,7 @@ import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIAN
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
+import { supabase } from '../../lib/supabase';
 
 interface CustomDomain {
   domain: string;
@@ -394,7 +395,13 @@ export default function OnlineStore() {
     }, 2000);
   };
 
-  const handleConnectExternalDomain = (e: React.FormEvent) => {
+  // Connect an external domain — calls the real Cloudflare Pages custom-domain
+  // API (functions/api/domains/connect.ts), which registers the domain in
+  // Supabase AND attaches it on Cloudflare. Falls back to local-only tracking
+  // only if the backend call itself fails (e.g. offline), so the merchant
+  // isn't blocked while still surfacing the real error when there is one.
+  const [isConnectingDomain, setIsConnectingDomain] = useState(false);
+  const handleConnectExternalDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!externalDomainInput.trim()) return;
     const cleanDomain = externalDomainInput.toLowerCase().trim().replace(/^(https?:\/\/)?(www\.)?/, '');
@@ -404,17 +411,39 @@ export default function OnlineStore() {
       return;
     }
 
-    const newDomain: CustomDomain = {
-      domain: cleanDomain,
-      type: 'external',
-      status: 'dns_pending',
-      createdAt: new Date().toLocaleDateString('fr-FR')
-    };
+    setIsConnectingDomain(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('no session');
 
-    setMyDomains([...myDomains, newDomain]);
-    setSelectedExternalDomain(newDomain);
-    setExternalDomainInput('');
-    showToast(`Domaine ${cleanDomain} ajouté. Veuillez configurer vos DNS.`);
+      const res = await fetch('/api/domains/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ domain: cleanDomain }),
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(result.error || "Erreur lors de la connexion du domaine.");
+        setIsConnectingDomain(false);
+        return;
+      }
+      const newDomain: CustomDomain = { domain: cleanDomain, type: 'external', status: 'dns_pending', createdAt: new Date().toLocaleDateString('fr-FR') };
+      setMyDomains([...myDomains, newDomain]);
+      setSelectedExternalDomain(newDomain);
+      setExternalDomainInput('');
+      showToast(`Domaine ${cleanDomain} attaché sur Cloudflare. Configurez vos DNS puis vérifiez.`);
+    } catch {
+      // Backend unreachable — keep the merchant unblocked locally; the domain
+      // isn't really attached on Cloudflare yet, "Vérifier" will retry the real check.
+      const newDomain: CustomDomain = { domain: cleanDomain, type: 'external', status: 'dns_pending', createdAt: new Date().toLocaleDateString('fr-FR') };
+      setMyDomains([...myDomains, newDomain]);
+      setSelectedExternalDomain(newDomain);
+      setExternalDomainInput('');
+      showToast(`Domaine ${cleanDomain} ajouté. Veuillez configurer vos DNS.`);
+    } finally {
+      setIsConnectingDomain(false);
+    }
   };
 
   const getDomainChallenge = (domain: string): string => {
@@ -426,21 +455,38 @@ export default function OnlineStore() {
     return `liafrik-challenge-${Math.abs(hash).toString(16)}`;
   };
 
-  const handleVerifyDns = (dom: CustomDomain) => {
+  // Verify DNS — calls the real Cloudflare status API (functions/api/domains/status.ts)
+  // which re-checks the domain against Cloudflare edge and persists the real
+  // dns_status in Supabase. Falls back to a local optimistic check only when
+  // the backend itself can't be reached, so the button always resolves.
+  const handleVerifyDns = async (dom: CustomDomain) => {
     setIsVerifyingDns(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('no session');
 
-    setTimeout(() => {
-      const updated = myDomains.map(d => {
-        if (d.domain === dom.domain) {
-          return { ...d, status: 'active' as const };
-        }
-        return d;
+      const res = await fetch(`/api/domains/status?domain=${encodeURIComponent(dom.domain)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error || 'status check failed');
+
+      const isVerified = result.status === 'verified';
+      const updated = myDomains.map(d => d.domain === dom.domain ? { ...d, status: isVerified ? ('active' as const) : ('dns_pending' as const) } : d);
       setMyDomains(updated);
-      setSelectedExternalDomain(null);
+      if (isVerified) {
+        setSelectedExternalDomain(null);
+        showToast(`✅ DNS de ${dom.domain} résolus et validés sur Cloudflare !`);
+      } else {
+        showToast(`DNS de ${dom.domain} pas encore propagés. Réessayez dans quelques minutes.`);
+      }
+    } catch {
+      // Backend unreachable — don't silently fake success; tell the merchant.
+      showToast(`Impossible de vérifier ${dom.domain} pour le moment. Réessayez.`);
+    } finally {
       setIsVerifyingDns(false);
-      showToast(`DNS de ${dom.domain} résolus et validés sur Cloudflare ! Challenge ${getDomainChallenge(dom.domain)} OK.`);
-    }, 2200);
+    }
   };
 
   const handleDeleteDomain = (domainName: string) => {
@@ -585,21 +631,44 @@ export default function OnlineStore() {
                       onClick={() => selectPreset(p)}
                       className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
                     >
-                      {/* Real preview banner — built from the theme's actual
-                          colors/fonts, not a decorative dot cluster. Closer
-                          to how Shopify shows an actual thumbnail of the
-                          theme design when picking one. */}
-                      <div
-                        className="h-16 flex items-center px-4 gap-2"
-                        style={{ background: `linear-gradient(120deg, ${p.colors.primary}, ${p.colors.accent})` }}
-                      >
-                        <span className="text-2xl drop-shadow">{p.icon}</span>
-                        <span className="text-white text-xs font-bold drop-shadow" style={{ fontFamily: p.fonts?.heading }}>{p.name}</span>
+                      {/* Real theme thumbnail — a live mini mockup of the actual
+                          page structure (header, hero, grid) rendered with this
+                          template's real colors and fonts, the same way the
+                          Shopify Theme Store shows an actual screenshot of each
+                          theme rather than a plain color swatch. */}
+                      <div className="h-28 relative overflow-hidden" style={{ backgroundColor: p.colors.background }}>
+                        {/* mini header bar */}
+                        <div className="h-4 flex items-center px-2 gap-1" style={{ backgroundColor: p.colors.background, borderBottom: `1px solid ${p.colors.text}14` }}>
+                          <span className="w-8 h-1.5 rounded-full" style={{ backgroundColor: p.colors.primary }} />
+                          <span className="ml-auto flex gap-0.5">
+                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
+                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
+                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
+                          </span>
+                        </div>
+                        {/* mini hero */}
+                        <div className="px-2.5 pt-2 pb-1.5" style={{ background: `linear-gradient(135deg, ${p.colors.primary}, ${p.colors.accent})` }}>
+                          <div className="w-16 h-1.5 rounded-full bg-white/90 mb-1" />
+                          <div className="w-10 h-1 rounded-full bg-white/60" />
+                        </div>
+                        {/* mini content grid — 3 cards, distinct per layout */}
+                        <div className="grid grid-cols-3 gap-1 px-2.5 pt-1.5">
+                          {[0, 1, 2].map(i => (
+                            <div key={i} className="overflow-hidden" style={{ backgroundColor: `${p.colors.text}08`, border: `1px solid ${p.colors.text}12` }}>
+                              <div className="h-4" style={{ backgroundColor: `${p.colors.accent}55` }} />
+                              <div className="h-1 mt-0.5 mx-1 rounded-full" style={{ backgroundColor: `${p.colors.text}30` }} />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="absolute top-1.5 right-1.5 text-lg drop-shadow">{p.icon}</div>
                         {isActive && (
-                          <span className="ml-auto text-[9px] font-bold uppercase text-white bg-black/25 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-full flex items-center gap-1" style={{ backgroundColor: p.colors.primary }}>
                             <CheckCircle size={10} /> Actif
                           </span>
                         )}
+                      </div>
+                      <div className="px-3.5 pt-2 flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-gray-900" style={{ fontFamily: p.fonts?.heading }}>{p.name}</span>
                       </div>
 
                       <div className="p-3.5">
@@ -1087,7 +1156,7 @@ export default function OnlineStore() {
                             <textarea value={c.text || ''} onChange={e => { const next = [...activeSection.props.columns]; next[idx] = { ...next[idx], text: e.target.value }; updateSectionProp(activeSection.id, 'columns', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" rows={2} placeholder="Texte" />
                           </div>
                         ))}
-                        <button onClick={() => updateSectionProp(activeSection.id, 'columns', [...(activeSection.props.columns || []), { title: 'Nouvel atout', text: 'Description de l’avantage.', icon: '✦' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une colonne</button>
+                        <button onClick={() => updateSectionProp(activeSection.id, 'columns', [...(activeSection.props.columns || []), { title: 'Nouvel atout', text: 'Description de l’avantage.', icon: '✦' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-full border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une colonne</button>
                       </div>
                     </div>
                   )}
@@ -1157,7 +1226,7 @@ export default function OnlineStore() {
                             <textarea value={r.content || ''} onChange={e => { const next = [...activeSection.props.rows]; next[idx] = { ...next[idx], content: e.target.value }; updateSectionProp(activeSection.id, 'rows', next); }} className="w-full px-2 py-1 border border-gray-200 rounded text-xs" rows={2} placeholder="Contenu" />
                           </div>
                         ))}
-                        <button onClick={() => updateSectionProp(activeSection.id, 'rows', [...(activeSection.props.rows || []), { heading: 'Nouvelle rubrique', content: 'Contenu de la rubrique.' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une ligne</button>
+                        <button onClick={() => updateSectionProp(activeSection.id, 'rows', [...(activeSection.props.rows || []), { heading: 'Nouvelle rubrique', content: 'Contenu de la rubrique.' }])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-full border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter une ligne</button>
                       </div>
                     </div>
                   )}
@@ -1173,7 +1242,7 @@ export default function OnlineStore() {
                             <button onClick={() => { const next = activeSection.props.messages.filter((_: any, i: number) => i !== idx); updateSectionProp(activeSection.id, 'messages', next); }} className="px-2 text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
                           </div>
                         ))}
-                        <button onClick={() => updateSectionProp(activeSection.id, 'messages', [...(activeSection.props.messages || []), 'Nouveau message promo'])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter un message</button>
+                        <button onClick={() => updateSectionProp(activeSection.id, 'messages', [...(activeSection.props.messages || []), 'Nouveau message promo'])} className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-full border border-brand-200 text-xs hover:bg-brand-100 transition-colors">+ Ajouter un message</button>
                       </div>
                     </div>
                   )}
@@ -1848,7 +1917,7 @@ export default function OnlineStore() {
                   <button
                     type="submit"
                     disabled={isSearchingDomain}
-                    className="px-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center justify-center disabled:opacity-50"
+                    className="px-3 bg-brand-600 text-white rounded-full hover:bg-brand-700 transition-colors flex items-center justify-center disabled:opacity-50"
                   >
                     {isSearchingDomain ? <span className="animate-spin text-xs">...</span> : <Search size={14} />}
                   </button>
@@ -1899,7 +1968,7 @@ export default function OnlineStore() {
                     <button
                       onClick={handleBuyDomain}
                       disabled={isPurchasing}
-                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-lg hover:bg-emerald-700 transition-colors animate-pulse"
+                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-full hover:bg-emerald-700 transition-colors animate-pulse"
                     >
                       {isPurchasing ? 'Enregistrement Cloudflare...' : `Payer ${selectedExtension.price}`}
                     </button>
@@ -1921,7 +1990,7 @@ export default function OnlineStore() {
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-lg transition-colors border border-gray-300"
+                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-full transition-colors border border-gray-300"
                   >
                     Relier
                   </button>
@@ -1971,7 +2040,7 @@ export default function OnlineStore() {
                     />
                     <button
                       onClick={handleSendShopperMessage}
-                      className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center justify-center"
+                      className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-colors flex items-center justify-center"
                     >
                       <Send size={12} />
                     </button>
@@ -2008,7 +2077,7 @@ export default function OnlineStore() {
                     />
                     <button
                       onClick={handleSendMerchantMessage}
-                      className="p-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-colors flex items-center justify-center"
+                      className="p-2 bg-brand-600 hover:bg-brand-700 text-white rounded-full transition-colors flex items-center justify-center"
                     >
                       <Send size={12} />
                     </button>

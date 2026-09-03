@@ -160,7 +160,7 @@ function CmsBlockView({ block, theme, products, currency, backLink }: { block: C
         </a>
       );
     case 'quote':
-      return <blockquote className="border-l-4 pl-4 italic text-gray-600" style={{ borderColor: theme.colors.primary }}>{s.text || ''}</blockquote>;
+      return <blockquote className="border-l-4 pl-4 text-gray-600" style={{ borderColor: theme.colors.primary }}>{s.text || ''}</blockquote>;
     case 'video':
       return s.url ? <video src={s.url} controls className="w-full rounded-xl" /> : null;
     case 'hero':

@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, Badge } from './ui';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLang } from '../../lib/i18n';
 import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
@@ -103,7 +103,7 @@ export default function Settings() {
   const [gateways, setGateways] = useState<Record<string, GatewayStatus>>({});
   const [gatewaysLoading, setGatewaysLoading] = useState(true);
 
-  const reloadGateways = () => {
+  const reloadGateways = useCallback(() => {
     setGatewaysLoading(true);
     fetchCloudGateways().then(cloud => {
       const asMap: typeof gateways = {};
@@ -119,9 +119,9 @@ export default function Settings() {
       setGateways(asMap);
       setGatewaysLoading(false);
     });
-  };
+  }, []);
 
-  useEffect(() => { reloadGateways(); }, []);
+  useEffect(() => { reloadGateways(); }, [reloadGateways]);
 
   // Modal for Payment connection
   const [activeGatewayModal, setActiveGatewayModal] = useState<string | null>(null);

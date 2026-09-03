@@ -22,6 +22,7 @@ import {
 } from '../lib/app-state';
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
 import { injectAnalyticsScripts } from '../lib/analytics-injector';
+import { useSeo } from '../lib/seo';
 
 type CartDrawerItem = CartItem & { image?: string };
 
@@ -115,6 +116,16 @@ export default function StorefrontPage() {
   const localProfile = useMemo(() => getShopProfile(), []);
   const shopName = resolvedTenant?.name || localProfile?.name || 'Boutique';
   const currency = resolvedTenant?.currency || localProfile?.currency || 'XOF';
+
+  // Per-tenant SEO: each merchant's storefront gets its own real title and
+  // description (their actual shop name), not the platform's generic
+  // marketing copy — this is what makes individual stores indexable and
+  // distinguishable in search results rather than all sharing one title.
+  useSeo({
+    title: shopName,
+    description: `${shopName} — Boutique en ligne. Découvrez notre catalogue et commandez en toute sécurité.`,
+    type: 'website',
+  });
 
   // Real header content is CMS-editable via the theme's 'header' section
   // (logo, nav links, announcement banner, search/cart visibility) —

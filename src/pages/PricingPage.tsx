@@ -5,8 +5,10 @@ import { CheckCircle2 } from 'lucide-react';
 import { PLANS } from '../lib/constants';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useSeo } from '../lib/seo';
 
 export default function PricingPage() {
+  useSeo({ title: 'Tarifs', description: "Des plans transparents pour vendre en ligne, sans commission cachée. Comparez les plans Sellia et choisissez celui qui vous convient." });
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
 
   return (

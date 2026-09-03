@@ -2,6 +2,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Star, MapPin, ShoppingBag, ArrowRight } from 'lucide-react';
+import { useSeo } from '../lib/seo';
 
 
 const shops = [
@@ -14,6 +15,7 @@ const shops = [
 ];
 
 export default function MarketplacePage() {
+  useSeo({ title: 'Marketplace', description: 'Découvrez les boutiques et produits vendus par les marchands Sellia à travers le monde.' });
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

@@ -3,8 +3,10 @@ import { Footer } from '../components/Footer';
 import { Card } from '../pages/dashboard/ui';
 import { useLang } from '../lib/i18n';
 import { Sparkles, Globe, CreditCard, Smartphone, Zap } from 'lucide-react';
+import { useSeo } from '../lib/seo';
 
 export default function AboutPage() {
+  useSeo({ title: 'À propos', description: 'Sellia est développé par LiAfrik pour permettre à quiconque de lancer une boutique en ligne professionnelle, partout dans le monde.' });
   const { lang } = useLang();
   const fr = lang === 'fr';
   return (

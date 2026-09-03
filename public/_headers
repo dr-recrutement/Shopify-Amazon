@@ -1,0 +1,23 @@
+# Cloudflare Pages security headers (applied to every response).
+# Cloudflare Pages already terminates and enforces HTTPS for all traffic;
+# HSTS below tells browsers to never even attempt HTTP on repeat visits.
+#
+# CSP notes:
+# - style-src needs 'unsafe-inline': the app sets CSS custom properties and
+#   per-component styling via the `style` prop extensively (theme colors,
+#   fonts, radii) — removing that is a much larger refactor, not a header
+#   change.
+# - frame-src allows https: because theme-engine.tsx's video section embeds
+#   a merchant-supplied video URL (YouTube/Vimeo/etc.) — this is an existing,
+#   intentional feature, not an oversight.
+# - connect-src allows *.supabase.co (the app's backend), payunit.net and
+#   graph.instagram.com (server-to-server calls happen in Cloudflare
+#   Functions, not the browser, but kept for any direct client calls).
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self)
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co https://gateway.payunit.net https://graph.instagram.com; frame-src 'self' https:; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://gateway.payunit.net

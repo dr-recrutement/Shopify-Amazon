@@ -8,6 +8,7 @@ import {
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
+import { useSeo } from '../lib/seo';
 
 /**
  * Real individual product page (Shopify calls this the PDP — product
@@ -60,6 +61,15 @@ export default function ProductDetailPage() {
   const backLink = slug ? `/s/${slug}` : '/store';
 
   const images = product ? getProductImages(product) : [];
+
+  useSeo({
+    title: product ? `${product.name} — ${shopName}` : shopName,
+    description: product?.description
+      ? product.description.slice(0, 155)
+      : product ? `${product.name} disponible sur ${shopName}. ${product.price.toLocaleString('fr-FR')} ${currency}.` : undefined,
+    image: images[0],
+    type: 'product',
+  });
 
   const handleAddToCart = () => {
     if (!product) return;

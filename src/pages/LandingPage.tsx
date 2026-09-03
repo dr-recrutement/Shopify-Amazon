@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { useLang } from '../lib/i18n';
+import { useSeo } from '../lib/seo';
 import {
   ShoppingBag, Globe, Smartphone, Bot, BarChart3, Palette, Zap, Shield,
   CheckCircle2, ArrowRight, Star, Truck, CreditCard, MessageCircle, Sparkles,
@@ -203,6 +204,11 @@ const faqs = [
 
 export default function LandingPage() {
   const { t } = useLang();
+  useSeo({
+    title: 'Sellia by LiAfrik — Créez votre boutique en ligne',
+    description: 'Sellia, la plateforme SaaS e-commerce mondiale. Mobile Money natif, IA intégrée, 0% commission.',
+    image: '/logo.png',
+  });
 
   // Interactive carousel states
   const [activeSlide, setActiveSlide] = useState(0);

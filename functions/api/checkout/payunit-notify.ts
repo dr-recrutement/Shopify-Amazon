@@ -9,9 +9,12 @@
 // Variables d'environnement :
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
+import { decryptSecret } from '../../_lib/crypto';
+
 interface Env {
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  PAYMENT_API_KEY_ENCRYPTION_SECRET: string;
 }
 
 const PAYUNIT_BASE_URL = 'https://gateway.payunit.net';
@@ -53,15 +56,20 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const gw = gwRows?.[0];
   if (!gw) return json({ received: true, ignored: 'no PayUnit credentials for tenant' });
 
-  const basicAuth = btoa(`${gw.api_key_encrypted}:${gw.api_secret_encrypted}`);
-  const mode = gw.client_id_encrypted?.startsWith('live_') ? 'live' : 'test';
+  const secret = env.PAYMENT_API_KEY_ENCRYPTION_SECRET;
+  const apiKey = await decryptSecret(gw.api_key_encrypted, secret);
+  const apiSecret = await decryptSecret(gw.api_secret_encrypted, secret);
+  const clientId = await decryptSecret(gw.client_id_encrypted, secret);
+
+  const basicAuth = btoa(`${apiKey}:${apiSecret}`);
+  const mode = clientId?.startsWith('live_') ? 'live' : 'test';
   const idForStatus = checkoutId || transactionId;
 
   // Re-verify directly with PayUnit — never trust the notify payload's own
   // status field alone (same principle as the Flutterwave webhook: the
   // notification just tells us to go check, it doesn't get to decide).
   const statusRes = await fetch(`${PAYUNIT_BASE_URL}/api/gateway/checkout/status/${idForStatus}`, {
-    headers: { 'Authorization': `Basic ${basicAuth}`, 'x-api-key': gw.client_id_encrypted, 'mode': mode, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': `Basic ${basicAuth}`, 'x-api-key': clientId, 'mode': mode, 'Content-Type': 'application/json' },
   });
   const statusData: { status: string; data?: { status?: string } } = await statusRes.json();
   const realStatus = statusData.data?.status;

@@ -96,71 +96,75 @@ export default function Settings() {
   };
 
   // Payment Gateways connections state
-  const [gateways, setGateways] = useState<Record<string, { publicKey: string; secretKey: string; clientId: string; connected: boolean }>>(() => {
-    const saved = localStorage.getItem(getTenantStorageKey('liafrikos_gateways'));
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // fallback
-      }
-    }
-    return {};
-  });
+  // Secrets never touch localStorage or client state in plaintext — the
+  // server encrypts them at rest and only ever returns masked previews
+  // (e.g. "••••ab12"). See functions/api/vendor-gateways/{save,list}.ts.
+  type GatewayStatus = { connected: boolean; configured: boolean; publicKeyMasked: string; secretKeyMasked: string; clientIdMasked: string };
+  const [gateways, setGateways] = useState<Record<string, GatewayStatus>>({});
+  const [gatewaysLoading, setGatewaysLoading] = useState(true);
 
-  // Sync Gateways with local storage + pull real cloud state on mount
-  useEffect(() => {
-    localStorage.setItem(getTenantStorageKey('liafrikos_gateways'), JSON.stringify(gateways));
-  }, [gateways]);
-
-  useEffect(() => {
+  const reloadGateways = () => {
+    setGatewaysLoading(true);
     fetchCloudGateways().then(cloud => {
-      if (cloud && cloud.length > 0) {
-        const asMap: typeof gateways = {};
-        for (const g of cloud) {
-          asMap[g.gateway] = { publicKey: g.apiKey, secretKey: g.apiSecret, clientId: g.clientId || '', connected: g.isActive };
-        }
-        setGateways(prev => ({ ...prev, ...asMap }));
+      const asMap: typeof gateways = {};
+      for (const g of cloud || []) {
+        asMap[g.gateway] = {
+          connected: g.isActive,
+          configured: g.configured,
+          publicKeyMasked: g.apiKeyMasked,
+          secretKeyMasked: g.apiSecretMasked,
+          clientIdMasked: g.clientIdMasked,
+        };
       }
+      setGateways(asMap);
+      setGatewaysLoading(false);
     });
-  }, []);
+  };
+
+  useEffect(() => { reloadGateways(); }, []);
 
   // Modal for Payment connection
   const [activeGatewayModal, setActiveGatewayModal] = useState<string | null>(null);
   const [modalPublicKey, setModalPublicKey] = useState('');
   const [modalSecretKey, setModalSecretKey] = useState('');
   const [modalClientId, setModalClientId] = useState('');
+  const [savingGateway, setSavingGateway] = useState(false);
 
   const openGatewayModal = (gateway: string) => {
-    const existing = gateways[gateway] || { publicKey: '', secretKey: '', clientId: '', connected: false };
     setActiveGatewayModal(gateway);
-    setModalPublicKey(existing.publicKey || '');
-    setModalSecretKey(existing.secretKey || '');
-    setModalClientId(existing.clientId || '');
+    // Fields start blank on purpose: the real secret never comes back from
+    // the server after the first save. Leaving a field blank on submit
+    // keeps that credential unchanged (see handleSaveGateway).
+    setModalPublicKey('');
+    setModalSecretKey('');
+    setModalClientId('');
   };
 
-  const handleSaveGateway = (e: React.FormEvent) => {
+  const handleSaveGateway = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeGatewayModal) return;
-    setGateways({
-      ...gateways,
-      [activeGatewayModal]: {
-        publicKey: modalPublicKey,
-        secretKey: modalSecretKey,
-        clientId: modalClientId,
-        connected: true
-      }
-    });
-    pushCloudGateway({ gateway: activeGatewayModal, apiKey: modalPublicKey, apiSecret: modalSecretKey, clientId: modalClientId, isActive: true });
+    const existing = gateways[activeGatewayModal];
+    if (!existing?.configured && (!modalPublicKey.trim() || !modalSecretKey.trim())) {
+      alert('Renseignez au moins la clé publique et la clé secrète.');
+      return;
+    }
+    setSavingGateway(true);
+    const ok = await pushCloudGateway({ gateway: activeGatewayModal, apiKey: modalPublicKey, apiSecret: modalSecretKey, clientId: modalClientId, isActive: true });
+    setSavingGateway(false);
+    if (!ok) {
+      alert("Erreur lors de l'enregistrement de la passerelle.");
+      return;
+    }
     setActiveGatewayModal(null);
+    reloadGateways();
   };
 
   const handleDisconnectGateway = (gateway: string) => {
-    if (confirm(`Voulez-vous vraiment déconnecter la passerelle ${gateway} ?`)) {
-      const next = { ...gateways };
-      delete next[gateway];
-      setGateways(next);
-      pushCloudGateway({ gateway, apiKey: '', apiSecret: '', isActive: false });
+    if (confirm(`Voulez-vous vraiment désactiver la passerelle ${gateway} ? Vos identifiants restent enregistrés, vous pourrez la réactiver sans les ressaisir.`)) {
+      pushCloudGateway({ gateway, isActive: false }).then(ok => {
+        if (ok) reloadGateways();
+        else alert('Erreur lors de la désactivation de la passerelle.');
+      });
     }
   };
 
@@ -539,29 +543,32 @@ export default function Settings() {
 
               <div className="grid grid-cols-1 gap-3">
                 {['Flutterwave', 'Paystack', 'PayUnit', 'Orange Money', 'MTN MoMo', 'CinetPay', 'Stripe', 'PayPal'].map(g => {
-                  const conn = gateways[g]?.connected;
+                  const status = gateways[g];
+                  const conn = status?.connected;
                   return (
                     <div key={g} className="flex items-center justify-between p-4 border border-gray-150 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-bold text-gray-900 text-sm">{g}</p>
                           <Badge color={conn ? 'green' : 'gray'}>
-                            {conn ? 'Actif / Connecté' : 'Inactif'}
+                            {conn ? 'Actif / Connecté' : status?.configured ? 'Désactivé' : 'Inactif'}
                           </Badge>
                         </div>
                         <p className="text-[10px] text-gray-400 mt-1">
-                          {conn
-                            ? `Clé publique: ${gateways[g].publicKey.substring(0, 10)}... | Secret: **********`
-                            : 'Configurez vos clés d’API privées pour recevoir directement vos fonds.'}
+                          {status?.configured
+                            ? `Clé publique: ${status.publicKeyMasked || '—'} | Secret: ${status.secretKeyMasked || '••••'}`
+                            : gatewaysLoading
+                              ? 'Chargement…'
+                              : 'Configurez vos clés d’API privées pour recevoir directement vos fonds.'}
                         </p>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Button
-                          variant={conn ? 'secondary' : 'primary'}
+                          variant={status?.configured ? 'secondary' : 'primary'}
                           size="sm"
                           onClick={() => openGatewayModal(g)}
                         >
-                          {conn ? 'Configurer' : 'Connecter'}
+                          {status?.configured ? 'Configurer' : 'Connecter'}
                         </Button>
                         {conn && (
                           <button
@@ -592,7 +599,8 @@ export default function Settings() {
 
                     <form onSubmit={handleSaveGateway} className="p-6 space-y-4 text-left">
                       <p className="text-xs text-gray-500 leading-normal">
-                        Entrez vos identifiants {activeGatewayModal} pour lier ce moyen de paiement à votre site marchand. Vos informations de clé API sont cryptées localement et isolées.
+                        Entrez vos identifiants {activeGatewayModal} pour lier ce moyen de paiement à votre site marchand. Vos clés sont chiffrées côté serveur (AES-256) avant stockage et ne sont jamais renvoyées en clair.
+                        {gateways[activeGatewayModal]?.configured && ' Laissez un champ vide pour conserver la valeur déjà enregistrée.'}
                       </p>
 
                       <div className="space-y-3">
@@ -603,10 +611,10 @@ export default function Settings() {
                             </label>
                             <input
                               type="text"
-                              required
+                              required={!gateways[activeGatewayModal]?.configured}
                               value={modalPublicKey}
                               onChange={e => setModalPublicKey(e.target.value)}
-                              placeholder={activeGatewayModal === 'PayUnit' ? 'api_user...' : 'pk_live_...'}
+                              placeholder={gateways[activeGatewayModal]?.publicKeyMasked || (activeGatewayModal === 'PayUnit' ? 'api_user...' : 'pk_live_...')}
                               className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                             />
                           </div>
@@ -618,10 +626,10 @@ export default function Settings() {
                           </label>
                           <input
                             type="password"
-                            required
+                            required={!gateways[activeGatewayModal]?.configured}
                             value={modalSecretKey}
                             onChange={e => setModalSecretKey(e.target.value)}
-                            placeholder={activeGatewayModal === 'PayPal' ? 'PayPal Secret Key' : activeGatewayModal === 'PayUnit' ? 'api_password...' : 'sk_live_...'}
+                            placeholder={gateways[activeGatewayModal]?.secretKeyMasked || (activeGatewayModal === 'PayPal' ? 'PayPal Secret Key' : activeGatewayModal === 'PayUnit' ? 'api_password...' : 'sk_live_...')}
                             className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                           />
                         </div>
@@ -633,10 +641,10 @@ export default function Settings() {
                             </label>
                             <input
                               type="text"
-                              required
+                              required={!gateways[activeGatewayModal]?.configured}
                               value={modalClientId}
                               onChange={e => setModalClientId(e.target.value)}
-                              placeholder={activeGatewayModal === 'PayUnit' ? 'live_xxxxxxxxxxxxxxx' : 'ID marchand officiel...'}
+                              placeholder={gateways[activeGatewayModal]?.clientIdMasked || (activeGatewayModal === 'PayUnit' ? 'live_xxxxxxxxxxxxxxx' : 'ID marchand officiel...')}
                               className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono"
                             />
                           </div>
@@ -653,9 +661,10 @@ export default function Settings() {
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-full text-xs hover:bg-emerald-700 shadow-md transition-colors"
+                          disabled={savingGateway}
+                          className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-full text-xs hover:bg-emerald-700 shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          Sauvegarder et Activer
+                          {savingGateway ? 'Enregistrement…' : 'Sauvegarder et Activer'}
                         </button>
                       </div>
                     </form>

@@ -14,10 +14,13 @@
 // Variables d'environnement (Cloudflare Pages → Settings → Environment variables) :
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, PUBLIC_APP_URL
 
+import { decryptSecret } from '../../_lib/crypto';
+
 interface Env {
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
   PUBLIC_APP_URL: string;
+  PAYMENT_API_KEY_ENCRYPTION_SECRET: string;
 }
 
 const PAYUNIT_BASE_URL = 'https://gateway.payunit.net';
@@ -56,9 +59,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return json({ error: "Ce marchand n'a pas connecté PayUnit — le paiement PayUnit n'est pas disponible sur cette boutique." }, 400);
   }
 
-  const apiUser = gw.api_key_encrypted;
-  const apiPassword = gw.api_secret_encrypted;
-  const applicationToken = gw.client_id_encrypted;
+  const secret = env.PAYMENT_API_KEY_ENCRYPTION_SECRET;
+  const apiUser = await decryptSecret(gw.api_key_encrypted, secret);
+  const apiPassword = await decryptSecret(gw.api_secret_encrypted, secret);
+  const applicationToken = await decryptSecret(gw.client_id_encrypted, secret);
   if (!apiUser || !apiPassword || !applicationToken) {
     return json({ error: 'Identifiants PayUnit incomplets pour ce marchand.' }, 400);
   }

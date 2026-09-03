@@ -474,40 +474,58 @@ export async function pushCloudSettings(settings: Record<string, any>): Promise<
 // Vendor payment gateways — each merchant's own Flutterwave/Paystack/Stripe
 // etc. credentials, used for THEIR storefront checkout (separate from the
 // platform's own Flutterwave subscription billing in functions/api/
-// subscriptions/). Table has *_encrypted column names, but no client-side
-// encryption is implemented here — encrypting with a key embedded in
-// shipped JS is security theater, not real protection. Real encryption at
-// rest needs a server-side step (e.g. a Cloudflare Function holding a KMS
-// key) — noted as a follow-up, not done in this pass. Access is still
-// RLS-scoped to the owning tenant only, same as every other table here.
+// subscriptions/). Secrets are encrypted server-side (AES-256-GCM, key held
+// only in the Cloudflare Pages environment) via /api/vendor-gateways/save
+// and /list — the client never writes plaintext credentials to Supabase and
+// never receives the real secret back, only a masked preview like
+// "••••ab12". See functions/_lib/crypto.ts.
 // ---------------------------------------------------------------------------
 
-export type VendorGateway = { gateway: string; apiKey: string; apiSecret: string; clientId?: string; isActive: boolean };
+export type VendorGatewayStatus = {
+  gateway: string;
+  isActive: boolean;
+  configured: boolean;
+  apiKeyMasked: string;
+  apiSecretMasked: string;
+  clientIdMasked: string;
+};
 
-export async function fetchCloudGateways(): Promise<VendorGateway[] | null> {
-  const tenantId = await getCurrentTenantId();
-  if (!tenantId) return null;
-  const { data, error } = await supabase.from('vendor_payment_gateways').select('*').eq('tenant_id', tenantId);
-  if (error || !data) return null;
-  return (data as Record<string, any>[]).map(row => ({
-    gateway: row.gateway,
-    apiKey: row.api_key_encrypted || '',
-    apiSecret: row.api_secret_encrypted || '',
-    clientId: row.client_id_encrypted || '',
-    isActive: !!row.is_active,
-  }));
+async function authedFetch(path: string, init?: RequestInit): Promise<Response | null> {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (!accessToken) return null;
+  return fetch(path, {
+    ...init,
+    headers: { ...(init?.headers || {}), Authorization: `Bearer ${accessToken}` },
+  });
 }
 
-export async function pushCloudGateway(g: VendorGateway): Promise<void> {
-  const tenantId = await getCurrentTenantId();
-  if (!tenantId) return;
+export async function fetchCloudGateways(): Promise<VendorGatewayStatus[] | null> {
+  if (!isCloudSyncActive()) return null;
   try {
-    await supabase.from('vendor_payment_gateways').upsert(
-      { tenant_id: tenantId, gateway: g.gateway, api_key_encrypted: g.apiKey, api_secret_encrypted: g.apiSecret, client_id_encrypted: g.clientId || null, is_active: g.isActive, status: g.isActive ? 'active' : 'pending' },
-      { onConflict: 'tenant_id,gateway' }
-    );
+    const res = await authedFetch('/api/vendor-gateways/list');
+    if (!res || !res.ok) return null;
+    const result: { gateways?: VendorGatewayStatus[] } = await res.json();
+    return result.gateways || [];
   } catch {
-    // ignore — local cache still authoritative.
+    return null;
+  }
+}
+
+/** apiKey/apiSecret/clientId left blank keep the currently stored value —
+ *  the client never holds the real secret after the first save, so it can
+ *  only send what actually changed. */
+export async function pushCloudGateway(g: { gateway: string; apiKey?: string; apiSecret?: string; clientId?: string; isActive: boolean }): Promise<boolean> {
+  if (!isCloudSyncActive()) return false;
+  try {
+    const res = await authedFetch('/api/vendor-gateways/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(g),
+    });
+    return !!res && res.ok;
+  } catch {
+    return false;
   }
 }
 

@@ -1990,9 +1990,10 @@ export default function OnlineStore() {
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-full transition-colors border border-gray-300"
+                    disabled={isConnectingDomain || !externalDomainInput.trim()}
+                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-full transition-colors border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Relier
+                    {isConnectingDomain ? 'Connexion…' : 'Relier'}
                   </button>
                 </form>
               </div>

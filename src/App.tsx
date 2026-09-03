@@ -14,6 +14,7 @@ import OrderTrackingPage from './pages/OrderTrackingPage';
 import SupportPage from './pages/SupportPage';
 import GenericPage from './pages/GenericPage';
 import { ContactPageContent, FeaturesPageContent, ComingSoonContent } from './pages/StaticPageContent';
+import { TermsContent, PrivacyContent, CookiesContent, RefundContent, LegalNoticeContent } from './pages/LegalPageContent';
 import AboutPage from './pages/AboutPage';
 import StorefrontPage from './pages/StorefrontPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -87,9 +88,11 @@ export default function App() {
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez directement au bon service."><ContactPageContent /></GenericPage>} />
-        <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Sellia." />} />
-        <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées." />} />
-        <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="Sellia — LiAfrik." />} />
+        <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Sellia."><TermsContent /></GenericPage>} />
+        <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées."><PrivacyContent /></GenericPage>} />
+        <Route path="/legal/cookies" element={<GenericPage title="Politique de cookies" subtitle="Cookies et technologies similaires utilisés par Sellia."><CookiesContent /></GenericPage>} />
+        <Route path="/legal/refund" element={<GenericPage title="Politique de remboursement" subtitle="Abonnement Sellia et achats sur les boutiques hébergées."><RefundContent /></GenericPage>} />
+        <Route path="/legal/legal" element={<GenericPage title="Mentions légales" subtitle="Sellia — LiAfrik."><LegalNoticeContent /></GenericPage>} />
 
         {/* Vendor dashboard */}
         <Route path="/app" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

@@ -531,6 +531,11 @@ export default function OnlineStore() {
         subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
           <div className="flex gap-2">
+            <Link to="/app/online-store/theme-preview">
+              <Button variant="secondary" size="sm">
+                <Sparkles size={14} /> Aperçu Design Pro
+              </Button>
+            </Link>
             <Link to={`/s/${shopProfile.slug || getShopSubdomain().replace('.os.liafrik.com', '')}`} target="_blank" rel="noopener noreferrer">
               <Button variant="secondary" size="sm">
                 <ExternalLink size={14} /> Voir la boutique

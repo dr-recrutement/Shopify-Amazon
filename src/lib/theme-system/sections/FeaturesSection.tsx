@@ -1,6 +1,5 @@
 import React from 'react';
-import * as Icons from 'lucide-react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Headset, LineChart, ShieldCheck, Truck, Users, Workflow, Zap, type LucideIcon } from 'lucide-react';
 import { FeaturesContent, SectionStyles } from '../types';
 import { paddingTopClass, paddingBottomClass, cardRadiusClass, columnsClass, resolveSectionStyle } from '../tokens';
 import { useThemeTokens } from '../ThemeContext';
@@ -10,10 +9,17 @@ interface FeaturesSectionProps {
   styles: SectionStyles;
 }
 
+// Curated map rather than `import * as Icons from 'lucide-react'` — the
+// namespace import pulls the entire icon set (700KB+) into the bundle even
+// though a features grid only ever needs a handful of them. Add an entry
+// here when a new preset needs a new icon.
+const ICONS: Record<string, LucideIcon> = {
+  Headset, LineChart, ShieldCheck, Truck, Users, Workflow, Zap,
+};
+
 /** Résout un nom d'icône lucide-react ("Zap") vers son composant, avec repli sûr. */
-function resolveIcon(name: string): React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }> {
-  const icon = (Icons as unknown as Record<string, React.ComponentType<any>>)[name];
-  return icon ?? Sparkles;
+function resolveIcon(name: string): LucideIcon {
+  return ICONS[name] ?? Sparkles;
 }
 
 export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ content, styles }) => {

@@ -307,6 +307,12 @@ export default function StorefrontPage() {
 
   return (
     <div className="min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>
+      {theme.customCSS && (
+        // Merchant-authored CSS from Online Store → Personnalisation avancée.
+        // `</style` sequences are stripped so the merchant's text can never
+        // break out of the style tag context.
+        <style dangerouslySetInnerHTML={{ __html: theme.customCSS.replace(/<\/style/gi, '') }} />
+      )}
       {/* Top utility bar */}
       <div className="border-b" style={{ borderColor: `${theme.colors.text}10` }}>
         <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between text-xs" style={{ color: theme.colors.text }}>

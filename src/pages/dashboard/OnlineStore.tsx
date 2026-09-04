@@ -186,7 +186,7 @@ export default function OnlineStore() {
   const [bgGradient, setBgGradient] = useState<'none' | 'sunset' | 'ocean' | 'lavender'>('none');
   const [buttonStyle, setButtonStyle] = useState<'solid' | 'outline' | 'pill'>('solid');
   const [headerSticky, setHeaderSticky] = useState<boolean>(true);
-  const [customCSS, setCustomCSS] = useState('/* Écrivez votre code CSS de personnalisation ici */\n.preview-store-header {\n  border-bottom: 2px solid var(--primary-color);\n}');
+  const [customCSS, setCustomCSS] = useState(theme.customCSS ?? '/* Écrivez votre code CSS de personnalisation ici */\n.preview-store-header {\n  border-bottom: 2px solid var(--primary-color);\n}');
 
   // Local Chat / Inbox System States
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'shopper' | 'merchant'; text: string; time: string }>>([
@@ -1707,7 +1707,7 @@ export default function OnlineStore() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Animation de Défilement</label>
+                  <label className="block text-xs font-bold text-gray-600">Animation de Défilement <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
                   <select
                     value={viewportAnimation}
                     onChange={e => setViewportAnimation(e.target.value as any)}
@@ -1721,7 +1721,7 @@ export default function OnlineStore() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Style des Boutons</label>
+                  <label className="block text-xs font-bold text-gray-600">Style des Boutons <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
                   <select
                     value={buttonStyle}
                     onChange={e => setButtonStyle(e.target.value as any)}
@@ -1734,7 +1734,7 @@ export default function OnlineStore() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Dégradé d'Arrière-plan</label>
+                  <label className="block text-xs font-bold text-gray-600">Dégradé d'Arrière-plan <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
                   <select
                     value={bgGradient}
                     onChange={e => setBgGradient(e.target.value as any)}
@@ -1748,7 +1748,7 @@ export default function OnlineStore() {
                 </div>
 
                 <div className="flex items-center justify-between p-1">
-                  <span className="text-xs font-bold text-gray-600">Fixer l'en-tête (Sticky Header)</span>
+                  <span className="text-xs font-bold text-gray-600">Fixer l'en-tête (Sticky Header) <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></span>
                   <input
                     type="checkbox"
                     checked={headerSticky}
@@ -1758,14 +1758,16 @@ export default function OnlineStore() {
                 </div>
               </div>
 
-              {/* Real-time Custom CSS injector panel */}
+              {/* Real-time Custom CSS injector panel — persisted on theme.customCSS,
+                  saved/published through the same flow as every other theme
+                  setting, and rendered on the live storefront (StorefrontPage.tsx). */}
               <div className="pt-2">
                 <span className="text-xs font-bold text-gray-600 uppercase flex items-center gap-1 mb-1">
                   <Code size={14} className="text-brand-600" /> Custom CSS Injecteur
                 </span>
                 <textarea
                   value={customCSS}
-                  onChange={e => setCustomCSS(e.target.value)}
+                  onChange={e => { setCustomCSS(e.target.value); setTheme({ ...theme, customCSS: e.target.value }); }}
                   className="w-full h-24 p-2 bg-gray-900 text-green-400 font-mono text-[10px] rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500 leading-tight"
                 />
               </div>

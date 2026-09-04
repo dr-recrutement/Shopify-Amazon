@@ -102,6 +102,9 @@ export default function CmsPageView() {
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: theme.fonts.body, color: theme.colors.text }}>
+      {theme.customCSS && (
+        <style dangerouslySetInnerHTML={{ __html: theme.customCSS.replace(/<\/style/gi, '') }} />
+      )}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to={backLink} className="flex items-center gap-1.5 text-sm font-medium hover:opacity-70">

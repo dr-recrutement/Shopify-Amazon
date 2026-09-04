@@ -123,6 +123,9 @@ export interface ThemeConfig {
   layoutVariant: LayoutVariant;
   /** Browser tab icon, site-wide (not header-specific). Optional. */
   faviconUrl?: string;
+  /** Merchant-authored CSS, injected as a <style> tag on the live
+   *  storefront (StorefrontPage.tsx) and CMS pages. Optional. */
+  customCSS?: string;
   sections: ThemeSection[];
   isPublished: boolean;
 }

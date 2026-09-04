@@ -593,7 +593,7 @@ function CanvasSection({ sec }: { sec: { type: string; settings: Record<string, 
     case 'image-banner':
     case 'slideshow':
       return (
-        <div className="h-40 flex flex-col items-center justify-center text-white p-4" style={imgStyle || { background: 'linear-gradient(135deg, #008060, #004C3F)' }}>
+        <div className="h-40 flex flex-col items-center justify-center text-white p-4" style={imgStyle || { background: 'linear-gradient(135deg, #3B5FE3, #1D338C)' }}>
           {heading && <div className="text-lg font-bold drop-shadow">{heading}</div>}
           {subtext && <div className="text-xs opacity-90 mt-1 drop-shadow">{subtext}</div>}
           {!image && <span className="text-[9px] opacity-60 mt-1">Téléversez une image dans les réglages →</span>}

@@ -9,31 +9,32 @@
 @tailwind utilities;
 
 :root {
-  /* Shopify brand palette — Polaris / Online Store 2.0 */
-  --primary-50: #e0f2ee;
-  --primary-100: #c5e5da;
-  --primary-200: #9ed8c5;
-  --primary-300: #6bc4a8;
-  --primary-400: #36a18a;
-  --primary-500: #008060; /* Shopify green */
-  --primary-600: #006b52;
-  --primary-700: #005a45;
-  --primary-800: #004c3f; /* Shopify dark green */
-  --primary-900: #00352b;
+  /* Sellia brand palette — vivid royal blue, adopted to match the
+     BigCommerce-style marketing site reference. */
+  --primary-50: #eef3ff;
+  --primary-100: #dce6ff;
+  --primary-200: #b8cdff;
+  --primary-300: #8fadff;
+  --primary-400: #6087ff;
+  --primary-500: #3b5fe3;
+  --primary-600: #2f4fd1;
+  --primary-700: #2540b0;
+  --primary-800: #1d338c;
+  --primary-900: #16266b;
 }
 
 [data-theme='coral'] {
-  /* Deprecated orange theme — now mirrors Shopify default to stay on-brand */
-  --primary-50: #e0f2ee;
-  --primary-100: #c5e5da;
-  --primary-200: #9ed8c5;
-  --primary-300: #6bc4a8;
-  --primary-400: #36a18a;
-  --primary-500: #008060;
-  --primary-600: #006b52;
-  --primary-700: #005a45;
-  --primary-800: #004c3f;
-  --primary-900: #00352b;
+  /* Deprecated orange theme — now mirrors Sellia default to stay on-brand */
+  --primary-50: #eef3ff;
+  --primary-100: #dce6ff;
+  --primary-200: #b8cdff;
+  --primary-300: #8fadff;
+  --primary-400: #6087ff;
+  --primary-500: #3b5fe3;
+  --primary-600: #2f4fd1;
+  --primary-700: #2540b0;
+  --primary-800: #1d338c;
+  --primary-900: #16266b;
 }
 
 @layer base {

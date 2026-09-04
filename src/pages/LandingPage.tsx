@@ -67,10 +67,10 @@ const boutiques = [
     title: "Afrik'Couture",
     location: "Abidjan, Côte d'Ivoire 🇨🇮",
     tagline: "Haute couture & créations d'exception en tissus Wax authentiques.",
-    themeColor: "from-[#008060] to-[#111827]",
+    themeColor: "from-[#3B5FE3] to-[#111827]",
     animationClass: "animate-fade-in-up",
     bgPattern: "radial-gradient(circle, #FCF7ED 0%, #E6DFD3 100%)",
-    textColor: "text-[#008060]",
+    textColor: "text-[#3B5FE3]",
     badge: "Luxe & Tradition",
     products: [
       { name: "Robe de Gala Impériale", price: "85,000 FCFA" },
@@ -82,10 +82,10 @@ const boutiques = [
     title: "Kente Heritage",
     location: "Accra, Ghana 🇬🇭",
     tagline: "L'authenticité et la noblesse du tissage Kente royal fait main.",
-    themeColor: "from-[#008060] to-[#0F766E]",
+    themeColor: "from-[#3B5FE3] to-[#0F766E]",
     animationClass: "scale-105 transition-transform duration-1000",
     bgPattern: "linear-gradient(135deg, #FFF9F2 0%, #FFEEDD 100%)",
-    textColor: "text-[#008060]",
+    textColor: "text-[#3B5FE3]",
     badge: "Héritage Royal",
     products: [
       { name: "Pagne Kente d'apparat 6 yards", price: "2,400 GHS" },
@@ -97,10 +97,10 @@ const boutiques = [
     title: "Sahara Treasures",
     location: "Marrakech, Maroc 🇲🇦",
     tagline: "Poteries d'art, tapis berbères authentiques et huiles cosmétiques précieuses.",
-    themeColor: "from-[#008060] to-[#78350F]",
+    themeColor: "from-[#3B5FE3] to-[#78350F]",
     animationClass: "translate-x-0 transition-transform duration-700",
     bgPattern: "radial-gradient(circle, #FFFbeb 0%, #FEF3C7 100%)",
-    textColor: "text-[#008060]",
+    textColor: "text-[#3B5FE3]",
     badge: "Artisanat d'Art",
     products: [
       { name: "Tapis Berbère Kilim", price: "3,200 MAD" },
@@ -257,20 +257,10 @@ export default function LandingPage() {
           merchant content. Silently falls back to the gradient/blur
           background below if the file is missing or fails to load — never
           shows a broken video icon. */}
-      <section className="relative pt-32 pb-24 overflow-hidden bg-gray-950 text-white">
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
-          src="/hero-background.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-950/70 to-white pointer-events-none" />
+      <section className="relative pt-32 pb-24 overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
         <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-brand-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" />
-          <div className="absolute top-40 right-10 w-72 h-72 bg-emerald-400 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse" />
+          <div className="absolute top-40 right-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,26 +268,26 @@ export default function LandingPage() {
 
             {/* Left Column: Headline and CTA */}
             <div className="lg:col-span-6 text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full text-sm font-semibold mb-6 animate-bounce">
-                <Star size={14} fill="currentColor" className="text-brand-400" /> {t('hero.badge')}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 text-white rounded-full text-sm font-semibold mb-6 animate-bounce">
+                <Star size={14} fill="currentColor" className="text-white" /> {t('hero.badge')}
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
                 {t('hero.title1')}<br />
-                <span className="text-brand-400 font-bold">{t('hero.title2')}</span><br />
+                <span className="text-white font-bold">{t('hero.title2')}</span><br />
                 {t('hero.title3')}
               </h1>
-              <p className="mt-6 text-lg text-gray-200 max-w-xl leading-relaxed">
+              <p className="mt-6 text-lg text-blue-50 max-w-xl leading-relaxed">
                 {t('hero.subtitle')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-brand-600/30">
+                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-950 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-black/20">
                   {t('hero.cta.start')} <ArrowRight size={18} />
                 </Link>
-                <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all hover:scale-[1.03] active:scale-95">
+                <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-950 font-semibold rounded-xl border border-white hover:bg-blue-50 transition-all hover:scale-[1.03] active:scale-95">
                   {t('hero.cta.pricing')}
                 </Link>
               </div>
-              <p className="mt-4 text-xs text-gray-300">{t('hero.trial')}</p>
+              <p className="mt-4 text-xs text-blue-100">{t('hero.trial')}</p>
             </div>
 
             {/* Right Column: Stunning Interactive 7-Boutique Carousel with custom designs & animations */}
@@ -509,8 +499,8 @@ export default function LandingPage() {
                 <p><span className="font-semibold text-gray-900">Multi-devises et multilingue : </span>une seule boutique, adaptée à chaque marché francophone et anglophone.</p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link to="/register" className="px-6 py-3 rounded-full bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-all hover:scale-[1.02] active:scale-95">Toucher plus de clients</Link>
-                <Link to="/pricing" className="px-6 py-3 rounded-full bg-white text-gray-900 font-semibold border border-gray-200 hover:bg-gray-50 transition-all">Voir les plans</Link>
+                <Link to="/register" className="px-6 py-3 rounded-full bg-gray-950 text-white font-semibold hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-95">Toucher plus de clients</Link>
+                <Link to="/pricing" className="px-6 py-3 rounded-full bg-white text-gray-950 font-semibold border border-gray-300 hover:bg-gray-50 transition-all">Voir les plans</Link>
               </div>
             </Section>
 

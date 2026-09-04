@@ -107,7 +107,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
 
           <div className="hidden md:flex items-center gap-3">
             <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-brand-600 px-3 py-2 rounded-full transition-colors">{t('nav.login')}</Link>
-            <Link to="/register" className="text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 px-5 py-2.5 rounded-full transition-all hover:scale-[1.02] active:scale-95">{t('nav.register')}</Link>
+            <Link to="/register" className="text-sm font-semibold text-white bg-gray-950 hover:bg-gray-800 px-5 py-2.5 rounded-full transition-all hover:scale-[1.02] active:scale-95">{t('nav.register')}</Link>
           </div>
 
           <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
@@ -129,7 +129,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
           <div className="flex gap-2 pt-3 border-t border-gray-100">
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} className="px-3 py-2 text-sm border border-gray-200 rounded-full flex items-center gap-1"><Globe size={14} /> {lang === 'fr' ? 'EN' : 'FR'}</button>
             <Link to="/login" className="flex-1 text-center text-sm font-medium border border-gray-200 px-4 py-2 rounded-full">{t('nav.login')}</Link>
-            <Link to="/register" className="flex-1 text-center text-sm font-semibold text-white bg-brand-600 px-4 py-2 rounded-full">{t('nav.register')}</Link>
+            <Link to="/register" className="flex-1 text-center text-sm font-semibold text-white bg-gray-950 px-4 py-2 rounded-full">{t('nav.register')}</Link>
           </div>
         </div>
       )}

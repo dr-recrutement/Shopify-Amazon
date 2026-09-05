@@ -34,6 +34,17 @@ export default {
         sans: ['"Poppins"', 'sans-serif'],
         serif: ['"Poppins"', 'sans-serif'],
       },
+      fontWeight: {
+        // Global weight reduction ("réduit la graisse sur les polices") —
+        // remapped centrally here rather than editing every font-bold/
+        // font-extrabold/font-black usage across the codebase. Values stay
+        // on weights already loaded via the Google Fonts @import in
+        // index.css (400/500/600/700), so nothing falls back to a
+        // synthesized/wrong weight.
+        bold: '600',      // was 700
+        extrabold: '600', // was 800
+        black: '700',     // was 900
+      },
     },
   },
   plugins: [],

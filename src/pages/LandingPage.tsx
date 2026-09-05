@@ -257,123 +257,124 @@ export default function LandingPage() {
           merchant content. Silently falls back to the gradient/blur
           background below if the file is missing or fails to load — never
           shows a broken video icon. */}
-      <section className="relative pt-32 pb-24 overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
+      <section className="relative pt-32 pb-24 text-white" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse" />
           <div className="absolute top-40 right-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }} />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 text-white rounded-full text-sm font-semibold mb-6 animate-bounce">
+            <Star size={14} fill="currentColor" className="text-white" /> {t('hero.badge')}
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
+            {t('hero.title1')}<br />
+            <span className="text-white font-bold">{t('hero.title2')}</span><br />
+            {t('hero.title3')}
+          </h1>
+          <p className="mt-6 text-lg text-blue-50 max-w-2xl mx-auto leading-relaxed">
+            {t('hero.subtitle')}
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-950 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-black/20">
+              {t('hero.cta.start')} <ArrowRight size={18} />
+            </Link>
+            <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-950 font-semibold rounded-xl border border-white hover:bg-blue-50 transition-all hover:scale-[1.03] active:scale-95">
+              {t('hero.cta.pricing')}
+            </Link>
+          </div>
+          <p className="mt-4 text-xs text-blue-100">{t('hero.trial')}</p>
 
-            {/* Left Column: Headline and CTA */}
-            <div className="lg:col-span-6 text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 text-white rounded-full text-sm font-semibold mb-6 animate-bounce">
-                <Star size={14} fill="currentColor" className="text-white" /> {t('hero.badge')}
-              </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
-                {t('hero.title1')}<br />
-                <span className="text-white font-bold">{t('hero.title2')}</span><br />
-                {t('hero.title3')}
-              </h1>
-              <p className="mt-6 text-lg text-blue-50 max-w-xl leading-relaxed">
-                {t('hero.subtitle')}
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-950 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-black/20">
-                  {t('hero.cta.start')} <ArrowRight size={18} />
-                </Link>
-                <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-950 font-semibold rounded-xl border border-white hover:bg-blue-50 transition-all hover:scale-[1.03] active:scale-95">
-                  {t('hero.cta.pricing')}
-                </Link>
-              </div>
-              <p className="mt-4 text-xs text-blue-100">{t('hero.trial')}</p>
-            </div>
+          {/* Floating product-showcase card — sits centered below the
+              headline and overlaps down into the section below, matching
+              the reference layout's dashboard-screenshot treatment. */}
+          <div className="mt-16 max-w-3xl mx-auto text-left -mb-40 sm:-mb-48">
+            <div className="relative bg-white rounded-3xl p-6 border border-gray-100 shadow-2xl hover:shadow-brand-100 transition-all duration-300">
 
-            {/* Right Column: Stunning Interactive 7-Boutique Carousel with custom designs & animations */}
-            <div className="lg:col-span-6">
-              <div className="relative bg-white rounded-3xl p-6 border border-gray-100 shadow-2xl hover:shadow-brand-100 transition-all duration-300">
-
-                {/* Visual Slide */}
-                <div
-                  className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ${boutiques[activeSlide].animationClass}`}
-                  style={{ background: boutiques[activeSlide].bgPattern, minHeight: '340px' }}
-                >
-                  {/* Floating example-design badge (not a live/real store) */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5">
-                    <span className={boutiques[activeSlide].textColor}>{boutiques[activeSlide].badge}</span>
-                  </div>
-
-                  <div className="text-left mt-4">
-                    <span className="text-xs font-bold text-gray-500 tracking-widest uppercase">Exemple de design</span>
-                    <h3 className="text-3xl font-bold text-gray-900 mt-1">{boutiques[activeSlide].title}</h3>
-                    <p className="text-xs font-semibold text-gray-600 flex items-center gap-1 mt-0.5">
-                      <Globe size={12} /> {boutiques[activeSlide].location}
-                    </p>
-                    <p className="text-sm text-gray-700 mt-4 leading-relaxed font-medium">
-                      "{boutiques[activeSlide].tagline}"
-                    </p>
-                  </div>
-
-                  {/* Mock Interactive Store Layout */}
-                  <div className="mt-6 border-t border-gray-200/50 pt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Produits en vedette</span>
-                      <span className="text-[10px] text-gray-400">Compatible Mobile Money ⚡</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {boutiques[activeSlide].products.map((prod, idx) => (
-                        <div key={idx} className="bg-white/95 p-3 rounded-xl border border-gray-100 shadow-sm hover:translate-y-[-2px] transition-transform">
-                          <div className="h-2 w-12 rounded bg-gray-200 mb-2" />
-                          <div className="text-xs font-bold text-gray-800 line-clamp-1">{prod.name}</div>
-                          <div className="text-xs font-extrabold text-brand-600 mt-1">{prod.price}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              {/* Visual Slide */}
+              <div
+                className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ${boutiques[activeSlide].animationClass}`}
+                style={{ background: boutiques[activeSlide].bgPattern, minHeight: '340px' }}
+              >
+                {/* Floating example-design badge (not a live/real store) */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5">
+                  <span className={boutiques[activeSlide].textColor}>{boutiques[activeSlide].badge}</span>
                 </div>
 
-                {/* Carousel controls & slide selector */}
-                <div className="flex items-center justify-between mt-6">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handlePrevSlide}
-                      className="p-2 bg-gray-100 hover:bg-brand-100 hover:text-brand-700 rounded-full transition-all"
-                      title="Précédente"
-                    >
-                      <ChevronLeft size={16} />
-                    </button>
-                    <button
-                      onClick={handleNextSlide}
-                      className="p-2 bg-gray-100 hover:bg-brand-100 hover:text-brand-700 rounded-full transition-all"
-                      title="Suivante"
-                    >
-                      <ChevronRight size={16} />
-                    </button>
-                  </div>
+                <div className="text-left mt-4">
+                  <span className="text-xs font-bold text-gray-500 tracking-widest uppercase">Exemple de design</span>
+                  <h3 className="text-3xl font-bold text-gray-900 mt-1">{boutiques[activeSlide].title}</h3>
+                  <p className="text-xs font-semibold text-gray-600 flex items-center gap-1 mt-0.5">
+                    <Globe size={12} /> {boutiques[activeSlide].location}
+                  </p>
+                  <p className="text-sm text-gray-700 mt-4 leading-relaxed font-medium">
+                    "{boutiques[activeSlide].tagline}"
+                  </p>
+                </div>
 
-                  {/* Indicators */}
-                  <div className="flex gap-1.5">
-                    {boutiques.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => { stopCarousel(); setActiveSlide(i); startCarousel(); }}
-                        className={`h-2 rounded-full transition-all ${activeSlide === i ? 'w-6 bg-brand-600' : 'w-2 bg-gray-200 hover:bg-gray-300'}`}
-                        title={`Slide ${i + 1}`}
-                      />
+                {/* Mock Interactive Store Layout */}
+                <div className="mt-6 border-t border-gray-200/50 pt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Produits en vedette</span>
+                    <span className="text-[10px] text-gray-400">Compatible Mobile Money ⚡</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {boutiques[activeSlide].products.map((prod, idx) => (
+                      <div key={idx} className="bg-white/95 p-3 rounded-xl border border-gray-100 shadow-sm hover:translate-y-[-2px] transition-transform">
+                        <div className="h-2 w-12 rounded bg-gray-200 mb-2" />
+                        <div className="text-xs font-bold text-gray-800 line-clamp-1">{prod.name}</div>
+                        <div className="text-xs font-extrabold text-brand-600 mt-1">{prod.price}</div>
+                      </div>
                     ))}
                   </div>
+                </div>
+              </div>
 
-                  <span className="text-xs text-gray-400 font-semibold">{activeSlide + 1} / {boutiques.length}</span>
+              {/* Carousel controls & slide selector */}
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handlePrevSlide}
+                    className="p-2 bg-gray-100 hover:bg-brand-100 hover:text-brand-700 rounded-full transition-all"
+                    title="Précédente"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    onClick={handleNextSlide}
+                    className="p-2 bg-gray-100 hover:bg-brand-100 hover:text-brand-700 rounded-full transition-all"
+                    title="Suivante"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
                 </div>
 
+                {/* Indicators */}
+                <div className="flex gap-1.5">
+                  {boutiques.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { stopCarousel(); setActiveSlide(i); startCarousel(); }}
+                      className={`h-2 rounded-full transition-all ${activeSlide === i ? 'w-6 bg-brand-600' : 'w-2 bg-gray-200 hover:bg-gray-300'}`}
+                      title={`Slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <span className="text-xs text-gray-400 font-semibold">{activeSlide + 1} / {boutiques.length}</span>
               </div>
+
             </div>
-
           </div>
+        </div>
+      </section>
 
+      {/* Spacer absorbing the floating card's negative margin above, so the
+          stats grid below still starts at a normal, uncluttered offset. */}
+      <div className="pt-48 sm:pt-56 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Stats Section with smooth entry */}
-          <div className="mt-24 grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pb-8">
             {stats.map((s, i) => (
               <Section key={s.label} delay={i * 80}>
                 <div className="text-center p-6 bg-white border border-gray-100 rounded-2xl hover:shadow-lg transition-shadow">
@@ -386,7 +387,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Authentic Payment Badges Section */}
       <section className="py-16 bg-white border-y border-gray-100">

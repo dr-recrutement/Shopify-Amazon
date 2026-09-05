@@ -169,13 +169,13 @@ export default function Settings() {
   };
 
   // Policies state
-  const [termsPolicy, setTermsPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_terms')) || 'Nos conditions d’utilisation...');
-  const [privacyPolicy, setPrivacyPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_privacy')) || 'Notre politique de confidentialité...');
-  const [refundPolicy, setRefundPolicy] = useState(() => localStorage.getItem(getTenantStorageKey('policy_refund')) || 'Notre politique de remboursement...');
+  // Legal policy texts (CGU/privacy/refund) live in settings.termsPolicyText
+  // etc. — real cloud-synced fields (see the 'policies' tab below), not
+  // local-only state.
 
   // Chat settings state
-  const [chatProvider, setChatProvider] = useState(() => localStorage.getItem(getTenantStorageKey('chat_provider')) || 'whatsapp');
-  const [chatValue, setChatValue] = useState(() => localStorage.getItem(getTenantStorageKey('chat_value')) || '+2250700000000');
+  // Chat provider/value now live in settings.chatProvider/chatValue (real
+  // cloud-synced fields), not local-only state — see the 'chat' tab below.
 
   // Global country selection autocomplete state
   const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
@@ -828,14 +828,15 @@ export default function Settings() {
           {active === 'policies' && (
             <div className="space-y-5 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">Éditeur de Politiques Légales</h3>
-              <p className="text-gray-500">Rédigez les conditions de vente, livraison, retours et de protection des données pour rassurer vos acheteurs.</p>
+              <p className="text-gray-500">Rédigez les conditions de vente, livraison, retours et de protection des données pour rassurer vos acheteurs — affichées sur votre boutique via les liens CGU / Confidentialité / Remboursement du pied de page.</p>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
               <div className="space-y-4">
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Conditions Générales de Vente & d’Utilisation (CGU / CGV)</label>
+                  <label className="block font-bold text-gray-700 mb-1">Conditions Générales de Vente & d'Utilisation (CGU / CGV)</label>
                   <textarea
                     rows={4}
-                    value={termsPolicy}
-                    onChange={e => setTermsPolicy(e.target.value)}
+                    value={settings.termsPolicyText || ''}
+                    onChange={e => updateSetting('termsPolicyText', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
                   />
                 </div>
@@ -843,32 +844,20 @@ export default function Settings() {
                   <label className="block font-bold text-gray-700 mb-1">Politique de Confidentialité</label>
                   <textarea
                     rows={4}
-                    value={privacyPolicy}
-                    onChange={e => setPrivacyPolicy(e.target.value)}
+                    value={settings.privacyPolicyText || ''}
+                    onChange={e => updateSetting('privacyPolicyText', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-gray-700 mb-1">Politique de Retour, Remboursement & Mentions Légales</label>
+                  <label className="block font-bold text-gray-700 mb-1">Politique de Retour & Remboursement</label>
                   <textarea
                     rows={4}
-                    value={refundPolicy}
-                    onChange={e => setRefundPolicy(e.target.value)}
+                    value={settings.refundPolicyText || ''}
+                    onChange={e => updateSetting('refundPolicyText', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-mono"
                   />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    localStorage.setItem(getTenantStorageKey('policy_terms'), termsPolicy);
-                    localStorage.setItem(getTenantStorageKey('policy_privacy'), privacyPolicy);
-                    localStorage.setItem(getTenantStorageKey('policy_refund'), refundPolicy);
-                    alert('🎉 Vos politiques légales ont été enregistrées avec succès et connectées au pied de page de votre site !');
-                  }}
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-md"
-                >
-                  Sauvegarder les politiques
-                </button>
               </div>
             </div>
           )}
@@ -1085,13 +1074,14 @@ export default function Settings() {
           {active === 'chat' && (
             <div className="space-y-5 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">Fournisseur de Live Chat Support</h3>
-              <p className="text-gray-500">Offrez un service client exceptionnel en connectant une bulle de chat en direct (WhatsApp, Crisp, ou Tawk.to).</p>
+              <p className="text-gray-500">Offrez un service client exceptionnel en connectant une bulle de chat en direct (WhatsApp, Crisp, ou Tawk.to). Pour WhatsApp, un vrai bouton de discussion (lien wa.me) apparaît sur votre boutique. Pour Crisp/Tawk, leur widget officiel est chargé directement.</p>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓ — actif sur votre boutique dès le prochain chargement de page.</p>}
               <div className="space-y-4">
                 <div>
                   <label className="block font-bold text-gray-700 mb-1">Choisissez votre canal préféré</label>
                   <select
-                    value={chatProvider}
-                    onChange={e => setChatProvider(e.target.value)}
+                    value={settings.chatProvider || 'whatsapp'}
+                    onChange={e => updateSetting('chatProvider', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white font-semibold text-gray-800"
                   >
                     <option value="whatsapp">💬 WhatsApp Business (Support direct)</option>
@@ -1103,28 +1093,17 @@ export default function Settings() {
                   <label className="block font-bold text-gray-700 mb-1">Identifiant ou Numéro de téléphone</label>
                   <input
                     type="text"
-                    value={chatValue}
-                    onChange={e => setChatValue(e.target.value)}
-                    placeholder={chatProvider === 'whatsapp' ? 'Ex: +2250700000000' : 'Ex: 938fd82-abc-42...'}
+                    value={settings.chatValue || ''}
+                    onChange={e => updateSetting('chatValue', e.target.value)}
+                    placeholder={(settings.chatProvider || 'whatsapp') === 'whatsapp' ? 'Ex: +2250700000000' : 'Ex: 938fd82-abc-42...'}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs font-mono bg-white"
                   />
                   <p className="text-[10px] text-gray-400 mt-1">
-                    {chatProvider === 'whatsapp'
+                    {(settings.chatProvider || 'whatsapp') === 'whatsapp'
                       ? 'Entrez votre numéro avec indicatif pays pour diriger les visiteurs vers votre WhatsApp.'
                       : 'Collez simplement l’identifiant de site web de votre tableau de bord Crisp/Tawk.'}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    localStorage.setItem(getTenantStorageKey('chat_provider'), chatProvider);
-                    localStorage.setItem(getTenantStorageKey('chat_value'), chatValue);
-                    alert('🎉 Intégration de Chat Client mise à jour avec succès sur votre boutique en ligne !');
-                  }}
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-md"
-                >
-                  Activer le Chat
-                </button>
               </div>
             </div>
           )}

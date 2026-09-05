@@ -42,3 +42,34 @@ export function injectAnalyticsScripts(settings: Record<string, any>): void {
     document.head.appendChild(s);
   }
 }
+
+/**
+ * Real third-party live-chat widget injection, mirroring the analytics
+ * injector above. Reads settings.chatProvider/chatValue (dashboard →
+ * Settings → Support & Live Chat). WhatsApp doesn't need a script at all —
+ * it's rendered as a real wa.me deep-link button by ChatFloatSection in
+ * theme-engine.tsx instead — this function only handles providers that are
+ * genuinely third-party embed scripts.
+ */
+export function injectChatWidget(settings: Record<string, any>): void {
+  if (typeof window === 'undefined') return;
+
+  if (settings.chatProvider === 'crisp' && settings.chatValue && !document.getElementById('crisp-chat-script')) {
+    (window as any).$crisp = [];
+    (window as any).CRISP_WEBSITE_ID = settings.chatValue;
+    const s = document.createElement('script');
+    s.id = 'crisp-chat-script';
+    s.src = 'https://client.crisp.chat/l.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
+  if (settings.chatProvider === 'tawk' && settings.chatValue && !document.getElementById('tawk-chat-script')) {
+    const s = document.createElement('script');
+    s.id = 'tawk-chat-script';
+    s.async = true;
+    s.src = `https://embed.tawk.to/${settings.chatValue}/default`;
+    s.setAttribute('crossorigin', '*');
+    document.head.appendChild(s);
+  }
+}

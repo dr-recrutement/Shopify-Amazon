@@ -21,7 +21,7 @@ import {
   type StoreProduct,
 } from '../lib/app-state';
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
-import { injectAnalyticsScripts } from '../lib/analytics-injector';
+import { injectAnalyticsScripts, injectChatWidget } from '../lib/analytics-injector';
 import { useSeo } from '../lib/seo';
 
 type CartDrawerItem = CartItem & { image?: string };
@@ -46,6 +46,7 @@ type CartDrawerItem = CartItem & { image?: string };
 export default function StorefrontPage() {
   const { slug } = useParams<{ slug?: string }>();
   const [theme, setTheme] = useState<ThemeConfig | null>(null);
+  const [tenantSettings, setTenantSettings] = useState<Record<string, any>>({});
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [cart, setCart] = useState<CartDrawerItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -84,7 +85,7 @@ export default function StorefrontPage() {
           // this is what actually makes them do something rather than
           // just sit in a settings blob nobody reads.
           const settings = await fetchCloudSettingsFor(tenant.id);
-          if (settings && !cancelled) injectAnalyticsScripts(settings);
+          if (settings && !cancelled) { injectAnalyticsScripts(settings); injectChatWidget(settings); setTenantSettings(settings); }
         } else if (!cancelled) {
           // No slug match in Supabase (unpublished store, or local/demo
           // mode) — fall back to whatever's in this browser's local state,
@@ -422,7 +423,7 @@ export default function StorefrontPage() {
           const isFirstProductSection = section.type === 'product-grid' && !visibleSections.slice(0, idx).some(s => s.type === 'product-grid');
           return (
             <div key={section.id} id={isFirstProductSection ? 'storefront-products' : undefined}>
-              {renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store', tenantId: resolvedTenant?.id, onCategoryClick: handleCategoryClick })}
+              {renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store', tenantId: resolvedTenant?.id, onCategoryClick: handleCategoryClick, legalPolicies: { terms: tenantSettings.termsPolicyText, privacy: tenantSettings.privacyPolicyText, refund: tenantSettings.refundPolicyText }, chatConfig: { provider: tenantSettings.chatProvider, value: tenantSettings.chatValue } })}
             </div>
           );
         })}

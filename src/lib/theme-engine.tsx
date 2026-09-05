@@ -4,7 +4,7 @@ import { subscribeToNewsletter } from './tenant-sync';
 import {
   Search, ShoppingBag, User, Star, Check, Mail, Phone,
   Facebook, Instagram, Twitter, ArrowRight, Lock,
-  ShieldCheck, MessageCircle, Plus, Minus, Heart, Send,
+  ShieldCheck, MessageCircle, Plus, Minus, Heart,
   ChevronLeft, ChevronRight, Play, Megaphone
 } from 'lucide-react';
 import { getShopProfile } from './app-state';
@@ -1598,7 +1598,25 @@ function FaqSection({ props, colors, fonts, spacingClass }: { props: any; colors
   );
 }
 
-function FooterSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
+function LegalPolicyModal({ title, text, onClose }: { title: string; text: string; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white text-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-lg">{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
+        </div>
+        <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function FooterSection({ props, colors, fonts, legalPolicies }: { props: any; colors: any; fonts: any; legalPolicies?: { terms?: string; privacy?: string; refund?: string } }) {
+  const [openPolicy, setOpenPolicy] = useState<'terms' | 'privacy' | 'refund' | null>(null);
+  const policyText = openPolicy ? legalPolicies?.[openPolicy] : undefined;
+  const policyTitle = openPolicy === 'terms' ? "Conditions d'utilisation" : openPolicy === 'privacy' ? 'Politique de confidentialité' : openPolicy === 'refund' ? 'Politique de remboursement' : '';
+
   return (
     <footer className="bg-slate-900 text-white p-8 md:p-12 text-xs" style={{ fontFamily: fonts.body }}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-white/10 pb-8">
@@ -1624,10 +1642,18 @@ function FooterSection({ props, colors, fonts }: { props: any; colors: any; font
       <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row justify-between items-center text-gray-500 gap-3">
         <span>{props.copyright || '© 2026 Ma Boutique. Tous droits réservés.'}</span>
         <div className="flex gap-4">
-          <a href="#cgu" className="hover:underline">CGU</a>
-          <a href="#privacy" className="hover:underline">Confidentialité</a>
+          <button onClick={() => setOpenPolicy('terms')} className="hover:underline">CGU</button>
+          <button onClick={() => setOpenPolicy('privacy')} className="hover:underline">Confidentialité</button>
+          <button onClick={() => setOpenPolicy('refund')} className="hover:underline">Remboursement</button>
         </div>
       </div>
+      {openPolicy && (
+        <LegalPolicyModal
+          title={policyTitle}
+          text={policyText?.trim() || "Ce marchand n'a pas encore renseigné cette politique. Contactez la boutique directement pour plus d'informations."}
+          onClose={() => setOpenPolicy(null)}
+        />
+      )}
     </footer>
   );
 }
@@ -1652,83 +1678,33 @@ function SocialBarSection({ props }: { props: any; colors: any }) {
   );
 }
 
-function ChatFloatSection({ props, colors, fonts }: { props: any; colors: any; fonts: any }) {
-  const [open, setOpen] = useState(false);
-  const [msg, setMsg] = useState('');
-  const [chatHistory, setChatHistory] = useState<Array<{ sender: 'user' | 'agent'; text: string }>>([
-    { sender: 'agent', text: props.welcomeMessage || 'Bonjour ! Une question ? Posez-la moi ici.' }
-  ]);
+function ChatFloatSection({ props, fonts, chatConfig }: { props: any; colors: any; fonts: any; chatConfig?: { provider?: string; value?: string } }) {
+  // Real WhatsApp deep link — no fake typed conversation, no mock "un
+  // conseiller va vous recontacter" reply that was never sent to anyone.
+  // Crisp/Tawk render their own real floating widget once their script is
+  // injected (see injectChatWidget in analytics-injector.ts), so this
+  // component renders nothing for those providers to avoid a duplicate,
+  // fake-looking bubble on top of the real one.
+  const provider = chatConfig?.provider;
+  const value = chatConfig?.value;
+  if (provider !== 'whatsapp' || !value) return null;
 
-  const handleSend = () => {
-    if (!msg.trim()) return;
-    const nextHistory = [...chatHistory, { sender: 'user' as const, text: msg }];
-    setChatHistory(nextHistory);
-    setMsg('');
-
-    // Mock agent reply
-    setTimeout(() => {
-      setChatHistory(prev => [
-        ...prev,
-        { sender: 'agent' as const, text: 'Merci pour votre message ! Un conseiller va vous recontacter par SMS sur votre numéro de téléphone.' }
-      ]);
-    }, 1500);
-  };
+  const digits = value.replace(/[^0-9]/g, '');
+  const message = encodeURIComponent(props.welcomeMessage || 'Bonjour, j\'ai une question sur votre boutique.');
+  const href = `https://wa.me/${digits}?text=${message}`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40" style={{ fontFamily: fonts.body }}>
-      {/* Floating Action Button */}
-      <button
-        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-        className="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-105 active:scale-95 transition-transform animate-bounce"
-        style={{ backgroundColor: colors.primary }}
-      >
-        <MessageCircle className="w-6 h-6" />
-      </button>
-
-      {/* Mini Chat Widget popup */}
-      {open && (
-        <div className="absolute bottom-14 right-0 w-72 max-w-[calc(100vw-32px)] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col text-xs text-gray-700 animate-slide-up">
-          {/* Header */}
-          <div className="p-3 text-white font-extrabold flex items-center justify-between" style={{ backgroundColor: colors.primary }}>
-            <div>
-              <p className="text-xs leading-none">{props.agentName || 'Support Boutique'}</p>
-              <span className="text-[10px] text-green-100 font-bold flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-ping" /> En ligne
-              </span>
-            </div>
-            <button onClick={() => setOpen(false)} className="text-white hover:opacity-80 text-sm">✕</button>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 p-3 space-y-2 max-h-52 overflow-y-auto bg-slate-50">
-            {chatHistory.map((item, i) => (
-              <div key={i} className={`flex ${item.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`p-2.5 rounded-xl max-w-[80%] leading-relaxed ${item.sender === 'user' ? 'bg-brand-600 text-white font-bold' : 'bg-white text-gray-800 shadow-sm'}`}
-                  style={item.sender === 'user' ? { backgroundColor: colors.primary } : {}}
-                >
-                  {item.text}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Input field */}
-          <div className="p-2 border-t border-gray-100 flex gap-1.5 bg-white">
-            <input
-              value={msg}
-              onChange={e => setMsg(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') handleSend(); }}
-              placeholder="Écrivez un message..."
-              className="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 focus:outline-none"
-            />
-            <button onClick={handleSend} className="p-2 rounded-full text-white" style={{ backgroundColor: colors.primary }}>
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-105 active:scale-95 transition-transform"
+      style={{ backgroundColor: '#25D366', fontFamily: fonts.body }}
+      aria-label="Discuter sur WhatsApp"
+      title="Discuter sur WhatsApp"
+    >
+      <MessageCircle className="w-6 h-6" />
+    </a>
   );
 }
 
@@ -2059,7 +2035,7 @@ function EmailSignupSection({ props, colors, fonts, tenantId }: { props: any; co
 // ---------------------------------------------------------------------------
 // MAIN RENDER ROUTER
 // ---------------------------------------------------------------------------
-export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void; productLinkBase?: string; tenantId?: string; onCategoryClick?: (name: string) => void }): React.ReactNode {
+export function renderSection(section: ThemeSection, theme: ThemeConfig, callbacks?: { onAddToCart?: (p: any) => void; productLinkBase?: string; tenantId?: string; onCategoryClick?: (name: string) => void; legalPolicies?: { terms?: string; privacy?: string; refund?: string }; chatConfig?: { provider?: string; value?: string } }): React.ReactNode {
   const colors = theme.colors;
   const fonts = theme.fonts;
   const spacingClass = getSpacingClass(theme.spacing);
@@ -2115,11 +2091,11 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'contact-form':
       return <ContactFormSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'footer':
-      return <FooterSection props={section.props} colors={colors} fonts={fonts} />;
+      return <FooterSection props={section.props} colors={colors} fonts={fonts} legalPolicies={callbacks?.legalPolicies} />;
     case 'social-bar':
       return <SocialBarSection props={section.props} colors={colors} />;
     case 'chat-float':
-      return <ChatFloatSection props={section.props} colors={colors} fonts={fonts} />;
+      return <ChatFloatSection props={section.props} colors={colors} fonts={fonts} chatConfig={callbacks?.chatConfig} />;
     default:
       return null;
   }

@@ -2,7 +2,7 @@ import { PageHeader, Card, Button, Badge } from './ui';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown,
-  Globe, Search, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
+  Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
   Sparkles, Send, ExternalLink
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -169,12 +169,9 @@ export default function OnlineStore() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  const [domainQuery, setDomainQuery] = useState('');
-  const [isSearchingDomain, setIsSearchingDomain] = useState(false);
-  const [domainSearchResult, setDomainSearchResult] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
-  const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'brand' | 'card'>('wave');
-  const [isPurchasing, setIsPurchasing] = useState(false);
+  // Domain purchase (buy via Sellia) is not wired to a real registrar —
+  // see the honest "Bientôt disponible" panel below instead of a fake
+  // search + fake purchase flow.
   const [externalDomainInput, setExternalDomainInput] = useState('');
   const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
   const [isVerifyingDns, setIsVerifyingDns] = useState(false);
@@ -348,51 +345,6 @@ export default function OnlineStore() {
   const handleDeletePage = (id: string) => {
     setCustomPages(customPages.filter(p => p.id !== id));
     showToast('Page supprimée.');
-  };
-
-  const handleDomainSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!domainQuery.trim()) return;
-    setIsSearchingDomain(true);
-    setDomainSearchResult([]);
-    setSelectedExtension(null);
-
-    setTimeout(() => {
-      setDomainSearchResult([
-        { ext: `.com`, price: '$10.98 / year', available: true },
-        { ext: `.net`, price: '$14.58 / year', available: true },
-        { ext: `.org`, price: '$12.18 / year', available: true },
-        { ext: `.shop`, price: '$4.79 / year', available: true },
-        { ext: `.co`, price: '$25.19 / year', available: true },
-        { ext: `.io`, price: '$47.99 / year', available: true },
-        { ext: `.ai`, price: '$95.99 / year', available: true },
-        { ext: `.info`, price: '$17.99 / year', available: true },
-      ]);
-      setIsSearchingDomain(false);
-    }, 1200);
-  };
-
-  const handleBuyDomain = () => {
-    if (!selectedExtension) return;
-    setIsPurchasing(true);
-
-    setTimeout(() => {
-      const domainName = `${domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${selectedExtension.ext}`;
-
-      const newDomain: CustomDomain = {
-        domain: domainName,
-        type: 'purchased',
-        status: 'active',
-        createdAt: new Date().toLocaleDateString('fr-FR')
-      };
-
-      setMyDomains([...myDomains, newDomain]);
-      setIsPurchasing(false);
-      setDomainQuery('');
-      setDomainSearchResult([]);
-      setSelectedExtension(null);
-      showToast(`Félicitations ! Le domaine ${domainName} a été enregistré avec succès via Sellia.`);
-    }, 2000);
   };
 
   // Connect an external domain — calls the real Cloudflare Pages custom-domain
@@ -1910,78 +1862,22 @@ export default function OnlineStore() {
                 </div>
               )}
 
-              {/* Buy a new domain */}
+              {/* Buy a new domain — NOT wired to a real registrar. Real
+                  domain registration needs an actual registrar API account
+                  (Cloudflare Registrar only supports transferring in an
+                  already-registered domain, not registering a brand-new
+                  one — a real "buy" flow needs a provider like Namecheap,
+                  Porkbun, Dynadot, or OpenSRS, with a funded reseller
+                  account and real payment capture before registering
+                  anything). Shown honestly disabled rather than a fake
+                  search + a fake "registered successfully" confirmation
+                  that previously charged nothing and registered nothing. */}
               <div className="border-t border-gray-150 pt-3 space-y-2">
                 <span className="text-xs font-bold text-gray-600 uppercase block">Acheter un domaine via Sellia</span>
-                <form onSubmit={handleDomainSearch} className="flex gap-1">
-                  <input
-                    type="text"
-                    placeholder="recherche-mon-nom..."
-                    value={domainQuery}
-                    onChange={e => setDomainQuery(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isSearchingDomain}
-                    className="px-3 bg-brand-600 text-white rounded-full hover:bg-brand-700 transition-colors flex items-center justify-center disabled:opacity-50"
-                  >
-                    {isSearchingDomain ? <span className="animate-spin text-xs">...</span> : <Search size={14} />}
-                  </button>
-                </form>
-
-                {domainSearchResult.length > 0 && (
-                  <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
-                    {domainSearchResult.map(res => {
-                      const domainName = `${domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${res.ext}`;
-                      const isSelected = selectedExtension?.ext === res.ext;
-                      return (
-                        <div key={res.ext} className={`p-2.5 rounded-xl border flex items-center justify-between text-left ${isSelected ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white'}`}>
-                          <div>
-                            <span className="text-xs font-extrabold text-gray-900 block">{domainName}</span>
-                            <span className="text-[10px] text-emerald-600">Disponible</span>
-                          </div>
-                          <button
-                            onClick={() => setSelectedExtension(res)}
-                            className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${isSelected ? 'bg-brand-600 text-white' : 'border border-gray-200 hover:bg-gray-50'}`}
-                          >
-                            {isSelected ? 'Choisi' : 'Choisir'}
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {selectedExtension && (
-                  <div className="p-3 border border-brand-200 bg-brand-50 rounded-xl space-y-3 text-left">
-                    <div>
-                      <p className="text-xs font-extrabold text-gray-900">Acheter {domainQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
-                      <p className="text-[10px] text-gray-500">Moyen de paiement sécurisé (Tarif Cloudflare + 20% markup, affiché en USD) :</p>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-1">
-                      {[['wave', 'Wave'], ['brand', 'Orange'], ['card', 'Carte CB']].map(([mId, mLabel]) => (
-                        <button
-                          key={mId}
-                          onClick={() => setPaymentMethod(mId as any)}
-                          className={`py-1 text-[10px] font-black rounded-md border text-center transition-colors ${paymentMethod === mId ? 'border-brand-500 bg-white text-brand-700' : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'}`}
-                        >
-                          {mLabel}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={handleBuyDomain}
-                      disabled={isPurchasing}
-                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-full hover:bg-emerald-700 transition-colors animate-pulse"
-                    >
-                      {isPurchasing ? 'Enregistrement Cloudflare...' : `Payer ${selectedExtension.price}`}
-                    </button>
-                    <p className="text-[9px] text-gray-400 mt-1">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Sellia.</p>
-                  </div>
-                )}
+                <div className="p-3 bg-gray-50 border border-gray-150 rounded-xl text-center">
+                  <p className="text-xs font-bold text-gray-500">Bientôt disponible</p>
+                  <p className="text-[10px] text-gray-400 mt-1">L'achat de domaine directement via Sellia nécessite un partenariat registrar actif. En attendant, reliez un domaine que vous possédez déjà ci-dessous.</p>
+                </div>
               </div>
 
               {/* Connect existing domain instructions */}

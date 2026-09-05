@@ -65,7 +65,21 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Brand panel — real background video (public/hero-background.mp4,
+          a real e-commerce/shopping b-roll clip already used elsewhere in
+          the app), not a stock photo staged to look like a "real customer".
+          Falls back to the gradient alone if the file fails to load. */}
       <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-gray-900 items-center justify-center p-12">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          src="/hero-background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-600/80 via-brand-700/80 to-gray-900/90" />
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
         <div className="relative text-white max-w-sm">
           <Logo size="lg" white />

@@ -8,8 +8,8 @@ import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
 import { fetchCloudSettings, pushCloudSettings, fetchCloudGateways, pushCloudGateway } from '../../lib/tenant-sync';
 import {
-  Globe, Search, CreditCard, ShieldCheck, RefreshCw,
-  Trash2, Plus, Check, ChevronDown
+  Globe, CreditCard, RefreshCw,
+  Trash2, Plus, ChevronDown
 } from 'lucide-react';
 
 const SECTIONS = [
@@ -234,68 +234,14 @@ export default function Settings() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  // domain search states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{ ext: string; price: string; available: boolean }>>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [selectedExtension, setSelectedExtension] = useState<any | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'wave' | 'brand' | 'card'>('wave');
-  const [isPurchasing, setIsPurchasing] = useState(false);
+  // Domain purchase (buy on the platform) is not wired to a real
+  // registrar — see the honest "Bientôt disponible" panel below instead
+  // of a fake search + fake purchase flow.
 
   // external domain states
   const [externalDomainInput, setExternalDomainInput] = useState('');
   const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
   const [isVerifyingDns, setIsVerifyingDns] = useState(false);
-
-  // Search domain simulation
-  const handleDomainSearch = () => {
-    if (!searchQuery.trim()) return;
-    setIsSearching(true);
-    setSearchResults([]);
-    setSelectedExtension(null);
-
-    setTimeout(() => {
-      setSearchResults([
-        { ext: `.com`, price: '$10.98 / year', available: true },
-        { ext: `.net`, price: '$14.58 / year', available: true },
-        { ext: `.org`, price: '$12.18 / year', available: true },
-        { ext: `.shop`, price: '$4.79 / year', available: true },
-        { ext: `.co`, price: '$25.19 / year', available: true },
-        { ext: `.io`, price: '$47.99 / year', available: true },
-        { ext: `.ai`, price: '$95.99 / year', available: true },
-        { ext: `.info`, price: '$17.99 / year', available: true },
-      ]);
-      setIsSearching(false);
-    }, 1200);
-  };
-
-  // ⚠️ Buy domain is still a UI simulation — no real registrar/Cloudflare
-  // ⚠️ Buy domain is still a UI simulation — no real registrar/Cloudflare
-  // purchase API is wired in. Available to every plan (custom domains
-  // belong to everyone, not gated like other plan features) — the
-  // purchase itself needs a real registrar integration (separate work).
-  const handleBuyDomain = () => {
-    if (!selectedExtension) return;
-    setIsPurchasing(true);
-
-    setTimeout(() => {
-      const domainName = `${searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${selectedExtension.ext}`;
-
-      const newDomain: CustomDomain = {
-        domain: domainName,
-        type: 'purchased',
-        status: 'active',
-        createdAt: new Date().toLocaleDateString('fr-FR')
-      };
-
-      setDomains([...domains, newDomain]);
-      setIsPurchasing(false);
-      setSearchQuery('');
-      setSearchResults([]);
-      setSelectedExtension(null);
-      alert(`🎉 Félicitations ! Le domaine ${domainName} a été acheté avec succès et configuré sur Cloudflare !`);
-    }, 2000);
-  };
 
   // Add External Domain — calls the real Cloudflare Pages custom-domain API
   // (functions/api/domains/connect.ts). Falls back to local-only tracking
@@ -802,120 +748,26 @@ export default function Settings() {
                 </div>
               )}
 
-              {/* Buy a domain on the platform */}
-              <div className="border border-gray-200 rounded-2xl p-4 space-y-4 bg-white shadow-sm">
+              {/* Buy a domain on the platform — NOT wired to a real
+                  registrar (same finding as OnlineStore.tsx's identical
+                  panel: Cloudflare Registrar only supports transferring
+                  in an already-registered domain, not registering a new
+                  one — a real "buy" flow needs a provider like Namecheap/
+                  Porkbun/Dynadot/OpenSRS with a funded reseller account).
+                  This was previously a full fake search + fake "Connexion
+                  API Cloudflare..." + a success alert claiming the domain
+                  was bought and configured, despite an adjacent code
+                  comment already admitting it was a simulation — the
+                  comment was invisible to merchants, so the UI kept lying
+                  to them. Shown honestly disabled instead. */}
+              <div className="border border-gray-200 rounded-2xl p-4 space-y-2 bg-white shadow-sm">
                 <div>
-                  <p className="font-extrabold text-gray-900 text-xs">Acheter un domaine sur la plateforme (Cloudflare Connect)</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Enregistrez un domaine instantanément. Paiement local via Wave, Orange Money ou Carte Bancaire.</p>
+                  <p className="font-extrabold text-gray-900 text-xs">Acheter un domaine sur la plateforme</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Nécessite un partenariat registrar actif — pas encore disponible. Reliez un domaine que vous possédez déjà ci-dessous.</p>
                 </div>
-
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') handleDomainSearch(); }}
-                      placeholder="Ex. maboutique-royal"
-                      className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                  </div>
-                  <button
-                    onClick={handleDomainSearch}
-                    disabled={isSearching}
-                    className="px-4 py-2 bg-brand-600 text-white rounded-full text-xs font-black flex items-center gap-1.5 hover:bg-brand-700 disabled:opacity-50"
-                  >
-                    {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-                    Rechercher
-                  </button>
+                <div className="p-3 bg-gray-50 border border-gray-150 rounded-xl text-center">
+                  <p className="text-xs font-bold text-gray-500">Bientôt disponible</p>
                 </div>
-
-                {/* Search results simulation */}
-                {searchResults.length > 0 && (
-                  <div className="space-y-2 border-t pt-3 border-gray-50">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Résultats de recherche</p>
-                    <div className="divide-y divide-gray-50 bg-slate-50/50 rounded-xl border border-gray-100 overflow-hidden">
-                      {searchResults.map(res => {
-                        const domainName = `${searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}${res.ext}`;
-                        const isSelected = selectedExtension?.ext === res.ext;
-                        return (
-                          <div key={res.ext} className={`p-3 flex items-center justify-between transition-colors ${isSelected ? 'bg-brand-50/30' : ''}`}>
-                            <div>
-                              <span className="font-bold text-gray-900">{domainName}</span>
-                              <p className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-0.5"><Check className="w-3 h-3" /> Disponible instantanément</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-xs font-black text-gray-800">{res.price}</span>
-                              <button
-                                onClick={() => setSelectedExtension(res)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                  isSelected ? 'bg-brand-600 text-white shadow-sm' : 'border border-gray-200 text-gray-700 hover:border-gray-300'
-                                }`}
-                              >
-                                {isSelected ? 'Sélectionné' : 'Choisir'}
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Purchase Checkout Segment */}
-                {selectedExtension && (
-                  <div className="border-t border-gray-100 pt-4 space-y-4">
-                    <div>
-                      <p className="text-xs font-black text-gray-800">Finaliser l'enregistrement de {searchQuery.toLowerCase().replace(/[^a-z0-9-]+/g, '')}{selectedExtension.ext}</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Choisissez votre moyen de paiement sécurisé (Tarif Cloudflare + 20% markup, affiché en USD).</p>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'wave', label: 'Wave', desc: 'Sénégal, CI' },
-                        { id: 'brand', label: 'Orange Money', desc: 'Afrique de l\'Ouest' },
-                        { id: 'card', label: 'Carte Bancaire', desc: 'Visa / Mastercard' },
-                      ].map(method => (
-                        <button
-                          key={method.id}
-                          onClick={() => setPaymentMethod(method.id as any)}
-                          className={`p-3 border rounded-xl text-left transition-all ${paymentMethod === method.id ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300'}`}
-                        >
-                          <p className="text-xs font-extrabold text-gray-900 flex items-center gap-1">
-                            <CreditCard className="w-3.5 h-3.5 text-gray-400" /> {method.label}
-                          </p>
-                          <span className="text-[9px] text-gray-400 leading-none mt-1 block">{method.desc}</span>
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={handleBuyDomain}
-                        disabled={isPurchasing}
-                        className="px-5 py-2.5 bg-emerald-600 text-white rounded-full text-xs font-black hover:bg-emerald-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 animate-pulse"
-                      >
-                        {isPurchasing ? (
-                          <>
-                            <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Connexion API Cloudflare...
-                          </>
-                        ) : (
-                          <>
-                            <ShieldCheck className="w-4 h-4" /> Payer {selectedExtension.price}
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => setSelectedExtension(null)}
-                        className="text-xs text-gray-400 hover:text-gray-600 font-bold"
-                      >
-                        Annuler
-                      </button>
-                    </div>
-                    <p className="text-[10px] text-gray-400">Le prix inclut les frais d'enregistrement wholesale de Cloudflare majorés de 20% pour frais de service Sellia.</p>
-                  </div>
-                )}
               </div>
 
               {/* Connect existing domain card */}

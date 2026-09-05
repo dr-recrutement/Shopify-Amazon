@@ -258,6 +258,18 @@ export default function LandingPage() {
           background below if the file is missing or fails to load — never
           shows a broken video icon. */}
       <section className="relative pt-32 pb-24 text-white" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
+        {/* Same real hero-background.mp4 clip used on the Auth pages, kept
+            very subtle here (low opacity, blended with the gradient) so it
+            adds depth without fighting the centered text for attention. */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay pointer-events-none"
+          src="/hero-background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+        />
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse" />
           <div className="absolute top-40 right-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }} />

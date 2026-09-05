@@ -14,6 +14,12 @@ export type PlanAccess = {
    *  Supabase tenant resolved yet). Nothing is blocked in that case — same
    *  as the app's behavior before plan enforcement existed. */
   unrestricted: boolean;
+  /** 'trial' | 'active' | 'suspended' — raw tenants.status. Null until loaded. */
+  status: string | null;
+  /** tenants.plan_renews_at — when the current paid period ends. Null during trial or if never set. */
+  planRenewsAt: string | null;
+  /** tenants.trial_ends_at — when the free trial ends. Null once on a paid plan. */
+  trialEndsAt: string | null;
 };
 
 /**
@@ -24,6 +30,9 @@ export type PlanAccess = {
 export function usePlanAccess(): PlanAccess {
   const { isSuperAdmin, user, loading: authLoading } = useAuth();
   const [planId, setPlanId] = useState<string>('starter');
+  const [status, setStatus] = useState<string | null>(null);
+  const [planRenewsAt, setPlanRenewsAt] = useState<string | null>(null);
+  const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [unrestricted, setUnrestricted] = useState(isLocalAuthMode());
 
@@ -46,11 +55,16 @@ export function usePlanAccess(): PlanAccess {
       }
       const { data, error } = await supabase
         .from('tenants')
-        .select('plan')
+        .select('plan,status,plan_renews_at,trial_ends_at')
         .eq('id', tenantId)
         .maybeSingle();
       if (!cancelled) {
         if (!error && data?.plan) setPlanId(data.plan as string);
+        if (!error && data) {
+          setStatus((data as { status?: string }).status ?? null);
+          setPlanRenewsAt((data as { plan_renews_at?: string }).plan_renews_at ?? null);
+          setTrialEndsAt((data as { trial_ends_at?: string }).trial_ends_at ?? null);
+        }
         setUnrestricted(false);
         setLoading(false);
       }
@@ -61,7 +75,7 @@ export function usePlanAccess(): PlanAccess {
   }, [authLoading, user, isSuperAdmin]);
 
   const plan = PLANS.find(p => p.id === planId) ?? PLANS[0];
-  return { loading, plan, isSuperAdmin, unrestricted };
+  return { loading, plan, isSuperAdmin, unrestricted, status, planRenewsAt, trialEndsAt };
 }
 
 /** -1 means unlimited on this plan. */

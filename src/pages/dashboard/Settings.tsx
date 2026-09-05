@@ -504,6 +504,15 @@ export default function Settings() {
                   <div>
                     <p className="font-extrabold text-brand-800">Plan {planAccess.plan.name}</p>
                     <p className="text-gray-500">{planAccess.plan.price}$/mois</p>
+                    {planAccess.status === 'trial' && planAccess.trialEndsAt && (
+                      <p className="text-[11px] text-amber-600 font-medium mt-1">Essai gratuit jusqu'au {new Date(planAccess.trialEndsAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                    )}
+                    {planAccess.status === 'active' && planAccess.planRenewsAt && (
+                      <p className="text-[11px] text-gray-500 mt-1">Renouvellement le {new Date(planAccess.planRenewsAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                    )}
+                    {planAccess.status === 'suspended' && (
+                      <p className="text-[11px] text-red-600 font-medium mt-1">Abonnement suspendu</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -1022,6 +1031,12 @@ export default function Settings() {
                     <div>
                       <p className="font-bold text-gray-900">Plan {planAccess.plan.name}</p>
                       <p className="text-gray-500">{planAccess.plan.price}$/mois</p>
+                      {planAccess.status === 'trial' && planAccess.trialEndsAt && (
+                        <p className="text-[11px] text-amber-600 font-medium mt-1">Essai jusqu'au {new Date(planAccess.trialEndsAt).toLocaleDateString('fr-FR')}</p>
+                      )}
+                      {planAccess.status === 'active' && planAccess.planRenewsAt && (
+                        <p className="text-[11px] text-gray-500 mt-1">Renouvellement le {new Date(planAccess.planRenewsAt).toLocaleDateString('fr-FR')}</p>
+                      )}
                     </div>
                     <Button size="sm" onClick={() => setActive('plan')}>Gérer le plan</Button>
                   </div>

@@ -3,7 +3,7 @@ import { ArrowRight, Package, Globe, CreditCard, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getProducts, getCustomers, getTenantStorageKey } from '../../lib/app-state';
-import { fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
+import { fetchCloudProducts, fetchCloudCustomers, fetchCloudGateways } from '../../lib/tenant-sync';
 
 export default function Growth() {
   const [productCount, setProductCount] = useState(getProducts().length);
@@ -14,9 +14,16 @@ export default function Growth() {
   useEffect(() => {
     fetchCloudProducts().then(cloud => { if (cloud) setProductCount(cloud.length); });
     fetchCloudCustomers().then(cloud => { if (cloud) setCustomerCount(cloud.length); });
+    // Real connected-gateway check — this used to read a
+    // 'liafrikos_gateways' localStorage key that stopped being written
+    // once vendor gateway secrets moved to encrypted server-side storage
+    // (see functions/api/vendor-gateways/*.ts), which silently broke this
+    // into always recommending "connect a payment gateway" even for
+    // merchants who already had after that migration.
+    fetchCloudGateways().then(cloud => {
+      setHasGateway(!!cloud?.some(g => g.isActive));
+    });
     try {
-      const gateways = JSON.parse(localStorage.getItem(getTenantStorageKey('liafrikos_gateways')) || '{}');
-      setHasGateway(Object.values(gateways).some((g: any) => g?.connected));
       const domains = JSON.parse(localStorage.getItem(getTenantStorageKey('liafrikos_domains')) || '[]');
       setHasCustomDomain(domains.some((d: any) => d.type === 'external'));
     } catch {

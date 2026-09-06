@@ -32,7 +32,8 @@ import Markets from './pages/dashboard/Markets';
 import Analytics from './pages/dashboard/Analytics';
 import Agentic from './pages/dashboard/Agentic';
 import OnlineStore from './pages/dashboard/OnlineStore';
-import ThemeSystemPreview from './pages/dashboard/ThemeSystemPreview';
+import OnlineStoreThemes from './pages/dashboard/OnlineStoreThemes';
+import OnlineStoreCustomize from './pages/dashboard/OnlineStoreCustomize';
 import Marketing from './pages/dashboard/Marketing';
 import Accounting from './pages/dashboard/Accounting';
 import Team from './pages/dashboard/Team';
@@ -107,7 +108,8 @@ export default function App() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="agentic" element={<Agentic />} />
           <Route path="online-store" element={<OnlineStore />} />
-          <Route path="online-store/theme-preview" element={<ThemeSystemPreview />} />
+          <Route path="online-store/themes" element={<OnlineStoreThemes />} />
+          <Route path="online-store/customize" element={<OnlineStoreCustomize />} />
           <Route path="marketing" element={<Marketing />} />
           <Route path="accounting" element={<Accounting />} />
           <Route path="team" element={<Team />} />

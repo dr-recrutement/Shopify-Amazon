@@ -23,6 +23,38 @@ import {
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
 import { injectAnalyticsScripts, injectChatWidget } from '../lib/analytics-injector';
 import { useSeo } from '../lib/seo';
+import { TemplateRenderer } from '../lib/theme-system/TemplateRenderer';
+import { withLiveProducts } from '../lib/theme-system/liveData';
+import type { ThemeConfig as NewThemeConfig } from '../lib/theme-system/types';
+
+/** Renders a storefront published through the new Customize editor
+ *  (Online Store > Thèmes). Reuses the real cart (same getCartItems/
+ *  saveCartItems as the legacy path) and the real /cart, /checkout routes
+ *  — no separate cart drawer needed for this engine.
+ *
+ *  Note: legal policy text (CGU/privacy/refund) isn't wired into this
+ *  engine's FooterSection yet — that component doesn't have the link
+ *  slots theme-engine.tsx's footer does. Real gap, left undone rather
+ *  than faked with dead links. */
+function NewEngineStorefront({ config, products, onAddToCart }: {
+  config: NewThemeConfig;
+  products: StoreProduct[];
+  onAddToCart: (product: any) => void;
+}) {
+  const live = withLiveProducts(config, products);
+  return (
+    <TemplateRenderer
+      config={live}
+      callbacks={{
+        onAddToCart: (productId) => {
+          const product = products.find(p => p.id === productId);
+          if (product) onAddToCart(product);
+        },
+        onCartClick: () => { window.location.href = '/cart'; },
+      }}
+    />
+  );
+}
 
 type CartDrawerItem = CartItem & { image?: string };
 
@@ -305,6 +337,23 @@ export default function StorefrontPage() {
   }
 
   const visibleSections = sectionsWithCatalog.filter(s => s.visible);
+
+  // A merchant who has published via the new Customize editor
+  // (Online Store > Thèmes) gets rendered through the new theme-system
+  // engine instead — real switch, not a preview: this is what real
+  // shoppers see. tenantSettings.newThemeConfig is only ever set by that
+  // editor's "Publier" action, so this never fires for a merchant who
+  // hasn't opted in, and their existing legacy theme keeps rendering
+  // exactly as before.
+  if (tenantSettings.useNewThemeEngine && tenantSettings.newThemeConfig) {
+    return (
+      <NewEngineStorefront
+        config={tenantSettings.newThemeConfig}
+        products={publicProducts ?? []}
+        onAddToCart={handleAddToCart}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>

@@ -65,7 +65,7 @@ export default function OnlineStoreThemes() {
         subtitle="Thèmes"
         action={
           <div className="flex gap-2">
-            <Link to="/app/online-store"><Button variant="secondary" size="sm"><SettingsIcon size={14} /> Réglages avancés</Button></Link>
+            <Link to="/app/online-store/advanced"><Button variant="secondary" size="sm"><SettingsIcon size={14} /> Réglages avancés</Button></Link>
             <a href={storeUrl} target="_blank" rel="noopener noreferrer"><Button variant="secondary" size="sm"><ExternalLink size={14} /> Voir ma boutique</Button></a>
           </div>
         }

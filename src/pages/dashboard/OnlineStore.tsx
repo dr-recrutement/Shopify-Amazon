@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
-  GripVertical, FileText, ArrowUp, ArrowDown,
+  GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
   Sparkles, Send, ExternalLink
 } from 'lucide-react';
@@ -483,9 +483,9 @@ export default function OnlineStore() {
         subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
           <div className="flex gap-2">
-            <Link to="/app/online-store/themes">
+            <Link to="/app/online-store">
               <Button variant="secondary" size="sm">
-                <Sparkles size={14} /> Thèmes (nouveau)
+                <ArrowLeft size={14} /> Retour aux Thèmes
               </Button>
             </Link>
             <Link to={`/s/${shopProfile.slug || getShopSubdomain().replace('.os.liafrik.com', '')}`} target="_blank" rel="noopener noreferrer">

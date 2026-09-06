@@ -283,7 +283,7 @@ export default function OnlineStoreCustomize() {
       {/* Top bar */}
       <div className="h-14 border-b border-gray-200 flex items-center justify-between px-4 shrink-0">
         <div className="flex items-center gap-3">
-          <Link to="/app/online-store/themes" className="text-gray-500 hover:text-gray-900"><ArrowLeft size={18} /></Link>
+          <Link to="/app/online-store" className="text-gray-500 hover:text-gray-900"><ArrowLeft size={18} /></Link>
           <div>
             <p className="text-sm font-bold text-gray-900 leading-tight">Sellia Pro</p>
             <p className="text-[10px] text-gray-400 leading-tight">Page d'accueil</p>

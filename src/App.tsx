@@ -107,8 +107,8 @@ export default function App() {
           <Route path="markets" element={<Markets />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="agentic" element={<Agentic />} />
-          <Route path="online-store" element={<OnlineStore />} />
-          <Route path="online-store/themes" element={<OnlineStoreThemes />} />
+          <Route path="online-store" element={<OnlineStoreThemes />} />
+          <Route path="online-store/advanced" element={<OnlineStore />} />
           <Route path="online-store/customize" element={<OnlineStoreCustomize />} />
           <Route path="marketing" element={<Marketing />} />
           <Route path="accounting" element={<Accounting />} />

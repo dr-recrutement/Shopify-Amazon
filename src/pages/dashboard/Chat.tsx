@@ -35,7 +35,10 @@ export default function Chat() {
 
   return (
     <div>
-      <PageHeader title="Chat" subtitle="Boîte de réception unifiée — WhatsApp, Messenger, chat interne." />
+      <PageHeader title="Chat" subtitle="Messagerie interne — pas encore connectée à WhatsApp ou Messenger." />
+      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+        Cette boîte de réception est interne à Sellia pour l'instant : les messages envoyés ici ne sont pas transmis à un vrai numéro WhatsApp ou une vraie page Messenger. Pour joindre réellement vos clients, utilisez le bouton WhatsApp configuré dans Réglages → Support & Live Chat.
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[600px]">
         <Card className="overflow-y-auto">
           {threads.map(t => (

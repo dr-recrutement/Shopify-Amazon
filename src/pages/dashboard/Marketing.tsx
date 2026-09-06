@@ -33,8 +33,11 @@ export default function Marketing() {
 
   const sendCampaign = () => {
     if (!form.name.trim()) return;
-    const status = form.schedule === 'now' ? 'sent' : 'scheduled';
-    const newC: Campaign = { id: crypto.randomUUID(), name: form.name, channel: form.channel, status: status as Campaign['status'], audience: 0, sent: form.schedule === 'now' ? 1 : 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
+    // Never claim 'sent' — no email/SMS provider is connected anywhere in
+    // this platform yet, so nothing is actually transmitted to anyone.
+    // Always saved as draft/scheduled instead of falsely marking it sent.
+    const status = form.schedule === 'now' ? 'draft' : 'scheduled';
+    const newC: Campaign = { id: crypto.randomUUID(), name: form.name, channel: form.channel, status: status as Campaign['status'], audience: 0, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
     const updated = [newC, ...campaigns];
     setCampaigns(updated); saveCampaigns(updated); pushCloudCampaigns(updated);
     setShowEditor(false);
@@ -53,6 +56,10 @@ export default function Marketing() {
   return (
     <div>
       <PageHeader title="Marketing" subtitle="Campagnes, automatisations et performance." action={<Button onClick={() => setShowEditor(true)}><Plus size={16} /> Créer une campagne</Button>} />
+
+      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+        L'envoi réel d'emails et de SMS n'est pas encore branché sur un fournisseur — vos campagnes sont enregistrées en brouillon/programmées, mais aucun message n'est transmis à vos clients pour l'instant.
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="p-4"><Mail size={18} className="text-brand-600 mb-2" /><p className="text-xs text-gray-500">Campagnes email</p><p className="text-xl font-bold">{campaigns.filter(c => c.channel === 'email').length}</p></Card>
@@ -134,7 +141,7 @@ export default function Marketing() {
               </div>
               <div className="flex gap-2 pt-2">
                 <Button variant="secondary" onClick={() => setPreview(!preview)} className="flex items-center gap-1"><Eye size={14} /> Aperçu</Button>
-                <Button onClick={sendCampaign} className="flex-1 flex items-center justify-center gap-2"><Send size={14} /> {form.schedule === 'now' ? 'Envoyer maintenant' : 'Programmer'}</Button>
+                <Button onClick={sendCampaign} className="flex-1 flex items-center justify-center gap-2"><Send size={14} /> {form.schedule === 'now' ? 'Enregistrer en brouillon' : 'Programmer'}</Button>
               </div>
               {preview && (
                 <div className="p-4 bg-white border-2 border-gray-100 rounded-lg">

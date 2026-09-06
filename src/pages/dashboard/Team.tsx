@@ -69,6 +69,10 @@ export default function Team() {
   return (
     <div>
       <PageHeader title="Équipe" subtitle="Staff, rôles et permissions." action={<Button onClick={openAdd}><Plus size={16} /> Inviter</Button>} />
+
+      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+        Cette liste enregistre vos membres d'équipe et leurs rôles prévus, mais deux points ne sont pas encore réels : aucun email d'invitation n'est envoyé, et les permissions par rôle ne sont pas encore appliquées techniquement — pour l'instant, seul le compte propriétaire de la boutique peut se connecter et agir dessus.
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           {staff.length === 0 ? (

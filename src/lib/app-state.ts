@@ -354,11 +354,11 @@ export type Automation = {
 const AUTOMATIONS_KEY = 'liafrikos_automations';
 
 export function getAutomations(): Automation[] {
-  return readStorage<Automation[]>(AUTOMATIONS_KEY, [
-    { id: 'a1', name: 'Email de bienvenue', trigger: 'customer_signup', action: 'send_email', enabled: true, runs: 47, createdAt: '2026-05-01' },
-    { id: 'a2', name: 'Alerte stock bas', trigger: 'low_stock', action: 'restock_alert', enabled: true, runs: 8, createdAt: '2026-06-01' },
-    { id: 'a3', name: 'Relance panier abandonné', trigger: 'abandoned_cart', action: 'send_email', enabled: false, runs: 0, createdAt: '2026-07-01' },
-  ]);
+  // No seeded example automations with fabricated "runs" counts — a new
+  // merchant should see an empty, honest list, not fake execution history
+  // (47 welcome emails "sent" to nobody) suggesting the platform already
+  // did work it never did.
+  return readStorage<Automation[]>(AUTOMATIONS_KEY, []);
 }
 
 export function saveAutomations(automations: Automation[]) {
@@ -389,11 +389,10 @@ export type Campaign = {
 const CAMPAIGNS_KEY = 'liafrikos_campaigns';
 
 export function getCampaigns(): Campaign[] {
-  return readStorage<Campaign[]>(CAMPAIGNS_KEY, [
-    { id: 'mc1', name: 'Soldes d\'été', channel: 'email', status: 'sent', audience: 120, sent: 120, opened: 78, clicked: 34, revenue: 85000, currency: 'XOF', createdAt: '2026-07-15' },
-    { id: 'mc2', name: 'Nouvelle collection', channel: 'sms', status: 'scheduled', audience: 85, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: '2026-08-01' },
-    { id: 'mc3', name: 'Black Friday', channel: 'social', status: 'draft', audience: 0, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: '2026-08-05' },
-  ]);
+  // No seeded example campaign with fabricated send/open/click/revenue
+  // numbers — a new merchant should see an empty, honest list, not a fake
+  // "already sent to 120 people, 85,000 XOF revenue" campaign.
+  return readStorage<Campaign[]>(CAMPAIGNS_KEY, []);
 }
 
 export function saveCampaigns(campaigns: Campaign[]) {
@@ -427,22 +426,11 @@ export type ChatThread = {
 const CHAT_KEY = 'liafrikos_chat_threads';
 
 export function getChatThreads(): ChatThread[] {
-  return readStorage<ChatThread[]>(CHAT_KEY, [
-    {
-      id: 't1', customerName: 'Aïcha Diallo', customerEmail: 'aicha@example.com',
-      lastMessage: 'Bonjour, ma commande est-elle expédiée ?', lastAt: '2026-08-08 10:30', unread: 1,
-      messages: [
-        { id: 'm1', customerName: 'Aïcha Diallo', customerEmail: 'aicha@example.com', message: 'Bonjour, ma commande est-elle expédiée ?', fromMerchant: false, read: false, createdAt: '2026-08-08 10:30' },
-      ],
-    },
-    {
-      id: 't2', customerName: 'Kwame Mensah', customerEmail: 'kwame@example.com',
-      lastMessage: 'Merci pour la livraison rapide !', lastAt: '2026-08-07 16:45', unread: 0,
-      messages: [
-        { id: 'm2', customerName: 'Kwame Mensah', customerEmail: 'kwame@example.com', message: 'Merci pour la livraison rapide !', fromMerchant: false, read: true, createdAt: '2026-08-07 16:45' },
-      ],
-    },
-  ]);
+  // No seeded example conversations — this inbox isn't connected to a
+  // real WhatsApp/Messenger channel yet (see the honest note on the Chat
+  // page), so fake incoming messages would misrepresent it as already
+  // receiving real customer contact.
+  return readStorage<ChatThread[]>(CHAT_KEY, []);
 }
 
 export function saveChatThreads(threads: ChatThread[]) {

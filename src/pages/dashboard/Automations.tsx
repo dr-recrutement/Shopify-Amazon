@@ -41,6 +41,10 @@ export default function Automations() {
     <div>
       <PageHeader title="Automations" subtitle="Créez des règles automatiques sans code — façon Shopify Flow." action={<Button onClick={() => setShowBuilder(true)}><Plus size={16} /> Créer une automatisation</Button>} />
 
+      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+        Vos règles sont créées et enregistrées, mais le moteur qui les déclenche automatiquement (envoi d'email, notification…) est en développement — elles ne s'exécutent pas encore toutes seules pour l'instant.
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {automations.map(a => (
           <Card key={a.id} className="p-5 hover:shadow-md transition-all">

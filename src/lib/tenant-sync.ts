@@ -584,6 +584,65 @@ export async function createPublicOrder(tenantId: string, order: StoreOrder): Pr
   }
 }
 
+export interface CheckoutLineItem { name: string; price: number; qty: number }
+export interface CheckoutResult { ok: boolean; redirectUrl?: string; error?: string; orderNumber?: string }
+
+/** The one real order-submission path for a public storefront, shared by
+ *  StorefrontPage.tsx's inline checkout and the standalone /s/:slug/checkout
+ *  page — so both ever have exactly one real implementation instead of
+ *  risking a second, divergent (and possibly fake) copy. Writes the order
+ *  to the tenant's real Supabase orders, fires their configured webhook,
+ *  and for PayUnit — the only real, redirect-based payment integration
+ *  wired so far — calls the real initialize endpoint and returns the
+ *  hosted checkout URL to redirect the buyer to. Other payment method
+ *  choices create a real 'pending' order but don't move money yet (no
+ *  gateway wired for them), same as before. */
+export async function submitPublicCheckout(params: {
+  tenantId: string;
+  customerName: string;
+  customerEmail?: string;
+  paymentMethod: string;
+  currency: string;
+  items: CheckoutLineItem[];
+}): Promise<CheckoutResult> {
+  const { tenantId, customerName, customerEmail, paymentMethod, currency, items } = params;
+  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const orderId = crypto.randomUUID();
+  const orderNumber = `LA-${Date.now().toString().slice(-6)}`;
+  const order: StoreOrder = {
+    id: orderId,
+    orderNumber,
+    customer: customerName,
+    date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
+    total,
+    status: 'pending',
+    payment: paymentMethod === 'payunit' ? 'PayUnit' : paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
+    currency,
+    items,
+  };
+
+  const created = await createPublicOrder(tenantId, order);
+  if (!created) return { ok: false, error: "Erreur lors de l'enregistrement de la commande. Réessayez." };
+  fireOrderWebhook(tenantId, order);
+
+  if (paymentMethod === 'payunit') {
+    try {
+      const res = await fetch('/api/checkout/payunit-initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantId, orderId, amount: total, currency, customerEmail, items }),
+      });
+      const result = await res.json();
+      if (res.ok && result.redirect) return { ok: true, redirectUrl: result.redirect, orderNumber };
+      return { ok: false, error: result.error || "Ce marchand n'a pas encore activé PayUnit. Choisissez un autre mode de paiement." };
+    } catch {
+      return { ok: false, error: 'Le service de paiement est momentanément indisponible. Réessayez dans un instant.' };
+    }
+  }
+
+  return { ok: true, orderNumber };
+}
+
 /** Real destination for the storefront's newsletter/email-signup
  *  sections — previously showed a success message without saving the
  *  email anywhere. Anonymous-safe (storefront visitors have no session). */

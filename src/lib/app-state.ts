@@ -5,6 +5,7 @@ export type CartItem = {
   price: number;
   qty: number;
   currency: string;
+  image?: string;
 };
 
 export type StoreProduct = {
@@ -90,16 +91,25 @@ function writeStorage<T>(key: string, value: T) {
   window.localStorage.setItem(getTenantStorageKey(key), JSON.stringify(value));
 }
 
-export function getCartItems(): CartItem[] {
-  return readStorage<CartItem[]>(CART_KEY, []);
+/** Real shoppers on a public store (/s/:slug) must never share cart state
+ *  with a different merchant's store visited in the same browser — scope
+ *  by the resolved tenant id. Omitted (undefined) keeps the old flat key,
+ *  used by the dashboard's own local/demo preview of the merchant's own
+ *  store (exactly one tenant in scope there anyway). */
+function cartKey(scopeId?: string): string {
+  return scopeId ? `${CART_KEY}_shop_${scopeId}` : CART_KEY;
 }
 
-export function saveCartItems(items: CartItem[]) {
-  writeStorage(CART_KEY, items);
+export function getCartItems(scopeId?: string): CartItem[] {
+  return readStorage<CartItem[]>(cartKey(scopeId), []);
 }
 
-export function clearCart() {
-  writeStorage(CART_KEY, []);
+export function saveCartItems(items: CartItem[], scopeId?: string) {
+  writeStorage(cartKey(scopeId), items);
+}
+
+export function clearCart(scopeId?: string) {
+  writeStorage(cartKey(scopeId), []);
 }
 
 export function getProducts(): StoreProduct[] {

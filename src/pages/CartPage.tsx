@@ -1,42 +1,60 @@
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Card, Button } from '../pages/dashboard/ui';
-import { Trash2, ShoppingBag, ArrowRight, Tag, Shield, Truck, CreditCard } from 'lucide-react';
+import { Trash2, ShoppingBag, ArrowRight, Shield, Truck, CreditCard } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getCartItems, saveCartItems, type CartItem } from '../lib/app-state';
+import { resolvePublicTenant, type PublicTenant } from '../lib/tenant-sync';
 
 export default function CartPage() {
+  const { slug } = useParams<{ slug?: string }>();
+  const [tenant, setTenant] = useState<PublicTenant | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
+
   useEffect(() => {
-    setItems(getCartItems());
-  }, []);
+    let cancelled = false;
+    (async () => {
+      const t = slug ? await resolvePublicTenant(slug) : null;
+      if (cancelled) return;
+      setTenant(t);
+      setItems(getCartItems(t?.id));
+    })();
+    return () => { cancelled = true; };
+  }, [slug]);
 
   const updateItems = (nextItems: CartItem[]) => {
     setItems(nextItems);
-    saveCartItems(nextItems);
+    saveCartItems(nextItems, tenant?.id);
   };
 
   const fmt = (n: number) => n.toLocaleString('fr-FR');
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = 1000;
+  const shipping = items.length > 0 ? 1000 : 0;
+  const checkoutHref = slug ? `/s/${slug}/checkout` : '/checkout';
+  const continueShoppingHref = slug ? `/s/${slug}` : '/marketplace';
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Panier</h1>
+        <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Panier{tenant ? ` — ${tenant.name}` : ''}</h1>
         {items.length === 0 ? (
           <Card className="p-12 text-center">
             <ShoppingBag size={32} className="text-gray-300 mx-auto mb-4" />
             <h3 className="font-semibold text-gray-900">Votre panier est vide</h3>
-            <Link to="/marketplace" className="mt-4 inline-block text-brand-600 font-medium">Découvrir la marketplace</Link>
+            <Link to={continueShoppingHref} className="mt-4 inline-block text-brand-600 font-medium">
+              {slug ? 'Retourner à la boutique' : 'Découvrir la marketplace'}
+            </Link>
           </Card>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-3">
               {items.map(i => (
                 <Card key={i.id} className="p-4 flex gap-4">
-                  <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0" />
+                  <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                    {i.image && <img src={i.image} alt={i.name} className="w-full h-full object-cover" />}
+                  </div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
@@ -59,19 +77,12 @@ export default function CartPage() {
             </div>
             <div className="space-y-4">
               <Card className="p-5">
-                <div className="flex gap-2 mb-4">
-                  <div className="flex-1 relative">
-                    <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input placeholder="Code promo" className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                  </div>
-                  <Button variant="secondary" size="sm">Appliquer</Button>
-                </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Sous-total</span><span className="font-medium">{fmt(total)} XOF</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Livraison estimée</span><span className="font-medium">{fmt(shipping)} XOF</span></div>
                   <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg">{fmt(total + shipping)} XOF</span></div>
                 </div>
-                <Link to="/checkout"><Button className="mt-4 w-full">Finaliser ma commande <ArrowRight size={16} /></Button></Link>
+                <Link to={checkoutHref}><Button className="mt-4 w-full">Finaliser ma commande <ArrowRight size={16} /></Button></Link>
               </Card>
               <Card className="p-4 space-y-2 text-xs text-gray-500">
                 <div className="flex items-center gap-2"><Shield size={14} className="text-green-600" /> Paiement sécurisé</div>

@@ -36,10 +36,11 @@ import type { ThemeConfig as NewThemeConfig } from '../lib/theme-system/types';
  *  engine's FooterSection yet — that component doesn't have the link
  *  slots theme-engine.tsx's footer does. Real gap, left undone rather
  *  than faked with dead links. */
-function NewEngineStorefront({ config, products, onAddToCart }: {
+function NewEngineStorefront({ config, products, onAddToCart, storeUrl }: {
   config: NewThemeConfig;
   products: StoreProduct[];
   onAddToCart: (product: any) => void;
+  storeUrl: string;
 }) {
   const live = withLiveProducts(config, products);
   return (
@@ -50,7 +51,7 @@ function NewEngineStorefront({ config, products, onAddToCart }: {
           const product = products.find(p => p.id === productId);
           if (product) onAddToCart(product);
         },
-        onCartClick: () => { window.location.href = '/cart'; },
+        onCartClick: () => { window.location.href = `${storeUrl}/cart`; },
       }}
     />
   );
@@ -134,6 +135,13 @@ export default function StorefrontPage() {
     return () => { cancelled = true; };
   }, [slug]);
 
+  // Re-read the cart once we know which real tenant's store this is —
+  // real shoppers must not see a different merchant's cart items mixed in
+  // if they've browsed another Sellia-hosted store in the same browser.
+  useEffect(() => {
+    setCart(getCartItems(resolvedTenant?.id));
+  }, [resolvedTenant?.id]);
+
   // Attach product images to cart items once we know which catalog we're
   // rendering against (local preview vs resolved tenant).
   useEffect(() => {
@@ -194,16 +202,16 @@ export default function StorefrontPage() {
           image: product.image || getProductImage(product as any),
         }];
       }
-      saveCartItems(updated);
+      saveCartItems(updated, resolvedTenant?.id);
       return updated;
     });
     setCartOpen(true);
-  }, []);
+  }, [resolvedTenant?.id]);
 
   const updateQty = (id: string, delta: number) => {
     setCart(prev => {
       const updated = prev.map(i => i.id === id ? { ...i, qty: Math.max(0, i.qty + delta) } : i).filter(i => i.qty > 0);
-      saveCartItems(updated);
+      saveCartItems(updated, resolvedTenant?.id);
       return updated;
     });
   };
@@ -211,7 +219,7 @@ export default function StorefrontPage() {
   const removeFromCart = (id: string) => {
     setCart(prev => {
       const updated = prev.filter(i => i.id !== id);
-      saveCartItems(updated);
+      saveCartItems(updated, resolvedTenant?.id);
       return updated;
     });
   };
@@ -320,7 +328,7 @@ export default function StorefrontPage() {
     }
     setOrderConfirmed(order.orderNumber || orderId);
     setCart([]);
-    saveCartItems([]);
+    saveCartItems([], resolvedTenant?.id);
   };
 
   const fmtPrice = (amt: number) => `${amt.toLocaleString('fr-FR')} ${currency}`;
@@ -351,6 +359,7 @@ export default function StorefrontPage() {
         config={tenantSettings.newThemeConfig}
         products={publicProducts ?? []}
         onAddToCart={handleAddToCart}
+        storeUrl={slug ? `/s/${slug}` : '/store'}
       />
     );
   }

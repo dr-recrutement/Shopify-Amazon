@@ -53,6 +53,13 @@ export default function ProductDetailPage() {
     return () => { cancelled = true; };
   }, [slug]);
 
+  // Re-read once we know which real tenant's store this is — same reasoning
+  // as StorefrontPage.tsx: a shared browser must not mix carts across
+  // different Sellia-hosted stores.
+  useEffect(() => {
+    setCart(getCartItems(resolvedTenant?.id));
+  }, [resolvedTenant?.id]);
+
   const product = useMemo(() => products?.find(p => p.id === productId), [products, productId]);
   const related = useMemo(() => (products || []).filter(p => p.id !== productId && p.category === product?.category).slice(0, 4), [products, productId, product]);
   const localProfile = useMemo(() => getShopProfile(), []);
@@ -77,8 +84,8 @@ export default function ProductDetailPage() {
       const existing = prev.find(i => i.id === product.id);
       const next = existing
         ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + qty } : i)
-        : [...prev, { id: product.id, name: product.name, variant: product.subcategory || product.category || '', price: product.price, qty, currency: product.currency }];
-      saveCartItems(next);
+        : [...prev, { id: product.id, name: product.name, variant: product.subcategory || product.category || '', price: product.price, qty, currency: product.currency, image: images[0] }];
+      saveCartItems(next, resolvedTenant?.id);
       return next;
     });
     setAdded(true);

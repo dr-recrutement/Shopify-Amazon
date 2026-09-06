@@ -76,6 +76,8 @@ export default function App() {
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/s/:slug/cart" element={<CartPage />} />
+        <Route path="/s/:slug/checkout" element={<CheckoutPage />} />
         <Route path="/order-tracking" element={<OrderTrackingPage />} />
         <Route path="/support" element={<SupportPage />} />
         <Route path="/login" element={<LoginPage />} />

@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
-  GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft,
+  GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft, Search,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
   Sparkles, Send, ExternalLink
 } from 'lucide-react';
@@ -169,9 +169,8 @@ export default function OnlineStore() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  // Domain purchase (buy via Sellia) is not wired to a real registrar —
-  // see the honest "Bientôt disponible" panel below instead of a fake
-  // search + fake purchase flow.
+  // Domain purchase now calls the real Cloudflare Registrar API (beta) —
+  // see functions/api/domains/{search,check,purchase-initialize}.ts.
   const [externalDomainInput, setExternalDomainInput] = useState('');
   const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
   const [isVerifyingDns, setIsVerifyingDns] = useState(false);
@@ -353,6 +352,68 @@ export default function OnlineStore() {
   // only if the backend call itself fails (e.g. offline), so the merchant
   // isn't blocked while still surfacing the real error when there is one.
   const [isConnectingDomain, setIsConnectingDomain] = useState(false);
+
+  // Real domain purchase — search → authoritative check → real Flutterwave
+  // payment → real Cloudflare Registrar API (see functions/api/domains/).
+  const [buyQuery, setBuyQuery] = useState('');
+  const [buySearching, setBuySearching] = useState(false);
+  const [buyResults, setBuyResults] = useState<Array<{ name: string; registrable: boolean; pricing?: { currency: string; registration_cost: string } }>>([]);
+  const [buySelected, setBuySelected] = useState<{ domain: string; amount: number; currency: string } | null>(null);
+  const [buyChecking, setBuyChecking] = useState<string | null>(null);
+  const [buyPaying, setBuyPaying] = useState(false);
+  const [buyError, setBuyError] = useState<string | null>(null);
+
+  const handleDomainBuySearch = async () => {
+    if (!buyQuery.trim()) return;
+    setBuySearching(true);
+    setBuyError(null);
+    setBuyResults([]);
+    setBuySelected(null);
+    try {
+      const res = await fetch(`/api/domains/search?q=${encodeURIComponent(buyQuery.trim())}`);
+      const result = await res.json();
+      if (!res.ok) { setBuyError(result.error || 'Recherche indisponible.'); setBuySearching(false); return; }
+      setBuyResults(result.domains || []);
+    } catch {
+      setBuyError('Erreur réseau.');
+    }
+    setBuySearching(false);
+  };
+
+  const handleDomainBuySelect = async (domain: string) => {
+    setBuyChecking(domain);
+    setBuyError(null);
+    try {
+      const res = await fetch('/api/domains/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domain }) });
+      const result = await res.json();
+      if (!res.ok || !result.registrable) { setBuyError(result.error || "Ce domaine n'est plus disponible."); setBuyChecking(null); return; }
+      setBuySelected({ domain, amount: Math.ceil(parseFloat(result.registrationCostUsd) * 1.2 * 100) / 100, currency: result.currency });
+    } catch {
+      setBuyError('Erreur réseau.');
+    }
+    setBuyChecking(null);
+  };
+
+  const handleDomainBuyPay = async () => {
+    if (!buySelected) return;
+    setBuyPaying(true);
+    setBuyError(null);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      const res = await fetch('/api/domains/purchase-initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ domain: buySelected.domain }),
+      });
+      const result = await res.json();
+      if (!res.ok || !result.paymentLink) { setBuyError(result.error || "Impossible de créer le paiement."); setBuyPaying(false); return; }
+      window.location.href = result.paymentLink;
+    } catch {
+      setBuyError('Erreur réseau.');
+      setBuyPaying(false);
+    }
+  };
   const handleConnectExternalDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!externalDomainInput.trim()) return;
@@ -1862,22 +1923,72 @@ export default function OnlineStore() {
                 </div>
               )}
 
-              {/* Buy a new domain — NOT wired to a real registrar. Real
-                  domain registration needs an actual registrar API account
-                  (Cloudflare Registrar only supports transferring in an
-                  already-registered domain, not registering a brand-new
-                  one — a real "buy" flow needs a provider like Namecheap,
-                  Porkbun, Dynadot, or OpenSRS, with a funded reseller
-                  account and real payment capture before registering
-                  anything). Shown honestly disabled rather than a fake
-                  search + a fake "registered successfully" confirmation
-                  that previously charged nothing and registered nothing. */}
+              {/* Buy a new domain — real Cloudflare Registrar API (beta):
+                  search (cached, fast) → check (authoritative price, right
+                  before payment) → real Flutterwave payment → only once
+                  paid does the webhook call Cloudflare's real, non-
+                  refundable registration endpoint. See
+                  functions/api/domains/{search,check,purchase-initialize}.ts
+                  and the domain-purchase branch in
+                  functions/api/subscriptions/webhook.ts. */}
               <div className="border-t border-gray-150 pt-3 space-y-2">
                 <span className="text-xs font-bold text-gray-600 uppercase block">Acheter un domaine via Sellia</span>
-                <div className="p-3 bg-gray-50 border border-gray-150 rounded-xl text-center">
-                  <p className="text-xs font-bold text-gray-500">Bientôt disponible</p>
-                  <p className="text-[10px] text-gray-400 mt-1">L'achat de domaine directement via Sellia nécessite un partenariat registrar actif. En attendant, reliez un domaine que vous possédez déjà ci-dessous.</p>
+                <div className="flex gap-1">
+                  <input
+                    type="text"
+                    placeholder="maboutique"
+                    value={buyQuery}
+                    onChange={e => setBuyQuery(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleDomainBuySearch(); }}
+                    className="flex-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none"
+                  />
+                  <button
+                    onClick={handleDomainBuySearch}
+                    disabled={buySearching}
+                    className="px-3 bg-brand-600 text-white rounded-full hover:bg-brand-700 transition-colors flex items-center justify-center disabled:opacity-50"
+                  >
+                    {buySearching ? <span className="animate-spin text-xs">…</span> : <Search size={14} />}
+                  </button>
                 </div>
+
+                {buyError && <p className="text-[10px] text-red-600 font-medium">{buyError}</p>}
+
+                {buyResults.length > 0 && (
+                  <div className="space-y-1.5 max-h-[200px] overflow-y-auto pr-1">
+                    {buyResults.map(r => {
+                      const isSelected = buySelected?.domain === r.name;
+                      return (
+                        <div key={r.name} className={`p-2.5 rounded-xl border flex items-center justify-between text-left ${isSelected ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white'}`}>
+                          <div>
+                            <span className="text-xs font-extrabold text-gray-900 block">{r.name}</span>
+                            <span className={`text-[10px] ${r.registrable ? 'text-emerald-600' : 'text-red-500'}`}>{r.registrable ? 'Disponible' : 'Indisponible'}</span>
+                          </div>
+                          <button
+                            onClick={() => handleDomainBuySelect(r.name)}
+                            disabled={!r.registrable || buyChecking === r.name}
+                            className={`px-2.5 py-1 rounded-md text-[10px] font-bold disabled:opacity-40 ${isSelected ? 'bg-brand-600 text-white' : 'border border-gray-200 hover:bg-gray-50'}`}
+                          >
+                            {buyChecking === r.name ? '…' : isSelected ? 'Choisi' : 'Choisir'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {buySelected && (
+                  <div className="p-3 border border-brand-200 bg-brand-50 rounded-xl space-y-2 text-left">
+                    <p className="text-xs font-extrabold text-gray-900">Acheter {buySelected.domain}</p>
+                    <p className="text-[10px] text-gray-500">Prix registry Cloudflare + 20% frais de service, affiché au moment du paiement.</p>
+                    <button
+                      onClick={handleDomainBuyPay}
+                      disabled={buyPaying}
+                      className="w-full py-1.5 bg-emerald-600 text-white text-xs font-extrabold rounded-full hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                    >
+                      {buyPaying ? 'Redirection…' : `Payer ${buySelected.amount} ${buySelected.currency}`}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Connect existing domain instructions */}

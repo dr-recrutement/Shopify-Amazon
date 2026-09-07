@@ -234,9 +234,8 @@ export default function Settings() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  // Domain purchase (buy on the platform) is not wired to a real
-  // registrar — see the honest "Bientôt disponible" panel below instead
-  // of a fake search + fake purchase flow.
+  // Domain purchase now calls the real Cloudflare Registrar API (beta) —
+  // see functions/api/domains/{search,check,purchase-initialize}.ts.
 
   // external domain states
   const [externalDomainInput, setExternalDomainInput] = useState('');
@@ -763,11 +762,11 @@ export default function Settings() {
               <div className="border border-gray-200 rounded-2xl p-4 space-y-2 bg-white shadow-sm">
                 <div>
                   <p className="font-extrabold text-gray-900 text-xs">Acheter un domaine sur la plateforme</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Nécessite un partenariat registrar actif — pas encore disponible. Reliez un domaine que vous possédez déjà ci-dessous.</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Recherche, prix en temps réel et paiement sécurisé — gérez l'achat de domaine depuis Online Store, où vit aussi la gestion complète de vos domaines connectés.</p>
                 </div>
-                <div className="p-3 bg-gray-50 border border-gray-150 rounded-xl text-center">
-                  <p className="text-xs font-bold text-gray-500">Bientôt disponible</p>
-                </div>
+                <Link to="/app/online-store/advanced" className="inline-block px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-full transition-colors">
+                  Ouvrir Online Store → Domaines
+                </Link>
               </div>
 
               {/* Connect existing domain card */}

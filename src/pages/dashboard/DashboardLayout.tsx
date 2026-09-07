@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, Outlet } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
@@ -8,7 +8,7 @@ import { fetchCloudOrders } from '../../lib/tenant-sync';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Bot, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search
+  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3,
 } from 'lucide-react';
 
 const NAV = [
@@ -25,7 +25,13 @@ const NAV = [
     { to: '/app/markets', label: 'Markets', icon: Globe },
     { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
     { to: '/app/agentic', label: 'Agentic', icon: Bot },
-    { to: '/app/online-store', label: 'Online Store', icon: Store },
+    {
+      to: '/app/online-store', label: 'Online Store', icon: Store, end: false,
+      children: [
+        { to: '/app/online-store', label: 'Thèmes', end: true },
+        { to: '/app/online-store/advanced', label: 'Réglages avancés', end: false },
+      ],
+    },
   ]},
   { group: 'Croissance', items: [
     { to: '/app/marketing', label: 'Marketing', icon: Megaphone },
@@ -34,6 +40,7 @@ const NAV = [
     { to: '/app/chat', label: 'Chat', icon: MessageSquare },
     { to: '/app/reports', label: 'Reports', icon: FileBarChart },
     { to: '/app/automations', label: 'Automations', icon: Zap },
+    { to: '/app/apps', label: 'Apps', icon: Grid3x3 },
     { to: '/app/settings', label: 'Paramètres', icon: Settings },
   ]},
 ];
@@ -41,6 +48,7 @@ const NAV = [
 export default function DashboardLayout() {
   const { user } = useAuth();
   const nav = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
@@ -69,16 +77,33 @@ export default function DashboardLayout() {
               <div className="space-y-0.5">
                 {section.items.map(item => {
                   const Icon = item.icon;
+                  const isInSection = location.pathname.startsWith(item.to);
                   return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      end={item.end}
-                      onClick={() => setSidebarOpen(false)}
-                      className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
-                    >
-                      <Icon size={16} /> {item.label}
-                    </NavLink>
+                    <div key={item.to}>
+                      <NavLink
+                        to={item.to}
+                        end={item.end}
+                        onClick={() => setSidebarOpen(false)}
+                        className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+                      >
+                        <Icon size={16} /> {item.label}
+                      </NavLink>
+                      {'children' in item && item.children && isInSection && (
+                        <div className="ml-6 mt-0.5 mb-1 space-y-0.5 border-l border-gray-100 pl-3">
+                          {item.children.map(child => (
+                            <NavLink
+                              key={child.to}
+                              to={child.to}
+                              end={child.end}
+                              onClick={() => setSidebarOpen(false)}
+                              className={({ isActive }) => `block px-2 py-1.5 rounded-md text-xs font-medium transition-all ${isActive ? 'text-brand-700 font-bold' : 'text-gray-500 hover:text-gray-800'}`}
+                            >
+                              {child.label}
+                            </NavLink>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>

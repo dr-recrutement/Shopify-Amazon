@@ -35,15 +35,16 @@ export default {
         serif: ['"Poppins"', 'sans-serif'],
       },
       fontWeight: {
-        // Global weight reduction ("réduit la graisse sur les polices") —
-        // remapped centrally here rather than editing every font-bold/
-        // font-extrabold/font-black usage across the codebase. Values stay
-        // on weights already loaded via the Google Fonts @import in
-        // index.css (400/500/600/700), so nothing falls back to a
-        // synthesized/wrong weight.
-        bold: '600',      // was 700
-        extrabold: '600', // was 800
-        black: '700',     // was 900
+        // Global weight reduction ("réduit la graisse sur les polices"),
+        // pushed further per repeated feedback — remapped centrally here
+        // rather than editing every font-bold/font-extrabold/font-black
+        // usage across the codebase. Values stay on weights already
+        // loaded via the Google Fonts @import in index.css (300/400/500/
+        // 600/700), so nothing falls back to a synthesized/wrong weight.
+        semibold: '500',  // was 600
+        bold: '500',      // was 600 (700 originally)
+        extrabold: '600', // was 600 (800 originally)
+        black: '600',     // was 700 (900 originally)
       },
     },
   },

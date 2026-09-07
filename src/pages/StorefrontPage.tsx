@@ -22,7 +22,7 @@ import {
 } from '../lib/app-state';
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
 import { injectAnalyticsScripts, injectChatWidget } from '../lib/analytics-injector';
-import { useSeo } from '../lib/seo';
+import { useSeo, applyFavicon } from '../lib/seo';
 import { TemplateRenderer } from '../lib/theme-system/TemplateRenderer';
 import { withLiveProducts } from '../lib/theme-system/liveData';
 import type { ThemeConfig as NewThemeConfig } from '../lib/theme-system/types';
@@ -42,6 +42,7 @@ function NewEngineStorefront({ config, products, onAddToCart, storeUrl }: {
   onAddToCart: (product: any) => void;
   storeUrl: string;
 }) {
+  useEffect(() => { applyFavicon(config.settings.faviconUrl); }, [config.settings.faviconUrl]);
   const live = withLiveProducts(config, products);
   return (
     <TemplateRenderer
@@ -167,6 +168,10 @@ export default function StorefrontPage() {
     description: `${shopName} — Boutique en ligne. Découvrez notre catalogue et commandez en toute sécurité.`,
     type: 'website',
   });
+
+  // theme.faviconUrl was saved (Online Store → Marque) but never actually
+  // applied to the real browser tab icon — apply it for real here.
+  useEffect(() => { applyFavicon(theme?.faviconUrl); }, [theme?.faviconUrl]);
 
   // Real header content is CMS-editable via the theme's 'header' section
   // (logo, nav links, announcement banner, search/cart visibility) —

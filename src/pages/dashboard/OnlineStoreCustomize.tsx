@@ -12,8 +12,10 @@ import type {
   HeaderContent, HeroContent, FeaturesContent, ProductGridContent, SocialProofContent, TestimonialsContent, CTAContent, FooterContent,
 } from '../../lib/theme-system/types';
 import { defaultThemeForType, getVariantStyles, type ThemeConfig as LegacyThemeConfig } from '../../lib/theme-engine';
-import { fetchCloudTheme, fetchCloudSettings, pushCloudSettings } from '../../lib/tenant-sync';
+import { fetchCloudTheme, fetchCloudSettings, pushCloudSettings, fetchCloudCmsPages } from '../../lib/tenant-sync';
 import { getShopProfile, getTenantStorageKey, getProducts, type StoreProduct } from '../../lib/app-state';
+import { ImageUploadField } from '../../components/ImageUpload';
+import type { CmsPage } from '../../lib/cms';
 
 const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   header: 'En-tête', hero: 'Bannière principale', features: 'Fonctionnalités',
@@ -61,15 +63,77 @@ function TextField({ label, value, onChange, textarea }: { label: string; value:
  *  editor. Product grids intentionally have no product-editing fields
  *  here: their content comes from the real catalog (Products page), shown
  *  as-is rather than letting someone type fake products into a theme. */
-function PropertyPanel({ section, onChange }: { section: Section; onChange: (content: any) => void }) {
+function PropertyPanel({ section, onChange, cmsPages, faviconUrl, onFaviconChange }: {
+  section: Section;
+  onChange: (content: any) => void;
+  cmsPages: CmsPage[];
+  faviconUrl?: string;
+  onFaviconChange: (dataUrl: string) => void;
+}) {
   const c = section.content as any;
   const set = (patch: object) => onChange({ ...c, ...patch });
+
+  /** Real menu-link editor shared by header nav and footer columns' links:
+   *  every entry either points at one of the merchant's real published
+   *  CMS pages (auto-filled href, can't go stale-typo) or a free-text
+   *  href for fixed destinations (Accueil, Boutique, external links). */
+  const NavLinksEditor = ({ links, onLinksChange }: { links: Array<{ label: string; href: string }>; onLinksChange: (links: Array<{ label: string; href: string }>) => void }) => (
+    <div className="space-y-2">
+      {links.map((link, i) => (
+        <div key={i} className="p-2 border border-gray-150 rounded-lg space-y-1.5 bg-gray-50">
+          <div className="flex gap-1.5">
+            <input value={link.label} onChange={e => { const next = [...links]; next[i] = { ...link, label: e.target.value }; onLinksChange(next); }} placeholder="Libellé" className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs" />
+            <button onClick={() => onLinksChange(links.filter((_, j) => j !== i))}><Trash2 size={12} className="text-gray-400 hover:text-red-500 mt-1" /></button>
+          </div>
+          <select
+            value={cmsPages.some(p => `/store/pages/${p.slug}` === link.href) ? link.href : (['/', '/store', '/support'].includes(link.href) ? link.href : '__custom__')}
+            onChange={e => {
+              if (e.target.value === '__custom__') return;
+              const next = [...links]; next[i] = { ...link, href: e.target.value }; onLinksChange(next);
+            }}
+            className="w-full px-2 py-1 border border-gray-200 rounded text-xs bg-white"
+          >
+            <option value="/">Accueil</option>
+            <option value="/store">Boutique</option>
+            <option value="/support">Support</option>
+            {cmsPages.filter(p => p.status === 'published').map(p => (
+              <option key={p.slug} value={`/store/pages/${p.slug}`}>{p.title}</option>
+            ))}
+            <option value="__custom__">Lien personnalisé…</option>
+          </select>
+          {!['/', '/store', '/support'].includes(link.href) && !cmsPages.some(p => `/store/pages/${p.slug}` === link.href) && (
+            <input value={link.href} onChange={e => { const next = [...links]; next[i] = { ...link, href: e.target.value }; onLinksChange(next); }} placeholder="https:// ou /chemin" className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-mono" />
+          )}
+        </div>
+      ))}
+      <button onClick={() => onLinksChange([...links, { label: 'Nouveau lien', href: '/' }])} className="text-brand-600 text-xs font-bold flex items-center gap-0.5"><Plus size={12} /> Ajouter un lien</button>
+    </div>
+  );
 
   switch (section.type) {
     case 'header':
       return (
         <div className="space-y-3">
-          <TextField label="Texte du logo" value={c.logoText} onChange={v => set({ logoText: v })} />
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Logo</label>
+            <div className="flex gap-1 mb-2">
+              <button onClick={() => set({ logoType: 'text' })} className={`flex-1 py-1 text-[10px] font-bold rounded border ${c.logoType !== 'image' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-gray-600 border-gray-200'}`}>Texte</button>
+              <button onClick={() => set({ logoType: 'image' })} className={`flex-1 py-1 text-[10px] font-bold rounded border ${c.logoType === 'image' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-gray-600 border-gray-200'}`}>Image</button>
+            </div>
+            {c.logoType === 'image' ? (
+              <ImageUploadField value={c.logoImageUrl || ''} onChange={v => set({ logoImageUrl: v })} maxWidth={400} dimensionsHint="Logo — fond transparent recommandé" />
+            ) : (
+              <TextField label="Texte du logo" value={c.logoText} onChange={v => set({ logoText: v })} />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Favicon (onglet du navigateur)</label>
+            <ImageUploadField value={faviconUrl || ''} onChange={onFaviconChange} maxWidth={64} dimensionsHint="Carré, 64×64 px recommandé" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Menu de navigation</label>
+            <NavLinksEditor links={c.navLinks || []} onLinksChange={navLinks => set({ navLinks })} />
+          </div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-600">Afficher le panier</span>
             <input type="checkbox" checked={!!c.showCart} onChange={e => set({ showCart: e.target.checked })} />
@@ -187,9 +251,25 @@ function PropertyPanel({ section, onChange }: { section: Section; onChange: (con
     case 'footer':
       return (
         <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Logo (optionnel — texte utilisé sinon)</label>
+            <ImageUploadField value={c.logoImageUrl || ''} onChange={v => set({ logoImageUrl: v })} maxWidth={400} dimensionsHint="Logo — fond transparent recommandé" />
+          </div>
           <TextField label="Texte du logo" value={c.logoText} onChange={v => set({ logoText: v })} />
           <TextField label="Description" value={c.description} onChange={v => set({ description: v })} textarea />
           <TextField label="Copyright" value={c.copyright} onChange={v => set({ copyright: v })} />
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Logos des moyens de paiement acceptés</label>
+            <div className="space-y-1.5">
+              {(c.paymentLogos || []).map((src: string, i: number) => (
+                <div key={i} className="flex items-center gap-2">
+                  <img src={src} alt="" className="h-6 w-auto border border-gray-150 rounded bg-white p-0.5" />
+                  <button onClick={() => set({ paymentLogos: c.paymentLogos.filter((_: string, j: number) => j !== i) })} className="text-gray-400 hover:text-red-500 text-[10px]">Retirer</button>
+                </div>
+              ))}
+            </div>
+            <ImageUploadField value="" onChange={v => set({ paymentLogos: [...(c.paymentLogos || []), v] })} maxWidth={200} dimensionsHint="Ajouter un logo (Visa, Orange Money…)" />
+          </div>
           <p className="text-[10px] text-gray-400">Les liens CGU / Confidentialité / Remboursement viennent de Réglages → Politiques légales.</p>
         </div>
       );
@@ -203,6 +283,7 @@ export default function OnlineStoreCustomize() {
   const shopProfile = getShopProfile();
   const [products] = useState<StoreProduct[]>(() => getProducts());
   const [config, setConfig] = useState<NewThemeConfig | null>(null);
+  const [cmsPages, setCmsPages] = useState<CmsPage[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [saving, setSaving] = useState<'idle' | 'draft' | 'publish'>('idle');
@@ -216,6 +297,7 @@ export default function OnlineStoreCustomize() {
         setIsPublished(!!settings.useNewThemeEngine);
       }
     });
+    fetchCloudCmsPages<CmsPage>().then(pages => { if (pages) setCmsPages(pages); });
   }, []);
 
   // Bootstrap from the merchant's current look the first time they open
@@ -345,7 +427,13 @@ export default function OnlineStoreCustomize() {
           {selectedSection ? (
             <>
               <p className="text-xs font-bold text-gray-900 mb-3 uppercase tracking-wide">{SECTION_TYPE_LABELS[selectedSection.type]}</p>
-              <PropertyPanel section={selectedSection} onChange={content => updateContent(selectedSection.id, content)} />
+              <PropertyPanel
+                section={selectedSection}
+                onChange={content => updateContent(selectedSection.id, content)}
+                cmsPages={cmsPages}
+                faviconUrl={config.settings.faviconUrl}
+                onFaviconChange={dataUrl => setConfig(prev => prev ? { ...prev, settings: { ...prev.settings, faviconUrl: dataUrl } } : prev)}
+              />
             </>
           ) : (
             <p className="text-xs text-gray-400 text-center mt-8">Sélectionnez une section à gauche pour la modifier.</p>

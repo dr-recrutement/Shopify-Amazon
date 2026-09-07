@@ -38,6 +38,10 @@ export interface ThemeSettings {
   typography: ThemeTypography;
   borderRadius: BorderRadius;
   containerWidth: ContainerWidth;
+  /** Uploaded as a real image file (base64 data URL) via the theme
+   *  editor's Marque panel — applied to the actual browser tab icon on
+   *  the live storefront, not just stored decoratively. */
+  faviconUrl?: string;
 }
 
 // ----------------------------------------------------------------------------
@@ -182,9 +186,16 @@ export interface SocialLink {
 
 export interface FooterContent {
   logoText: string;
+  /** Real uploaded image (base64 data URL) — shown instead of logoText
+   *  when set, same text/image choice as the header. */
+  logoImageUrl?: string;
   description?: string;
   columns: FooterLinkColumn[]; // 3 colonnes attendues
   socialLinks: SocialLink[];
+  /** Real uploaded payment-method logos (base64 data URLs) — trust badges
+   *  shown near the footer, e.g. Visa/Mastercard/Orange Money/MTN MoMo.
+   *  Only ever the merchant's own uploaded images, never invented icons. */
+  paymentLogos?: string[];
   copyright: string;
 }
 

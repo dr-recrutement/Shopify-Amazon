@@ -50,12 +50,16 @@ export const FooterSection: React.FC<FooterSectionProps> = ({ content, styles })
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr_repeat(3,1fr)] gap-12 pb-12">
           {/* Brand block */}
           <div className="flex flex-col gap-4 max-w-sm">
-            <span
-              className="text-xl font-bold tracking-tight text-[var(--color-text)]"
-              style={{ fontFamily: 'var(--font-heading)' }}
-            >
-              {content.logoText}
-            </span>
+            {content.logoImageUrl ? (
+              <img src={content.logoImageUrl} alt={content.logoText || 'Logo'} className="h-8 w-auto" />
+            ) : (
+              <span
+                className="text-xl font-bold tracking-tight text-[var(--color-text)]"
+                style={{ fontFamily: 'var(--font-heading)' }}
+              >
+                {content.logoText}
+              </span>
+            )}
             {content.description && (
               <p className="text-sm text-[var(--color-text)]/60 leading-relaxed">{content.description}</p>
             )}
@@ -92,8 +96,15 @@ export const FooterSection: React.FC<FooterSectionProps> = ({ content, styles })
           ))}
         </div>
 
-        <div className="border-t border-[var(--color-border)] pt-6">
+        <div className="border-t border-[var(--color-border)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-text)]/45">{content.copyright}</p>
+          {content.paymentLogos && content.paymentLogos.length > 0 && (
+            <div className="flex items-center gap-2">
+              {content.paymentLogos.map((src, i) => (
+                <img key={i} src={src} alt="Moyen de paiement accepté" className="h-6 w-auto object-contain opacity-80" />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>

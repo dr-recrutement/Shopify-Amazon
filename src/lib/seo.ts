@@ -29,6 +29,21 @@ function setCanonical(path: string) {
   link.setAttribute('href', `${window.location.origin}${path}`);
 }
 
+/** Applies a merchant-uploaded favicon to the real browser tab — both
+ *  theme engines save a faviconUrl but neither ever actually set the
+ *  page's <link rel="icon">, so uploading one had no visible effect.
+ *  No-ops when empty (keeps the platform's own default favicon). */
+export function applyFavicon(url?: string) {
+  if (!url) return;
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'icon');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', url);
+}
+
 /** Sets document.title and the standard SEO/OpenGraph/Twitter meta tags for
  *  the current route. This is a client-rendered SPA (no SSR/prerendering),
  *  so these updates run after mount — search engines that execute

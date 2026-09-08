@@ -4,6 +4,8 @@ import { ShoppingCart, Search, Menu, X, Plus, Minus, Trash2, Check, ArrowRight, 
 import {
   defaultThemeForType,
   renderSection,
+  buildThemeOverrideCss,
+  LegalPolicyModal,
   type ThemeConfig,
   type ThemeSection,
 } from '../lib/theme-engine';
@@ -77,11 +79,27 @@ type CartDrawerItem = CartItem & { image?: string };
  * Mobile Money / card, and real order creation that appears in the
  * merchant's dashboard Orders list.
  */
+/** Legacy header nav items are stored as plain label strings (theme.
+ *  sections[header].props.nav: string[]), not {label,href} pairs — so
+ *  there was never a way to give them a real destination; every nav link
+ *  and most footer links just went to "#". Maps common labels to real
+ *  destinations; anything unrecognized still goes to the real store root
+ *  instead of a dead anchor. */
+function resolveNavHref(label: string, storeUrl: string): string {
+  const norm = label.trim().toLowerCase();
+  if (['accueil', 'home'].includes(norm)) return storeUrl;
+  if (['boutique', 'shop', 'produits', 'products', 'nouveautés', 'nouveautes'].includes(norm)) return `${storeUrl}#storefront-products`;
+  if (['contact', 'nous contacter'].includes(norm)) return '/support';
+  if (['suivi de commande', 'commande', 'order tracking'].includes(norm)) return '/order-tracking';
+  return storeUrl;
+}
+
 export default function StorefrontPage() {
   const { slug } = useParams<{ slug?: string }>();
   const [theme, setTheme] = useState<ThemeConfig | null>(null);
   const [tenantSettings, setTenantSettings] = useState<Record<string, any>>({});
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [openPolicy, setOpenPolicy] = useState<'terms' | 'privacy' | 'refund' | null>(null);
   const [cart, setCart] = useState<CartDrawerItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -173,6 +191,8 @@ export default function StorefrontPage() {
   // applied to the real browser tab icon — apply it for real here.
   useEffect(() => { applyFavicon(theme?.faviconUrl); }, [theme?.faviconUrl]);
 
+
+
   // Real header content is CMS-editable via the theme's 'header' section
   // (logo, nav links, announcement banner, search/cart visibility) —
   // merged into the one functional header instead of a second decorative
@@ -253,6 +273,28 @@ export default function StorefrontPage() {
         return s;
       });
   }, [theme, publicProducts, categoryFilter]);
+
+  // Real scroll-reveal: toggles .is-visible on [data-reveal] sections as
+  // they enter the viewport (Online Store → Style avancé → Animation de
+  // Défilement). Was previously local editor-preview state only, applied
+  // to nothing on the actual storefront.
+  useEffect(() => {
+    if (!theme?.scrollAnimation || theme.scrollAnimation === 'none') return;
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.15 }
+    );
+    const targets = document.querySelectorAll('.theme-storefront-root [data-reveal]');
+    targets.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [theme?.scrollAnimation, sectionsWithCatalog.length]);
 
   const handleCategoryClick = (name: string) => {
     setCategoryFilter(prev => (prev === name ? null : name));
@@ -350,6 +392,7 @@ export default function StorefrontPage() {
   }
 
   const visibleSections = sectionsWithCatalog.filter(s => s.visible);
+  const storeUrl = slug ? `/s/${slug}` : '/store';
 
   // A merchant who has published via the new Customize editor
   // (Online Store > Thèmes) gets rendered through the new theme-system
@@ -370,13 +413,14 @@ export default function StorefrontPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>
+    <div className="theme-storefront-root min-h-screen bg-white" style={{ backgroundColor: theme.colors.background, color: theme.colors.text, fontFamily: theme.fonts.body }}>
       {theme.customCSS && (
-        // Merchant-authored CSS from Online Store → Personnalisation avancée.
-        // `</style` sequences are stripped so the merchant's text can never
-        // break out of the style tag context.
         <style dangerouslySetInnerHTML={{ __html: theme.customCSS.replace(/<\/style/gi, '') }} />
       )}
+      {/* Real, applied appearance settings (Online Store → Style avancé) —
+          scoped to .theme-storefront-root so this never bleeds into
+          unrelated UI (cart drawer, checkout modal). */}
+      <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
       {/* Top utility bar */}
       <div className="border-b" style={{ borderColor: `${theme.colors.text}10` }}>
         <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between text-xs" style={{ color: theme.colors.text }}>
@@ -406,12 +450,12 @@ export default function StorefrontPage() {
           <button className="lg:hidden p-1" onClick={() => setMobileNavOpen(v => !v)} aria-label="Menu">
             {mobileNavOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <Link to="#" className="text-xl md:text-2xl font-black tracking-tight flex-shrink-0 flex items-center gap-2" style={{ fontFamily: theme.fonts.heading, color: theme.colors.primary }}>
+          <Link to={storeUrl} className="text-xl md:text-2xl font-black tracking-tight flex-shrink-0 flex items-center gap-2" style={{ fontFamily: theme.fonts.heading, color: theme.colors.primary }}>
             {headerProps.logoUrl ? <img src={headerProps.logoUrl} alt={headerProps.logoText} className="h-8 max-w-[140px] object-contain" /> : headerProps.logoText}
           </Link>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium" style={{ color: theme.colors.text }}>
             {headerProps.nav.map(item => (
-              <Link key={item} to="#" className="hover:opacity-70 transition-opacity">{item}</Link>
+              <Link key={item} to={resolveNavHref(item, storeUrl)} className="hover:opacity-70 transition-opacity">{item}</Link>
             ))}
           </nav>
           <div className="flex items-center gap-3">
@@ -433,7 +477,7 @@ export default function StorefrontPage() {
         {mobileNavOpen && (
           <nav className="lg:hidden border-t px-4 py-3 flex flex-col gap-3 text-sm font-medium" style={{ borderColor: `${theme.colors.text}10`, color: theme.colors.text }}>
             {headerProps.nav.map(item => (
-              <Link key={item} to="#" onClick={() => setMobileNavOpen(false)}>{item}</Link>
+              <Link key={item} to={resolveNavHref(item, storeUrl)} onClick={() => setMobileNavOpen(false)}>{item}</Link>
             ))}
           </nav>
         )}
@@ -485,7 +529,7 @@ export default function StorefrontPage() {
         {visibleSections.map((section, idx) => {
           const isFirstProductSection = section.type === 'product-grid' && !visibleSections.slice(0, idx).some(s => s.type === 'product-grid');
           return (
-            <div key={section.id} id={isFirstProductSection ? 'storefront-products' : undefined}>
+            <div key={section.id} id={isFirstProductSection ? 'storefront-products' : undefined} data-reveal={theme.scrollAnimation && theme.scrollAnimation !== 'none' ? '' : undefined}>
               {renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store', tenantId: resolvedTenant?.id, onCategoryClick: handleCategoryClick, legalPolicies: { terms: tenantSettings.termsPolicyText, privacy: tenantSettings.privacyPolicyText, refund: tenantSettings.refundPolicyText }, chatConfig: { provider: tenantSettings.chatProvider, value: tenantSettings.chatValue } })}
             </div>
           );
@@ -504,25 +548,25 @@ export default function StorefrontPage() {
           <div>
             <h4 className="font-bold mb-3 text-xs uppercase tracking-wider" style={{ color: theme.colors.text }}>Boutique</h4>
             <ul className="space-y-2 text-xs opacity-70" style={{ color: theme.colors.text }}>
-              <li><Link to="#" className="hover:underline">Tous les produits</Link></li>
-              <li><Link to="#" className="hover:underline">Nouveautés</Link></li>
-              <li><Link to="#" className="hover:underline">Meilleures ventes</Link></li>
+              <li><Link to={`${storeUrl}#storefront-products`} className="hover:underline">Tous les produits</Link></li>
+              <li><Link to={`${storeUrl}#storefront-products`} className="hover:underline">Nouveautés</Link></li>
+              <li><Link to={`${storeUrl}#storefront-products`} className="hover:underline">Meilleures ventes</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold mb-3 text-xs uppercase tracking-wider" style={{ color: theme.colors.text }}>Aide</h4>
             <ul className="space-y-2 text-xs opacity-70" style={{ color: theme.colors.text }}>
-              <li><Link to="#" className="hover:underline">Suivi de commande</Link></li>
-              <li><Link to="#" className="hover:underline">Livraison</Link></li>
-              <li><Link to="#" className="hover:underline">Nous contacter</Link></li>
+              <li><Link to="/order-tracking" className="hover:underline">Suivi de commande</Link></li>
+              <li><Link to="/support" className="hover:underline">Livraison</Link></li>
+              <li><Link to="/support" className="hover:underline">Nous contacter</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold mb-3 text-xs uppercase tracking-wider" style={{ color: theme.colors.text }}>Légal</h4>
             <ul className="space-y-2 text-xs opacity-70" style={{ color: theme.colors.text }}>
-              <li><Link to="#" className="hover:underline">Conditions</Link></li>
-              <li><Link to="#" className="hover:underline">Confidentialité</Link></li>
-              <li><Link to="#" className="hover:underline">Mentions légales</Link></li>
+              <li><button onClick={() => setOpenPolicy('terms')} className="hover:underline text-left">Conditions</button></li>
+              <li><button onClick={() => setOpenPolicy('privacy')} className="hover:underline text-left">Confidentialité</button></li>
+              <li><button onClick={() => setOpenPolicy('refund')} className="hover:underline text-left">Remboursement</button></li>
             </ul>
           </div>
         </div>
@@ -530,6 +574,14 @@ export default function StorefrontPage() {
           © {new Date().getFullYear()} {shopName} · {domainLabel}
         </div>
       </footer>
+
+      {openPolicy && (
+        <LegalPolicyModal
+          title={openPolicy === 'terms' ? "Conditions d'utilisation" : openPolicy === 'privacy' ? 'Politique de confidentialité' : 'Politique de remboursement'}
+          text={(openPolicy === 'terms' ? tenantSettings.termsPolicyText : openPolicy === 'privacy' ? tenantSettings.privacyPolicyText : tenantSettings.refundPolicyText)?.trim() || "Ce marchand n'a pas encore renseigné cette politique. Contactez la boutique directement pour plus d'informations."}
+          onClose={() => setOpenPolicy(null)}
+        />
+      )}
 
       {/* ===== CART DRAWER (slide-in from right) ===== */}
       {cartOpen && (

@@ -126,6 +126,13 @@ export interface ThemeConfig {
   /** Merchant-authored CSS, injected as a <style> tag on the live
    *  storefront (StorefrontPage.tsx) and CMS pages. Optional. */
   customCSS?: string;
+  /** Real, applied settings — sticky header, background gradient behind
+   *  sections, and a scroll-reveal animation on section entry. Each is
+   *  rendered for real on the live storefront (StorefrontPage.tsx), not
+   *  editor-preview-only. */
+  headerSticky?: boolean;
+  bgGradient?: 'none' | 'sunset' | 'ocean' | 'lavender';
+  scrollAnimation?: 'none' | 'fade' | 'slide' | 'scale';
   sections: ThemeSection[];
   isPublished: boolean;
 }
@@ -533,6 +540,40 @@ export function sectionsForVariantPublic(variant: LayoutVariant, s: Record<strin
   }
 }
 
+
+/** Generates real, scoped CSS for the appearance settings that live on
+ *  ThemeConfig (headerSticky, bgGradient, buttonStyle isn't offered —
+ *  see below) — used on the real storefront (StorefrontPage.tsx),
+ *  reusing the exact override technique already proven in the theme
+ *  editor's own live preview, just properly scoped to
+ *  .theme-storefront-root instead of a bare `button`/`header` selector
+ *  (which would have leaked into unrelated UI like the cart drawer). */
+export function buildThemeOverrideCss(theme: ThemeConfig): string {
+  const gradientOverlay =
+    theme.bgGradient === 'sunset' ? `linear-gradient(135deg, ${theme.colors.background} 70%, #E0F2EE 100%)`
+    : theme.bgGradient === 'ocean' ? `linear-gradient(135deg, ${theme.colors.background} 70%, #F0F9FF 100%)`
+    : theme.bgGradient === 'lavender' ? `linear-gradient(135deg, ${theme.colors.background} 70%, #F5F3FF 100%)`
+    : null;
+
+  const revealFrom =
+    theme.scrollAnimation === 'scale' ? 'transform: scale(0.94);'
+    : theme.scrollAnimation === 'fade' ? ''
+    : 'transform: translateY(16px);'; // slide (default when set)
+
+  return `
+    .theme-storefront-root {
+      ${gradientOverlay ? `background: ${gradientOverlay} !important;` : ''}
+    }
+    ${theme.headerSticky ? '.theme-storefront-root > header { position: sticky !important; top: 0; z-index: 30; }' : ''}
+    .theme-storefront-root [data-reveal] {
+      opacity: 0; ${revealFrom}
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .theme-storefront-root [data-reveal].is-visible {
+      opacity: 1; transform: none;
+    }
+  `;
+}
 
 export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePreset): ThemeConfig {
   const preset: ThemePreset = presetOverride ?? (siteType === 'landing' ? 'luxury' : siteType === 'ecommerce' ? 'african' : siteType === 'business' ? 'editorial' : 'universal');
@@ -1598,7 +1639,7 @@ function FaqSection({ props, colors, fonts, spacingClass }: { props: any; colors
   );
 }
 
-function LegalPolicyModal({ title, text, onClose }: { title: string; text: string; onClose: () => void }) {
+export function LegalPolicyModal({ title, text, onClose }: { title: string; text: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white text-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>

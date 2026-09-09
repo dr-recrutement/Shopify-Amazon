@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
 import { signOut } from '../../lib/auth';
-import { getOrders } from '../../lib/app-state';
-import { fetchCloudOrders } from '../../lib/tenant-sync';
+import { getOrders, getProducts, getCustomers } from '../../lib/app-state';
+import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
@@ -51,6 +51,39 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
+
+  // Real global search — client-side over the merchant's own real
+  // products/orders/customers (fetched once, cached), not a placeholder.
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchIndex, setSearchIndex] = useState<{
+    products: Array<{ id: string; name: string }>;
+    orders: Array<{ id: string; orderNumber?: string; customer: string }>;
+    customers: Array<{ id: string; name: string; email: string }>;
+  }>({ products: [], orders: [], customers: [] });
+
+  useEffect(() => {
+    setSearchIndex({
+      products: getProducts().map(p => ({ id: p.id, name: p.name })),
+      orders: getOrders().map(o => ({ id: o.id, orderNumber: o.orderNumber, customer: o.customer })),
+      customers: getCustomers().map(c => ({ id: c.id, name: c.name, email: c.email })),
+    });
+    Promise.all([fetchCloudProducts(), fetchCloudOrders(), fetchCloudCustomers()]).then(([products, orders, customers]) => {
+      setSearchIndex({
+        products: (products || []).map(p => ({ id: p.id, name: p.name })),
+        orders: (orders || []).map(o => ({ id: o.id, orderNumber: o.orderNumber, customer: o.customer })),
+        customers: (customers || []).map(c => ({ id: c.id, name: c.name, email: c.email })),
+      });
+    });
+  }, []);
+
+  const q = searchQuery.trim().toLowerCase();
+  const searchResults = q.length < 2 ? { products: [], orders: [], customers: [] } : {
+    products: searchIndex.products.filter(p => p.name.toLowerCase().includes(q)).slice(0, 5),
+    orders: searchIndex.orders.filter(o => (o.orderNumber || o.id).toLowerCase().includes(q) || o.customer.toLowerCase().includes(q)).slice(0, 5),
+    customers: searchIndex.customers.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)).slice(0, 5),
+  };
+  const hasSearchResults = searchResults.products.length + searchResults.orders.length + searchResults.customers.length > 0;
 
   useEffect(() => {
     const count = () => setPendingOrderCount(getOrders().filter(o => o.status === 'pending').length);
@@ -121,7 +154,48 @@ export default function DashboardLayout() {
           </button>
           <div className="flex-1 max-w-md relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input disabled placeholder="Recherche globale — bientôt disponible" className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-transparent rounded-lg text-sm cursor-not-allowed text-gray-400" />
+            <input
+              value={searchQuery}
+              onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+              onFocus={() => setSearchOpen(true)}
+              onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+              placeholder="Rechercher un produit, une commande, un client..."
+              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-transparent rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"
+            />
+            {searchOpen && q.length >= 2 && (
+              <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-100 rounded-lg shadow-lg max-h-80 overflow-y-auto z-30">
+                {!hasSearchResults ? (
+                  <p className="p-3 text-xs text-gray-400 text-center">Aucun résultat pour "{searchQuery}"</p>
+                ) : (
+                  <>
+                    {searchResults.products.length > 0 && (
+                      <div className="p-2">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase px-2 mb-1">Produits</p>
+                        {searchResults.products.map(p => (
+                          <button key={p.id} onClick={() => { nav('/app/products'); setSearchOpen(false); setSearchQuery(''); }} className="w-full text-left px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-gray-700">{p.name}</button>
+                        ))}
+                      </div>
+                    )}
+                    {searchResults.orders.length > 0 && (
+                      <div className="p-2 border-t border-gray-50">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase px-2 mb-1">Commandes</p>
+                        {searchResults.orders.map(o => (
+                          <button key={o.id} onClick={() => { nav('/app/orders'); setSearchOpen(false); setSearchQuery(''); }} className="w-full text-left px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-gray-700">{o.orderNumber || o.id} — {o.customer}</button>
+                        ))}
+                      </div>
+                    )}
+                    {searchResults.customers.length > 0 && (
+                      <div className="p-2 border-t border-gray-50">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase px-2 mb-1">Clients</p>
+                        {searchResults.customers.map(c => (
+                          <button key={c.id} onClick={() => { nav('/app/customers'); setSearchOpen(false); setSearchQuery(''); }} className="w-full text-left px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-gray-700">{c.name} — {c.email}</button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
           <button onClick={() => nav('/app/orders')} className="p-2 rounded-full hover:bg-gray-50 relative" title={pendingOrderCount > 0 ? `${pendingOrderCount} commande(s) en attente` : 'Aucune notification'}>
             <Bell size={18} className="text-gray-600" />

@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, Table, Badge, EmptyState } from './ui';
-import { Tag, Plus, Sparkles, X, Edit2, Trash2, Copy } from 'lucide-react';
+import { Tag, Plus, X, Edit2, Trash2, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getDiscounts, saveDiscounts, type Discount, type DiscountType, type DiscountStatus } from '../../lib/app-state';
 import { fetchCloudDiscounts, pushCloudDiscounts, deleteCloudDiscount, ensureUuidId } from '../../lib/tenant-sync';
@@ -79,13 +79,6 @@ export default function Discounts() {
   return (
     <div>
       <PageHeader title="Discounts" subtitle="Codes promo et réductions automatiques." action={<Button onClick={openAdd}><Plus size={16} /> Créer une réduction</Button>} />
-      <Card className="mb-6 p-4">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Sparkles size={16} className="text-brand-600" />
-          <span>L'IA peut générer automatiquement des promotions selon votre stock et votre saison.</span>
-          <Button variant="secondary" size="sm" className="ml-auto" disabled title="Bientôt disponible">Générer une promo — bientôt</Button>
-        </div>
-      </Card>
       <Card>
         {discounts.length === 0 ? (
           <EmptyState icon={Tag} title="Aucune réduction" desc="Créez des codes promo pour fidéliser vos clients." action={<Button onClick={openAdd}><Plus size={16} /> Créer</Button>} />

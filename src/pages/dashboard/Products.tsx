@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, EmptyState, Table, Badge } from './ui';
-import { Package, Plus, Sparkles, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash } from 'lucide-react';
+import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
 import { MultiImageUpload } from '../../components/ImageUpload';
@@ -231,9 +231,6 @@ export default function Products() {
       <Card>
         <div className="p-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-gray-900">Tous les produits</h3>
-          <Button variant="secondary" size="sm" className="flex items-center gap-1.5" disabled title="Bientôt disponible">
-            <Sparkles size={14} /> Générer par IA — bientôt
-          </Button>
         </div>
         {products.length === 0 ? (
           <EmptyState

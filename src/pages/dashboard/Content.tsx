@@ -1,6 +1,6 @@
 import { PageHeader, Card, Button, EmptyState, Badge } from './ui';
 import {
-  FileText, Plus, Layout, Save, Sparkles, Eye, Globe2, GripVertical, Trash2,
+  FileText, Plus, Layout, Save, Sparkles, Eye, GripVertical, Trash2,
   ChevronDown, ChevronRight, Settings as SettingsIcon, MousePointerClick, PanelLeft,
   Palette, Type,
 } from 'lucide-react';
@@ -295,11 +295,6 @@ export default function Content() {
               ))}
             </div>
           )}
-        </Card>
-        <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2"><Globe2 size={14} /> Metaobjects</h3>
-          <p className="text-sm text-gray-500 mb-4">Créez des types de contenu personnalisés (témoignages, partenaires, carrousel, collections).</p>
-          <Button variant="secondary" size="sm" className="w-full" disabled title="Bientôt disponible"><Layout size={14} /> Metaobjects — bientôt</Button>
         </Card>
       </div>
 

@@ -30,7 +30,6 @@ import Discounts from './pages/dashboard/Discounts';
 import Content from './pages/dashboard/Content';
 import Markets from './pages/dashboard/Markets';
 import Analytics from './pages/dashboard/Analytics';
-import Agentic from './pages/dashboard/Agentic';
 import OnlineStore from './pages/dashboard/OnlineStore';
 import OnlineStoreThemes from './pages/dashboard/OnlineStoreThemes';
 import OnlineStoreCustomize from './pages/dashboard/OnlineStoreCustomize';
@@ -108,7 +107,6 @@ export default function App() {
           <Route path="content" element={<Content />} />
           <Route path="markets" element={<Markets />} />
           <Route path="analytics" element={<Analytics />} />
-          <Route path="agentic" element={<Agentic />} />
           <Route path="online-store" element={<OnlineStoreThemes />} />
           <Route path="online-store/advanced" element={<OnlineStore />} />
           <Route path="online-store/customize" element={<OnlineStoreCustomize />} />

@@ -7,7 +7,7 @@ import { getOrders } from '../../lib/app-state';
 import { fetchCloudOrders } from '../../lib/tenant-sync';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
-  BarChart3, Bot, Store, Megaphone, Calculator, UserCog, MessageSquare,
+  BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
   FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3,
 } from 'lucide-react';
 
@@ -24,7 +24,6 @@ const NAV = [
     { to: '/app/content', label: 'Content', icon: FileText },
     { to: '/app/markets', label: 'Markets', icon: Globe },
     { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
-    { to: '/app/agentic', label: 'Agentic', icon: Bot },
     {
       to: '/app/online-store', label: 'Online Store', icon: Store, end: false,
       children: [

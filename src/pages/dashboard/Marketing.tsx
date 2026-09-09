@@ -2,18 +2,32 @@ import { PageHeader, Card, Button, Badge, Table } from './ui';
 import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getCampaigns, saveCampaigns, getDiscounts, type Campaign, type CampaignChannel } from '../../lib/app-state';
+import { getCampaigns, saveCampaigns, getDiscounts, getAutomations, saveAutomations, type Campaign, type CampaignChannel, type AutomationTrigger, type AutomationAction } from '../../lib/app-state';
 import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, fetchCloudDiscounts, ensureUuidId } from '../../lib/tenant-sync';
 
 const CHANNEL_LABELS: Record<CampaignChannel, string> = { email: 'Email', sms: 'SMS', social: 'Social' };
 const STATUS_LABELS: Record<string, string> = { sent: 'Envoyée', active: 'Active', scheduled: 'Programmée', draft: 'Brouillon' };
 
+const AUTOMATION_TEMPLATES: Array<{ name: string; trigger: AutomationTrigger; action: AutomationAction }> = [
+  { name: 'Panier abandonné', trigger: 'abandoned_cart', action: 'send_email' },
+  { name: 'Bienvenue nouveau client', trigger: 'customer_signup', action: 'send_email' },
+  { name: 'Relance post-achat', trigger: 'order_paid', action: 'send_email' },
+];
+
 export default function Marketing() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [automations, setAutomations] = useState(() => getAutomations());
   const [showEditor, setShowEditor] = useState(false);
   const [preview, setPreview] = useState(false);
   const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '', discountCode: '' });
   const [discountCodes, setDiscountCodes] = useState<string[]>([]);
+
+  const activateTemplate = (t: { name: string; trigger: AutomationTrigger; action: AutomationAction }) => {
+    const updated = [...automations, { id: crypto.randomUUID(), name: t.name, trigger: t.trigger, action: t.action, enabled: true, runs: 0, createdAt: new Date().toISOString().slice(0, 10) }];
+    setAutomations(updated);
+    saveAutomations(updated);
+  };
+
 
   useEffect(() => {
     const local = getCampaigns().map(c => ({ ...c, id: ensureUuidId(c.id) }));
@@ -68,14 +82,6 @@ export default function Marketing() {
         <Card className="p-4"><Sparkles size={18} className="text-purple-600 mb-2" /><p className="text-xs text-gray-500">Taux d'ouverture moyen</p><p className="text-xl font-bold">{avgOpenRate}%</p></Card>
       </div>
 
-      <Card className="mb-6 p-4 flex items-center justify-between bg-gradient-to-r from-brand-50 to-white">
-        <div className="flex items-center gap-3">
-          <Sparkles className="text-brand-600" size={20} />
-          <p className="text-sm text-gray-700">L'assistant marketing IA peut générer vos textes, segments et calendrier.</p>
-        </div>
-        <Button variant="secondary" size="sm" disabled title="Bientôt disponible">Assistant IA — bientôt</Button>
-      </Card>
-
       <Card>
         <div className="p-4 border-b border-gray-100"><h3 className="font-semibold text-gray-900">Campagnes</h3></div>
         <Table headers={['Nom', 'Canal', 'Audience', 'Envoyés', 'Ouverts', 'Clics', 'Revenus', 'Statut', '']}>
@@ -97,14 +103,24 @@ export default function Marketing() {
 
       <Card className="mt-6 p-5">
         <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2"><Megaphone size={16} /> Automatisations</h3>
-        <p className="text-sm text-gray-500 mb-4">Disponible avec le plan Premium : panier abandonné, bienvenue, relance post-achat, anniversaire.</p>
+        <p className="text-sm text-gray-500 mb-4">Activez une règle prête à l'emploi — elle est créée dans votre page Automations (règle réellement enregistrée ; l'exécution automatique — envoi effectif — arrive avec le moteur d'automatisation, en cours de développement).</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {['Panier abandonné', 'Bienvenue nouveau client', 'Relance post-achat', 'Anniversaire client'].map(a => (
-            <div key={a} className="p-3 border border-gray-100 rounded-lg flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">{a}</span>
-              <Button variant="secondary" size="sm" disabled title="Bientôt disponible">Bientôt</Button>
-            </div>
-          ))}
+          {AUTOMATION_TEMPLATES.map(t => {
+            const already = automations.some(a => a.trigger === t.trigger && a.action === t.action);
+            return (
+              <div key={t.name} className="p-3 border border-gray-100 rounded-lg flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">{t.name}</span>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={already}
+                  onClick={() => activateTemplate(t)}
+                >
+                  {already ? 'Activée ✓' : 'Activer'}
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </Card>
 

@@ -1,5 +1,5 @@
 import { PageHeader, Card, Button, Badge } from './ui';
-import { Send, Paperclip } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getChatThreads, saveChatThreads, type ChatThread } from '../../lib/app-state';
 
@@ -78,7 +78,6 @@ export default function Chat() {
                 ))}
               </div>
               <form onSubmit={sendReply} className="p-3 border-t border-gray-100 flex items-center gap-2">
-                <button type="button" disabled title="Bientôt disponible" className="p-2 text-gray-300 cursor-not-allowed"><Paperclip size={18} /></button>
                 <input value={reply} onChange={e => setReply(e.target.value)} placeholder="Répondre..." className="flex-1 px-3 py-2 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
                 <Button size="sm" type="submit"><Send size={14} /></Button>
               </form>

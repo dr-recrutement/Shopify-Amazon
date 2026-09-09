@@ -1,4 +1,4 @@
-import { PageHeader, Card, Button, Badge } from './ui';
+import { PageHeader, Card, Button } from './ui';
 import { FileBarChart, Download } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { getOrders, type StoreOrder } from '../../lib/app-state';
@@ -45,14 +45,25 @@ export default function Reports() {
     return Object.entries(map).sort((a, b) => b[1] - a[1]);
   }, [paid]);
 
+  const customerBehavior = useMemo(() => {
+    const orderCounts: Record<string, number> = {};
+    for (const o of paid) orderCounts[o.customer] = (orderCounts[o.customer] || 0) + 1;
+    const uniqueCustomers = Object.keys(orderCounts).length;
+    const repeatCustomers = Object.values(orderCounts).filter(n => n > 1).length;
+    const avgOrderValue = paid.length > 0 ? paid.reduce((s, o) => s + o.total, 0) / paid.length : 0;
+    return [
+      ['Clients uniques (commandes payées)', String(uniqueCustomers)],
+      ['Clients ayant commandé plus d\'une fois', String(repeatCustomers)],
+      ['Taux de fidélisation', uniqueCustomers > 0 ? `${Math.round((repeatCustomers / uniqueCustomers) * 100)}%` : '0%'],
+      ['Panier moyen', avgOrderValue.toFixed(0)],
+    ];
+  }, [paid]);
+
   const reports = [
     { name: 'Ventes par produit', ready: true, rows: () => [['Produit', 'Revenu'], ...byProduct.map(([n, r]) => [n, String(r)])] },
     { name: 'Tendances mensuelles', ready: true, rows: () => [['Date', 'CA'], ...byMonth.map(([d, r]) => [d, String(r)])] },
     { name: 'Top clients', ready: true, rows: () => [['Client', 'Total dépensé'], ...byCustomer.map(([n, r]) => [n, String(r)])] },
-    { name: 'Ventes par canal', ready: false },
-    { name: 'Ventes par région', ready: false },
-    { name: 'Comportement client', ready: false },
-    { name: 'Performance des campagnes', ready: false },
+    { name: 'Comportement client', ready: true, rows: () => [['Indicateur', 'Valeur'], ...customerBehavior] },
   ];
 
   return (
@@ -63,20 +74,14 @@ export default function Reports() {
           <Card key={r.name} className="p-5">
             <div className="flex items-center justify-between mb-3">
               <FileBarChart size={20} className="text-brand-600" />
-              {!r.ready && <Badge color="brand">Bientôt disponible</Badge>}
             </div>
             <h3 className="font-semibold text-gray-900">{r.name}</h3>
-            <p className="text-xs text-gray-500 mt-1">
-              {r.ready
-                ? 'Basé sur vos commandes payées/expédiées réelles.'
-                : "Nécessite un suivi que la plateforme n'enregistre pas encore (canal d'acquisition, région, campagne)."}
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Basé sur vos commandes payées/expédiées réelles.</p>
             <div className="mt-3 flex gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                disabled={!r.ready}
-                onClick={() => r.ready && downloadCsv(`${r.name.toLowerCase().replace(/\s+/g, '-')}.csv`, r.rows!())}
+                onClick={() => downloadCsv(`${r.name.toLowerCase().replace(/\s+/g, '-')}.csv`, r.rows())}
               >
                 <Download size={14} /> Export CSV
               </Button>

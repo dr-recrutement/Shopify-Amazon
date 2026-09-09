@@ -215,8 +215,6 @@ export const SHOPIFY_BLOCK_TYPES: { type: CmsBlockType; label: string }[] = [
   { type: 'product', label: 'Produit' },
   { type: 'rich-text', label: 'Texte enrichi' },
   { type: 'spacer', label: 'Espacement' },
-  { type: 'custom-liquid', label: 'Code Liquid personnalisé' },
-  { type: '@app', label: 'Bloc d\'application' },
 ];
 
 // Shopify Online Store 2.0 section palette — the list of sections a merchant

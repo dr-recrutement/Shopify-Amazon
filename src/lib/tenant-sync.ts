@@ -657,6 +657,21 @@ export async function subscribeToNewsletter(tenantId: string, email: string, sou
   }
 }
 
+/** Real destination for the storefront's "Formulaire de contact" section
+ *  — the contact_messages table already existed (see the migration's own
+ *  comment) but nothing in the frontend ever called it: the form's
+ *  onSubmit just flipped local "sent" state, so a visitor's message never
+ *  reached the merchant despite the confirmation telling them it had.
+ *  Anonymous-safe, same pattern as subscribeToNewsletter above. */
+export async function submitContactMessage(tenantId: string, name: string, email: string, message: string, source?: string): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('contact_messages').insert({ tenant_id: tenantId, name: name.trim(), email: email.toLowerCase().trim(), message: message.trim(), source: source || null });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 /** Fires the merchant's configured order webhook (Settings > Customer
  *  events), if one is set. Best-effort, fire-and-forget — a failing or
  *  slow webhook must never block order creation for the buyer. Reads the

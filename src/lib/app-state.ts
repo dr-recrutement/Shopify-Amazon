@@ -448,7 +448,7 @@ export function saveChatThreads(threads: ChatThread[]) {
 }
 
 export function getShopProfile() {
-  return readStorage<{ name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string }>(SHOP_PROFILE_KEY, {
+  return readStorage<{ name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string; contactEmail?: string; timezone?: string }>(SHOP_PROFILE_KEY, {
     name: 'Ma Boutique',
     country: 'CI',
     plan: 'premium',
@@ -456,7 +456,7 @@ export function getShopProfile() {
   });
 }
 
-export function saveShopProfile(profile: { name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string }) {
+export function saveShopProfile(profile: { name: string; country: string; plan: string; currency: string; slug?: string; customDomain?: string; contactEmail?: string; timezone?: string }) {
   writeStorage(SHOP_PROFILE_KEY, profile);
 }
 

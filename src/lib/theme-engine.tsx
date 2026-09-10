@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { subscribeToNewsletter } from './tenant-sync';
+import { subscribeToNewsletter, submitContactMessage } from './tenant-sync';
 import {
   Search, ShoppingBag, User, Star, Check, Mail, Phone,
   Facebook, Instagram, Twitter, ArrowRight, Lock,
@@ -2004,8 +2004,27 @@ function CollapsibleContentSection({ props, colors, fonts, spacingClass }: { pro
 }
 
 // Shopify "contact-form" section — name/email/phone/message form.
-function ContactFormSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
+function ContactFormSection({ props, colors, fonts, spacingClass, tenantId }: { props: any; colors: any; fonts: any; spacingClass: string; tenantId?: string }) {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenantId) {
+      // Local/demo preview (no real tenant resolved) — nothing to send to.
+      setSent(true);
+      return;
+    }
+    setSending(true);
+    setError(null);
+    const ok = await submitContactMessage(tenantId, form.name, form.email, form.message, 'storefront-contact-form');
+    setSending(false);
+    if (ok) setSent(true);
+    else setError("Erreur lors de l'envoi. Réessayez ou contactez-nous directement.");
+  };
+
   return (
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="max-w-xl mx-auto">
@@ -2016,14 +2035,15 @@ function ContactFormSection({ props, colors, fonts, spacingClass }: { props: any
             ✓ Merci ! Votre message a bien été envoyé. Notre équipe vous répond sous 24h.
           </div>
         ) : (
-          <form onSubmit={e => { e.preventDefault(); setSent(true); }} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input required placeholder="Nom complet" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
-              <input required type="email" placeholder="Adresse email" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+              <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Nom complet" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+              <input required type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="Adresse email" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
             </div>
-            <input placeholder="Téléphone (optionnel)" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
-            <textarea required placeholder="Votre message" rows={4} className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
-            <button type="submit" className="w-full py-3 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>Envoyer le message</button>
+            <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="Téléphone (optionnel)" className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+            <textarea required value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="Votre message" rows={4} className="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2" style={{ borderColor: colors.primary }} />
+            {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
+            <button type="submit" disabled={sending} className="w-full py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60" style={{ backgroundColor: colors.primary }}>{sending ? 'Envoi…' : 'Envoyer le message'}</button>
           </form>
         )}
       </div>
@@ -2127,7 +2147,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
     case 'collapsible-content':
       return <CollapsibleContentSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
     case 'contact-form':
-      return <ContactFormSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} />;
+      return <ContactFormSection props={section.props} colors={colors} fonts={fonts} spacingClass={spacingClass} tenantId={callbacks?.tenantId} />;
     case 'footer':
       return <FooterSection props={section.props} colors={colors} fonts={fonts} legalPolicies={callbacks?.legalPolicies} />;
     case 'social-bar':

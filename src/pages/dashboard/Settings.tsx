@@ -75,7 +75,7 @@ export default function Settings() {
     }
   };
   const [active, setActive] = useState('general');
-  const shopProfile = getShopProfile();
+  const [shopProfile, setShopProfile] = useState(() => getShopProfile());
   const shopSubdomain = getShopSubdomain();
 
   // Generic settings blob (checkout prefs, customer accounts mode, tax
@@ -374,11 +374,12 @@ export default function Settings() {
           {active === 'general' && (
             <div className="space-y-4 text-xs sm:text-sm">
               <h3 className="font-bold text-gray-900 text-sm">Informations boutique</h3>
-              <div><label className="block font-semibold text-gray-700 mb-1">Nom</label><input defaultValue={shopProfile.name} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
-              <div><label className="block font-semibold text-gray-700 mb-1">Email contact</label><input defaultValue="contact@os.liafrik.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
+              {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
+              <div><label className="block font-semibold text-gray-700 mb-1">Nom</label><input value={shopProfile.name} onChange={e => { const updated = { ...shopProfile, name: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
+              <div><label className="block font-semibold text-gray-700 mb-1">Email contact</label><input type="email" value={shopProfile.contactEmail || ''} onChange={e => { const updated = { ...shopProfile, contactEmail: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} placeholder="contact@os.liafrik.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>{shopProfile.currency}</option><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
-                <div><label className="block font-semibold text-gray-700 mb-1">Fuseau horaire</label><select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
+                <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select value={shopProfile.currency} onChange={e => { const updated = { ...shopProfile, currency: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
+                <div><label className="block font-semibold text-gray-700 mb-1">Fuseau horaire</label><select value={shopProfile.timezone || 'Africa/Abidjan'} onChange={e => { const updated = { ...shopProfile, timezone: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
               </div>
               <div className="relative">
                 <label className="block font-semibold text-gray-700 mb-1">Pays (Recherche & Saisie globale)</label>
@@ -430,7 +431,9 @@ export default function Settings() {
                 )}
               </div>
               <Button size="sm" onClick={() => {
-                saveShopProfile({ ...shopProfile, country: selectedCountryCode });
+                const updated = { ...shopProfile, country: selectedCountryCode };
+                saveShopProfile(updated);
+                setShopProfile(updated);
                 setSettingsSaved(true);
                 setTimeout(() => setSettingsSaved(false), 2000);
               }}>{settingsSaved ? 'Enregistré ✓' : 'Sauvegarder'}</Button>
@@ -1022,7 +1025,7 @@ export default function Settings() {
             <div className="space-y-4 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">Metafields</h3>
               {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
-              <p className="text-gray-500">Définissez des champs personnalisés qui apparaîtront dans le formulaire de chaque produit (ex. Matière, Poids, Origine).</p>
+              <p className="text-gray-500">Définissez des champs personnalisés pour vos produits (ex. Matière, Poids, Origine). Ces définitions sont enregistrées — l'affichage automatique dans le formulaire de chaque produit n'est pas encore branché.</p>
               {(settings.metafieldDefinitions || []).length === 0 && <p className="text-gray-400 text-xs">Aucun champ personnalisé.</p>}
               {(settings.metafieldDefinitions || []).map((m: { id: string; label: string }) => (
                 <div key={m.id} className="p-2.5 border border-gray-200 rounded-lg flex items-center justify-between bg-white">

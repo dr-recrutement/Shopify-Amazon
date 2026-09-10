@@ -1024,20 +1024,17 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
           {/* Icons Area */}
           <div className="flex items-center gap-3">
             {props.showSearch && (
-              <button className="p-1.5 hover:bg-black/5 rounded-full transition-colors">
+              <span className="p-1.5 rounded-full opacity-60" title="Recherche (aperçu — active sur votre boutique publiée)">
                 <Search className="w-4 h-4" />
-              </button>
+              </span>
             )}
-            <button className="p-1.5 hover:bg-black/5 rounded-full transition-colors relative">
+            <span className="p-1.5 rounded-full opacity-60 relative" title="Compte client (aperçu — actif sur votre boutique publiée)">
               <User className="w-4 h-4" />
-            </button>
+            </span>
             {props.showCart && (
-              <button className="p-1.5 hover:bg-black/5 rounded-full transition-colors relative">
+              <span className="p-1.5 rounded-full opacity-60 relative" title="Panier (aperçu — actif sur votre boutique publiée)">
                 <ShoppingBag className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center animate-bounce" style={{ backgroundColor: colors.primary }}>
-                  2
-                </span>
-              </button>
+              </span>
             )}
 
             {/* Mobile Menu Toggle */}

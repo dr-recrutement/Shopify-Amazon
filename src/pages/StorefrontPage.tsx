@@ -425,10 +425,7 @@ export default function StorefrontPage() {
       <div className="border-b" style={{ borderColor: `${theme.colors.text}10` }}>
         <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between text-xs" style={{ color: theme.colors.text }}>
           <span className="opacity-60 truncate flex items-center gap-1"><Lock size={10} /> {domainLabel}</span>
-          <div className="flex items-center gap-4">
-            <button className="opacity-70 hover:opacity-100 transition-opacity">FR ▾</button>
-            <span className="opacity-60">{currency}</span>
-          </div>
+          <span className="opacity-60">{currency}</span>
         </div>
       </div>
 

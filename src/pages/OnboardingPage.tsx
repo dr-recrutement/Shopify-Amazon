@@ -267,7 +267,7 @@ export default function OnboardingPage() {
           {step === 5 && (
             <div className="space-y-4">
               <h2 className="font-serif-display text-2xl font-bold text-gray-900">Votre premier produit</h2>
-              <p className="text-gray-600 text-sm">Ajoutez un produit pour démarrer. L'IA peut générer la description.</p>
+              <p className="text-gray-600 text-sm">Ajoutez un produit pour démarrer.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom du produit</label>
                 <input value={data.productName} onChange={e => setData({ ...data, productName: e.target.value })} placeholder="Ex. Robe wax traditionnelle"
@@ -278,9 +278,6 @@ export default function OnboardingPage() {
                 <input type="number" value={data.productPrice} onChange={e => setData({ ...data, productPrice: e.target.value })} placeholder="15000"
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500" />
               </div>
-              <button className="w-full p-3 border-2 border-dashed border-brand-200 rounded-full text-sm text-brand-700 hover:bg-brand-50 flex items-center justify-center gap-2">
-                <Sparkles size={16} /> Générer la description par IA
-              </button>
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
                 <button onClick={next} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700">Continuer</button>

@@ -1025,7 +1025,7 @@ export default function Settings() {
             <div className="space-y-4 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">Metafields</h3>
               {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
-              <p className="text-gray-500">Définissez des champs personnalisés pour vos produits (ex. Matière, Poids, Origine). Ces définitions sont enregistrées — l'affichage automatique dans le formulaire de chaque produit n'est pas encore branché.</p>
+              <p className="text-gray-500">Définissez des champs personnalisés pour vos produits (ex. Matière, Poids, Origine) — ils apparaissent dans le formulaire de chaque produit.</p>
               {(settings.metafieldDefinitions || []).length === 0 && <p className="text-gray-400 text-xs">Aucun champ personnalisé.</p>}
               {(settings.metafieldDefinitions || []).map((m: { id: string; label: string }) => (
                 <div key={m.id} className="p-2.5 border border-gray-200 rounded-lg flex items-center justify-between bg-white">

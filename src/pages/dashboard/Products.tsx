@@ -3,7 +3,7 @@ import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Ch
 import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
 import { MultiImageUpload } from '../../components/ImageUpload';
-import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId } from '../../lib/tenant-sync';
+import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId, fetchCloudSettings } from '../../lib/tenant-sync';
 import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
 
 export default function Products() {
@@ -23,6 +23,8 @@ export default function Products() {
   const [prodSubcategory, setProdSubcategory] = useState('');
   const [prodImages, setProdImages] = useState<string[]>([]);
   const [prodDescription, setProdDescription] = useState('');
+  const [prodMetafields, setProdMetafields] = useState<Record<string, string>>({});
+  const [metafieldDefs, setMetafieldDefs] = useState<Array<{ id: string; label: string }>>([]);
 
   // States to add new category/subcategory inline
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
@@ -50,6 +52,14 @@ export default function Products() {
     });
   }, []);
 
+  // Custom field definitions (Réglages → Champs personnalisés) — fetched
+  // once so the product form can render a real input per defined field.
+  useEffect(() => {
+    fetchCloudSettings().then(settings => {
+      if (settings?.metafieldDefinitions) setMetafieldDefs(settings.metafieldDefinitions);
+    });
+  }, []);
+
   const formatPrice = (product: StoreProduct) => {
     return `${product.price.toLocaleString('fr-FR')} ${product.currency || 'XOF'}`;
   };
@@ -68,6 +78,7 @@ export default function Products() {
     setProdStatus('active');
     setProdImages([]);
     setProdDescription('');
+    setProdMetafields({});
 
     // Default to the first category if available
     const keys = Object.keys(categories);
@@ -88,6 +99,7 @@ export default function Products() {
     setProdStatus(p.status);
     setProdImages(getProductImages(p));
     setProdDescription(p.description || '');
+    setProdMetafields(p.metafields || {});
     setProdCategory(p.category || '');
     setProdSubcategory(p.subcategory || '');
 
@@ -115,6 +127,7 @@ export default function Products() {
             images: prodImages,
             image: prodImages[0] || p.image,
             description: prodDescription,
+            metafields: prodMetafields,
           };
         }
         return p;
@@ -132,6 +145,7 @@ export default function Products() {
         images: prodImages,
         image: prodImages[0],
         description: prodDescription,
+        metafields: prodMetafields,
       };
       updatedList = [newProd, ...products];
     }
@@ -369,6 +383,28 @@ export default function Products() {
                   className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
+
+              {/* Custom fields (Réglages → Champs personnalisés) — real,
+                  rendered only when the merchant has actually defined some. */}
+              {metafieldDefs.length > 0 && (
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                    Champs personnalisés
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {metafieldDefs.map(def => (
+                      <div key={def.id}>
+                        <label className="block text-[10px] text-gray-500 mb-1">{def.label}</label>
+                        <input
+                          value={prodMetafields[def.id] || ''}
+                          onChange={e => setProdMetafields({ ...prodMetafields, [def.id]: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Price & Stock Row */}
               <div className="grid grid-cols-2 gap-4">

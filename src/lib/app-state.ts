@@ -25,6 +25,11 @@ export type StoreProduct = {
   image?: string;
   /** Short marketing description shown on the storefront + product card. */
   description?: string;
+  /** Custom field values keyed by the metafield definition's id (see
+   *  settings.metafieldDefinitions, Réglages → Champs personnalisés).
+   *  Real wiring: the product form renders one input per defined field
+   *  and stores the value here. */
+  metafields?: Record<string, string>;
 };
 
 export type StoreOrder = {

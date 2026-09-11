@@ -5,7 +5,7 @@ import { getShopTheme, getShopProfile, getCartItems, getProductImages, type Stor
 import { getCmsPages, type CmsPage, type CmsBlock } from '../lib/cms';
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, fetchPublicCmsPages, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
-import { defaultThemeForType } from '../lib/theme-engine';
+import { defaultThemeForType, buildThemeOverrideCss } from '../lib/theme-engine';
 
 /**
  * Renders a merchant's custom CMS page (built with the visual page editor
@@ -101,10 +101,11 @@ export default function CmsPageView() {
     : page.sections.map(s => ({ id: s.id, type: 'legacy', blocks: [{ id: s.id, type: 'rich-text' as const, settings: { content: s.content } }], block_order: [s.id], settings: {} }));
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: theme.fonts.body, color: theme.colors.text }}>
+    <div className="theme-storefront-root min-h-screen bg-white" style={{ fontFamily: theme.fonts.body, color: theme.colors.text }}>
       {theme.customCSS && (
         <style dangerouslySetInnerHTML={{ __html: theme.customCSS.replace(/<\/style/gi, '') }} />
       )}
+      <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
       <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to={backLink} className="flex items-center gap-1.5 text-sm font-medium hover:opacity-70">

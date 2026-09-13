@@ -85,12 +85,12 @@ type CartDrawerItem = CartItem & { image?: string };
  *  and most footer links just went to "#". Maps common labels to real
  *  destinations; anything unrecognized still goes to the real store root
  *  instead of a dead anchor. */
-function resolveNavHref(label: string, storeUrl: string): string {
+function resolveNavHref(label: string, storeUrl: string, whatsappHref?: string): string {
   const norm = label.trim().toLowerCase();
   if (['accueil', 'home'].includes(norm)) return storeUrl;
   if (['boutique', 'shop', 'produits', 'products', 'nouveautés', 'nouveautes'].includes(norm)) return `${storeUrl}#storefront-products`;
-  if (['contact', 'nous contacter'].includes(norm)) return '/support';
-  if (['suivi de commande', 'commande', 'order tracking'].includes(norm)) return '/order-tracking';
+  if (['contact', 'nous contacter'].includes(norm)) return whatsappHref || storeUrl;
+  if (['suivi de commande', 'commande', 'order tracking'].includes(norm)) return `${storeUrl}/order-tracking`;
   return storeUrl;
 }
 
@@ -324,6 +324,7 @@ export default function StorefrontPage() {
       id: orderId,
       orderNumber: `LA-${Date.now().toString().slice(-6)}`,
       customer: custName,
+      customerEmail: custEmail || undefined,
       date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
       total: cartTotal,
       status: 'pending' as const,
@@ -393,6 +394,9 @@ export default function StorefrontPage() {
 
   const visibleSections = sectionsWithCatalog.filter(s => s.visible);
   const storeUrl = slug ? `/s/${slug}` : '/store';
+  const merchantWhatsappHref = tenantSettings.chatProvider === 'whatsapp' && tenantSettings.chatValue
+    ? `https://wa.me/${String(tenantSettings.chatValue).replace(/[^0-9]/g, '')}`
+    : undefined;
 
   // A merchant who has published via the new Customize editor
   // (Online Store > Thèmes) gets rendered through the new theme-system
@@ -452,7 +456,7 @@ export default function StorefrontPage() {
           </Link>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium" style={{ color: theme.colors.text }}>
             {headerProps.nav.map(item => (
-              <Link key={item} to={resolveNavHref(item, storeUrl)} className="hover:opacity-70 transition-opacity">{item}</Link>
+              <Link key={item} to={resolveNavHref(item, storeUrl, merchantWhatsappHref)} target={merchantWhatsappHref && resolveNavHref(item, storeUrl, merchantWhatsappHref) === merchantWhatsappHref ? '_blank' : undefined} rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">{item}</Link>
             ))}
           </nav>
           <div className="flex items-center gap-3">
@@ -474,7 +478,7 @@ export default function StorefrontPage() {
         {mobileNavOpen && (
           <nav className="lg:hidden border-t px-4 py-3 flex flex-col gap-3 text-sm font-medium" style={{ borderColor: `${theme.colors.text}10`, color: theme.colors.text }}>
             {headerProps.nav.map(item => (
-              <Link key={item} to={resolveNavHref(item, storeUrl)} onClick={() => setMobileNavOpen(false)}>{item}</Link>
+              <Link key={item} to={resolveNavHref(item, storeUrl, merchantWhatsappHref)} target={merchantWhatsappHref && resolveNavHref(item, storeUrl, merchantWhatsappHref) === merchantWhatsappHref ? '_blank' : undefined} rel="noopener noreferrer" onClick={() => setMobileNavOpen(false)}>{item}</Link>
             ))}
           </nav>
         )}
@@ -553,9 +557,12 @@ export default function StorefrontPage() {
           <div>
             <h4 className="font-bold mb-3 text-xs uppercase tracking-wider" style={{ color: theme.colors.text }}>Aide</h4>
             <ul className="space-y-2 text-xs opacity-70" style={{ color: theme.colors.text }}>
-              <li><Link to="/order-tracking" className="hover:underline">Suivi de commande</Link></li>
-              <li><Link to="/support" className="hover:underline">Livraison</Link></li>
-              <li><Link to="/support" className="hover:underline">Nous contacter</Link></li>
+              <li><Link to={`${storeUrl}/order-tracking`} className="hover:underline">Suivi de commande</Link></li>
+              {merchantWhatsappHref ? (
+                <li><a href={merchantWhatsappHref} target="_blank" rel="noopener noreferrer" className="hover:underline">Nous contacter</a></li>
+              ) : (
+                <li><Link to={storeUrl} className="hover:underline">Nous contacter</Link></li>
+              )}
             </ul>
           </div>
           <div>

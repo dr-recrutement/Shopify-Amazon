@@ -78,6 +78,7 @@ export default function App() {
         <Route path="/s/:slug/cart" element={<CartPage />} />
         <Route path="/s/:slug/checkout" element={<CheckoutPage />} />
         <Route path="/order-tracking" element={<OrderTrackingPage />} />
+        <Route path="/s/:slug/order-tracking" element={<OrderTrackingPage />} />
         <Route path="/support" element={<SupportPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

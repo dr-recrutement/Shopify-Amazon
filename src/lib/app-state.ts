@@ -35,6 +35,7 @@ export type StoreProduct = {
 export type StoreOrder = {
   id: string;
   customer: string;
+  customerEmail?: string;
   date: string;
   total: number;
   status: 'pending' | 'paid' | 'shipped' | 'cancelled';

@@ -1,5 +1,4 @@
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+import { MinimalStoreHeader, MinimalStoreFooter } from '../components/MinimalStoreChrome';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Trash2, ShoppingBag, ArrowRight, Shield, Truck, CreditCard } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -36,7 +35,7 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <MinimalStoreHeader shopName={tenant?.name} storeUrl={continueShoppingHref} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Panier{tenant ? ` — ${tenant.name}` : ''}</h1>
         {items.length === 0 ? (
@@ -93,7 +92,7 @@ export default function CartPage() {
           </div>
         )}
       </div>
-      <Footer />
+      <MinimalStoreFooter shopName={tenant?.name} />
     </div>
   );
 }

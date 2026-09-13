@@ -1,5 +1,4 @@
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+import { MinimalStoreHeader, MinimalStoreFooter } from '../components/MinimalStoreChrome';
 import { Card, Button } from '../pages/dashboard/ui';
 import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -39,6 +38,7 @@ export default function CheckoutPage() {
   }, [slug]);
 
   const currency = items[0]?.currency || 'XOF';
+  const storeUrl = slug ? `/s/${slug}` : '/store';
   const fmt = (n: number) => `${n.toLocaleString('fr-FR')} ${currency}`;
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
   const shippingCost = items.length > 0 ? 1000 : 0;
@@ -87,19 +87,19 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+        <MinimalStoreHeader shopName={tenant?.name} storeUrl={storeUrl} />
         <div className="max-w-2xl mx-auto px-4 pt-32 pb-16 text-center">
           <h1 className="font-serif-display text-2xl font-bold text-gray-900 mb-2">Votre panier est vide</h1>
           <p className="text-gray-500 text-sm">Ajoutez des produits avant de passer commande.</p>
         </div>
-        <Footer />
+        <MinimalStoreFooter shopName={tenant?.name} />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <MinimalStoreHeader shopName={tenant?.name} storeUrl={storeUrl} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         <h1 className="font-serif-display text-3xl font-bold text-gray-900 mb-6">Checkout{tenant ? ` — ${tenant.name}` : ''}</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -152,7 +152,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-      <Footer />
+      <MinimalStoreFooter shopName={tenant?.name} />
     </div>
   );
 }

@@ -128,6 +128,7 @@ function orderToRow(tenantId: string, o: StoreOrder) {
     id: ensureUuidId(o.id),
     tenant_id: tenantId,
     customer_name: o.customer,
+    customer_email: o.customerEmail || null,
     total_cents: Math.round((o.total || 0) * 100),
     currency: o.currency || 'XOF',
     status: o.status,
@@ -141,6 +142,7 @@ function rowToOrder(row: Record<string, any>): StoreOrder {
   return {
     id: row.id,
     customer: row.customer_name || 'Client',
+    customerEmail: row.customer_email || undefined,
     date: row.created_at ? new Date(row.created_at).toLocaleDateString('fr-FR') : '',
     total: (row.total_cents || 0) / 100,
     status: row.status,
@@ -613,6 +615,7 @@ export async function submitPublicCheckout(params: {
     id: orderId,
     orderNumber,
     customer: customerName,
+    customerEmail: customerEmail || undefined,
     date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
     total,
     status: 'pending',

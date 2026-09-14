@@ -181,6 +181,19 @@ export default function OnlineStore() {
   const [panel, setPanel] = useState<'themes' | 'sections' | 'design' | 'pages' | 'domain' | 'inbox' | 'settings'>('themes');
   const [toast, setToast] = useState<string | null>(null);
 
+  // Add-section picker (spec item 9): search + categories + description,
+  // instead of a flat grid — needed now that SECTION_LIBRARY has ~27 types.
+  const [showAddSection, setShowAddSection] = useState(false);
+  const [addSectionQuery, setAddSectionQuery] = useState('');
+  const [addSectionCategory, setAddSectionCategory] = useState<string>('Toutes');
+  const sectionCategories = ['Toutes', ...Array.from(new Set(SECTION_LIBRARY.map(l => l.group)))];
+  const filteredSectionLibrary = SECTION_LIBRARY.filter(lib => {
+    const matchesCategory = addSectionCategory === 'Toutes' || lib.group === addSectionCategory;
+    const q = addSectionQuery.trim().toLowerCase();
+    const matchesQuery = !q || lib.label.toLowerCase().includes(q) || lib.description.toLowerCase().includes(q);
+    return matchesCategory && matchesQuery;
+  });
+
   const shopProfile = getShopProfile();
 
   // Custom Pages State
@@ -340,6 +353,9 @@ export default function OnlineStore() {
       ...theme,
       sections: [...theme.sections, { id: `s${Date.now()}`, type, visible: true, props: {} }],
     });
+    setShowAddSection(false);
+    setAddSectionQuery('');
+    setAddSectionCategory('Toutes');
     showToast('Section ajoutée au thème !');
   };
 
@@ -908,19 +924,73 @@ export default function OnlineStore() {
               </div>
 
               <div className="border-t border-gray-100 pt-3">
-                <span className="text-xs font-bold text-gray-600 uppercase block mb-2">Ajouter un nouveau bloc</span>
-                <div className="grid grid-cols-2 gap-1.5 max-h-[160px] overflow-y-auto">
-                  {SECTION_LIBRARY.map(lib => (
-                    <button
-                      key={lib.type}
-                      onClick={() => addSection(lib.type)}
-                      className="text-left p-2 rounded-lg text-xs hover:bg-brand-50 hover:border-brand-200 border border-gray-100 transition-all bg-white font-medium flex items-center gap-1"
-                    >
-                      <span>{lib.icon}</span>
-                      <span className="truncate">{lib.label}</span>
-                    </button>
-                  ))}
-                </div>
+                {!showAddSection ? (
+                  <button
+                    onClick={() => setShowAddSection(true)}
+                    className="w-full py-2 rounded-lg text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Plus size={13} /> Ajouter une section
+                  </button>
+                ) : (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-600 uppercase">Ajouter une section</span>
+                      <button
+                        onClick={() => { setShowAddSection(false); setAddSectionQuery(''); setAddSectionCategory('Toutes'); }}
+                        className="text-[11px] font-semibold text-gray-400 hover:text-gray-600"
+                      >
+                        Fermer
+                      </button>
+                    </div>
+
+                    <div className="relative">
+                      <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        autoFocus
+                        value={addSectionQuery}
+                        onChange={e => setAddSectionQuery(e.target.value)}
+                        placeholder="Rechercher une section..."
+                        className="w-full pl-7 pr-2.5 py-1.5 border border-gray-200 rounded-lg text-xs focus:border-brand-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-1">
+                      {sectionCategories.map(cat => (
+                        <button
+                          key={cat}
+                          onClick={() => setAddSectionCategory(cat)}
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-colors ${
+                            addSectionCategory === cat
+                              ? 'bg-brand-600 text-white border-brand-600'
+                              : 'bg-white text-gray-500 border-gray-200 hover:border-brand-300'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1">
+                      {filteredSectionLibrary.length === 0 && (
+                        <p className="text-[11px] text-gray-400 text-center py-4">Aucune section trouvée.</p>
+                      )}
+                      {filteredSectionLibrary.map(lib => (
+                        <button
+                          key={lib.type}
+                          onClick={() => addSection(lib.type)}
+                          className="w-full text-left p-2 rounded-lg hover:bg-brand-50 hover:border-brand-200 border border-gray-100 transition-all bg-white flex items-start gap-2"
+                        >
+                          <span className="text-base leading-none mt-0.5">{lib.icon}</span>
+                          <span className="min-w-0">
+                            <span className="block text-xs font-bold text-gray-800 truncate">{lib.label}</span>
+                            <span className="block text-[10px] text-gray-500 leading-snug mt-0.5">{lib.description}</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
           )}

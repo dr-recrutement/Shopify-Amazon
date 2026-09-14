@@ -106,6 +106,8 @@ export default function OnlineStore() {
   const isFirstSaveEffect = useRef(true);
 
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const leftPanelRef = useRef<HTMLDivElement>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const toggleExpand = (id: string) => {
     setExpandedSections(prev => {
@@ -114,6 +116,15 @@ export default function OnlineStore() {
       return next;
     });
   };
+
+  // Preview Inspector (spec item 5): clicking a section in the live preview
+  // selects it and opens its settings — this brings that settings panel
+  // into view even if the merchant had scrolled the left column away.
+  useEffect(() => {
+    if (selectedSection && leftPanelRef.current) {
+      leftPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedSection]);
   // Repeatable sub-items per section type — the same real concept as
   // Shopify's "blocks" (Multicolumn's Column blocks, Collage's Collection/
   // Product blocks). Sections without a matching array here just aren't
@@ -648,7 +659,7 @@ export default function OnlineStore() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-x-hidden md:overflow-x-visible">
 
         {/* LEFT COLUMN: Subpanels controls & managers */}
-        <div className="space-y-4 col-span-1 w-full max-w-full">
+        <div ref={leftPanelRef} className="space-y-4 col-span-1 w-full max-w-full">
 
           {/* Navigation/subpanel switcher */}
           <Card className="p-2 border border-gray-100 shadow-sm">
@@ -814,7 +825,9 @@ export default function OnlineStore() {
                         onDragOver={(e) => handleDragOver(e, s.id)}
                         onDrop={(e) => handleDrop(e, s.id)}
                         onDragEnd={handleDragEnd}
-                        className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-4' : ''}`}
+                        onMouseEnter={() => setHoveredSection(s.id)}
+                        onMouseLeave={() => setHoveredSection(prev => (prev === s.id ? null : prev))}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${selectedSection === s.id ? 'border-brand-500 bg-brand-50' : hoveredSection === s.id ? 'border-brand-200 bg-brand-50/40' : 'border-gray-150 bg-white hover:border-gray-300'} ${isDragging ? 'opacity-40' : ''} ${isDragOver ? 'border-brand-500 border-t-4' : ''}`}
                       >
                         <GripVertical size={14} className="text-gray-400 cursor-grab active:cursor-grabbing" />
                         {blocks.length > 0 ? (
@@ -2391,8 +2404,25 @@ export default function OnlineStore() {
                     <div
                       key={s.id}
                       onClick={() => { setSelectedSection(s.id); setPanel('sections'); }}
-                      className={`relative cursor-pointer transition-all border-2 ${selectedSection === s.id ? 'border-brand-500 z-10' : 'border-transparent hover:border-dashed hover:border-gray-300'}`}
+                      onMouseEnter={() => setHoveredSection(s.id)}
+                      onMouseLeave={() => setHoveredSection(prev => (prev === s.id ? null : prev))}
+                      className={`relative cursor-pointer transition-all border-2 ${
+                        selectedSection === s.id
+                          ? 'border-brand-500 z-10'
+                          : hoveredSection === s.id
+                          ? 'border-dashed border-brand-300 z-10'
+                          : 'border-transparent hover:border-dashed hover:border-gray-300'
+                      }`}
                     >
+                      {(selectedSection === s.id || hoveredSection === s.id) && (
+                        <span
+                          className={`absolute -top-2.5 left-2 z-20 text-[10px] font-bold px-1.5 py-0.5 rounded text-white pointer-events-none ${
+                            selectedSection === s.id ? 'bg-brand-600' : 'bg-brand-300'
+                          }`}
+                        >
+                          {SECTION_LIBRARY.find(l => l.type === s.type)?.label || s.type}
+                        </span>
+                      )}
                       {renderSection(sectionWithRealData, theme)}
                     </div>
                   );

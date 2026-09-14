@@ -532,7 +532,7 @@ export default function StorefrontPage() {
         {visibleSections.map((section, idx) => {
           const isFirstProductSection = section.type === 'product-grid' && !visibleSections.slice(0, idx).some(s => s.type === 'product-grid');
           return (
-            <div key={section.id} id={isFirstProductSection ? 'storefront-products' : undefined} data-reveal={theme.scrollAnimation && theme.scrollAnimation !== 'none' ? '' : undefined}>
+            <div key={section.id} data-section-id={section.id} id={isFirstProductSection ? 'storefront-products' : undefined} data-reveal={theme.scrollAnimation && theme.scrollAnimation !== 'none' ? '' : undefined}>
               {renderSection(section, theme, { onAddToCart: handleAddToCart, productLinkBase: slug ? `/s/${slug}` : '/store', tenantId: resolvedTenant?.id, onCategoryClick: handleCategoryClick, legalPolicies: { terms: tenantSettings.termsPolicyText, privacy: tenantSettings.privacyPolicyText, refund: tenantSettings.refundPolicyText }, chatConfig: { provider: tenantSettings.chatProvider, value: tenantSettings.chatValue } })}
             </div>
           );

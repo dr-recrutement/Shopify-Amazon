@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection } from '../../lib/theme-engine';
+import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
@@ -1775,6 +1775,66 @@ export default function OnlineStore() {
                     </div>
                   )}
 
+                  {/* Generic responsive spacing override (spec item 14) —
+                      available on every section, independent of its type.
+                      Edits apply to whichever device is currently being
+                      previewed; switching device here also switches the
+                      live preview, so what's edited is what's seen. */}
+                  <div className="pt-3 border-t border-gray-100">
+                    <span className="text-xs font-bold text-gray-600 uppercase block mb-1">Espacement responsive</span>
+                    <p className="text-[10px] text-gray-400 mb-2">Réglez l'espacement haut/bas de cette section pour l'appareil sélectionné. Laissez vide pour garder la valeur par défaut.</p>
+                    <div className="flex gap-1 p-0.5 bg-gray-100 rounded-lg mb-2 w-fit">
+                      {([['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]] as const).map(([d, Icon]) => (
+                        <button
+                          key={d}
+                          onClick={() => setDevice(d)}
+                          className={`p-1.5 rounded-md transition-all ${device === d ? 'bg-white shadow text-brand-600' : 'text-gray-400 hover:text-gray-700'}`}
+                          title={d}
+                        >
+                          <Icon size={13} />
+                        </button>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">Haut (px)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={activeSection.props.responsivePadding?.[device]?.top ?? ''}
+                          onChange={e => {
+                            const val = e.target.value === '' ? undefined : Number(e.target.value);
+                            const current = activeSection.props.responsivePadding || {};
+                            updateSectionProp(activeSection.id, 'responsivePadding', {
+                              ...current,
+                              [device]: { ...current[device], top: val },
+                            });
+                          }}
+                          placeholder="défaut"
+                          className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-500 mb-1">Bas (px)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={activeSection.props.responsivePadding?.[device]?.bottom ?? ''}
+                          onChange={e => {
+                            const val = e.target.value === '' ? undefined : Number(e.target.value);
+                            const current = activeSection.props.responsivePadding || {};
+                            updateSectionProp(activeSection.id, 'responsivePadding', {
+                              ...current,
+                              [device]: { ...current[device], bottom: val },
+                            });
+                          }}
+                          placeholder="défaut"
+                          className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </Card>
             );
@@ -2473,9 +2533,11 @@ export default function OnlineStore() {
                   return (
                     <div
                       key={s.id}
+                      data-section-id={s.id}
                       onClick={() => { setSelectedSection(s.id); setPanel('sections'); }}
                       onMouseEnter={() => setHoveredSection(s.id)}
                       onMouseLeave={() => setHoveredSection(prev => (prev === s.id ? null : prev))}
+                      style={getResponsivePadding(s.props, device)}
                       className={`relative cursor-pointer transition-all border-2 ${
                         selectedSection === s.id
                           ? 'border-brand-500 z-10'

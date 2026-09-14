@@ -68,8 +68,7 @@ export function gradientStyle(seed: string | number): React.CSSProperties {
 }
 
 /** Checks whether a string is a real fetchable image URL (http/data/asset path). */
-export function isRealImage(src: string | undefined | null): boolean {
-  if (!src) return false;
+export function isRealImage(src: string | undefined | null): boolean {  if (!src) return false;
   return src.startsWith('http') || src.startsWith('data:') || src.startsWith('/assets') || src.startsWith('/');
 }
 
@@ -560,6 +559,31 @@ export function buildThemeOverrideCss(theme: ThemeConfig): string {
     : theme.scrollAnimation === 'fade' ? ''
     : 'transform: translateY(16px);'; // slide (default when set)
 
+  // Per-section responsive padding overrides (spec item 14: different
+  // spacing per device). Opt-in — sections without `responsivePadding` in
+  // their props render exactly as before. Desktop applies unconditionally
+  // as a baseline; tablet/mobile override it below their breakpoint via
+  // real CSS media queries, since real visitors (unlike the editor's
+  // simulated device preview) have actual varying viewport widths.
+  const sectionResponsiveCss = theme.sections.map(s => {
+    const r = s.props?.responsivePadding as
+      | { desktop?: { top?: number; bottom?: number }; tablet?: { top?: number; bottom?: number }; mobile?: { top?: number; bottom?: number } }
+      | undefined;
+    if (!r) return '';
+    const decl = (bp?: { top?: number; bottom?: number }) => {
+      if (!bp) return '';
+      let out = '';
+      if (bp.top !== undefined) out += `padding-top: ${bp.top}px !important;`;
+      if (bp.bottom !== undefined) out += `padding-bottom: ${bp.bottom}px !important;`;
+      return out;
+    };
+    let css = '';
+    if (r.desktop) css += `[data-section-id="${s.id}"] { ${decl(r.desktop)} }\n`;
+    if (r.tablet) css += `@media (max-width: 1024px) { [data-section-id="${s.id}"] { ${decl(r.tablet)} } }\n`;
+    if (r.mobile) css += `@media (max-width: 640px) { [data-section-id="${s.id}"] { ${decl(r.mobile)} } }\n`;
+    return css;
+  }).join('\n');
+
   return `
     .theme-storefront-root {
       ${gradientOverlay ? `background: ${gradientOverlay} !important;` : ''}
@@ -572,7 +596,27 @@ export function buildThemeOverrideCss(theme: ThemeConfig): string {
     .theme-storefront-root [data-reveal].is-visible {
       opacity: 1; transform: none;
     }
+    ${sectionResponsiveCss}
   `;
+}
+
+/** Resolves a section's per-device padding override (spec item 14) for the
+ *  Theme Editor's own live preview, which simulates a device via a resized
+ *  container rather than the real browser viewport — so it reads the
+ *  merchant's chosen `device` directly instead of relying on the CSS media
+ *  queries `buildThemeOverrideCss` emits for the real (visitor-facing)
+ *  storefront. Falls back to no inline override when nothing is set for
+ *  that device, leaving the section's normal rendering untouched. */
+export function getResponsivePadding(
+  props: Record<string, any> | undefined,
+  device: 'desktop' | 'tablet' | 'mobile'
+): React.CSSProperties {
+  const bp = props?.responsivePadding?.[device] as { top?: number; bottom?: number } | undefined;
+  if (!bp) return {};
+  const style: React.CSSProperties = {};
+  if (bp.top !== undefined) style.paddingTop = `${bp.top}px`;
+  if (bp.bottom !== undefined) style.paddingBottom = `${bp.bottom}px`;
+  return style;
 }
 
 export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePreset): ThemeConfig {

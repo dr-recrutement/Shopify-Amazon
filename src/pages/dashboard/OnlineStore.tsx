@@ -3,7 +3,7 @@ import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft, Search,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
-  Sparkles, Send, ExternalLink
+  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -49,6 +49,62 @@ export default function OnlineStore() {
     }
     return defaultThemeForType('ecommerce');
   });
+  // --- Undo / Redo history --------------------------------------------
+  // Wraps the existing `theme` state without touching the many call sites
+  // that already call setTheme() directly (colors, fonts, sections, etc.).
+  // Rapid successive edits (e.g. dragging a color picker) are grouped into
+  // a single undo step by only snapshotting after 500ms of inactivity.
+  const pastRef = useRef<ThemeConfig[]>([]);
+  const futureRef = useRef<ThemeConfig[]>([]);
+  const isUndoRedoRef = useRef(false);
+  const lastSnapshotRef = useRef<ThemeConfig>(theme);
+  const [historyTick, setHistoryTick] = useState(0); // forces re-render so undo/redo buttons reflect stack state
+
+  useEffect(() => {
+    if (isUndoRedoRef.current) {
+      isUndoRedoRef.current = false;
+      lastSnapshotRef.current = theme;
+      return;
+    }
+    const t = setTimeout(() => {
+      if (lastSnapshotRef.current !== theme) {
+        pastRef.current = [...pastRef.current.slice(-49), lastSnapshotRef.current];
+        futureRef.current = [];
+        lastSnapshotRef.current = theme;
+        setHistoryTick(v => v + 1);
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [theme]);
+
+  const undo = () => {
+    if (pastRef.current.length === 0) return;
+    const previous = pastRef.current[pastRef.current.length - 1];
+    pastRef.current = pastRef.current.slice(0, -1);
+    futureRef.current = [...futureRef.current, theme];
+    isUndoRedoRef.current = true;
+    setTheme(previous);
+    setHistoryTick(v => v + 1);
+  };
+
+  const redo = () => {
+    if (futureRef.current.length === 0) return;
+    const next = futureRef.current[futureRef.current.length - 1];
+    futureRef.current = futureRef.current.slice(0, -1);
+    pastRef.current = [...pastRef.current, theme];
+    isUndoRedoRef.current = true;
+    setTheme(next);
+    setHistoryTick(v => v + 1);
+  };
+
+  const canUndo = pastRef.current.length > 0;
+  const canRedo = futureRef.current.length > 0;
+  void historyTick; // referenced so the linter sees it drive re-renders
+
+  // --- Save status (item 21: Saved / Saving… / Unsaved changes) --------
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
+  const isFirstSaveEffect = useRef(true);
+
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const toggleExpand = (id: string) => {
@@ -89,7 +145,16 @@ export default function OnlineStore() {
       // has no such 5MB browser limit and remains the real source of
       // truth, so this is silently skipped rather than crashing the editor.
     }
-    const timeout = setTimeout(() => { pushCloudTheme(theme); }, 800);
+    if (isFirstSaveEffect.current) {
+      // Don't flash "Unsaved changes" on initial mount/load.
+      isFirstSaveEffect.current = false;
+    } else {
+      setSaveStatus('unsaved');
+    }
+    const timeout = setTimeout(() => {
+      setSaveStatus('saving');
+      pushCloudTheme(theme).then(() => setSaveStatus('saved'));
+    }, 800);
     return () => clearTimeout(timeout);
   }, [theme]);
 
@@ -270,6 +335,21 @@ export default function OnlineStore() {
   const removeSection = (id: string) => {
     setTheme({ ...theme, sections: theme.sections.filter(s => s.id !== id) });
     showToast('Section retirée.');
+  };
+
+  const duplicateSection = (id: string) => {
+    const idx = theme.sections.findIndex(s => s.id === id);
+    if (idx === -1) return;
+    const original = theme.sections[idx];
+    const copy: ThemeSection = {
+      ...original,
+      id: `s${Date.now()}`,
+      props: JSON.parse(JSON.stringify(original.props ?? {})),
+    };
+    const sections = [...theme.sections];
+    sections.splice(idx + 1, 0, copy);
+    setTheme({ ...theme, sections });
+    showToast('Section dupliquée.');
   };
 
   const toggleSection = (id: string) => {
@@ -771,6 +851,13 @@ export default function OnlineStore() {
                             title={s.visible ? "Masquer" : "Afficher"}
                           >
                             ●
+                          </button>
+                          <button
+                            onClick={() => duplicateSection(s.id)}
+                            className="p-1 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded"
+                            title="Dupliquer"
+                          >
+                            <Copy size={13} />
                           </button>
                           <button
                             onClick={() => removeSection(s.id)}
@@ -2172,18 +2259,45 @@ export default function OnlineStore() {
                   {theme.isPublished ? 'Publié' : 'Brouillon'}
                 </Badge>
                 <span className="text-xs font-semibold text-gray-500 capitalize">{theme.siteType} Editor</span>
+                <span className={`text-[11px] font-medium flex items-center gap-1 ${
+                  saveStatus === 'saved' ? 'text-green-600' : saveStatus === 'saving' ? 'text-brand-600' : 'text-gray-400'
+                }`}>
+                  {saveStatus === 'saved' && <><CheckCircle size={12} /> Enregistré</>}
+                  {saveStatus === 'saving' && <>Enregistrement…</>}
+                  {saveStatus === 'unsaved' && <>Modifications non enregistrées</>}
+                </span>
               </div>
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
-                {([['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]] as const).map(([d, Icon]) => (
+              <div className="flex items-center gap-2">
+                <div className="flex gap-0.5 p-1 bg-gray-100 rounded-xl">
                   <button
-                    key={d}
-                    onClick={() => setDevice(d)}
-                    className={`p-2 rounded-lg transition-all ${device === d ? 'bg-white shadow text-brand-600 scale-105' : 'text-gray-500 hover:text-gray-900'}`}
-                    title={d}
+                    onClick={undo}
+                    disabled={!canUndo}
+                    className={`p-2 rounded-lg transition-all ${canUndo ? 'text-gray-600 hover:bg-white hover:shadow' : 'text-gray-300 cursor-not-allowed'}`}
+                    title="Annuler"
                   >
-                    <Icon size={16} />
+                    <Undo2 size={16} />
                   </button>
-                ))}
+                  <button
+                    onClick={redo}
+                    disabled={!canRedo}
+                    className={`p-2 rounded-lg transition-all ${canRedo ? 'text-gray-600 hover:bg-white hover:shadow' : 'text-gray-300 cursor-not-allowed'}`}
+                    title="Rétablir"
+                  >
+                    <Redo2 size={16} />
+                  </button>
+                </div>
+                <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
+                  {([['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]] as const).map(([d, Icon]) => (
+                    <button
+                      key={d}
+                      onClick={() => setDevice(d)}
+                      className={`p-2 rounded-lg transition-all ${device === d ? 'bg-white shadow text-brand-600 scale-105' : 'text-gray-500 hover:text-gray-900'}`}
+                      title={d}
+                    >
+                      <Icon size={16} />
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

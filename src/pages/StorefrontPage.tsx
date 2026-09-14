@@ -357,6 +357,8 @@ export default function StorefrontPage() {
               currency,
               customerEmail: custEmail,
               items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+              slug,
+              orderNumber: order.orderNumber,
             }),
           });
           const result = await res.json();

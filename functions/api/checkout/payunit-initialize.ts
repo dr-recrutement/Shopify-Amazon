@@ -5,7 +5,8 @@
 //
 // Body attendu: { "tenantId": "...", "orderId": "...", "amount": 5000,
 //                  "currency": "XAF", "customerEmail": "...",
-//                  "items": [{ "name": "...", "price": 1000, "qty": 2 }] }
+//                  "items": [{ "name": "...", "price": 1000, "qty": 2 }],
+//                  "slug": "ma-boutique", "orderNumber": "LA-123456" }
 //
 // Documentation officielle PayUnit :
 // https://developer.payunit.net/checkout/initialize-payment
@@ -39,13 +40,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     currency?: string;
     customerEmail?: string;
     items?: Array<{ name: string; price: number; qty: number }>;
+    slug?: string;
+    orderNumber?: string;
   };
   try { body = await request.json(); } catch { return json({ error: 'Corps de requête invalide.' }, 400); }
 
-  const { tenantId, orderId, amount, currency, items } = body;
+  const { tenantId, orderId, amount, currency, items, slug, orderNumber } = body;
   if (!tenantId || !orderId || !amount || !currency) {
     return json({ error: 'tenantId, orderId, amount et currency sont requis.' }, 400);
   }
+  // Where the shopper lands after paying — the merchant's own store, never
+  // a bare, tenant-less Sellia URL. Falls back to /store only for the
+  // local/demo preview case (no real slug resolved).
+  const storeUrl = slug ? `${env.PUBLIC_APP_URL}/s/${slug}` : `${env.PUBLIC_APP_URL}/store`;
 
   // Fetch this merchant's own PayUnit credentials — never the platform's,
   // each tenant connects and pays with their own PayUnit account.
@@ -79,8 +86,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       'mode': mode,
     },
     body: JSON.stringify({
-      cancel_url: `${env.PUBLIC_APP_URL}/checkout?payment=cancelled&order=${orderId}`,
-      success_url: `${env.PUBLIC_APP_URL}/checkout?payment=success&order=${orderId}`,
+      cancel_url: `${storeUrl}?payment=cancelled`,
+      success_url: `${storeUrl}/order-tracking?order=${encodeURIComponent(orderNumber || orderId)}&payment=success`,
       notify_url: `${env.PUBLIC_APP_URL}/api/checkout/payunit-notify`,
       currency,
       mode: 'payment',
@@ -88,7 +95,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       total_amount: amount,
       items: (items || []).map(i => ({
         price_description: { unit_amount: i.price },
-        product_description: { name: i.name, image_url: `${env.PUBLIC_APP_URL}/logo.png` },
+        product_description: { name: i.name },
         quantity: i.qty,
       })),
       meta: { phone_number_collection: true, address_collection: false },

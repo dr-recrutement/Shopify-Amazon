@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Package, CheckCircle2, Truck, Home, Search, MessageCircle } from 'lucide-react';
 import { Card, Button } from './dashboard/ui';
 import { resolvePublicTenant, fetchCloudSettingsFor } from '../lib/tenant-sync';
@@ -28,7 +28,8 @@ interface TrackedOrder {
  *  ever shows the MERCHANT's own name and contact channel. */
 export default function OrderTrackingPage() {
   const { slug } = useParams<{ slug?: string }>();
-  const [orderNumber, setOrderNumber] = useState('');
+  const [searchParams] = useSearchParams();
+  const [orderNumber, setOrderNumber] = useState(() => searchParams.get('order') || '');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

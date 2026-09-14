@@ -69,6 +69,7 @@ export default function CheckoutPage() {
       paymentMethod: payment,
       currency: tenant.currency || currency,
       items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+      slug,
     });
 
     setSubmitting(false);

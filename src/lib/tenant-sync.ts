@@ -606,8 +606,12 @@ export async function submitPublicCheckout(params: {
   paymentMethod: string;
   currency: string;
   items: CheckoutLineItem[];
+  /** The store's real slug — needed so PayUnit's success/cancel redirect
+   *  sends the shopper back to THIS merchant's store, never a bare,
+   *  tenant-less URL. */
+  slug?: string;
 }): Promise<CheckoutResult> {
-  const { tenantId, customerName, customerEmail, paymentMethod, currency, items } = params;
+  const { tenantId, customerName, customerEmail, paymentMethod, currency, items, slug } = params;
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
   const orderId = crypto.randomUUID();
   const orderNumber = `LA-${Date.now().toString().slice(-6)}`;
@@ -633,7 +637,7 @@ export async function submitPublicCheckout(params: {
       const res = await fetch('/api/checkout/payunit-initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tenantId, orderId, amount: total, currency, customerEmail, items }),
+        body: JSON.stringify({ tenantId, orderId, amount: total, currency, customerEmail, items, slug, orderNumber }),
       });
       const result = await res.json();
       if (res.ok && result.redirect) return { ok: true, redirectUrl: result.redirect, orderNumber };

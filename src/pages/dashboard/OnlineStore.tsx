@@ -764,30 +764,30 @@ export default function OnlineStore() {
                       <div className="h-28 relative overflow-hidden" style={{ backgroundColor: p.colors.background }}>
                         {/* mini header bar */}
                         <div className="h-4 flex items-center px-2 gap-1" style={{ backgroundColor: p.colors.background, borderBottom: `1px solid ${p.colors.text}14` }}>
-                          <span className="w-8 h-1.5 rounded-full" style={{ backgroundColor: p.colors.primary }} />
+                          <span className="w-8 h-1.5 rounded-sm" style={{ backgroundColor: p.colors.primary }} />
                           <span className="ml-auto flex gap-0.5">
-                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
-                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
-                            <span className="w-2.5 h-1 rounded-full" style={{ backgroundColor: `${p.colors.text}33` }} />
+                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
+                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
+                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
                           </span>
                         </div>
                         {/* mini hero */}
                         <div className="px-2.5 pt-2 pb-1.5" style={{ background: `linear-gradient(135deg, ${p.colors.primary}, ${p.colors.accent})` }}>
-                          <div className="w-16 h-1.5 rounded-full bg-white/90 mb-1" />
-                          <div className="w-10 h-1 rounded-full bg-white/60" />
+                          <div className="w-16 h-1.5 rounded-sm bg-white/90 mb-1" />
+                          <div className="w-10 h-1 rounded-sm bg-white/60" />
                         </div>
                         {/* mini content grid — 3 cards, distinct per layout */}
                         <div className="grid grid-cols-3 gap-1 px-2.5 pt-1.5">
                           {[0, 1, 2].map(i => (
                             <div key={i} className="overflow-hidden" style={{ backgroundColor: `${p.colors.text}08`, border: `1px solid ${p.colors.text}12` }}>
                               <div className="h-4" style={{ backgroundColor: `${p.colors.accent}55` }} />
-                              <div className="h-1 mt-0.5 mx-1 rounded-full" style={{ backgroundColor: `${p.colors.text}30` }} />
+                              <div className="h-1 mt-0.5 mx-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}30` }} />
                             </div>
                           ))}
                         </div>
                         <div className="absolute top-1.5 right-1.5 text-lg drop-shadow">{p.icon}</div>
                         {isActive && (
-                          <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-full flex items-center gap-1" style={{ backgroundColor: p.colors.primary }}>
+                          <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1" style={{ backgroundColor: p.colors.primary }}>
                             <CheckCircle size={10} /> Actif
                           </span>
                         )}

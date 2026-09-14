@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
@@ -26,10 +26,6 @@ const NAV = [
     { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
     {
       to: '/app/online-store', label: 'Online Store', icon: Store, end: false,
-      children: [
-        { to: '/app/online-store', label: 'Thèmes', end: true },
-        { to: '/app/online-store/advanced', label: 'Réglages avancés', end: false },
-      ],
     },
   ]},
   { group: 'Croissance', items: [
@@ -47,7 +43,6 @@ const NAV = [
 export default function DashboardLayout() {
   const { user } = useAuth();
   const nav = useNavigate();
-  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
@@ -109,7 +104,6 @@ export default function DashboardLayout() {
               <div className="space-y-0.5">
                 {section.items.map(item => {
                   const Icon = item.icon;
-                  const isInSection = location.pathname.startsWith(item.to);
                   return (
                     <div key={item.to}>
                       <NavLink
@@ -120,21 +114,6 @@ export default function DashboardLayout() {
                       >
                         <Icon size={16} /> {item.label}
                       </NavLink>
-                      {'children' in item && item.children && isInSection && (
-                        <div className="ml-6 mt-0.5 mb-1 space-y-0.5 border-l border-gray-100 pl-3">
-                          {item.children.map(child => (
-                            <NavLink
-                              key={child.to}
-                              to={child.to}
-                              end={child.end}
-                              onClick={() => setSidebarOpen(false)}
-                              className={({ isActive }) => `block px-2 py-1.5 rounded-md text-xs font-medium transition-all ${isActive ? 'text-brand-700 font-bold' : 'text-gray-500 hover:text-gray-800'}`}
-                            >
-                              {child.label}
-                            </NavLink>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   );
                 })}

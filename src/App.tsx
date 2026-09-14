@@ -31,7 +31,6 @@ import Content from './pages/dashboard/Content';
 import Markets from './pages/dashboard/Markets';
 import Analytics from './pages/dashboard/Analytics';
 import OnlineStore from './pages/dashboard/OnlineStore';
-import OnlineStoreThemes from './pages/dashboard/OnlineStoreThemes';
 import OnlineStoreCustomize from './pages/dashboard/OnlineStoreCustomize';
 import Marketing from './pages/dashboard/Marketing';
 import Accounting from './pages/dashboard/Accounting';
@@ -108,7 +107,7 @@ export default function App() {
           <Route path="content" element={<Content />} />
           <Route path="markets" element={<Markets />} />
           <Route path="analytics" element={<Analytics />} />
-          <Route path="online-store" element={<OnlineStoreThemes />} />
+          <Route path="online-store" element={<OnlineStore />} />
           <Route path="online-store/advanced" element={<OnlineStore />} />
           <Route path="online-store/customize" element={<OnlineStoreCustomize />} />
           <Route path="marketing" element={<Marketing />} />

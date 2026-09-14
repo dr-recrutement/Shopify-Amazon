@@ -175,39 +175,39 @@ export const SITE_TYPES: { id: SiteType; label: string; desc: string }[] = [
   { id: 'marketplace', label: 'Marketplace basique', desc: 'Plusieurs vendeurs/catégories sur une même boutique' },
 ];
 
-export const SECTION_LIBRARY: { type: SectionType; label: string; icon: string; group: string }[] = [
+export const SECTION_LIBRARY: { type: SectionType; label: string; icon: string; group: string; description: string }[] = [
   // Layout / structure
-  { type: 'header', label: 'En-tête (Header)', icon: '☰', group: 'Structure' },
-  { type: 'announcement-bar', label: 'Barre d\'annonce', icon: '📢', group: 'Structure' },
-  { type: 'footer', label: 'Pied de page (Footer)', icon: '▭', group: 'Structure' },
+  { type: 'header', label: 'En-tête (Header)', icon: '☰', group: 'Structure', description: 'Logo, navigation principale et icônes de compte/panier en haut de page.' },
+  { type: 'announcement-bar', label: 'Barre d\'annonce', icon: '📢', group: 'Structure', description: 'Bandeau fin en haut du site pour une promo, une livraison offerte, une info.' },
+  { type: 'footer', label: 'Pied de page (Footer)', icon: '▭', group: 'Structure', description: 'Liens utiles, réseaux sociaux et mentions légales en bas de chaque page.' },
   // Banners & media (Shopify Dawn: image-banner, slideshow, video)
-  { type: 'image-banner', label: 'Bannière image (Image banner)', icon: '🖼', group: 'Bannières' },
-  { type: 'hero', label: 'Bannière Hero', icon: '✦', group: 'Bannières' },
-  { type: 'slideshow', label: 'Diaporama (Slideshow)', icon: '⏵', group: 'Bannières' },
-  { type: 'video', label: 'Vidéo', icon: '▶', group: 'Bannières' },
+  { type: 'image-banner', label: 'Bannière image (Image banner)', icon: '🖼', group: 'Bannières', description: 'Grande image avec un titre, un texte et un bouton par-dessus.' },
+  { type: 'hero', label: 'Bannière Hero', icon: '✦', group: 'Bannières', description: 'Section d\'accroche en haut de la page d\'accueil avec appel à l\'action.' },
+  { type: 'slideshow', label: 'Diaporama (Slideshow)', icon: '⏵', group: 'Bannières', description: 'Plusieurs bannières qui défilent automatiquement ou au clic.' },
+  { type: 'video', label: 'Vidéo', icon: '▶', group: 'Bannières', description: 'Vidéo intégrée (hébergée ou YouTube/Vimeo) pour présenter la marque.' },
   // Collections & products (Shopify Dawn: featured-collection, collection-list)
-  { type: 'featured-collection', label: 'Collection en vedette', icon: '🛍', group: 'Produits' },
-  { type: 'product-grid', label: 'Grille produits', icon: '▦', group: 'Produits' },
-  { type: 'collection-list', label: 'Liste de collections', icon: '▤', group: 'Produits' },
-  { type: 'category-grid', label: 'Grille catégories', icon: '▦', group: 'Produits' },
-  { type: 'product-detail', label: 'Fiche produit', icon: '⬚', group: 'Produits' },
-  { type: 'filters-list', label: 'Filtres + liste', icon: '⇕', group: 'Produits' },
-  { type: 'countdown', label: 'Compte à rebours', icon: '⏱', group: 'Produits' },
-  { type: 'payments', label: 'Paiements acceptés', icon: '💳', group: 'Produits' },
+  { type: 'featured-collection', label: 'Collection en vedette', icon: '🛍', group: 'Produits', description: 'Met en avant les produits d\'une collection choisie.' },
+  { type: 'product-grid', label: 'Grille produits', icon: '▦', group: 'Produits', description: 'Grille de produits du catalogue, avec image, prix et bouton d\'achat.' },
+  { type: 'collection-list', label: 'Liste de collections', icon: '▤', group: 'Produits', description: 'Vignettes cliquables vers les différentes collections de la boutique.' },
+  { type: 'category-grid', label: 'Grille catégories', icon: '▦', group: 'Produits', description: 'Grille de catégories de produits pour naviguer rapidement.' },
+  { type: 'product-detail', label: 'Fiche produit', icon: '⬚', group: 'Produits', description: 'Mise en page complète d\'une fiche produit (images, prix, variantes).' },
+  { type: 'filters-list', label: 'Filtres + liste', icon: '⇕', group: 'Produits', description: 'Liste de produits avec filtres latéraux (prix, taille, couleur...).' },
+  { type: 'countdown', label: 'Compte à rebours', icon: '⏱', group: 'Produits', description: 'Minuteur pour créer l\'urgence sur une promotion limitée.' },
+  { type: 'payments', label: 'Paiements acceptés', icon: '💳', group: 'Produits', description: 'Affiche les moyens de paiement et de livraison disponibles.' },
   // Content blocks (Shopify Dawn: multicolumn, image-with-text, rich-text, collapsible-content)
-  { type: 'multicolumn', label: 'Multi-colonnes', icon: '⫴', group: 'Contenu' },
-  { type: 'image-with-text', label: 'Image avec texte', icon: '◧', group: 'Contenu' },
-  { type: 'rich-text', label: 'Texte enrichi', icon: '¶', group: 'Contenu' },
-  { type: 'testimonials', label: 'Témoignages clients', icon: '★', group: 'Contenu' },
-  { type: 'about', label: 'Histoire (À propos)', icon: 'ℹ', group: 'Contenu' },
+  { type: 'multicolumn', label: 'Multi-colonnes', icon: '⫴', group: 'Contenu', description: 'Plusieurs colonnes avec icône/image, titre et texte — idéal pour des atouts.' },
+  { type: 'image-with-text', label: 'Image avec texte', icon: '◧', group: 'Contenu', description: 'Image d\'un côté, texte et bouton de l\'autre.' },
+  { type: 'rich-text', label: 'Texte enrichi', icon: '¶', group: 'Contenu', description: 'Bloc de texte libre centré, pour une accroche ou un message de marque.' },
+  { type: 'testimonials', label: 'Témoignages clients', icon: '★', group: 'Contenu', description: 'Avis et citations de clients pour rassurer les visiteurs.' },
+  { type: 'about', label: 'Histoire (À propos)', icon: 'ℹ', group: 'Contenu', description: 'Raconte l\'histoire et les valeurs de la marque.' },
   // Engagement & conversion
-  { type: 'collapsible-content', label: 'Contenu repliable', icon: '∭', group: 'Engagement' },
-  { type: 'faq', label: 'Foire Aux Questions', icon: '?', group: 'Engagement' },
-  { type: 'newsletter', label: 'Newsletter', icon: '✉', group: 'Engagement' },
-  { type: 'email-signup', label: 'Inscription email', icon: '📨', group: 'Engagement' },
-  { type: 'contact-form', label: 'Formulaire de contact', icon: '✎', group: 'Engagement' },
-  { type: 'social-bar', label: 'Barre de réseaux', icon: '◎', group: 'Engagement' },
-  { type: 'chat-float', label: 'Chat support', icon: '💬', group: 'Engagement' },
+  { type: 'collapsible-content', label: 'Contenu repliable', icon: '∭', group: 'Engagement', description: 'Liste de blocs dépliables, pratique pour des infos détaillées.' },
+  { type: 'faq', label: 'Foire Aux Questions', icon: '?', group: 'Engagement', description: 'Questions/réponses fréquentes en accordéon.' },
+  { type: 'newsletter', label: 'Newsletter', icon: '✉', group: 'Engagement', description: 'Formulaire d\'inscription à la newsletter de la boutique.' },
+  { type: 'email-signup', label: 'Inscription email', icon: '📨', group: 'Engagement', description: 'Capture d\'email simple, souvent avec une offre de bienvenue.' },
+  { type: 'contact-form', label: 'Formulaire de contact', icon: '✎', group: 'Engagement', description: 'Formulaire pour que les visiteurs contactent directement la boutique.' },
+  { type: 'social-bar', label: 'Barre de réseaux', icon: '◎', group: 'Engagement', description: 'Icônes de liens vers les réseaux sociaux de la boutique.' },
+  { type: 'chat-float', label: 'Chat support', icon: '💬', group: 'Engagement', description: 'Bulle de chat flottante pour le support client en direct.' },
 ];
 
 export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; colors: ThemeConfig['colors']; fonts: ThemeConfig['fonts']; layoutVariant: LayoutVariant }> = {

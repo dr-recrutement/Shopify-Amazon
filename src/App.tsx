@@ -47,6 +47,7 @@ import AdminHome from './pages/admin/AdminHome';
 import AdminStores from './pages/admin/AdminStores';import AdminThemes from './pages/admin/AdminThemes';
 import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
 import AdminGeneric from './pages/admin/AdminGeneric';
+import AdminBilling from './pages/admin/AdminBilling';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCms from './pages/admin/AdminCms';
@@ -140,7 +141,7 @@ export default function App() {
           <Route path="themes" element={<AdminThemes />} />
           <Route path="super-admins" element={<AdminSuperAdmins />} />
           <Route path="users" element={<AdminUsers />} />
-          <Route path="billing" element={<AdminGeneric title="Facturation SaaS" subtitle="Revenus abonnements, MRR, churn, LTV." />} />
+          <Route path="billing" element={<AdminBilling />} />
           <Route path="content" element={<AdminCms />} />
           <Route path="moderation" element={<AdminGeneric title="Modération" subtitle="Suspension, validation, produits interdits, litiges." />} />
           <Route path="analytics" element={<AdminGeneric title="Statistiques globales" subtitle="Rapports avancés et exportables." />} />

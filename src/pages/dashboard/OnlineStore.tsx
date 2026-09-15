@@ -3,7 +3,7 @@ import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft, Search,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
-  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2
+  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2, Settings
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -689,7 +689,7 @@ export default function OnlineStore() {
 
           {/* Navigation/subpanel switcher */}
           <Card className="p-2 border border-gray-100 shadow-sm">
-            <div className="grid grid-cols-6 gap-1">
+            <div className="grid grid-cols-7 gap-1">
 
               <button
                 onClick={() => setPanel('themes')}
@@ -743,6 +743,21 @@ export default function OnlineStore() {
               >
                 <MessageSquare size={18} />
                 <span className="text-[9px] font-bold mt-1">Boîte</span>
+              </button>
+
+              {/* This tab existed as rendered content (panel === 'settings',
+                  holding the shop title, favicon, and — the thing a
+                  merchant asked about and couldn't find — the store logo
+                  upload) with no button anywhere to actually navigate to
+                  it. Unreachable through the UI = doesn't exist for the
+                  merchant, regardless of what the code could render. */}
+              <button
+                onClick={() => setPanel('settings')}
+                title="Réglages"
+                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'settings' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+              >
+                <Settings size={18} />
+                <span className="text-[9px] font-bold mt-1">Réglages</span>
               </button>
 
             </div>
@@ -1064,8 +1079,15 @@ export default function OnlineStore() {
                   {/* Header-specific inputs */}
                   {activeSection.type === 'header' && (
                     <div className="space-y-3">
+                      <ImageUploadField
+                        label="Logo (téléversement)"
+                        value={activeSection.props.logoUrl || ''}
+                        onChange={dataUrl => updateSectionProp(activeSection.id, 'logoUrl', dataUrl)}
+                        maxWidth={400}
+                        dimensionsHint="Remplace le texte du logo ci-dessous par une image."
+                      />
                       <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte du logo</label>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Texte du logo {activeSection.props.logoUrl && <span className="font-normal text-gray-400">(masqué tant qu'un logo image est défini)</span>}</label>
                         <input
                           type="text"
                           value={activeSection.props.logoText || ''}

@@ -13,7 +13,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import SupportPage from './pages/SupportPage';
 import GenericPage from './pages/GenericPage';
-import { ContactPageContent, FeaturesPageContent, ComingSoonContent } from './pages/StaticPageContent';
+import { ContactPageContent, FeaturesPageContent } from './pages/StaticPageContent';
 import { TermsContent, PrivacyContent, CookiesContent, RefundContent, LegalNoticeContent } from './pages/LegalPageContent';
 import AboutPage from './pages/AboutPage';
 import StorefrontPage from './pages/StorefrontPage';
@@ -90,8 +90,11 @@ export default function App() {
 
         {/* Public content pages */}
         <Route path="/features" element={<GenericPage title="Fonctionnalités" subtitle="Tout ce dont vous avez besoin pour vendre dans le monde entier."><FeaturesPageContent /></GenericPage>} />
-        <Route path="/academy" element={<GenericPage title="Académie vendeur" subtitle="Parcours structurés pour réussir en e-commerce."><ComingSoonContent /></GenericPage>} />
-        <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce, success stories, conseils marketing."><ComingSoonContent /></GenericPage>} />
+        {/* /academy and /blog are handled below by the real BlogListPage/
+            BlogPostPage (platform_posts-backed) — this pair of routes used
+            to shadow them by declaring the same paths first, so the
+            real pages never actually rendered; that's exactly what
+            happened here, not a hypothetical risk. */}
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/blog" element={<BlogListPage category="blog" />} />

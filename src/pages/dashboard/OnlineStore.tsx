@@ -3,15 +3,16 @@ import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft, Search,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
-  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2, Settings
+  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2, Settings, Pencil
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
+import { ThemeConfig, ThemeSection, ThemePreset, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
 import { supabase } from '../../lib/supabase';
+import { getCmsPages, createCmsPage, saveCmsPage, deleteCmsPage, type CmsPage } from '../../lib/cms';
 
 interface CustomDomain {
   domain: string;
@@ -42,6 +43,45 @@ const CUSTOM_PRESETS = TEMPLATE_PROFILES.map(p => ({
   colors: p.colors,
   fonts: p.fonts,
 }));
+
+// Real theme thumbnail — a live, scaled-down render of that template's
+// actual homepage (its real header + hero, with its real colors/fonts/
+// layout), using the same renderSection() the published storefront uses.
+// Replaces the old thumbnail, which was an abstract CSS mockup of
+// generic bars and boxes that didn't actually represent any layout
+// difference between templates — a merchant couldn't tell from it what
+// their store would really look like. A ResizeObserver keeps the scale
+// factor matched to the card's actual rendered width so it isn't a
+// rough approximation clipped by a fixed guess.
+const THUMBNAIL_BASE_WIDTH = 1400;
+function LiveThemeThumbnail({ presetId }: { presetId: ThemePreset }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.24);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setScale(el.offsetWidth / THUMBNAIL_BASE_WIDTH);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // 'ecommerce' as a base siteType only affects the spacing fallback
+  // ('comfortable' vs 'spacious') when presetOverride is given — the
+  // preset itself fully determines colors/fonts/layoutVariant/sections.
+  const previewTheme = useMemo(() => defaultThemeForType('ecommerce', presetId), [presetId]);
+  const previewSections = previewTheme.sections.slice(0, 2);
+
+  return (
+    <div ref={containerRef} className="h-28 relative overflow-hidden" style={{ backgroundColor: previewTheme.colors.background }}>
+      <div style={{ width: THUMBNAIL_BASE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left', pointerEvents: 'none' }}>
+        {previewSections.map(s => <div key={s.id}>{renderSection(s, previewTheme)}</div>)}
+      </div>
+    </div>
+  );
+}
 
 export default function OnlineStore() {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
@@ -203,11 +243,12 @@ export default function OnlineStore() {
 
   const shopProfile = getShopProfile();
 
-  // Custom Pages State
-  const [customPages, setCustomPages] = useState([
-    { id: '1', title: 'À propos de nous', content: 'Nous créons les plus beaux produits, pensés pour vous.' },
-    { id: '2', title: 'Conditions de livraison', content: 'Livraison gratuite par moto-taxi dans Abidjan et Douala.' }
-  ]);
+  // Custom Pages State — real, backed by cms.ts (the same store Content.tsx
+  // uses), not the hardcoded local seed list this used to be. That old
+  // version showed a "créée avec succès !" toast for a page that only
+  // ever existed in this component's memory — gone on reload, never on
+  // the storefront, and never in what Content.tsx's own editor showed.
+  const [customPages, setCustomPages] = useState<CmsPage[]>(() => getCmsPages());
   const [newPageTitle, setNewPageTitle] = useState('');
 
   // Logo, Favicon, Meta states connected to shopProfile
@@ -448,14 +489,16 @@ export default function OnlineStore() {
   const handleCreatePage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPageTitle.trim()) return;
-    const next = [...customPages, { id: `page-${Date.now()}`, title: newPageTitle, content: `Contenu générique de la page ${newPageTitle}...` }];
-    setCustomPages(next);
+    const page = { ...createCmsPage(), title: newPageTitle.trim() };
+    saveCmsPage(page);
+    setCustomPages(getCmsPages());
     setNewPageTitle('');
-    showToast(`Page "${newPageTitle}" créée avec succès !`);
+    showToast(`Page "${newPageTitle}" créée — modifiez son contenu dans Contenu > Pages.`);
   };
 
   const handleDeletePage = (id: string) => {
-    setCustomPages(customPages.filter(p => p.id !== id));
+    deleteCmsPage(id);
+    setCustomPages(getCmsPages());
     showToast('Page supprimée.');
   };
 
@@ -781,35 +824,11 @@ export default function OnlineStore() {
                       onClick={() => selectPreset(p)}
                       className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
                     >
-                      {/* Real theme thumbnail — a live mini mockup of the actual
-                          page structure (header, hero, grid) rendered with this
-                          template's real colors and fonts, the same way the
-                          Shopify Theme Store shows an actual screenshot of each
-                          theme rather than a plain color swatch. */}
-                      <div className="h-28 relative overflow-hidden" style={{ backgroundColor: p.colors.background }}>
-                        {/* mini header bar */}
-                        <div className="h-4 flex items-center px-2 gap-1" style={{ backgroundColor: p.colors.background, borderBottom: `1px solid ${p.colors.text}14` }}>
-                          <span className="w-8 h-1.5 rounded-sm" style={{ backgroundColor: p.colors.primary }} />
-                          <span className="ml-auto flex gap-0.5">
-                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
-                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
-                            <span className="w-2.5 h-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}33` }} />
-                          </span>
-                        </div>
-                        {/* mini hero */}
-                        <div className="px-2.5 pt-2 pb-1.5" style={{ background: `linear-gradient(135deg, ${p.colors.primary}, ${p.colors.accent})` }}>
-                          <div className="w-16 h-1.5 rounded-sm bg-white/90 mb-1" />
-                          <div className="w-10 h-1 rounded-sm bg-white/60" />
-                        </div>
-                        {/* mini content grid — 3 cards, distinct per layout */}
-                        <div className="grid grid-cols-3 gap-1 px-2.5 pt-1.5">
-                          {[0, 1, 2].map(i => (
-                            <div key={i} className="overflow-hidden" style={{ backgroundColor: `${p.colors.text}08`, border: `1px solid ${p.colors.text}12` }}>
-                              <div className="h-4" style={{ backgroundColor: `${p.colors.accent}55` }} />
-                              <div className="h-1 mt-0.5 mx-1 rounded-sm" style={{ backgroundColor: `${p.colors.text}30` }} />
-                            </div>
-                          ))}
-                        </div>
+                      {/* Real theme thumbnail — see LiveThemeThumbnail above:
+                          an actual scaled-down render of this template's
+                          real homepage header + hero, not a generic mockup. */}
+                      <div className="relative">
+                        <LiveThemeThumbnail presetId={p.id} />
                         <div className="absolute top-1.5 right-1.5 text-lg drop-shadow">{p.icon}</div>
                         {isActive && (
                           <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1" style={{ backgroundColor: p.colors.primary }}>
@@ -2057,7 +2076,7 @@ export default function OnlineStore() {
                 <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                   <FileText size={16} className="text-brand-600" /> Pages Institutionnelles
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Créez des pages de CGV, FAQ, À propos, ou histoires de marques.</p>
+                <p className="text-xs text-gray-500 mt-1">Créez des pages de CGV, FAQ, À propos, ou histoires de marques. Le contenu détaillé se modifie dans <Link to="/app/content" className="text-brand-600 underline">Contenu</Link>.</p>
               </div>
 
               <form onSubmit={handleCreatePage} className="flex gap-1">
@@ -2076,14 +2095,22 @@ export default function OnlineStore() {
               <div className="space-y-1.5 max-h-[220px] overflow-y-auto">
                 {customPages.map(p => (
                   <div key={p.id} className="flex items-center justify-between p-2 bg-gray-50 border border-gray-150 rounded-lg">
-                    <span className="text-xs font-semibold text-gray-700">{p.title}</span>
-                    <button
-                      onClick={() => handleDeletePage(p.id)}
-                      className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                      title="Supprimer"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+                    <div className="min-w-0">
+                      <span className="text-xs font-semibold text-gray-700 block truncate">{p.title}</span>
+                      <span className="text-[10px] text-gray-400">/{p.slug} · {p.status === 'published' ? 'Publiée' : 'Brouillon'}</span>
+                    </div>
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <Link to="/app/content" className="p-1 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded" title="Modifier le contenu">
+                        <Pencil size={13} />
+                      </Link>
+                      <button
+                        onClick={() => handleDeletePage(p.id)}
+                        className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                        title="Supprimer"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

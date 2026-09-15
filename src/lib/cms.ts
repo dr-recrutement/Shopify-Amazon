@@ -149,6 +149,12 @@ export function saveCmsPage(page: CmsPage) {
   return next;
 }
 
+export function deleteCmsPage(pageId: string) {
+  const next = readCmsPages().filter(p => p.id !== pageId);
+  writeCmsPages(next);
+  return next;
+}
+
 export function createCmsPage(): CmsPage {
   const template: CmsTemplate = 'custom';
   return {

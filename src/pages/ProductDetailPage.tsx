@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, ShoppingCart, Minus, Plus, Package, ShieldCheck, Truck } from 'lucide-react';
+import { ChevronLeft, ShoppingCart, Minus, Plus, Package, ShieldCheck, Truck, ZoomIn } from 'lucide-react';
 import {
   getShopTheme, getProducts, getShopProfile, getCartItems, saveCartItems,
   getProductImages, type CartItem, type StoreProduct,
@@ -9,6 +9,7 @@ import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, type Public
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
 import { useSeo } from '../lib/seo';
+import { ImageLightbox } from '../components/ImageLightbox';
 
 /**
  * Real individual product page (Shopify calls this the PDP — product
@@ -26,6 +27,7 @@ export default function ProductDetailPage() {
   const [products, setProducts] = useState<StoreProduct[] | null>(null);
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [added, setAdded] = useState(false);
 
@@ -127,9 +129,14 @@ export default function ProductDetailPage() {
       <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Gallery */}
         <div>
-          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 relative group">
             {images[activeImage] ? (
-              <img src={images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+              <button type="button" onClick={() => setZoomOpen(true)} className="w-full h-full block cursor-zoom-in" aria-label="Agrandir l'image">
+                <img src={images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+                <span className="absolute bottom-3 right-3 bg-black/50 text-white text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn size={12} /> Zoomer
+                </span>
+              </button>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={48} /></div>
             )}
@@ -213,6 +220,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+      <ImageLightbox src={images[activeImage] || ''} alt={product.name} open={zoomOpen} onClose={() => setZoomOpen(false)} />
     </div>
   );
 }

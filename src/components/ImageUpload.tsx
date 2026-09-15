@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { Upload, Trash2, Image as ImageIcon, Plus, Star } from 'lucide-react';
+import { Upload, Trash2, Image as ImageIcon, Plus, Star, ZoomIn } from 'lucide-react';
+import { ImageLightbox } from './ImageLightbox';
 
 interface ImageUploadFieldProps {
   label?: string;
@@ -25,6 +26,7 @@ interface ImageUploadFieldProps {
 export function ImageUploadField({ label, value, onChange, maxWidth = 800, dimensionsHint, className = '' }: ImageUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [zoomOpen, setZoomOpen] = useState(false);
 
   const handleFile = (file: File) => {
     setError(null);
@@ -61,12 +63,21 @@ export function ImageUploadField({ label, value, onChange, maxWidth = 800, dimen
     <div className={className}>
       {label && <label className="block text-[10px] font-medium text-gray-500 mb-1">{label}</label>}
       <div className="flex items-center gap-2">
-        <div
-          className="w-12 h-12 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0"
+        <button
+          type="button"
+          onClick={() => value && setZoomOpen(true)}
+          disabled={!value}
+          title={value ? 'Agrandir' : undefined}
+          className="group relative w-12 h-12 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0 disabled:cursor-default"
           style={value ? { backgroundImage: `url(${value})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
         >
           {!value && <ImageIcon size={16} className="text-gray-300" />}
-        </div>
+          {value && (
+            <span className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <ZoomIn size={14} className="text-white" />
+            </span>
+          )}
+        </button>
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <input
@@ -99,6 +110,7 @@ export function ImageUploadField({ label, value, onChange, maxWidth = 800, dimen
         </div>
       </div>
       {error && <p className="text-[10px] text-red-500 mt-1">{error}</p>}
+      <ImageLightbox src={value} alt={label} open={zoomOpen} onClose={() => setZoomOpen(false)} />
     </div>
   );
 }
@@ -149,6 +161,7 @@ export function MultiImageUpload({ label, value, onChange, dimensionsHint }: Mul
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [zoomSrc, setZoomSrc] = useState<string | null>(null);
 
   const images = value || [];
 
@@ -210,6 +223,9 @@ export function MultiImageUpload({ label, value, onChange, dimensionsHint }: Mul
               </span>
             )}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
+              <button type="button" onClick={() => setZoomSrc(img)} title="Agrandir" className="p-1 bg-white/90 rounded text-gray-700 hover:text-brand-600">
+                <ZoomIn size={11} />
+              </button>
               {i !== 0 && (
                 <button type="button" onClick={() => setPrimary(i)} title="Définir comme principale" className="p-1 bg-white/90 rounded text-gray-700 hover:text-brand-600">
                   <Star size={11} />
@@ -249,6 +265,7 @@ export function MultiImageUpload({ label, value, onChange, dimensionsHint }: Mul
         <p className="text-[10px] text-gray-400">{images.length}/{MAX_PRODUCT_IMAGES}</p>
       </div>
       {error && <p className="text-[10px] text-red-500 mt-1">{error}</p>}
+      <ImageLightbox src={zoomSrc || ''} alt={label} open={!!zoomSrc} onClose={() => setZoomSrc(null)} />
     </div>
   );
 }

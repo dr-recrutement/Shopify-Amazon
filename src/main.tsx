@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import * as Sentry from '@sentry/react';
 import App from './App.tsx';
 import { LanguageProvider } from './lib/i18n';
+import { ToastProvider } from './lib/toast';
 import { initSentry } from './lib/sentry';
 import './index.css';
 
@@ -25,7 +26,9 @@ createRoot(document.getElementById('root')!).render(
       )}
     >
       <LanguageProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </LanguageProvider>
     </Sentry.ErrorBoundary>
   </StrictMode>

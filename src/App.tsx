@@ -32,6 +32,7 @@ import Markets from './pages/dashboard/Markets';
 import Analytics from './pages/dashboard/Analytics';
 import OnlineStore from './pages/dashboard/OnlineStore';
 import OnlineStoreCustomize from './pages/dashboard/OnlineStoreCustomize';
+import AIStudio from './pages/dashboard/AIStudio';
 import Marketing from './pages/dashboard/Marketing';
 import Accounting from './pages/dashboard/Accounting';
 import Team from './pages/dashboard/Team';
@@ -110,6 +111,7 @@ export default function App() {
           <Route path="online-store" element={<OnlineStore />} />
           <Route path="online-store/advanced" element={<OnlineStore />} />
           <Route path="online-store/customize" element={<OnlineStoreCustomize />} />
+          <Route path="ai-studio" element={<AIStudio />} />
           <Route path="marketing" element={<Marketing />} />
           <Route path="accounting" element={<Accounting />} />
           <Route path="team" element={<Team />} />

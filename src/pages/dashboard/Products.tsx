@@ -1,12 +1,15 @@
 import { PageHeader, Card, Button, EmptyState, Table, Badge } from './ui';
-import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash } from 'lucide-react';
+import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
 import { MultiImageUpload } from '../../components/ImageUpload';
 import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId, fetchCloudSettings } from '../../lib/tenant-sync';
 import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
+import { generateAIContent } from '../../lib/ai';
+import { useToast } from '../../lib/toast';
 
 export default function Products() {
+  const { showToast } = useToast();
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [categories, setCategories] = useState<CategoryMap>({});
 
@@ -23,6 +26,7 @@ export default function Products() {
   const [prodSubcategory, setProdSubcategory] = useState('');
   const [prodImages, setProdImages] = useState<string[]>([]);
   const [prodDescription, setProdDescription] = useState('');
+  const [aiDescLoading, setAiDescLoading] = useState(false);
   const [prodMetafields, setProdMetafields] = useState<Record<string, string>>({});
   const [metafieldDefs, setMetafieldDefs] = useState<Array<{ id: string; label: string }>>([]);
 
@@ -68,7 +72,7 @@ export default function Products() {
 
   const handleOpenAddModal = () => {
     if (!planAccess.unrestricted && !planAccess.isSuperAdmin && isOverLimit(planAccess.plan.products, products.length)) {
-      alert(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.products} produits). Passe à un plan supérieur dans Réglages > Abonnement pour ajouter plus de produits.`);
+      showToast(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.products} produits). Passe à un plan supérieur dans Réglages > Abonnement pour ajouter plus de produits.`, 'warning');
       return;
     }
     setEditingProduct(null);
@@ -161,12 +165,13 @@ export default function Products() {
 
     const saved = saveProducts(updatedList);
     if (!saved) {
-      alert('Stockage plein : la limite du navigateur (≈5 Mo) est atteinte. Réduisez le nombre d\'images par produit ou supprimez d\'anciens produits, puis réessayez.');
+      showToast('Stockage plein : la limite du navigateur (≈5 Mo) est atteinte. Réduisez le nombre d\'images par produit ou supprimez d\'anciens produits, puis réessayez.', 'error');
       return;
     }
     setProducts(updatedList);
     setIsModalOpen(false);
     pushCloudProducts(updatedList);
+    showToast(editingProduct ? 'Produit mis à jour ✓' : resolvedStatus === 'draft' ? 'Produit enregistré en brouillon ✓' : 'Produit ajouté ✓', 'success');
   };
 
   const handleDeleteProduct = (id: string) => {
@@ -175,6 +180,7 @@ export default function Products() {
       setProducts(updated);
       saveProducts(updated);
       deleteCloudProduct(id);
+      showToast('Produit supprimé', 'success');
     }
   };
 
@@ -182,7 +188,7 @@ export default function Products() {
     const trimmed = newCategoryName.trim();
     if (!trimmed) return;
     if (categories[trimmed]) {
-      alert('Cette catégorie existe déjà !');
+      showToast('Cette catégorie existe déjà.', 'warning');
       return;
     }
     const updated = { ...categories, [trimmed]: [] };
@@ -199,7 +205,7 @@ export default function Products() {
     if (!trimmed || !prodCategory) return;
     const subs = categories[prodCategory] || [];
     if (subs.includes(trimmed)) {
-      alert('Cette sous-catégorie existe déjà pour cette catégorie !');
+      showToast('Cette sous-catégorie existe déjà pour cette catégorie.', 'warning');
       return;
     }
     const updated = {
@@ -381,9 +387,36 @@ export default function Products() {
 
               {/* Product Description */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Description
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                    Description
+                  </label>
+                  <button
+                    type="button"
+                    disabled={!prodName.trim() || aiDescLoading}
+                    onClick={async () => {
+                      setAiDescLoading(true);
+                      const action = prodDescription.trim() ? 'improve-text' : 'product-description';
+                      const res = await generateAIContent({
+                        action,
+                        productName: prodName,
+                        category: prodCategory,
+                        existingText: prodDescription,
+                      });
+                      setAiDescLoading(false);
+                      if (!res.ok) {
+                        showToast(res.notConfigured ? "Assistant IA pas encore activé (clé GEMINI_API_KEY manquante côté serveur)." : res.error, res.notConfigured ? 'info' : 'error');
+                        return;
+                      }
+                      setProdDescription(res.text);
+                      showToast('Description générée par l\'IA ✓', 'success');
+                    }}
+                    className="flex items-center gap-1 text-[11px] font-bold text-brand-600 hover:text-brand-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Sparkles size={12} className={aiDescLoading ? 'animate-pulse' : ''} />
+                    {aiDescLoading ? 'Génération…' : prodDescription.trim() ? 'Améliorer avec l\'IA' : 'Générer avec l\'IA'}
+                  </button>
+                </div>
                 <textarea
                   placeholder="Décrivez votre produit (matière, dimensions, origine…)"
                   value={prodDescription}

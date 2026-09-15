@@ -46,6 +46,15 @@ export default {
         extrabold: '600', // was 600 (800 originally)
         black: '600',     // was 700 (900 originally)
       },
+      keyframes: {
+        'toast-in': {
+          '0%': { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'toast-in': 'toast-in 0.2s ease-out',
+      },
     },
   },
   plugins: [],

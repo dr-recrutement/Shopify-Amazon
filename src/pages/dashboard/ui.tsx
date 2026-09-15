@@ -91,6 +91,33 @@ export function EmptyState({ icon: Icon, title, desc, action }: { icon: any; tit
   );
 }
 
+export function Spinner({ size = 16, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      className={`animate-spin ${className}`}
+      style={{ width: size, height: size }}
+      viewBox="0 0 24 24"
+      fill="none"
+      role="status"
+      aria-label="Chargement"
+    >
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  );
+}
+
+/** Centered spinner + label, for full-panel loading states (page/data fetch
+ *  in progress). Use <Spinner/> alone for inline/button loading instead. */
+export function LoadingState({ label = 'Chargement…' }: { label?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+      <Spinner size={28} />
+      <p className="text-sm font-medium">{label}</p>
+    </div>
+  );
+}
+
 export function LockedFeature({ title, desc, plan }: { title: string; desc: string; plan: string }) {
   return (
     <div className="relative">

@@ -8,7 +8,7 @@ import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../..
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3,
+  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles,
 } from 'lucide-react';
 
 const NAV = [
@@ -27,6 +27,9 @@ const NAV = [
     {
       to: '/app/online-store', label: 'Online Store', icon: Store, end: false,
     },
+  ]},
+  { group: 'IA', items: [
+    { to: '/app/ai-studio', label: 'Assistant IA', icon: Sparkles },
   ]},
   { group: 'Croissance', items: [
     { to: '/app/marketing', label: 'Marketing', icon: Megaphone },

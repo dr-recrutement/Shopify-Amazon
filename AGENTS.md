@@ -98,3 +98,22 @@ The platform mirrors Shopify's theme architecture. Do NOT rename concepts away f
   - Dashboard /app/orders: order LA-201663 visible with customer, total, payment method
   - Storefront: search "robe" → returns "Robe wax traditionnelle" product with add-to-cart
   - All colors use Shopify green (#008060), no orange in UI
+
+## Session (2026-09-15) — global notifications + free AI content assistant
+(Note: the Design panel's corner-radius/shadow/button-style/gradient/sticky-header/
+scroll-animation "real settings" fix was done in a concurrent session — see the
+"Theme editor: real, persisted corner-radius/shadow/button/gradient settings" commit.)
+- Added `src/lib/toast.tsx` (`ToastProvider`/`useToast`), mounted in `main.tsx`. This is
+  the app-wide notification system — distinct from `OnlineStore.tsx`'s own local inline
+  toast banner used for its editor-specific confirmations, which is untouched. Replaced
+  `alert()` calls in `Products.tsx` with toasts; added success toasts on product
+  save/delete.
+- Added a free AI content assistant: `functions/api/ai/generate.ts` (Gemini API proxy,
+  `GEMINI_API_KEY` env var, graceful `{configured:false}` fallback exactly like
+  `instagram-feed.ts` when unset — never fakes output), `src/lib/ai.ts` (client wrapper),
+  `src/pages/dashboard/AIStudio.tsx` (new page, route `/app/ai-studio`, nav entry), and an
+  inline "Générer/Améliorer avec l'IA" button on the product description field in
+  `Products.tsx`.
+- Added `Spinner`/`LoadingState` to `ui.tsx` (dashboard shared UI kit).
+- Verification: `npm run typecheck` (app + functions) exit 0, `npm run build` succeeds,
+  `npx eslint` 0 new errors, `npx vitest run` 27/27 passing (no regressions).

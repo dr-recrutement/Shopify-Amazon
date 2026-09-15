@@ -44,10 +44,11 @@ import Apps from './pages/dashboard/Apps';
 
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
-import AdminStores from './pages/admin/AdminStores';
-import AdminThemes from './pages/admin/AdminThemes';
+import AdminStores from './pages/admin/AdminStores';import AdminThemes from './pages/admin/AdminThemes';
 import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
 import AdminGeneric from './pages/admin/AdminGeneric';
+import AdminAudit from './pages/admin/AdminAudit';
+import AdminUsers from './pages/admin/AdminUsers';
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { session, loading } = useAuth();
@@ -128,12 +129,12 @@ export default function App() {
           <Route path="stores" element={<AdminStores />} />
           <Route path="themes" element={<AdminThemes />} />
           <Route path="super-admins" element={<AdminSuperAdmins />} />
-          <Route path="users" element={<AdminGeneric title="Utilisateurs" subtitle="Tous les utilisateurs de la plateforme." />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="billing" element={<AdminGeneric title="Facturation SaaS" subtitle="Revenus abonnements, MRR, churn, LTV." />} />
           <Route path="content" element={<AdminGeneric title="CMS Plateforme" subtitle="Contenu institutionnel, blog, académie, pages légales." />} />
           <Route path="moderation" element={<AdminGeneric title="Modération" subtitle="Suspension, validation, produits interdits, litiges." />} />
           <Route path="analytics" element={<AdminGeneric title="Statistiques globales" subtitle="Rapports avancés et exportables." />} />
-          <Route path="audit" element={<AdminGeneric title="Audit & Logs" subtitle="Traçabilité complète, impersonations, sécurité." />} />
+          <Route path="audit" element={<AdminAudit />} />
           <Route path="settings" element={<AdminGeneric title="Configuration" subtitle="Intégrations globales, paiements par pays." />} />
         </Route>
 

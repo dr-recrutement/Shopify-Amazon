@@ -1341,7 +1341,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass, onCategoryCli
 
   const colClasses =
     cols === 2 ? 'grid-cols-2' :
-    cols === 3 ? 'grid-cols-3' :
+    cols === 3 ? 'grid-cols-2 sm:grid-cols-3' :
     'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4';
 
   return (

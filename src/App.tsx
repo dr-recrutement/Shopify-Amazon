@@ -49,6 +49,9 @@ import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
 import AdminGeneric from './pages/admin/AdminGeneric';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminCms from './pages/admin/AdminCms';
+import BlogListPage from './pages/BlogListPage';
+import BlogPostPage from './pages/BlogPostPage';
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
   const { session, loading } = useAuth();
@@ -91,6 +94,10 @@ export default function App() {
         <Route path="/blog" element={<GenericPage title="Blog" subtitle="Tendances e-commerce, success stories, conseils marketing."><ComingSoonContent /></GenericPage>} />
         <Route path="/help" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/blog" element={<BlogListPage category="blog" />} />
+        <Route path="/blog/:slug" element={<BlogPostPage category="blog" />} />
+        <Route path="/academy" element={<BlogListPage category="academy" />} />
+        <Route path="/academy/:slug" element={<BlogPostPage category="academy" />} />
         <Route path="/contact" element={<GenericPage title="Contact" subtitle="Une question ? Écrivez directement au bon service."><ContactPageContent /></GenericPage>} />
         <Route path="/legal/terms" element={<GenericPage title="Conditions d'utilisation" subtitle="CGU Sellia."><TermsContent /></GenericPage>} />
         <Route path="/legal/privacy" element={<GenericPage title="Politique de confidentialité" subtitle="Vos données sont protégées."><PrivacyContent /></GenericPage>} />
@@ -131,7 +138,7 @@ export default function App() {
           <Route path="super-admins" element={<AdminSuperAdmins />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="billing" element={<AdminGeneric title="Facturation SaaS" subtitle="Revenus abonnements, MRR, churn, LTV." />} />
-          <Route path="content" element={<AdminGeneric title="CMS Plateforme" subtitle="Contenu institutionnel, blog, académie, pages légales." />} />
+          <Route path="content" element={<AdminCms />} />
           <Route path="moderation" element={<AdminGeneric title="Modération" subtitle="Suspension, validation, produits interdits, litiges." />} />
           <Route path="analytics" element={<AdminGeneric title="Statistiques globales" subtitle="Rapports avancés et exportables." />} />
           <Route path="audit" element={<AdminAudit />} />

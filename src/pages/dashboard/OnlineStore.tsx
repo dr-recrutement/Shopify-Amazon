@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding } from '../../lib/theme-engine';
+import { ThemeConfig, ThemeSection, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
@@ -264,13 +264,12 @@ export default function OnlineStore() {
   const [selectedExternalDomain, setSelectedExternalDomain] = useState<CustomDomain | null>(null);
   const [isVerifyingDns, setIsVerifyingDns] = useState(false);
 
-  // Custom visual states
-  const [borderRadius, setBorderRadius] = useState<'none' | 'subtle' | 'rounded' | 'full'>('rounded');
-  const [shadowDepth, setShadowDepth] = useState<'none' | 'subtle' | 'medium' | 'deep'>('subtle');
-  const [viewportAnimation, setViewportAnimation] = useState<'none' | 'fade' | 'slide' | 'scale'>('slide');
-  const [bgGradient, setBgGradient] = useState<'none' | 'sunset' | 'ocean' | 'lavender'>('none');
-  const [buttonStyle, setButtonStyle] = useState<'solid' | 'outline' | 'pill'>('solid');
-  const [headerSticky, setHeaderSticky] = useState<boolean>(true);
+  // Design/appearance controls below read and write theme.* fields directly
+  // (cornerRadius, shadowDepth, buttonStyle, bgGradient, headerSticky,
+  // scrollAnimation) so they're real and persisted — see buildThemeOverrideCss
+  // in theme-engine.tsx, shared by this editor's own preview and the real
+  // storefront. They used to be separate local state that never touched
+  // `theme` and had zero effect outside the editor session.
   const [customCSS, setCustomCSS] = useState(theme.customCSS ?? '/* Écrivez votre code CSS de personnalisation ici */\n.preview-store-header {\n  border-bottom: 2px solid var(--primary-color);\n}');
 
   // Local Chat / Inbox System States
@@ -1920,13 +1919,13 @@ export default function OnlineStore() {
               {/* Spacing & Border radius & Shadows */}
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Bordure des Boutons (Coins)</label>
+                  <label className="block text-xs font-bold text-gray-600">Forme des Contours (Coins)</label>
                   <div className="grid grid-cols-4 gap-1 mt-1.5">
-                    {([['none', 'Carré'], ['subtle', 'Doux'], ['rounded', 'Rond'], ['full', 'Pilule']] as const).map(([r, label]) => (
+                    {([['sharp', 'Carré'], ['soft', 'Doux'], ['rounded', 'Rond'], ['pill', 'Pilule']] as const).map(([r, label]) => (
                       <button
                         key={r}
-                        onClick={() => setBorderRadius(r)}
-                        className={`py-1 text-[10px] font-bold rounded-md border transition-all ${borderRadius === r ? 'bg-brand-600 text-white border-brand-600 shadow' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
+                        onClick={() => setTheme({ ...theme, cornerRadius: r })}
+                        className={`py-1 text-[10px] font-bold rounded-md border transition-all ${(theme.cornerRadius ?? 'default') === r ? 'bg-brand-600 text-white border-brand-600 shadow' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
                       >
                         {label}
                       </button>
@@ -1940,8 +1939,8 @@ export default function OnlineStore() {
                     {([['none', 'Aucun'], ['subtle', 'Léger'], ['medium', 'Moyen'], ['deep', 'Fort']] as const).map(([s, label]) => (
                       <button
                         key={s}
-                        onClick={() => setShadowDepth(s)}
-                        className={`py-1 text-[10px] font-bold rounded-md border transition-all ${shadowDepth === s ? 'bg-brand-600 text-white border-brand-600 shadow' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
+                        onClick={() => setTheme({ ...theme, shadowDepth: s })}
+                        className={`py-1 text-[10px] font-bold rounded-md border transition-all ${(theme.shadowDepth ?? 'default') === s ? 'bg-brand-600 text-white border-brand-600 shadow' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
                       >
                         {label}
                       </button>
@@ -1950,26 +1949,27 @@ export default function OnlineStore() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Animation de Défilement <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
+                  <label className="block text-xs font-bold text-gray-600">Animation de Défilement</label>
                   <select
-                    value={viewportAnimation}
-                    onChange={e => setViewportAnimation(e.target.value as any)}
+                    value={theme.scrollAnimation ?? 'none'}
+                    onChange={e => setTheme({ ...theme, scrollAnimation: e.target.value as ThemeConfig['scrollAnimation'] })}
                     className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white"
                   >
                     <option value="none">Aucune animation</option>
-                    <option value="fade">Fondu d’apparition (Fade)</option>
+                    <option value="fade">Fondu d'apparition (Fade)</option>
                     <option value="slide">Glissement doux vers le haut (Slide Up)</option>
                     <option value="scale">Agrandissement progressif (Scale)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Style des Boutons <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
+                  <label className="block text-xs font-bold text-gray-600">Style des Boutons</label>
                   <select
-                    value={buttonStyle}
-                    onChange={e => setButtonStyle(e.target.value as any)}
+                    value={theme.buttonStyle ?? 'default'}
+                    onChange={e => setTheme({ ...theme, buttonStyle: e.target.value as ThemeConfig['buttonStyle'] })}
                     className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white font-medium"
                   >
+                    <option value="default">Par défaut (selon le thème)</option>
                     <option value="solid">Plein (Solid)</option>
                     <option value="outline">Bordure (Outline)</option>
                     <option value="pill">Pilule arrondie</option>
@@ -1977,10 +1977,10 @@ export default function OnlineStore() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600">Dégradé d'Arrière-plan <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></label>
+                  <label className="block text-xs font-bold text-gray-600">Dégradé d'Arrière-plan</label>
                   <select
-                    value={bgGradient}
-                    onChange={e => setBgGradient(e.target.value as any)}
+                    value={theme.bgGradient ?? 'none'}
+                    onChange={e => setTheme({ ...theme, bgGradient: e.target.value as ThemeConfig['bgGradient'] })}
                     className="w-full mt-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs bg-white font-medium"
                   >
                     <option value="none">Uni (Pas de dégradé)</option>
@@ -1991,11 +1991,11 @@ export default function OnlineStore() {
                 </div>
 
                 <div className="flex items-center justify-between p-1">
-                  <span className="text-xs font-bold text-gray-600">Fixer l'en-tête (Sticky Header) <span className="font-normal text-gray-400 normal-case">(aperçu uniquement)</span></span>
+                  <span className="text-xs font-bold text-gray-600">Fixer l'en-tête (Sticky Header)</span>
                   <input
                     type="checkbox"
-                    checked={headerSticky}
-                    onChange={e => setHeaderSticky(e.target.checked)}
+                    checked={theme.headerSticky ?? false}
+                    onChange={e => setTheme({ ...theme, headerSticky: e.target.checked })}
                     className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                   />
                 </div>
@@ -2444,15 +2444,21 @@ export default function OnlineStore() {
               </div>
             </div>
 
-            {/* Custom injected styling tag */}
+            {/* Custom injected styling tag — colors + font as CSS vars for
+                merchant customCSS to reference, plus the merchant's own
+                CSS. Corner-radius, shadow, button-style, gradient, sticky
+                header are now handled by buildThemeOverrideCss above,
+                properly scoped to .theme-storefront-root instead of the
+                old unscoped `button`/`header` selectors here, which used
+                to leak into the surrounding dashboard chrome itself. */}
             <style dangerouslySetInnerHTML={{ __html: `
               :root {
                 --primary-color: ${theme.colors.primary};
                 --accent-color: ${theme.colors.accent};
                 --bg-color: ${theme.colors.background};
                 --text-color: ${theme.colors.text};
-                --border-radius: ${borderRadius === 'none' ? '0px' : borderRadius === 'subtle' ? '6px' : borderRadius === 'full' ? '9999px' : '14px'};
-                --shadow: ${shadowDepth === 'none' ? 'none' : shadowDepth === 'subtle' ? '0 2px 4px rgba(0,0,0,0.05)' : shadowDepth === 'deep' ? '0 10px 25px rgba(0,0,0,0.15)' : '0 4px 12px rgba(0,0,0,0.08)'};
+                --border-radius: 14px;
+                --shadow: 0 4px 12px rgba(0,0,0,0.08);
               }
               .custom-border-radius {
                 border-radius: var(--border-radius) !important;
@@ -2462,14 +2468,6 @@ export default function OnlineStore() {
               }
               .preview-element {
                 font-family: '${theme.fonts.heading}', sans-serif;
-                ${bgGradient === 'sunset' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #E0F2EE 100%) !important;' : bgGradient === 'ocean' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F0F9FF 100%) !important;' : bgGradient === 'lavender' ? 'background: linear-gradient(135deg, var(--bg-color) 70%, #F5F3FF 100%) !important;' : ''}
-              }
-              header {
-                ${headerSticky ? 'position: sticky !important; top: 0 !important; z-index: 30 !important;' : ''}
-              }
-              button {
-                border-radius: ${borderRadius === 'none' ? '0px' : borderRadius === 'subtle' ? '6px' : '9999px'} !important;
-                ${buttonStyle === 'outline' ? 'background-color: transparent !important; border: 2px solid currentColor !important; color: var(--primary-color) !important;' : ''}
               }
               ${customCSS}
             ` }} />
@@ -2501,8 +2499,15 @@ export default function OnlineStore() {
               )}
 
               {/* Rendered Live Website Sections */}
+              {/* theme-storefront-root + the injected style tag mirror the
+                  real storefront (StorefrontPage.tsx) exactly, so overrides
+                  that only exist as CSS (corner radius, background
+                  gradient, sticky header, scroll-reveal) are now actually
+                  visible in the editor's own preview instead of only
+                  taking effect once published. */}
+              <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
               <div
-                className={`preview-element transition-all ${viewportAnimation === 'fade' ? 'animate-pulse' : ''}`}
+                className={`theme-storefront-root preview-element transition-all ${theme.scrollAnimation === 'fade' ? 'animate-pulse' : ''}`}
                 style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
               >
                 {theme.sections.filter(s => s.visible).map(s => {

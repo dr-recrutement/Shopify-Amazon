@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
 import { signOut } from '../../lib/auth';
-import { getOrders, getProducts, getCustomers } from '../../lib/app-state';
+import { getOrders, getProducts, getCustomers, getNotifications, markNotificationRead, markAllNotificationsRead, type StoreNotification } from '../../lib/app-state';
 import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
+import { runAutomationsCheck } from '../../lib/automations-engine';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
@@ -90,6 +91,20 @@ export default function DashboardLayout() {
       if (cloud) setPendingOrderCount(cloud.filter(o => o.status === 'pending').length);
     });
   }, []);
+
+  // Real automation execution — see src/lib/automations-engine.ts. Runs
+  // once per dashboard visit (this app has no server-side cron), diffing
+  // real orders/customers/abandoned carts against what's already been
+  // processed, and firing the merchant's configured automations for
+  // whatever is new. Fire-and-forget: must never block the dashboard from
+  // rendering, and errors are already swallowed internally per-action.
+  const [notifications, setNotifications] = useState<StoreNotification[]>(getNotifications());
+  const [notifOpen, setNotifOpen] = useState(false);
+  useEffect(() => {
+    runAutomationsCheck().finally(() => setNotifications(getNotifications()));
+  }, []);
+  const unreadCount = notifications.filter(n => !n.read).length;
+  const bellBadgeCount = pendingOrderCount + unreadCount;
 
   const logout = async () => { await signOut(); nav('/'); };
 
@@ -179,12 +194,58 @@ export default function DashboardLayout() {
               </div>
             )}
           </div>
-          <button onClick={() => nav('/app/orders')} className="p-2 rounded-full hover:bg-gray-50 relative" title={pendingOrderCount > 0 ? `${pendingOrderCount} commande(s) en attente` : 'Aucune notification'}>
-            <Bell size={18} className="text-gray-600" />
-            {pendingOrderCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-brand-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">{pendingOrderCount}</span>
+          <div className="relative">
+            <button
+              onClick={() => setNotifOpen(o => !o)}
+              className="p-2 rounded-full hover:bg-gray-50 relative"
+              title={bellBadgeCount > 0 ? `${bellBadgeCount} notification(s)` : 'Aucune notification'}
+            >
+              <Bell size={18} className="text-gray-600" />
+              {bellBadgeCount > 0 && (
+                <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-brand-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">{bellBadgeCount}</span>
+              )}
+            </button>
+            {notifOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setNotifOpen(false)} />
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-gray-100 shadow-lg z-20 max-h-96 overflow-y-auto">
+                  <div className="p-3 border-b border-gray-100 flex items-center justify-between">
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Notifications</p>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={() => { markAllNotificationsRead(); setNotifications(getNotifications()); }}
+                        className="text-[11px] font-medium text-brand-600 hover:underline"
+                      >
+                        Tout marquer comme lu
+                      </button>
+                    )}
+                  </div>
+                  {pendingOrderCount > 0 && (
+                    <button
+                      onClick={() => { nav('/app/orders'); setNotifOpen(false); }}
+                      className="w-full text-left px-3 py-2.5 border-b border-gray-50 hover:bg-gray-50 text-sm text-gray-700"
+                    >
+                      {pendingOrderCount} commande(s) en attente →
+                    </button>
+                  )}
+                  {notifications.length === 0 ? (
+                    <p className="p-6 text-center text-xs text-gray-400">Aucune notification pour l'instant. Vos automatisations actives en généreront ici.</p>
+                  ) : (
+                    notifications.slice(0, 20).map(n => (
+                      <button
+                        key={n.id}
+                        onClick={() => { markNotificationRead(n.id); setNotifications(getNotifications()); if (n.link) { nav(n.link); setNotifOpen(false); } }}
+                        className={`w-full text-left px-3 py-2.5 border-b border-gray-50 hover:bg-gray-50 ${n.read ? 'opacity-60' : ''}`}
+                      >
+                        <p className="text-xs font-semibold text-gray-900">{n.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </>
             )}
-          </button>
+          </div>
           <div className="relative">
             <button onClick={() => setUserMenu(!userMenu)} className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-gray-50">
               <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center font-semibold text-brand-700 text-sm">

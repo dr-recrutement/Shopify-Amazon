@@ -679,6 +679,110 @@ export async function submitContactMessage(tenantId: string, name: string, email
   }
 }
 
+/** Returns a stable per-browser visitor id, generated once and persisted
+ *  in localStorage (not tenant-scoped — the same visitor across stores
+ *  can share one id, it's just a correlation key, never an identity).
+ *  Used to upsert one abandoned-cart row per real visitor session
+ *  instead of creating a fresh duplicate row every time the cart changes. */
+export function getOrCreateCartSessionId(): string {
+  const KEY = 'liafrikos_visitor_id';
+  try {
+    let id = localStorage.getItem(KEY);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(KEY, id);
+    }
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
+/** Real destination for the 'abandoned_cart' automation trigger (see
+ *  automations-engine.ts) — upserts a snapshot of the visitor's current
+ *  cart so the merchant's automations can detect real abandonment later.
+ *  Anonymous-safe. Silently no-ops if the cart is empty (nothing to
+ *  abandon) or off Supabase (local demo mode has no backend to sync to). */
+export async function trackAbandonedCart(tenantId: string, items: Array<{ name: string; qty: number; price: number }>, total: number, currency: string, customerEmail?: string, customerName?: string): Promise<void> {
+  if (!isCloudSyncActive() || items.length === 0) return;
+  try {
+    await supabase.from('abandoned_carts').upsert({
+      tenant_id: tenantId,
+      session_id: getOrCreateCartSessionId(),
+      customer_email: customerEmail?.trim().toLowerCase() || null,
+      customer_name: customerName?.trim() || null,
+      items,
+      total_cents: Math.round(total * 100),
+      currency,
+      status: 'open',
+      last_activity_at: new Date().toISOString(),
+    }, { onConflict: 'tenant_id,session_id' });
+  } catch {
+    // best-effort — must never block the shopping experience
+  }
+}
+
+/** Marks the current visitor's cart as recovered once they complete
+ *  checkout, so it stops showing up as an open abandonment. */
+export async function markCartRecovered(tenantId: string): Promise<void> {
+  if (!isCloudSyncActive()) return;
+  try {
+    await supabase.from('abandoned_carts')
+      .update({ status: 'recovered' })
+      .eq('tenant_id', tenantId)
+      .eq('session_id', getOrCreateCartSessionId());
+  } catch {
+    // best-effort
+  }
+}
+
+export type AbandonedCartRow = {
+  id: string;
+  session_id: string;
+  customer_email: string | null;
+  customer_name: string | null;
+  items: Array<{ name: string; qty: number; price: number }>;
+  total_cents: number;
+  currency: string;
+  last_activity_at: string;
+};
+
+/** Merchant-side read of open abandoned carts, used by the automations
+ *  engine. Authenticated only (RLS: owner-only select). */
+export async function fetchOpenAbandonedCarts(): Promise<AbandonedCartRow[]> {
+  if (!isCloudSyncActive()) return [];
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return [];
+  try {
+    const { data, error } = await supabase
+      .from('abandoned_carts')
+      .select('id, session_id, customer_email, customer_name, items, total_cents, currency, last_activity_at')
+      .eq('tenant_id', tenantId)
+      .eq('status', 'open');
+    if (error || !data) return [];
+    return data as AbandonedCartRow[];
+  } catch {
+    return [];
+  }
+}
+
+/** Real fix for the checkout screen: which of the merchant's connected
+ *  payment gateways are actually active, so only genuinely-wired,
+ *  merchant-connected options are offered to shoppers — see
+ *  functions/api/vendor-gateways/public-list.ts (no secrets exposed,
+ *  anonymous-safe). Empty array (not null) on any failure, so callers
+ *  can safely fall back to "no gateway connected" behavior. */
+export async function fetchActiveGatewayNames(tenantId: string): Promise<string[]> {
+  try {
+    const res = await fetch(`/api/vendor-gateways/public-list?tenantId=${tenantId}`);
+    if (!res.ok) return [];
+    const data: { gateways?: string[] } = await res.json();
+    return data.gateways || [];
+  } catch {
+    return [];
+  }
+}
+
 /** Fires the merchant's configured order webhook (Settings > Customer
  *  events), if one is set. Best-effort, fire-and-forget — a failing or
  *  slow webhook must never block order creation for the buyer. Reads the

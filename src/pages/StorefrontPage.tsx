@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, Plus, Minus, Trash2, Check, ArrowRight, Smartphone, CreditCard, Wallet, Lock } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, Plus, Minus, Trash2, Check, ArrowRight, CreditCard, Truck, Lock } from 'lucide-react';
 import {
   defaultThemeForType,
   renderSection,
@@ -22,7 +22,7 @@ import {
   type CartItem,
   type StoreProduct,
 } from '../lib/app-state';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, trackAbandonedCart, markCartRecovered, fetchActiveGatewayNames, type PublicTenant } from '../lib/tenant-sync';
 import { injectAnalyticsScripts, injectChatWidget } from '../lib/analytics-injector';
 import { useSeo, applyFavicon } from '../lib/seo';
 import { TemplateRenderer } from '../lib/theme-system/TemplateRenderer';
@@ -116,7 +116,21 @@ export default function StorefrontPage() {
   const [custPhone, setCustPhone] = useState('');
   const [custAddress, setCustAddress] = useState('');
   const [custCity, setCustCity] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('payunit');
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  // Real payment options — only 'cod' (Cash on Delivery, needs no
+  // processor — always real and honest) is available by default. 'payunit'
+  // is added once we've confirmed the merchant actually has it connected
+  // & active (see fetchActiveGatewayNames), instead of always showing it
+  // and only discovering it's unconfigured after the shopper tries to pay.
+  const [activeGateways, setActiveGateways] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!resolvedTenant?.id) return;
+    fetchActiveGatewayNames(resolvedTenant.id).then(gateways => {
+      setActiveGateways(gateways);
+      if (gateways.includes('PayUnit')) setPaymentMethod('payunit');
+    });
+  }, [resolvedTenant?.id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -169,13 +183,33 @@ export default function StorefrontPage() {
       const prod = catalog.find(p => p.id === c.id);
       return { ...c, image: prod?.image || undefined };
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicProducts]);
 
   const domainLabel = useMemo(() => slug ? `${slug}.os.liafrik.com` : getPrimaryDomain(), [slug]);
   const localProfile = useMemo(() => getShopProfile(), []);
   const shopName = resolvedTenant?.name || localProfile?.name || 'Boutique';
   const currency = resolvedTenant?.currency || localProfile?.currency || 'XOF';
+
+  // Real destination for the 'abandoned_cart' automation trigger (see
+  // src/lib/automations-engine.ts) — debounced so rapid qty +/- clicks
+  // don't spam the network, and skipped entirely for an empty cart (no
+  // point tracking abandonment of nothing) or a local preview session
+  // (no resolvedTenant.id → no real merchant to notify).
+  useEffect(() => {
+    if (!resolvedTenant?.id || cart.length === 0) return;
+    const t = setTimeout(() => {
+      trackAbandonedCart(
+        resolvedTenant.id,
+        cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
+        cart.reduce((sum, c) => sum + c.price * c.qty, 0),
+        currency,
+        custEmail || undefined,
+        custName || undefined,
+      );
+    }, 2500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart, resolvedTenant?.id, currency]);
 
   // Per-tenant SEO: each merchant's storefront gets its own real title and
   // description (their actual shop name), not the platform's generic
@@ -328,7 +362,7 @@ export default function StorefrontPage() {
       date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
       total: cartTotal,
       status: 'pending' as const,
-      payment: paymentMethod === 'payunit' ? 'PayUnit' : paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
+      payment: paymentMethod === 'payunit' ? 'PayUnit' : 'Paiement à la livraison',
       currency,
       items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
     };
@@ -376,6 +410,7 @@ export default function StorefrontPage() {
     } else {
       saveOrder(order);
     }
+    if (resolvedTenant) markCartRecovered(resolvedTenant.id);
     setOrderConfirmed(order.orderNumber || orderId);
     setCart([]);
     saveCartItems([], resolvedTenant?.id);
@@ -686,16 +721,19 @@ export default function StorefrontPage() {
                     </div>
                   </div>
 
-                  {/* Payment method */}
+                  {/* Payment method — only real, working options: PayUnit
+                      appears solely once confirmed connected & active for
+                      this merchant (see fetchActiveGatewayNames above);
+                      Cash on Delivery needs no payment processor at all,
+                      so it's always genuinely available. No more
+                      standalone "Orange Money / Wave / MTN MoMo / Carte"
+                      options that quietly had no processor behind them. */}
                   <div>
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Mode de paiement</h3>
                     <div className="space-y-2">
                       {[
-                        { id: 'payunit', label: 'PayUnit', icon: CreditCard, desc: 'Mobile Money, carte — paiement sécurisé' },
-                        { id: 'orange_money', label: 'Orange Money', icon: Smartphone, desc: 'Paiement via USSD' },
-                        { id: 'wave', label: 'Wave', icon: Wallet, desc: 'Paiement instantané' },
-                        { id: 'mtn', label: 'MTN MoMo', icon: Smartphone, desc: 'Mobile Money' },
-                        { id: 'card', label: 'Carte bancaire', icon: CreditCard, desc: 'Visa / Mastercard' },
+                        ...(activeGateways.includes('PayUnit') ? [{ id: 'payunit', label: 'PayUnit', icon: CreditCard, desc: 'Mobile Money, carte — paiement sécurisé en ligne' }] : []),
+                        { id: 'cod', label: 'Paiement à la livraison', icon: Truck, desc: 'Payez en espèces à la réception de votre commande' },
                       ].map(p => {
                         const Icon = p.icon;
                         return (

@@ -7,6 +7,7 @@ import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId
 import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
 import { generateAIContent } from '../../lib/ai';
 import { useToast } from '../../lib/toast';
+import { runAutomationsForTrigger } from '../../lib/automations-engine';
 
 export default function Products() {
   const { showToast } = useToast();
@@ -172,6 +173,16 @@ export default function Products() {
     setIsModalOpen(false);
     pushCloudProducts(updatedList);
     showToast(editingProduct ? 'Produit mis à jour ✓' : resolvedStatus === 'draft' ? 'Produit enregistré en brouillon ✓' : 'Produit ajouté ✓', 'success');
+
+    // Real low_stock automation trigger — fires immediately (no need to
+    // wait for the next dashboard-mount check) the moment a save crosses
+    // the threshold, e.g. a merchant editing stock down to 3 or fewer.
+    const savedProduct = updatedList.find(p => editingProduct ? p.id === editingProduct.id : p.id === updatedList[0].id);
+    const previousStock = editingProduct?.stock ?? Infinity;
+    const newStock = savedProduct?.stock ?? 0;
+    if (savedProduct && newStock <= 3 && previousStock > 3) {
+      runAutomationsForTrigger('low_stock', { product: savedProduct });
+    }
   };
 
   const handleDeleteProduct = (id: string) => {

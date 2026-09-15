@@ -365,6 +365,9 @@ export type Automation = {
   enabled: boolean;
   runs: number;
   createdAt: string;
+  /** ISO timestamp of the last real execution (see automations-engine.ts).
+   *  Absent until the automation has actually fired once. */
+  lastRunAt?: string;
 };
 
 const AUTOMATIONS_KEY = 'liafrikos_automations';
@@ -379,6 +382,76 @@ export function getAutomations(): Automation[] {
 
 export function saveAutomations(automations: Automation[]) {
   writeStorage(AUTOMATIONS_KEY, automations);
+}
+
+// ---------------------------------------------------------------------------
+// Automation execution cursor — tracks which orders/customers/carts have
+// already triggered their automations, so runAutomationsCheck() (see
+// src/lib/automations-engine.ts) never fires the same event twice across
+// dashboard visits. IDs only (no timestamps: order/customer records don't
+// carry a reliable sortable timestamp), capped so the list can't grow
+// unbounded on a long-lived store.
+// ---------------------------------------------------------------------------
+
+export type AutomationCursor = {
+  processedOrderIds: string[];
+  processedCustomerIds: string[];
+  processedCartIds: string[];
+};
+
+const AUTOMATION_CURSOR_KEY = 'liafrikos_automation_cursor';
+const CURSOR_CAP = 1000;
+
+export function getAutomationCursor(): AutomationCursor {
+  return readStorage<AutomationCursor>(AUTOMATION_CURSOR_KEY, {
+    processedOrderIds: [], processedCustomerIds: [], processedCartIds: [],
+  });
+}
+
+export function saveAutomationCursor(cursor: AutomationCursor) {
+  writeStorage(AUTOMATION_CURSOR_KEY, {
+    processedOrderIds: cursor.processedOrderIds.slice(-CURSOR_CAP),
+    processedCustomerIds: cursor.processedCustomerIds.slice(-CURSOR_CAP),
+    processedCartIds: cursor.processedCartIds.slice(-CURSOR_CAP),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// In-app notifications — real destination for the 'notify_staff' and
+// 'restock_alert' automation actions (see automations-engine.ts), surfaced
+// in the dashboard header bell (DashboardLayout.tsx) and on the
+// Automations page. Not a fake action that silently does nothing.
+// ---------------------------------------------------------------------------
+
+export type StoreNotification = {
+  id: string;
+  title: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+  link?: string;
+};
+
+const NOTIFICATIONS_KEY = 'liafrikos_notifications';
+const NOTIFICATIONS_CAP = 200;
+
+export function getNotifications(): StoreNotification[] {
+  return readStorage<StoreNotification[]>(NOTIFICATIONS_KEY, []);
+}
+
+export function pushNotification(n: Omit<StoreNotification, 'id' | 'createdAt' | 'read'>) {
+  const list = getNotifications();
+  const notif: StoreNotification = { ...n, id: `n-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, createdAt: new Date().toISOString(), read: false };
+  writeStorage(NOTIFICATIONS_KEY, [notif, ...list].slice(0, NOTIFICATIONS_CAP));
+  return notif;
+}
+
+export function markNotificationRead(id: string) {
+  writeStorage(NOTIFICATIONS_KEY, getNotifications().map(n => n.id === id ? { ...n, read: true } : n));
+}
+
+export function markAllNotificationsRead() {
+  writeStorage(NOTIFICATIONS_KEY, getNotifications().map(n => ({ ...n, read: true })));
 }
 
 // ---------------------------------------------------------------------------

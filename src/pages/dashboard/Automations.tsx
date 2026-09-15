@@ -41,8 +41,8 @@ export default function Automations() {
     <div>
       <PageHeader title="Automations" subtitle="Créez des règles automatiques sans code — façon Shopify Flow." action={<Button onClick={() => setShowBuilder(true)}><Plus size={16} /> Créer une automatisation</Button>} />
 
-      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-        Vos règles sont créées et enregistrées, mais le moteur qui les déclenche automatiquement (envoi d'email, notification…) est en développement — elles ne s'exécutent pas encore toutes seules pour l'instant.
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
+        Vos règles s'exécutent réellement : à l'ouverture de votre tableau de bord (nouvelles commandes, nouveaux clients, paniers abandonnés depuis plus d'1h) et immédiatement lors de l'action concernée (ex. stock qui passe à 3 unités ou moins). Consultez la cloche 🔔 en haut à droite pour voir ce qu'elles ont déclenché.
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -62,7 +62,7 @@ export default function Automations() {
             </div>
             <div className="mt-3 flex items-center gap-2">
               <Badge color={a.enabled ? 'green' : 'gray'}>{a.enabled ? 'Active' : 'Inactive'}</Badge>
-              <span className="text-[10px] text-gray-400">{a.runs} exécutions</span>
+              <span className="text-[10px] text-gray-400">{a.runs} exécution{a.runs !== 1 ? 's' : ''}{a.lastRunAt ? ` · dernière : ${new Date(a.lastRunAt).toLocaleDateString('fr-FR')}` : ''}</span>
             </div>
           </Card>
         ))}

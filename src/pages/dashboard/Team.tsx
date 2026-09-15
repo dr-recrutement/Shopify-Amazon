@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getStaff, saveStaff, type StaffMember, type StaffRole } from '../../lib/app-state';
 import { fetchCloudStaff, pushCloudStaff, deleteCloudStaff, ensureUuidId } from '../../lib/tenant-sync';
 import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
+import { useToast } from '../../lib/toast';
 
 const ROLE_LABELS: Record<StaffRole, string> = { admin: 'Admin', manager: 'Gestionnaire', staff: 'Personnel', support: 'Support' };
 const ROLE_COLORS: Record<StaffRole, string> = { admin: 'brand', manager: 'green', staff: 'gray', support: 'gray' };
@@ -15,11 +16,13 @@ const ROLE_PERMISSIONS: Record<StaffRole, string[]> = {
 };
 
 export default function Team() {
+  const { showToast } = useToast();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sName, setSName] = useState('');
   const [sEmail, setSEmail] = useState('');
   const [sRole, setSRole] = useState<StaffRole>('manager');
+  const [inviting, setInviting] = useState(false);
 
   const planAccess = usePlanAccess();
 
@@ -39,19 +42,47 @@ export default function Team() {
 
   const openAdd = () => {
     if (!planAccess.unrestricted && !planAccess.isSuperAdmin && isOverLimit(planAccess.plan.staff, staff.length)) {
-      alert(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.staff} membre(s)). Passe à un plan supérieur pour inviter plus de personnes.`);
+      showToast(`Limite du plan ${planAccess.plan.name} atteinte (${planAccess.plan.staff} membre(s)). Passe à un plan supérieur pour inviter plus de personnes.`, 'warning');
       return;
     }
     setSName(''); setSEmail(''); setSRole('manager'); setIsModalOpen(true);
   };
 
-  const handleInvite = (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!sName.trim() || !sEmail.trim()) return;
+    if (!sName.trim() || !sEmail.trim() || inviting) return;
     const newMember: StaffMember = { id: crypto.randomUUID(), name: sName, email: sEmail, role: sRole, status: 'invited', permissions: ROLE_PERMISSIONS[sRole], createdAt: new Date().toISOString().slice(0, 10) };
     const updated = [...staff, newMember];
     setStaff(updated); saveStaff(updated); pushCloudStaff(updated);
     setIsModalOpen(false);
+
+    // Real invitation email (Resend) — previously the "Envoyer
+    // l'invitation" button only saved a local record and never actually
+    // contacted the invitee. Graceful, honest fallback if no provider is
+    // configured — never claims an email went out when it didn't.
+    setInviting(true);
+    try {
+      const res = await fetch('/api/notify/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: sEmail,
+          subject: "Vous avez été invité(e) à rejoindre une équipe",
+          text: `Bonjour ${sName},\n\nVous avez été invité(e) à rejoindre l'équipe d'une boutique en ligne en tant que ${ROLE_LABELS[sRole]}.\n\nConnectez-vous ou créez un compte avec cette adresse email pour accéder à l'espace correspondant une fois les permissions par rôle activées.`,
+        }),
+      });
+      const data: { configured?: boolean; sent?: boolean } = await res.json().catch(() => ({}));
+      if (data.configured === false) {
+        showToast("Membre ajouté, mais l'email d'invitation n'a pas pu être envoyé (service d'emailing pas encore configuré).", 'warning');
+      } else if (data.sent) {
+        showToast(`Invitation envoyée à ${sEmail} ✓`, 'success');
+      } else {
+        showToast("Membre ajouté, mais l'envoi de l'email d'invitation a échoué.", 'warning');
+      }
+    } catch {
+      showToast("Membre ajouté, mais l'envoi de l'email d'invitation a échoué (réseau).", 'warning');
+    }
+    setInviting(false);
   };
 
   const handleRemove = (id: string) => {
@@ -71,7 +102,7 @@ export default function Team() {
       <PageHeader title="Équipe" subtitle="Staff, rôles et permissions." action={<Button onClick={openAdd}><Plus size={16} /> Inviter</Button>} />
 
       <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-        Cette liste enregistre vos membres d'équipe et leurs rôles prévus, mais deux points ne sont pas encore réels : aucun email d'invitation n'est envoyé, et les permissions par rôle ne sont pas encore appliquées techniquement — pour l'instant, seul le compte propriétaire de la boutique peut se connecter et agir dessus.
+        L'email d'invitation est réellement envoyé (si le service d'emailing est configuré dans Réglages). Point restant non réel : les permissions par rôle ne sont pas encore appliquées techniquement — pour l'instant, seul le compte propriétaire de la boutique peut se connecter et agir dessus.
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
@@ -134,7 +165,7 @@ export default function Team() {
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Annuler</Button>
-                <Button type="submit"><Mail size={14} /> Envoyer l'invitation</Button>
+                <Button type="submit" disabled={inviting}><Mail size={14} /> {inviting ? 'Envoi…' : "Envoyer l'invitation"}</Button>
               </div>
             </form>
           </div>

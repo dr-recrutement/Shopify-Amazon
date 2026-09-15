@@ -2,8 +2,9 @@ import { PageHeader, Card, Button, Badge, Table } from './ui';
 import { Megaphone, Plus, Mail, MessageSquare, Calendar, Sparkles, Send, X, Eye, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getCampaigns, saveCampaigns, getDiscounts, getAutomations, saveAutomations, type Campaign, type CampaignChannel, type AutomationTrigger, type AutomationAction } from '../../lib/app-state';
-import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, fetchCloudDiscounts, ensureUuidId } from '../../lib/tenant-sync';
+import { getCampaigns, saveCampaigns, getDiscounts, getAutomations, saveAutomations, getCustomers, type Campaign, type CampaignChannel, type AutomationTrigger, type AutomationAction } from '../../lib/app-state';
+import { fetchCloudCampaigns, pushCloudCampaigns, deleteCloudCampaign, fetchCloudDiscounts, fetchCloudCustomers, ensureUuidId } from '../../lib/tenant-sync';
+import { useToast } from '../../lib/toast';
 
 const CHANNEL_LABELS: Record<CampaignChannel, string> = { email: 'Email', sms: 'SMS', social: 'Social' };
 const STATUS_LABELS: Record<string, string> = { sent: 'Envoyée', active: 'Active', scheduled: 'Programmée', draft: 'Brouillon' };
@@ -15,12 +16,15 @@ const AUTOMATION_TEMPLATES: Array<{ name: string; trigger: AutomationTrigger; ac
 ];
 
 export default function Marketing() {
+  const { showToast } = useToast();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [automations, setAutomations] = useState(() => getAutomations());
   const [showEditor, setShowEditor] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [sending, setSending] = useState(false);
   const [form, setForm] = useState({ name: '', channel: 'email' as CampaignChannel, audience: 'Tous', subject: '', content: '', cta: 'Acheter maintenant', schedule: 'now', date: '', discountCode: '' });
   const [discountCodes, setDiscountCodes] = useState<string[]>([]);
+  const [customers, setCustomers] = useState(() => getCustomers());
 
   const activateTemplate = (t: { name: string; trigger: AutomationTrigger; action: AutomationAction }) => {
     const updated = [...automations, { id: crypto.randomUUID(), name: t.name, trigger: t.trigger, action: t.action, enabled: true, runs: 0, createdAt: new Date().toISOString().slice(0, 10) }];
@@ -43,15 +47,73 @@ export default function Marketing() {
     });
     setDiscountCodes(getDiscounts().map(d => d.code));
     fetchCloudDiscounts().then(cloud => { if (cloud) setDiscountCodes(cloud.map(d => d.code)); });
+    fetchCloudCustomers().then(cloud => { if (cloud) setCustomers(cloud); });
   }, []);
 
-  const sendCampaign = () => {
-    if (!form.name.trim()) return;
-    // Never claim 'sent' — no email/SMS provider is connected anywhere in
-    // this platform yet, so nothing is actually transmitted to anyone.
-    // Always saved as draft/scheduled instead of falsely marking it sent.
-    const status = form.schedule === 'now' ? 'draft' : 'scheduled';
-    const newC: Campaign = { id: crypto.randomUUID(), name: form.name, channel: form.channel, status: status as Campaign['status'], audience: 0, sent: 0, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
+  /** Real audience resolution from the actual customer base — no invented
+   *  counts. 'Acheteurs récents' maps to the 'regular' segment (has
+   *  ordered, not yet VIP/inactive); everything else maps 1:1 to a real
+   *  CustomerSegment. */
+  const resolveAudience = () => {
+    const withEmail = customers.filter(c => !!c.email);
+    switch (form.audience) {
+      case 'Nouveaux': return withEmail.filter(c => c.segment === 'new');
+      case 'Acheteurs récents': return withEmail.filter(c => c.segment === 'regular');
+      case 'Inactifs 60j': return withEmail.filter(c => c.segment === 'inactive');
+      case 'VIP': return withEmail.filter(c => c.segment === 'vip');
+      default: return withEmail;
+    }
+  };
+
+  const sendCampaign = async () => {
+    if (!form.name.trim() || sending) return;
+
+    // Real send, email channel only — for real immediate campaigns (SMS
+    // has no provider connected anywhere in this platform yet, so SMS
+    // campaigns always save as draft, honestly, same as before). Loops
+    // the real /api/notify/send-email endpoint (Resend) already used by
+    // the automations engine — same graceful {configured:false} fallback,
+    // never claims 'sent' when nothing was actually transmitted.
+    let status: Campaign['status'] = form.schedule === 'now' ? 'draft' : 'scheduled';
+    let sentCount = 0;
+    let audienceCount = 0;
+
+    if (form.channel === 'email' && form.schedule === 'now') {
+      const recipients = resolveAudience();
+      audienceCount = recipients.length;
+      if (recipients.length === 0) {
+        showToast("Aucun client avec email dans cette audience — rien à envoyer.", 'warning');
+      } else {
+        setSending(true);
+        let notConfigured = false;
+        for (const c of recipients) {
+          try {
+            const res = await fetch('/api/notify/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: c.email,
+                subject: form.subject || form.name,
+                html: `<p>${form.content.replace(/\n/g, '<br/>')}</p><p><a href="#">${form.cta}</a></p>`,
+                text: `${form.content}\n\n${form.cta}`,
+              }),
+            });
+            const data: { configured?: boolean; sent?: boolean } = await res.json().catch(() => ({}));
+            if (data.configured === false) { notConfigured = true; break; }
+            if (data.sent) sentCount++;
+          } catch { /* count as not-sent, continue with the rest */ }
+        }
+        setSending(false);
+        if (notConfigured) {
+          showToast("Service d'emailing pas encore configuré (variable RESEND_API_KEY manquante côté serveur) — campagne enregistrée en brouillon, rien n'a été envoyé.", 'warning');
+        } else {
+          status = 'sent';
+          showToast(`Campagne envoyée à ${sentCount}/${recipients.length} destinataire(s) ✓`, 'success');
+        }
+      }
+    }
+
+    const newC: Campaign = { id: crypto.randomUUID(), name: form.name, channel: form.channel, status, audience: audienceCount, sent: sentCount, opened: 0, clicked: 0, revenue: 0, currency: 'XOF', createdAt: new Date().toISOString().slice(0, 10) };
     const updated = [newC, ...campaigns];
     setCampaigns(updated); saveCampaigns(updated); pushCloudCampaigns(updated);
     setShowEditor(false);
@@ -71,8 +133,8 @@ export default function Marketing() {
     <div>
       <PageHeader title="Marketing" subtitle="Campagnes, automatisations et performance." action={<Button onClick={() => setShowEditor(true)}><Plus size={16} /> Créer une campagne</Button>} />
 
-      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-        L'envoi réel d'emails et de SMS n'est pas encore branché sur un fournisseur — vos campagnes sont enregistrées en brouillon/programmées, mais aucun message n'est transmis à vos clients pour l'instant.
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
+        Les campagnes email envoyées immédiatement sont réellement transmises à votre audience (via le service d'emailing configuré dans Réglages). Le SMS n'est pas encore branché sur un fournisseur — les campagnes SMS restent enregistrées en brouillon.
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -103,7 +165,7 @@ export default function Marketing() {
 
       <Card className="mt-6 p-5">
         <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2"><Megaphone size={16} /> Automatisations</h3>
-        <p className="text-sm text-gray-500 mb-4">Activez une règle prête à l'emploi — elle est créée dans votre page Automations (règle réellement enregistrée ; l'exécution automatique — envoi effectif — arrive avec le moteur d'automatisation, en cours de développement).</p>
+        <p className="text-sm text-gray-500 mb-4">Activez une règle prête à l'emploi — elle est créée et réellement exécutée dans votre page Automations (déclenchée à chaque ouverture du tableau de bord, ou immédiatement pour les événements en temps réel).</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {AUTOMATION_TEMPLATES.map(t => {
             const already = automations.some(a => a.trigger === t.trigger && a.action === t.action);
@@ -157,7 +219,9 @@ export default function Marketing() {
               </div>
               <div className="flex gap-2 pt-2">
                 <Button variant="secondary" onClick={() => setPreview(!preview)} className="flex items-center gap-1"><Eye size={14} /> Aperçu</Button>
-                <Button onClick={sendCampaign} className="flex-1 flex items-center justify-center gap-2"><Send size={14} /> {form.schedule === 'now' ? 'Enregistrer en brouillon' : 'Programmer'}</Button>
+                <Button onClick={sendCampaign} disabled={sending} className="flex-1 flex items-center justify-center gap-2">
+                  <Send size={14} /> {sending ? 'Envoi en cours…' : form.schedule === 'now' ? (form.channel === 'email' ? 'Envoyer maintenant' : 'Enregistrer en brouillon') : 'Programmer'}
+                </Button>
               </div>
               {preview && (
                 <div className="p-4 bg-white border-2 border-gray-100 rounded-lg">

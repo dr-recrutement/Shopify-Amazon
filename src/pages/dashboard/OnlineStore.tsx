@@ -18,6 +18,13 @@ interface CustomDomain {
   type: 'platform' | 'external' | 'purchased';
   status: 'active' | 'dns_pending' | 'dns_error';
   createdAt: string;
+  /** Real DNS target returned by /api/domains/connect (or /status) — the
+   *  actual Cloudflare Pages hostname to point a CNAME at. Undefined only
+   *  when the backend was unreachable at connect time (see the catch
+   *  fallback below), in which case we show an honest "unavailable"
+   *  message instead of fabricated records. */
+  dnsTarget?: string;
+  dnsNote?: string;
 }
 
 // Exactly 5 professional templates — each a complete, distinct theme for a
@@ -547,14 +554,24 @@ export default function OnlineStore() {
         setIsConnectingDomain(false);
         return;
       }
-      const newDomain: CustomDomain = { domain: cleanDomain, type: 'external', status: 'dns_pending', createdAt: new Date().toLocaleDateString('fr-FR') };
+      const newDomain: CustomDomain = {
+        domain: cleanDomain,
+        type: 'external',
+        status: 'dns_pending',
+        createdAt: new Date().toLocaleDateString('fr-FR'),
+        dnsTarget: result.dns?.target,
+        dnsNote: result.dns?.note,
+      };
       setMyDomains([...myDomains, newDomain]);
       setSelectedExternalDomain(newDomain);
       setExternalDomainInput('');
       showToast(`Domaine ${cleanDomain} attaché sur Cloudflare. Configurez vos DNS puis vérifiez.`);
     } catch {
       // Backend unreachable — keep the merchant unblocked locally; the domain
-      // isn't really attached on Cloudflare yet, "Vérifier" will retry the real check.
+      // isn't really attached on Cloudflare yet, "Vérifier" will retry the real
+      // check. No dnsTarget here on purpose: we genuinely don't know the real
+      // Cloudflare target yet, so the panel shows an honest "unavailable"
+      // message instead of a fabricated CNAME that might be wrong.
       const newDomain: CustomDomain = { domain: cleanDomain, type: 'external', status: 'dns_pending', createdAt: new Date().toLocaleDateString('fr-FR') };
       setMyDomains([...myDomains, newDomain]);
       setSelectedExternalDomain(newDomain);
@@ -563,15 +580,6 @@ export default function OnlineStore() {
     } finally {
       setIsConnectingDomain(false);
     }
-  };
-
-  const getDomainChallenge = (domain: string): string => {
-    let hash = 0;
-    for (let i = 0; i < domain.length; i++) {
-      hash = (hash << 5) - hash + domain.charCodeAt(i);
-      hash |= 0;
-    }
-    return `liafrik-challenge-${Math.abs(hash).toString(16)}`;
   };
 
   // Verify DNS — calls the real Cloudflare status API (functions/api/domains/status.ts)
@@ -592,12 +600,15 @@ export default function OnlineStore() {
       if (!res.ok) throw new Error(result.error || 'status check failed');
 
       const isVerified = result.status === 'verified';
-      const updated = myDomains.map(d => d.domain === dom.domain ? { ...d, status: isVerified ? ('active' as const) : ('dns_pending' as const) } : d);
+      const updated = myDomains.map(d => d.domain === dom.domain
+        ? { ...d, status: isVerified ? ('active' as const) : ('dns_pending' as const), dnsTarget: result.dns?.target || d.dnsTarget }
+        : d);
       setMyDomains(updated);
       if (isVerified) {
         setSelectedExternalDomain(null);
         showToast(`✅ DNS de ${dom.domain} résolus et validés sur Cloudflare !`);
       } else {
+        setSelectedExternalDomain(updated.find(d => d.domain === dom.domain) || dom);
         showToast(`DNS de ${dom.domain} pas encore propagés. Réessayez dans quelques minutes.`);
       }
     } catch {
@@ -2130,9 +2141,18 @@ export default function OnlineStore() {
                   </div>
 
                   <div className="font-mono text-[9px] text-gray-700 space-y-1 bg-white p-2 rounded border border-gray-200 leading-normal">
-                    <div><span className="font-bold text-brand-700">A:</span> @ → 104.21.43.201</div>
-                    <div><span className="font-bold text-brand-700">CNAME:</span> www → os.liafrik.com</div>
-                    <div><span className="font-bold text-brand-700">TXT:</span> _liafrik-challenge → {getDomainChallenge(selectedExternalDomain.domain)}</div>
+                    {selectedExternalDomain.dnsTarget ? (
+                      <>
+                        <div><span className="font-bold text-brand-700">CNAME:</span> {selectedExternalDomain.domain} → {selectedExternalDomain.dnsTarget}</div>
+                        {selectedExternalDomain.dnsNote && (
+                          <p className="text-gray-500 leading-snug pt-1 normal-case font-sans">{selectedExternalDomain.dnsNote}</p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-amber-600 normal-case font-sans">
+                        Instructions DNS momentanément indisponibles (le service Cloudflare n'a pas répondu à la connexion). Cliquez sur "Vérifier maintenant" pour réessayer — les vraies instructions s'afficheront dès que la connexion aura réussi.
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-2">

@@ -73,7 +73,7 @@ function rowToProduct(row: Record<string, any>): StoreProduct {
     name: row.name,
     price: (row.price_cents || 0) / 100,
     stock: row.stock || 0,
-    status: row.status === 'out_of_stock' ? 'out_of_stock' : 'active',
+    status: row.status === 'out_of_stock' ? 'out_of_stock' : row.status === 'draft' ? 'draft' : 'active',
     currency: row.currency || 'XOF',
     category: row.category || undefined,
     subcategory: row.subcategory || undefined,

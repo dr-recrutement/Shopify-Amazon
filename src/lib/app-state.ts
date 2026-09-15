@@ -13,7 +13,7 @@ export type StoreProduct = {
   name: string;
   price: number;
   stock: number;
-  status: 'active' | 'out_of_stock';
+  status: 'active' | 'out_of_stock' | 'draft';
   currency: string;
   category?: string;
   subcategory?: string;

@@ -18,7 +18,7 @@ export default function Products() {
   const [prodName, setProdName] = useState('');
   const [prodPrice, setProdPrice] = useState(0);
   const [prodStock, setProdStock] = useState(10);
-  const [prodStatus, setProdStatus] = useState<'active' | 'out_of_stock'>('active');
+  const [prodStatus, setProdStatus] = useState<'active' | 'out_of_stock' | 'draft'>('active');
   const [prodCategory, setProdCategory] = useState('');
   const [prodSubcategory, setProdSubcategory] = useState('');
   const [prodImages, setProdImages] = useState<string[]>([]);
@@ -112,6 +112,15 @@ export default function Products() {
     e.preventDefault();
     if (!prodName.trim()) return;
 
+    // Drafts (spec: "l'utilisateur doit pouvoir enregistrer son produit même
+    // si ça part dans brouillons") can be saved with an incomplete price or
+    // stock — those fields are no longer marked `required` in the form when
+    // the Brouillon status is selected below, and here we make sure the
+    // out-of-stock auto-detection doesn't silently overwrite a deliberate
+    // draft with 'out_of_stock' just because stock reads 0/empty.
+    const resolvedStatus: StoreProduct['status'] =
+      prodStatus === 'draft' ? 'draft' : Number(prodStock) === 0 ? 'out_of_stock' : prodStatus;
+
     let updatedList: StoreProduct[] = [];
     if (editingProduct) {
       updatedList = products.map(p => {
@@ -119,9 +128,9 @@ export default function Products() {
           return {
             ...p,
             name: prodName,
-            price: Number(prodPrice),
-            stock: Number(prodStock),
-            status: Number(prodStock) === 0 ? 'out_of_stock' : prodStatus,
+            price: Number(prodPrice) || 0,
+            stock: Number(prodStock) || 0,
+            status: resolvedStatus,
             category: prodCategory,
             subcategory: prodSubcategory,
             images: prodImages,
@@ -136,9 +145,9 @@ export default function Products() {
       const newProd: StoreProduct = {
         id: crypto.randomUUID(),
         name: prodName,
-        price: Number(prodPrice),
-        stock: Number(prodStock),
-        status: Number(prodStock) === 0 ? 'out_of_stock' : prodStatus,
+        price: Number(prodPrice) || 0,
+        stock: Number(prodStock) || 0,
+        status: resolvedStatus,
         currency: 'XOF',
         category: prodCategory,
         subcategory: prodSubcategory,
@@ -270,7 +279,7 @@ export default function Products() {
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">{p.name}</div>
-                        <div className="text-xs text-gray-400">ID: {p.id}{p.status === 'active' ? ' · Visible sur la boutique' : ' · Masqué'}</div>
+                        <div className="text-xs text-gray-400">ID: {p.id}{p.status === 'active' ? ' · Visible sur la boutique' : p.status === 'draft' ? ' · Brouillon' : ' · Masqué'}</div>
                       </div>
                     </div>
                   </td>
@@ -293,8 +302,8 @@ export default function Products() {
                   <td className="py-3.5 px-4 text-gray-700 font-semibold">{formatPrice(p)}</td>
                   <td className="py-3.5 px-4 text-gray-700 font-medium">{p.stock} pcs</td>
                   <td className="py-3.5 px-4">
-                    <Badge color={p.stock === 0 ? 'red' : 'green'}>
-                      {p.stock === 0 ? 'Rupture' : 'Actif'}
+                    <Badge color={p.status === 'draft' ? 'orange' : p.stock === 0 ? 'red' : 'green'}>
+                      {p.status === 'draft' ? 'Brouillon' : p.stock === 0 ? 'Rupture' : 'Actif'}
                     </Badge>
                   </td>
                   <td className="py-3.5 px-4">
@@ -410,11 +419,11 @@ export default function Products() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                    Prix (XOF) *
+                    Prix (XOF) {prodStatus !== 'draft' && '*'}
                   </label>
                   <input
                     type="number"
-                    required
+                    required={prodStatus !== 'draft'}
                     min={0}
                     value={prodPrice}
                     onChange={e => setProdPrice(Number(e.target.value))}
@@ -423,11 +432,11 @@ export default function Products() {
                 </div>
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
-                    Stock Disponible *
+                    Stock Disponible {prodStatus !== 'draft' && '*'}
                   </label>
                   <input
                     type="number"
-                    required
+                    required={prodStatus !== 'draft'}
                     min={0}
                     value={prodStock}
                     onChange={e => setProdStock(Number(e.target.value))}
@@ -435,17 +444,20 @@ export default function Products() {
                   />
                 </div>
               </div>
+              {prodStatus === 'draft' && (
+                <p className="text-[11px] text-amber-600 -mt-3">Brouillon : le prix et le stock sont facultatifs pour l'instant. Le produit ne sera pas visible sur la boutique tant qu'il n'est pas passé en Actif.</p>
+              )}
 
               {/* Status Selector */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
                   Statut du catalogue
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setProdStatus('active')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${
+                    className={`px-3 py-2 text-sm font-semibold rounded-lg border transition-all ${
                       prodStatus === 'active'
                         ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
                         : 'border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -456,13 +468,24 @@ export default function Products() {
                   <button
                     type="button"
                     onClick={() => setProdStatus('out_of_stock')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg border transition-all ${
+                    className={`px-3 py-2 text-sm font-semibold rounded-lg border transition-all ${
                       prodStatus === 'out_of_stock'
                         ? 'border-rose-600 bg-rose-50 text-rose-800'
                         : 'border-gray-200 text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     Rupture de stock
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setProdStatus('draft')}
+                    className={`px-3 py-2 text-sm font-semibold rounded-lg border transition-all ${
+                      prodStatus === 'draft'
+                        ? 'border-amber-500 bg-amber-50 text-amber-800'
+                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    Brouillon
                   </button>
                 </div>
               </div>

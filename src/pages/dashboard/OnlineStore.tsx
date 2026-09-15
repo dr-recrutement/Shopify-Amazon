@@ -75,7 +75,7 @@ function LiveThemeThumbnail({ presetId }: { presetId: ThemePreset }) {
   const previewSections = previewTheme.sections.slice(0, 2);
 
   return (
-    <div ref={containerRef} className="h-28 relative overflow-hidden" style={{ backgroundColor: previewTheme.colors.background }}>
+    <div ref={containerRef} className="h-44 relative overflow-hidden" style={{ backgroundColor: previewTheme.colors.background }}>
       <div style={{ width: THUMBNAIL_BASE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left', pointerEvents: 'none' }}>
         {previewSections.map(s => <div key={s.id}>{renderSection(s, previewTheme)}</div>)}
       </div>
@@ -815,44 +815,54 @@ export default function OnlineStore() {
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">5 templates professionnels pour 5 usages différents. Choisissez → activez → personnalisez tout via le CMS.</p>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {CUSTOM_PRESETS.map(p => {
                   const isActive = theme.layoutVariant === p.layoutVariant;
                   return (
-                    <button
+                    <div
                       key={p.id}
-                      onClick={() => selectPreset(p)}
-                      className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
+                      className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500 ring-1 ring-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
                     >
                       {/* Real theme thumbnail — see LiveThemeThumbnail above:
                           an actual scaled-down render of this template's
-                          real homepage header + hero, not a generic mockup. */}
-                      <div className="relative">
+                          real homepage header + hero, not a generic mockup.
+                          Taller now (h-44 vs the old cramped h-28) so it
+                          actually reads as a homepage screenshot, matching
+                          how Shopify's own "Discover themes" gallery
+                          presents each theme. */}
+                      <button onClick={() => selectPreset(p)} className="relative block w-full">
                         <LiveThemeThumbnail presetId={p.id} />
-                        <div className="absolute top-1.5 right-1.5 text-lg drop-shadow">{p.icon}</div>
                         {isActive && (
-                          <span className="absolute bottom-1.5 right-1.5 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1" style={{ backgroundColor: p.colors.primary }}>
+                          <span className="absolute top-2 right-2 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1 shadow" style={{ backgroundColor: p.colors.primary }}>
                             <CheckCircle size={10} /> Actif
                           </span>
                         )}
-                      </div>
-                      <div className="px-3.5 pt-2 flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-gray-900" style={{ fontFamily: p.fonts?.heading }}>{p.name}</span>
-                      </div>
+                      </button>
 
                       <div className="p-3.5">
-                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{p.useCase}</span>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <button onClick={() => selectPreset(p)} className="text-sm font-bold text-brand-700 hover:underline truncate block" style={{ fontFamily: p.fonts?.heading }}>
+                              {p.name}
+                            </button>
+                            <p className="text-[11px] text-gray-400">par Sellia</p>
+                          </div>
+                          <button
+                            onClick={() => selectPreset(p)}
+                            className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${isActive ? 'bg-brand-50 border-brand-200 text-brand-700 cursor-default' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                          >
+                            {isActive ? 'Activé' : 'Activer'}
+                          </button>
+                        </div>
+                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mt-2 block">{p.useCase}</span>
                         <p className="text-xs text-gray-500 mt-1 leading-relaxed">{p.description}</p>
                         <div className="flex flex-wrap gap-1 mt-2">
                           {p.features.map((f: string) => (
                             <span key={f} className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
                           ))}
                         </div>
-                        <div className={`mt-2.5 text-[11px] font-medium flex items-center gap-1 ${isActive ? 'text-brand-600' : 'text-gray-400 group-hover:text-brand-600'}`}>
-                          {isActive ? <><CheckCircle size={12} /> Template activé</> : <><ChevronRight size={12} /> Activer ce template</>}
-                        </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>

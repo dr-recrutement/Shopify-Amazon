@@ -54,7 +54,7 @@ const CUSTOM_PRESETS = TEMPLATE_PROFILES.map(p => ({
 // factor matched to the card's actual rendered width so it isn't a
 // rough approximation clipped by a fixed guess.
 const THUMBNAIL_BASE_WIDTH = 1400;
-function LiveThemeThumbnail({ presetId }: { presetId: ThemePreset }) {
+function LiveThemeThumbnail({ presetId, heightClass = 'h-44' }: { presetId: ThemePreset; heightClass?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.24);
 
@@ -75,7 +75,7 @@ function LiveThemeThumbnail({ presetId }: { presetId: ThemePreset }) {
   const previewSections = previewTheme.sections.slice(0, 2);
 
   return (
-    <div ref={containerRef} className="h-44 relative overflow-hidden" style={{ backgroundColor: previewTheme.colors.background }}>
+    <div ref={containerRef} className={`${heightClass} relative overflow-hidden`} style={{ backgroundColor: previewTheme.colors.background }}>
       <div style={{ width: THUMBNAIL_BASE_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left', pointerEvents: 'none' }}>
         {previewSections.map(s => <div key={s.id}>{renderSection(s, previewTheme)}</div>)}
       </div>
@@ -724,150 +724,153 @@ export default function OnlineStore() {
         }
       />
 
-      {/* Main CMS Layout */}
+      {/* Panel switcher — now always full width, above either the
+          full-width theme gallery (Shopify's "Discover themes" layout) or
+          the editor's panel+live-preview split, instead of being squeezed
+          inside the narrow 25%-wide editor column where it only ever made
+          sense for the non-gallery panels. */}
+      <Card className="p-2 border border-gray-100 shadow-sm mb-6">
+        <div className="grid grid-cols-7 gap-1">
+
+          <button
+            onClick={() => setPanel('themes')}
+            title="Thèmes"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'themes' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Store size={18} />
+            <span className="text-[9px] font-bold mt-1">Thèmes</span>
+          </button>
+
+          <button
+            onClick={() => setPanel('sections')}
+            title="Sections"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'sections' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Layers size={18} />
+            <span className="text-[9px] font-bold mt-1">Sections</span>
+          </button>
+
+          <button
+            onClick={() => setPanel('design')}
+            title="Design"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'design' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Palette size={18} />
+            <span className="text-[9px] font-bold mt-1">Design</span>
+          </button>
+
+          <button
+            onClick={() => setPanel('pages')}
+            title="Pages"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'pages' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <FileText size={18} />
+            <span className="text-[9px] font-bold mt-1">Pages</span>
+          </button>
+
+          <button
+            onClick={() => setPanel('domain')}
+            title="Domaines"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'domain' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Globe size={18} />
+            <span className="text-[9px] font-bold mt-1">Domaines</span>
+          </button>
+
+          <button
+            onClick={() => setPanel('inbox')}
+            title="Inbox Chat"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'inbox' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <MessageSquare size={18} />
+            <span className="text-[9px] font-bold mt-1">Boîte</span>
+          </button>
+
+          {/* This tab existed as rendered content (panel === 'settings',
+              holding the shop title, favicon, and — the thing a
+              merchant asked about and couldn't find — the store logo
+              upload) with no button anywhere to actually navigate to
+              it. Unreachable through the UI = doesn't exist for the
+              merchant, regardless of what the code could render. */}
+          <button
+            onClick={() => setPanel('settings')}
+            title="Réglages"
+            className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'settings' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Settings size={18} />
+            <span className="text-[9px] font-bold mt-1">Réglages</span>
+          </button>
+
+        </div>
+      </Card>
+
+      {panel === 'themes' ? (
+        /* Full-width theme gallery — Shopify's "Discover themes" layout
+           (3-column grid of large real previews) instead of a cramped
+           single-column list squeezed into the 25%-wide editor sidebar
+           every other panel below still uses. A gallery for browsing
+           templates doesn't need a live-preview companion column the way
+           the section/design editors do. */
+        <div>
+          <div className="mb-4">
+            <h3 className="text-base font-bold text-gray-900 flex items-center gap-1.5">
+              <Store size={18} className="text-brand-600" /> Choisir un template
+            </h3>
+            <p className="text-sm text-gray-500 mt-1">5 templates professionnels pour 5 usages différents. Choisissez → activez → personnalisez tout via le CMS.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CUSTOM_PRESETS.map(p => {
+              const isActive = theme.layoutVariant === p.layoutVariant;
+              return (
+                <div
+                  key={p.id}
+                  className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500 ring-1 ring-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
+                >
+                  {/* Real theme thumbnail — see LiveThemeThumbnail above: an
+                      actual scaled-down render of this template's real
+                      homepage header + hero, not a generic mockup. */}
+                  <button onClick={() => selectPreset(p)} className="relative block w-full">
+                    <LiveThemeThumbnail presetId={p.id} heightClass="h-56" />
+                    {isActive && (
+                      <span className="absolute top-2 right-2 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1 shadow" style={{ backgroundColor: p.colors.primary }}>
+                        <CheckCircle size={10} /> Actif
+                      </span>
+                    )}
+                  </button>
+
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <button onClick={() => selectPreset(p)} className="text-base font-bold text-brand-700 hover:underline truncate block" style={{ fontFamily: p.fonts?.heading }}>
+                          {p.name}
+                        </button>
+                        <p className="text-xs text-gray-400">par Sellia</p>
+                      </div>
+                      <button
+                        onClick={() => selectPreset(p)}
+                        className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${isActive ? 'bg-brand-50 border-brand-200 text-brand-700 cursor-default' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                      >
+                        {isActive ? 'Activé' : 'Activer'}
+                      </button>
+                    </div>
+                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mt-2.5 block">{p.useCase}</span>
+                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">{p.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {p.features.map((f: string) => (
+                        <span key={f} className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-x-hidden md:overflow-x-visible">
 
         {/* LEFT COLUMN: Subpanels controls & managers */}
         <div ref={leftPanelRef} className="space-y-4 col-span-1 w-full max-w-full">
-
-          {/* Navigation/subpanel switcher */}
-          <Card className="p-2 border border-gray-100 shadow-sm">
-            <div className="grid grid-cols-7 gap-1">
-
-              <button
-                onClick={() => setPanel('themes')}
-                title="Thèmes"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'themes' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <Store size={18} />
-                <span className="text-[9px] font-bold mt-1">Thèmes</span>
-              </button>
-
-              <button
-                onClick={() => setPanel('sections')}
-                title="Sections"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'sections' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <Layers size={18} />
-                <span className="text-[9px] font-bold mt-1">Sections</span>
-              </button>
-
-              <button
-                onClick={() => setPanel('design')}
-                title="Design"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'design' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <Palette size={18} />
-                <span className="text-[9px] font-bold mt-1">Design</span>
-              </button>
-
-              <button
-                onClick={() => setPanel('pages')}
-                title="Pages"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'pages' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <FileText size={18} />
-                <span className="text-[9px] font-bold mt-1">Pages</span>
-              </button>
-
-              <button
-                onClick={() => setPanel('domain')}
-                title="Domaines"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'domain' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <Globe size={18} />
-                <span className="text-[9px] font-bold mt-1">Domaines</span>
-              </button>
-
-              <button
-                onClick={() => setPanel('inbox')}
-                title="Inbox Chat"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'inbox' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <MessageSquare size={18} />
-                <span className="text-[9px] font-bold mt-1">Boîte</span>
-              </button>
-
-              {/* This tab existed as rendered content (panel === 'settings',
-                  holding the shop title, favicon, and — the thing a
-                  merchant asked about and couldn't find — the store logo
-                  upload) with no button anywhere to actually navigate to
-                  it. Unreachable through the UI = doesn't exist for the
-                  merchant, regardless of what the code could render. */}
-              <button
-                onClick={() => setPanel('settings')}
-                title="Réglages"
-                className={`p-2 rounded-lg flex flex-col items-center justify-center transition-colors ${panel === 'settings' ? 'bg-brand-50 text-brand-700' : 'text-gray-500 hover:bg-gray-50'}`}
-              >
-                <Settings size={18} />
-                <span className="text-[9px] font-bold mt-1">Réglages</span>
-              </button>
-
-            </div>
-          </Card>
-
-          {/* PANEL 1: Template selection — exactly 5 professional templates */}
-          {panel === 'themes' && (
-            <Card className="p-4 border border-gray-100 shadow-sm space-y-4">
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                  <Store size={16} className="text-brand-600" /> Choisir un template
-                </h3>
-                <p className="text-xs text-gray-500 mt-1">5 templates professionnels pour 5 usages différents. Choisissez → activez → personnalisez tout via le CMS.</p>
-              </div>
-              <div className="space-y-4">
-                {CUSTOM_PRESETS.map(p => {
-                  const isActive = theme.layoutVariant === p.layoutVariant;
-                  return (
-                    <div
-                      key={p.id}
-                      className={`w-full text-left rounded-xl border overflow-hidden transition-all bg-white group ${isActive ? 'border-brand-500 ring-1 ring-brand-500' : 'border-gray-200 hover:border-brand-300 hover:shadow-md'}`}
-                    >
-                      {/* Real theme thumbnail — see LiveThemeThumbnail above:
-                          an actual scaled-down render of this template's
-                          real homepage header + hero, not a generic mockup.
-                          Taller now (h-44 vs the old cramped h-28) so it
-                          actually reads as a homepage screenshot, matching
-                          how Shopify's own "Discover themes" gallery
-                          presents each theme. */}
-                      <button onClick={() => selectPreset(p)} className="relative block w-full">
-                        <LiveThemeThumbnail presetId={p.id} />
-                        {isActive && (
-                          <span className="absolute top-2 right-2 text-[9px] font-bold uppercase text-white px-2 py-0.5 rounded-md flex items-center gap-1 shadow" style={{ backgroundColor: p.colors.primary }}>
-                            <CheckCircle size={10} /> Actif
-                          </span>
-                        )}
-                      </button>
-
-                      <div className="p-3.5">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
-                            <button onClick={() => selectPreset(p)} className="text-sm font-bold text-brand-700 hover:underline truncate block" style={{ fontFamily: p.fonts?.heading }}>
-                              {p.name}
-                            </button>
-                            <p className="text-[11px] text-gray-400">par Sellia</p>
-                          </div>
-                          <button
-                            onClick={() => selectPreset(p)}
-                            className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${isActive ? 'bg-brand-50 border-brand-200 text-brand-700 cursor-default' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
-                          >
-                            {isActive ? 'Activé' : 'Activer'}
-                          </button>
-                        </div>
-                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mt-2 block">{p.useCase}</span>
-                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">{p.description}</p>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {p.features.map((f: string) => (
-                            <span key={f} className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 border border-gray-100">{f}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
 
           {/* PANEL 2: Dynamic drag & drop Sections configuration */}
           {panel === 'sections' && !selectedSection && (
@@ -2678,6 +2681,7 @@ export default function OnlineStore() {
         </div>
 
       </div>
+      )}
 
     </div>
   );

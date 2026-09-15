@@ -2,8 +2,8 @@ import { PageHeader, StatCard, Card, Badge } from './ui';
 import { ShoppingCart, DollarSign, Package, Users, ArrowRight, CheckCircle2, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { getOrders, getProducts, getShopProfile, getCustomers, getShopSubdomain, type StoreOrder } from '../../lib/app-state';
-import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
+import { getOrders, getProducts, getShopProfile, getCustomers, getShopSubdomain, getTenantStorageKey, type StoreOrder } from '../../lib/app-state';
+import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers, fetchCloudTheme, fetchCloudSettings, fetchCloudGateways } from '../../lib/tenant-sync';
 
 export default function DashboardHome() {
   const [shopProfile, setShopProfile] = useState(getShopProfile());
@@ -11,21 +11,55 @@ export default function DashboardHome() {
   const [orders, setOrders] = useState(getOrders());
   const [customerCount, setCustomerCount] = useState(getCustomers().length);
 
+  // Real checklist state — every item below used to be hardcoded `false`
+  // forever (even for a merchant who'd already added a logo, connected a
+  // gateway, customized their theme, or set up shipping zones), which
+  // meant "Prochaines étapes" was permanently wrong for anyone past their
+  // first minute in the app. Each is now checked against real data.
+  const [hasLogo, setHasLogo] = useState(false);
+  const [hasGateway, setHasGateway] = useState(false);
+  const [hasCustomizedTheme, setHasCustomizedTheme] = useState(false);
+  const [hasShippingZones, setHasShippingZones] = useState(false);
+
   useEffect(() => {
     setShopProfile(getShopProfile());
     fetchCloudProducts().then(cloud => { if (cloud) setProducts(cloud); });
     fetchCloudOrders().then(cloud => { if (cloud) setOrders(cloud); });
     fetchCloudCustomers().then(cloud => { if (cloud) setCustomerCount(cloud.length); });
+
+    // A theme has ever been saved (locally or in the cloud) → the
+    // merchant has been through the customizer at least once. The
+    // in-editor default is only ever synthesized client-side when
+    // nothing was saved yet, so a present record is a real signal.
+    const localThemeRaw = localStorage.getItem(getTenantStorageKey('liafrikos_theme_config'));
+    if (localThemeRaw) {
+      setHasCustomizedTheme(true);
+      try {
+        const localTheme: { sections?: Array<{ type: string; props?: Record<string, any> }> } = JSON.parse(localThemeRaw);
+        const header = localTheme.sections?.find(s => s.type === 'header');
+        if (header?.props?.logoUrl) setHasLogo(true);
+      } catch { /* malformed local cache — cloud fetch below still covers it */ }
+    }
+    fetchCloudTheme<{ sections?: Array<{ type: string; props?: Record<string, any> }> }>().then(cloud => {
+      if (cloud) {
+        setHasCustomizedTheme(true);
+        const header = cloud.sections?.find(s => s.type === 'header');
+        if (header?.props?.logoUrl) setHasLogo(true);
+      }
+    });
+
+    fetchCloudGateways().then(cloud => { setHasGateway(!!cloud?.some(g => g.isActive)); });
+    fetchCloudSettings<{ shippingZones?: unknown[] }>().then(cloud => {
+      setHasShippingZones(!!cloud?.shippingZones && cloud.shippingZones.length > 0);
+    });
   }, []);
 
-  // Only items we can actually verify are marked done — no more permanently
-  // stuck "not done" checklist for things merchants already did.
   const checklist = [
-    { label: 'Ajouter votre logo', done: false, link: '/app/online-store' },
-    { label: 'Configurer un moyen de paiement', done: false, link: '/app/settings' },
+    { label: 'Ajouter votre logo', done: hasLogo, link: '/app/online-store' },
+    { label: 'Configurer un moyen de paiement', done: hasGateway, link: '/app/settings' },
     { label: 'Ajouter un produit', done: products.length > 0, link: '/app/products' },
-    { label: 'Personnaliser votre thème', done: false, link: '/app/online-store' },
-    { label: 'Définir vos zones de livraison', done: false, link: '/app/settings' },
+    { label: 'Personnaliser votre thème', done: hasCustomizedTheme, link: '/app/online-store' },
+    { label: 'Définir vos zones de livraison', done: hasShippingZones, link: '/app/settings' },
   ];
 
   const pendingOrders = useMemo(() => orders.filter(order => order.status === 'pending').length, [orders]);

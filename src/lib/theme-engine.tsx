@@ -132,6 +132,14 @@ export interface ThemeConfig {
   headerSticky?: boolean;
   bgGradient?: 'none' | 'sunset' | 'ocean' | 'lavender';
   scrollAnimation?: 'none' | 'fade' | 'slide' | 'scale';
+  /** Global corner-radius override (spec: "décider de la forme des
+   *  contours"), independent of the chosen layoutVariant's built-in radius.
+   *  Undefined/'default' keeps each layout variant's own radius untouched. */
+  cornerRadius?: 'default' | 'sharp' | 'soft' | 'rounded' | 'pill';
+  /** Global shadow depth override, same rationale as cornerRadius. */
+  shadowDepth?: 'default' | 'none' | 'subtle' | 'medium' | 'deep';
+  /** Global button style. 'default' keeps each layout variant's own look. */
+  buttonStyle?: 'default' | 'solid' | 'outline' | 'pill';
   sections: ThemeSection[];
   isPublished: boolean;
 }
@@ -584,6 +592,40 @@ export function buildThemeOverrideCss(theme: ThemeConfig): string {
     return css;
   }).join('\n');
 
+  // Global corner-radius override (spec: "décider de la forme des
+  // contours"). Targets Tailwind's rounded-* utility classes wherever they
+  // appear across the whole rendered section tree, without needing to
+  // touch renderSection()'s per-section-type markup. True circles/pills
+  // (rounded-full — avatars, dots, badges) are deliberately excluded so a
+  // "Sharp" choice doesn't flatten things that are supposed to stay round.
+  const radiusPx: Record<string, string> = { sharp: '0px', soft: '6px', rounded: '16px', pill: '9999px' };
+  const cornerRadiusCss = theme.cornerRadius && theme.cornerRadius !== 'default' && radiusPx[theme.cornerRadius]
+    ? `.theme-storefront-root [class*="rounded-"]:not([class*="rounded-full"]) { border-radius: ${radiusPx[theme.cornerRadius]} !important; }`
+    : '';
+
+  // Global shadow-depth override — same technique, targeting Tailwind's
+  // shadow-* utility classes (but not shadow-none, so a merchant who wants
+  // "None" can still opt individual elements back in by other means later).
+  const shadowVal: Record<string, string> = {
+    none: 'none',
+    subtle: '0 2px 4px rgba(0,0,0,0.05)',
+    medium: '0 4px 12px rgba(0,0,0,0.08)',
+    deep: '0 10px 25px rgba(0,0,0,0.15)',
+  };
+  const shadowDepthCss = theme.shadowDepth && theme.shadowDepth !== 'default' && shadowVal[theme.shadowDepth]
+    ? `.theme-storefront-root [class*="shadow"]:not([class*="shadow-none"]) { box-shadow: ${shadowVal[theme.shadowDepth]} !important; }`
+    : '';
+
+  // Global button style override — scoped to real <button> elements and
+  // primary-action links inside the storefront only (never the admin
+  // dashboard chrome, unlike the editor's old unscoped `button { ... }`
+  // rule this replaces).
+  const buttonStyleCss = theme.buttonStyle === 'outline'
+    ? `.theme-storefront-root button { background-color: transparent !important; border: 2px solid currentColor !important; color: ${theme.colors.primary} !important; }`
+    : theme.buttonStyle === 'pill'
+    ? `.theme-storefront-root button { border-radius: 9999px !important; }`
+    : '';
+
   return `
     .theme-storefront-root {
       ${gradientOverlay ? `background: ${gradientOverlay} !important;` : ''}
@@ -597,6 +639,9 @@ export function buildThemeOverrideCss(theme: ThemeConfig): string {
       opacity: 1; transform: none;
     }
     ${sectionResponsiveCss}
+    ${cornerRadiusCss}
+    ${shadowDepthCss}
+    ${buttonStyleCss}
   `;
 }
 

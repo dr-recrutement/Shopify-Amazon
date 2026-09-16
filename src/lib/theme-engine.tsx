@@ -190,6 +190,26 @@ export function defaultSectionsForTemplate(templateId: TemplateId): ThemeSection
 
 /** Reads a template's sections, falling back to its default stack. Home
  *  always maps to theme.sections so nothing about existing themes changes. */
+/**
+ * Inner viewport width (px) for the editor's device preview, or null for
+ * desktop (full available width).
+ *
+ * These values are load-bearing, not cosmetic: the preview renders in an
+ * iframe, so CSS media queries resolve against exactly this number. They
+ * must land cleanly inside Tailwind's breakpoints or two device modes
+ * render identically:
+ *   mobile  390 -> below sm (640): mobile layout
+ *   tablet  768 -> at/above md (768) but below lg (1024): tablet layout
+ *   desktop null -> full width, at/above lg: desktop layout
+ * Tablet in particular must be >= 768 exactly, or md: rules never fire and
+ * "Tablet" silently renders the mobile layout.
+ */
+export function deviceViewportWidth(device: 'desktop' | 'tablet' | 'mobile'): number | null {
+  if (device === 'mobile') return 390;
+  if (device === 'tablet') return 768;
+  return null;
+}
+
 export function getTemplateSections(theme: ThemeConfig, templateId: TemplateId): ThemeSection[] {
   if (templateId === 'home') return theme.sections;
   return theme.templates?.[templateId] ?? defaultSectionsForTemplate(templateId);

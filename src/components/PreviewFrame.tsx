@@ -4,17 +4,22 @@ import { createPortal } from 'react-dom';
 /**
  * Renders the theme preview inside a real <iframe>.
  *
- * Why this exists: the device switcher used to just narrow a <div> with
- * `max-w-[340px]`. But every responsive class in the rendered sections
- * (`md:grid-cols-3`, `sm:flex-row`, `md:text-5xl` — 38+ of them in
- * theme-engine.tsx) is a VIEWPORT media query. On a desktop browser the
- * viewport stays ~1920px wide no matter how narrow that div is, so `md:`
- * and `lg:` rules stayed active and the merchant saw a horizontally
- * squished DESKTOP layout — not the mobile layout their customers
- * actually get. Switching to "Mobile" changed the width and nothing else.
+ * Why this exists: the device switcher used to just narrow a <div>. But
+ * every responsive class in the rendered sections (`md:grid-cols-3`,
+ * `sm:flex-row`, `md:text-5xl` — 38+ of them in theme-engine.tsx) is a
+ * VIEWPORT media query. On a desktop browser the viewport stays ~1920px
+ * wide no matter how narrow that div is, so `md:` and `lg:` rules stayed
+ * active and the merchant saw a horizontally squished DESKTOP layout —
+ * not the mobile layout their customers actually get.
  *
  * An iframe has its own viewport, so media queries resolve against the
  * simulated device width and the preview becomes genuinely accurate.
+ *
+ * Sizing note: this component deliberately always renders at width:100%
+ * and lets the PARENT set the device width explicitly in px. An earlier
+ * version took a `width` prop and the parent used `w-fit`; that made the
+ * percentage resolve against an indefinite width, so the iframe fell back
+ * to its intrinsic 300px default and Desktop rendered as a phone.
  *
  * The parent document's stylesheets are copied in (Tailwind is a single
  * compiled sheet in this app, plus the theme's injected <style> tags), and
@@ -22,13 +27,11 @@ import { createPortal } from 'react-dom';
  * instantly.
  */
 export function PreviewFrame({
-  width,
   children,
   className = '',
   styleKey = '',
   minHeight = 450,
 }: {
-  width: number | null;
   children: React.ReactNode;
   className?: string;
   styleKey?: string;
@@ -95,7 +98,7 @@ export function PreviewFrame({
       onLoad={handleLoad}
       title="Aperçu de la boutique"
       className={className}
-      style={{ width: width ? `${width}px` : '100%', height: `${height}px`, border: 'none', display: 'block' }}
+      style={{ width: '100%', height: `${height}px`, border: 'none', display: 'block' }}
     >
       {mountNode && createPortal(children, mountNode)}
     </iframe>

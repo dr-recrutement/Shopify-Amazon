@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, ThemeSection, ThemePreset, TemplateId, TEMPLATE_TABS, getTemplateSections, setTemplateSections, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
+import { ThemeConfig, ThemeSection, ThemePreset, TemplateId, TEMPLATE_TABS, getTemplateSections, setTemplateSections, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss, deviceViewportWidth } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
@@ -703,7 +703,14 @@ export default function OnlineStore() {
     showToast('Brouillon de thème sauvegardé localement.');
   };
 
-  const deviceWidth = device === 'mobile' ? 'max-w-[340px]' : device === 'tablet' ? 'max-w-[640px]' : 'max-w-full';
+  // Explicit device widths. These are the iframe's INNER viewport width,
+  // which is what CSS media queries resolve against — so they're chosen to
+  // land cleanly inside Tailwind's breakpoints and give three genuinely
+  // distinct layouts: mobile 390 (< sm:640), tablet 768 (>= md:768, < lg),
+  // desktop full width (>= lg:1024). Tablet must be >= 768 exactly or md:
+  // rules never activate and tablet renders identically to mobile.
+  const DEVICE_BORDER = 8; // border-4 on each side; box-sizing is border-box
+  const deviceInnerWidth = deviceViewportWidth(device);
 
   return (
     <div className="relative pb-16">
@@ -2655,8 +2662,20 @@ export default function OnlineStore() {
               ${customCSS}
             ` }} />
 
-            {/* Dynamic visual preview area */}
-            <div className={`mx-auto bg-white rounded-2xl border-4 border-gray-900 overflow-hidden transition-all duration-300 relative w-fit ${deviceWidth}`} style={{ minHeight: '450px' }}>
+            {/* Dynamic visual preview area. Width is set explicitly here
+                (NOT w-fit — shrink-to-fit made the iframe's width:100%
+                resolve against an indefinite width, collapsing it to the
+                CSS default 300px, which is why Desktop rendered as a
+                phone). The +DEVICE_BORDER compensates for border-4 under
+                border-box so the iframe's inner viewport is exactly the
+                intended device width. */}
+            <div
+              className="mx-auto bg-white rounded-2xl border-4 border-gray-900 overflow-hidden transition-all duration-300 relative max-w-full"
+              style={{
+                minHeight: '450px',
+                width: deviceInnerWidth ? `${deviceInnerWidth + DEVICE_BORDER}px` : '100%',
+              }}
+            >
 
               {/* Fake smartphone bar if mobile */}
               {device === 'mobile' && (
@@ -2690,8 +2709,7 @@ export default function OnlineStore() {
                   squished desktop layout, not the layout real phone
                   visitors get. See PreviewFrame.tsx. */}
               <PreviewFrame
-                width={device === 'mobile' ? 340 : device === 'tablet' ? 640 : null}
-                styleKey={`${theme.layoutVariant}-${theme.colors.primary}-${theme.fonts.heading}-${customCSS.length}-${activeTemplate}`}
+                styleKey={`${theme.layoutVariant}-${theme.colors.primary}-${theme.fonts.heading}-${customCSS.length}-${activeTemplate}-${device}`}
               >
                 <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
                 <div

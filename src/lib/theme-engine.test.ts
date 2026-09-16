@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultThemeForType, renderSection, THEME_PRESETS, getTemplateSections, setTemplateSections } from './theme-engine';
+import { defaultThemeForType, renderSection, THEME_PRESETS, getTemplateSections, setTemplateSections, deviceViewportWidth } from './theme-engine';
 
 describe('theme engine', () => {
   it('creates professional presets per site type', () => {
@@ -45,5 +45,31 @@ describe('theme engine', () => {
     const edited = setTemplateSections(theme, 'product', productDefault.slice(0, 2));
     expect(edited.sections).toBe(originalHome);
     expect(getTemplateSections(edited, 'product')).toHaveLength(2);
+  });
+
+  // Regression guard. The preview renders in an iframe, so these widths ARE
+  // the viewport CSS media queries resolve against. A shipped bug had the
+  // container shrink-to-fit, collapsing the iframe to its 300px intrinsic
+  // default so Desktop rendered as a phone. These assertions pin each mode
+  // into a distinct Tailwind breakpoint band so two modes can never again
+  // silently render the same layout.
+  it('gives each preview device a viewport in a distinct breakpoint band', () => {
+    const mobile = deviceViewportWidth('mobile');
+    const tablet = deviceViewportWidth('tablet');
+
+    // Desktop means "full available width", not a fixed number.
+    expect(deviceViewportWidth('desktop')).toBeNull();
+
+    // Mobile must stay below sm(640) so no sm:/md:/lg: rule activates.
+    expect(mobile).not.toBeNull();
+    expect(mobile as number).toBeLessThan(640);
+
+    // Tablet must be >= md(768) or md: rules never fire and tablet would
+    // render identically to mobile — and < lg(1024) so it isn't desktop.
+    expect(tablet).not.toBeNull();
+    expect(tablet as number).toBeGreaterThanOrEqual(768);
+    expect(tablet as number).toBeLessThan(1024);
+
+    expect(tablet as number).toBeGreaterThan(mobile as number);
   });
 });

@@ -121,7 +121,10 @@ export default function LoginPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                  <Link to="/forgot-password" className="text-xs font-medium text-brand-600 hover:underline">Mot de passe oublié ?</Link>
+                </div>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input type="password" required value={password} onChange={e => setPassword(e.target.value)}

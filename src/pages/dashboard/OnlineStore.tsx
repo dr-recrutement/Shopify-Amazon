@@ -2718,7 +2718,7 @@ export default function OnlineStore() {
                 >
                 {currentSections.filter(s => s.visible).map(s => {
                   const sectionWithRealData = { ...s };
-                  if (s.type === 'product-grid' || s.type === 'featured-collection') {
+                  if (s.type === 'product-grid' || s.type === 'featured-collection' || s.type === 'filters-list') {
                     // Inject REAL catalog products (active only) into the storefront
                     // preview — an active product appears on the site automatically.
                     const realProds = getProducts()

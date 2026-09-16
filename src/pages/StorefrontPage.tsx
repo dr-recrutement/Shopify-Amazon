@@ -297,7 +297,7 @@ export default function StorefrontPage() {
       // buttons, directly above the real one with working cart/search.
       .filter(s => s.type !== 'header')
       .map(s => {
-        if (s.type === 'product-grid' || s.type === 'featured-collection') {
+        if (s.type === 'product-grid' || s.type === 'featured-collection' || s.type === 'filters-list') {
           const filtered = categoryFilter ? products.filter(p => p.category === categoryFilter) : products;
           return { ...s, props: { ...s.props, products: filtered } };
         }

@@ -1415,6 +1415,12 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
       </div>
 
       <div className={`grid gap-4 md:gap-6 ${colClasses}`}>
+        {products.length === 0 && (
+          <div className="col-span-full text-center py-10 px-4 rounded-2xl border-2 border-dashed" style={{ borderColor: `${colors.text}20` }}>
+            <p className="text-sm font-semibold" style={{ color: colors.text }}>Aucun produit à afficher pour le moment</p>
+            <p className="text-xs text-gray-400 mt-1">Ajoutez des produits actifs dans votre catalogue pour qu'ils apparaissent ici automatiquement.</p>
+          </div>
+        )}
         {products.map((p: any, i: number) => {
           // Dynamic templates per preset
           if (isLuxury) {
@@ -1536,6 +1542,12 @@ function CategoryGridSection({ props, colors, fonts, spacingClass, onCategoryCli
         {props.title || 'Parcourir les catégories'}
       </h3>
       <div className={`grid gap-4 ${colClasses}`}>
+        {categories.length === 0 && (
+          <div className="col-span-full text-center py-10 px-4 rounded-2xl border-2 border-dashed" style={{ borderColor: `${colors.text}20` }}>
+            <p className="text-sm font-semibold" style={{ color: colors.text }}>Aucune catégorie à afficher pour le moment</p>
+            <p className="text-xs text-gray-400 mt-1">Ajoutez des catégories à vos produits pour qu'elles apparaissent ici automatiquement.</p>
+          </div>
+        )}
         {categories.map((c: any, i: number) => (
           <button
             key={i}
@@ -1604,6 +1616,13 @@ function CountdownSection({ props, colors, fonts }: { props: any; colors: any; f
 
 function FiltersListSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const filters = props.filters || ['Tout', 'Nouveautés', 'Prix'];
+  // Used by the Collection and Search page templates. This used to be a
+  // permanently static 3-box gray skeleton with a generic bag icon — a
+  // merchant viewing their real Collection/Search page in the editor never
+  // saw their actual products here, no matter how large their catalog was.
+  // Now takes real products the same way ProductGridSection does.
+  const products: any[] = props.products || [];
+
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>
       <div className="flex flex-col md:flex-row gap-6">
@@ -1621,19 +1640,28 @@ function FiltersListSection({ props, colors, fonts, spacingClass }: { props: any
           </div>
         </div>
 
-        {/* Mock Listing */}
-        <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl border border-black/5 p-3 flex flex-col justify-between">
-              <div className="aspect-[4/5] rounded-lg bg-gray-100 flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 text-gray-300" />
-              </div>
-              <div className="mt-3">
-                <div className="h-3 rounded bg-gray-200 w-3/4 mb-1.5" />
-                <div className="h-2 rounded bg-gray-100 w-1/2" />
-              </div>
+        {/* Real product listing */}
+        <div className="flex-1">
+          {products.length === 0 ? (
+            <div className="text-center py-10 px-4 rounded-2xl border-2 border-dashed" style={{ borderColor: `${colors.text}20` }}>
+              <p className="text-sm font-semibold" style={{ color: colors.text }}>Aucun produit à afficher pour le moment</p>
+              <p className="text-xs text-gray-400 mt-1">Vos produits actifs apparaîtront ici automatiquement.</p>
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {products.map((p: any, i: number) => (
+                <div key={i} className="rounded-xl border border-black/5 overflow-hidden flex flex-col group">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <MediaBox src={p.image} alt={p.name} seed={`filt-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" colors={colors} />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-xs font-semibold truncate" style={{ color: colors.text }}>{p.name}</p>
+                    <p className="text-xs font-black mt-0.5" style={{ color: colors.primary }}>{formatCurrency(p.price || 0, getShopProfile().currency)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -2241,11 +2269,17 @@ function ImageWithTextSection({ props, colors, fonts, spacingClass }: { props: a
 function RichTextSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const width = props.width === 'narrow' ? 'max-w-2xl' : 'max-w-4xl';
   const align = props.align === 'left' ? 'text-left' : props.align === 'right' ? 'text-right' : 'text-center';
+  // Every field was individually optional with no fallback — a freshly
+  // added Rich Text section (default props: {}) rendered a completely
+  // empty <section>, not even a placeholder heading. Falls back to a
+  // generic but real starting message instead of rendering nothing.
+  const title = props.title || 'Une histoire à raconter';
+  const text = props.text || "Ajoutez ici le texte de votre choix : une mise en avant, une annonce, ou tout ce que vous voulez partager avec vos visiteurs.";
   return (
     <section className={`${spacingClass} ${align}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
       <div className={`${width} mx-auto space-y-4`}>
-        {props.title && <h3 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: fonts.heading }}>{props.title}</h3>}
-        {props.text && <p className="text-sm md:text-base text-gray-600 leading-relaxed">{props.text}</p>}
+        <h3 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: fonts.heading }}>{title}</h3>
+        <p className="text-sm md:text-base text-gray-600 leading-relaxed">{text}</p>
         {props.cta && <button className="px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white" style={{ backgroundColor: colors.primary }}>{props.cta}</button>}
       </div>
     </section>

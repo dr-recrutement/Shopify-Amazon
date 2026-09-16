@@ -46,10 +46,10 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
 import AdminStores from './pages/admin/AdminStores';import AdminThemes from './pages/admin/AdminThemes';
 import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
-import AdminGeneric from './pages/admin/AdminGeneric';
 import AdminBilling from './pages/admin/AdminBilling';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminModeration from './pages/admin/AdminModeration';
+import AdminConfiguration from './pages/admin/AdminConfiguration';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCms from './pages/admin/AdminCms';
@@ -148,7 +148,7 @@ export default function App() {
           <Route path="moderation" element={<AdminModeration />} />
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="audit" element={<AdminAudit />} />
-          <Route path="settings" element={<AdminGeneric title="Configuration" subtitle="Intégrations globales, paiements par pays." />} />
+          <Route path="settings" element={<AdminConfiguration />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

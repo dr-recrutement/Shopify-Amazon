@@ -6,10 +6,11 @@ import { signOut, isSuperAdminEmail } from '../../lib/auth';
 import { getOrders, getProducts, getCustomers, getNotifications, markNotificationRead, markAllNotificationsRead, type StoreNotification } from '../../lib/app-state';
 import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 import { runAutomationsCheck } from '../../lib/automations-engine';
+import { fetchPlatformSettings, type PlatformSettings } from '../../lib/platform-settings';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles, ShieldCheck,
+  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles, ShieldCheck, Wrench,
 } from 'lucide-react';
 
 const NAV = [
@@ -49,6 +50,22 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
+  const [platformSettings, setPlatformSettings] = useState<PlatformSettings | null>(null);
+  const [announcementDismissed, setAnnouncementDismissed] = useState(false);
+
+  // Real platform-wide config (see Admin > Configuration) — maintenance
+  // mode gates this dashboard (not the public storefront: shoppers keep
+  // buying) and the announcement banner surfaces here, both driven by
+  // the same platform_settings row a super admin actually edits, not a
+  // hardcoded value.
+  useEffect(() => {
+    fetchPlatformSettings().then(s => {
+      setPlatformSettings(s);
+      if (s?.announcement_message) {
+        setAnnouncementDismissed(sessionStorage.getItem(`sellia_announcement_${s.announcement_message.slice(0, 40)}`) === '1');
+      }
+    });
+  }, []);
 
   // Real global search — client-side over the merchant's own real
   // products/orders/customers (fetched once, cached), not a placeholder.
@@ -106,6 +123,23 @@ export default function DashboardLayout() {
   const bellBadgeCount = pendingOrderCount + unreadCount;
 
   const logout = async () => { await signOut(); nav('/'); };
+
+  // Real maintenance gate (Admin > Configuration). Super admins always
+  // pass through — otherwise there'd be no way to turn maintenance mode
+  // back off without direct database access.
+  if (platformSettings?.maintenance_mode && !(user?.email && isSuperAdminEmail(user.email))) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="max-w-sm text-center">
+          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-amber-50 flex items-center justify-center">
+            <Wrench size={24} className="text-amber-600" />
+          </div>
+          <h1 className="text-lg font-bold text-gray-900">Maintenance en cours</h1>
+          <p className="mt-2 text-sm text-gray-500">{platformSettings.maintenance_message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -275,6 +309,22 @@ export default function DashboardLayout() {
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          {platformSettings?.announcement_active && platformSettings.announcement_message && !announcementDismissed && (
+            <div className="mb-4 flex items-start gap-2.5 bg-brand-50 border border-brand-200 rounded-xl px-4 py-3">
+              <Megaphone size={16} className="text-brand-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-brand-800 flex-1">{platformSettings.announcement_message}</p>
+              <button
+                onClick={() => {
+                  setAnnouncementDismissed(true);
+                  sessionStorage.setItem(`sellia_announcement_${platformSettings.announcement_message.slice(0, 40)}`, '1');
+                }}
+                className="text-brand-400 hover:text-brand-700 flex-shrink-0"
+                aria-label="Fermer l'annonce"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
           <Outlet />
         </main>
       </div>

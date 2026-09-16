@@ -1,11 +1,11 @@
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
 import { signOut } from '../../lib/auth';
 import {
   LayoutDashboard, Store, Users, CreditCard, Palette, FileText, Shield,
-  Settings, BarChart3, Menu, X, LogOut, AlertTriangle, Crown
+  Settings, BarChart3, Menu, X, LogOut, AlertTriangle, Crown, Sun, Moon
 } from 'lucide-react';
 
 const NAV = [
@@ -22,20 +22,27 @@ const NAV = [
   { to: '/admin/settings', label: 'Configuration', icon: Settings },
 ];
 
+const ADMIN_THEME_KEY = 'sellia_admin_theme';
+
 export default function AdminLayout() {
   const { user } = useAuth();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
+  const [light, setLight] = useState(() => localStorage.getItem(ADMIN_THEME_KEY) === 'light');
   const logout = async () => { await signOut(); nav('/'); };
 
+  useEffect(() => {
+    localStorage.setItem(ADMIN_THEME_KEY, light ? 'light' : 'dark');
+  }, [light]);
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex">
-      <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-60 bg-gray-950 border-r border-gray-800 flex flex-col transition-transform ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="h-16 flex items-center px-5 border-b border-gray-800">
-          <Logo white />
+    <div className={light ? 'min-h-screen bg-gray-50 text-gray-900 flex' : 'min-h-screen bg-gray-900 text-gray-100 flex'}>
+      <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-60 flex flex-col transition-transform ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} ${light ? 'bg-white border-r border-gray-200' : 'bg-gray-950 border-r border-gray-800'}`}>
+        <div className={`h-16 flex items-center px-5 border-b ${light ? 'border-gray-200' : 'border-gray-800'}`}>
+          <Logo white={!light} />
         </div>
         <div className="px-4 py-2">
-          <div className="flex items-center gap-2 px-2 py-1.5 bg-brand-900/30 text-brand-400 rounded-lg text-xs font-medium">
+          <div className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium ${light ? 'bg-brand-50 text-brand-700' : 'bg-brand-900/30 text-brand-400'}`}>
             <Crown size={14} /> Master Console
           </div>
         </div>
@@ -44,27 +51,34 @@ export default function AdminLayout() {
             const Icon = item.icon;
             return (
               <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setOpen(false)}
-                className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
+                className={({ isActive }) => `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-brand-600 text-white' : light ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
                 <Icon size={16} /> {item.label}
               </NavLink>
             );
           })}
         </nav>
-        <div className="p-3 border-t border-gray-800">
-          <div className="text-xs text-gray-500 mb-2 truncate">{user?.email}</div>
-          <button onClick={logout} className="w-full text-left px-3 py-2 rounded-full text-sm text-gray-400 hover:bg-gray-800 hover:text-white flex items-center gap-2">
+        <div className={`p-3 border-t ${light ? 'border-gray-200' : 'border-gray-800'}`}>
+          <div className={`text-xs mb-2 truncate ${light ? 'text-gray-500' : 'text-gray-500'}`}>{user?.email}</div>
+          <button onClick={logout} className={`w-full text-left px-3 py-2 rounded-full text-sm flex items-center gap-2 ${light ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
             <LogOut size={14} /> Déconnexion
           </button>
         </div>
       </aside>
       {open && <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setOpen(false)} />}
       <div className="flex-1 min-w-0">
-        <header className="sticky top-0 z-20 h-16 bg-gray-950 border-b border-gray-800 flex items-center px-4 sm:px-6 gap-3">
-          <button className="lg:hidden p-2 text-gray-400" onClick={() => setOpen(!open)}>
+        <header className={`sticky top-0 z-20 h-16 flex items-center px-4 sm:px-6 gap-3 ${light ? 'bg-white border-b border-gray-200' : 'bg-gray-950 border-b border-gray-800'}`}>
+          <button className={`lg:hidden p-2 ${light ? 'text-gray-500' : 'text-gray-400'}`} onClick={() => setOpen(!open)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <div className="text-sm text-gray-400">LiAfrik — Sellia Master Console</div>
-          <div className="ml-auto text-xs text-gray-500">{new Date().toLocaleDateString('fr-FR')}</div>
+          <div className={`text-sm ${light ? 'text-gray-500' : 'text-gray-400'}`}>LiAfrik — Sellia Master Console</div>
+          <button
+            onClick={() => setLight(l => !l)}
+            title={light ? 'Passer en thème sombre' : 'Passer en thème jour'}
+            className={`ml-auto p-2 rounded-lg transition-colors ${light ? 'text-gray-500 hover:bg-gray-100' : 'text-gray-400 hover:bg-gray-800'}`}
+          >
+            {light ? <Moon size={16} /> : <Sun size={16} />}
+          </button>
+          <div className={`text-xs ${light ? 'text-gray-400' : 'text-gray-500'}`}>{new Date().toLocaleDateString('fr-FR')}</div>
         </header>
         <main className="p-4 sm:p-6 lg:p-8"><Outlet /></main>
       </div>

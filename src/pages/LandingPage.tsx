@@ -258,19 +258,19 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      {/* Full-bleed hero background — Shopify-style. To set your own video:
-          drop an MP4 at public/hero-background.mp4 (any resolution/length,
-          keep it under ~10MB for fast load) and redeploy. No CMS step
-          needed since this is the platform's own landing page, not
-          merchant content. Silently falls back to the gradient/blur
-          background below if the file is missing or fails to load — never
-          shows a broken video icon. */}
-      <section className="relative pt-32 pb-24 text-white" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
-        {/* Same real hero-background.mp4 clip used on the Auth pages, kept
-            very subtle here (low opacity, blended with the gradient) so it
-            adds depth without fighting the centered text for attention. */}
+      {/* Full-bleed hero video background — Shopify-style. The clip lives at
+          public/hero-background.mp4; falls back to the gradient alone if
+          it's missing or fails to load — never shows a broken video icon. */}
+      <section className="relative pt-32 pb-24 text-white overflow-hidden" style={{ background: 'linear-gradient(135deg, #2F4FD1 0%, #3B5FE3 45%, #6087FF 100%)' }}>
+        {/* The video is now the actual visible background (previously
+            opacity-15 + mix-blend-overlay made it practically invisible
+            against the gradient — fixed per direct feedback: it should
+            read as a real hero video, not a faint texture). A dark
+            gradient scrim sits on top (next div) so the centered text
+            stays legible over moving footage, the same pattern
+            Shopify/BigCommerce use for video heroes. */}
         <video
-          className="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           src="/hero-background.mp4"
           autoPlay
           muted
@@ -278,6 +278,7 @@ export default function LandingPage() {
           playsInline
           onError={e => { (e.target as HTMLVideoElement).style.display = 'none'; }}
         />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(47,79,209,0.82) 0%, rgba(59,95,227,0.72) 45%, rgba(96,135,255,0.65) 100%)' }} />
         <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse" />
           <div className="absolute top-40 right-10 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }} />
@@ -526,15 +527,28 @@ export default function LandingPage() {
             </Section>
 
             <Section delay={100}>
+              {/* Real mockup of the actual Inbox UI (see
+                  src/pages/dashboard/Chat.tsx) — message bubbles, channel
+                  badges, sender names — instead of a bare icon and caption
+                  standing in for the product. */}
               <div className="relative bg-white rounded-2xl border border-gray-100 shadow-xl p-6">
-                <div className="rounded-xl bg-gray-900 aspect-[4/3] relative overflow-hidden flex items-center justify-center">
-                  <div className="text-center text-white/80">
-                    <MessageCircle size={36} className="mx-auto mb-2 text-brand-400" />
-                    <p className="text-sm font-medium">Boîte de réception Sellia</p>
+                <div className="rounded-xl bg-gray-50 border border-gray-100 aspect-[4/3] relative overflow-hidden flex flex-col">
+                  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-white">
+                    <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-[11px] font-bold flex-shrink-0">AK</div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold text-gray-900 truncate">Aïcha K.</p>
+                      <p className="text-[9px] text-gray-400">Robe wax — question taille</p>
+                    </div>
+                    <span className="ml-auto w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
                   </div>
-                  <div className="absolute top-3 left-3 bg-white rounded-lg px-2.5 py-1.5 shadow-lg flex items-center gap-1.5">
+                  <div className="flex-1 p-3 space-y-2 overflow-hidden">
+                    <div className="max-w-[75%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[10px] text-gray-700 shadow-sm">Bonjour, la robe est disponible en taille M ?</div>
+                    <div className="max-w-[75%] ml-auto bg-brand-600 text-white rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[10px] shadow-sm">Oui ! Il en reste 3 en stock 😊</div>
+                    <div className="max-w-[75%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[10px] text-gray-700 shadow-sm">Parfait, je commande maintenant</div>
+                  </div>
+                  <div className="absolute top-3 right-3 bg-white rounded-lg px-2 py-1 shadow-lg flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    <span className="text-[10px] font-semibold text-gray-800">Sponsorisé · Facebook</span>
+                    <span className="text-[9px] font-semibold text-gray-800">WhatsApp</span>
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">

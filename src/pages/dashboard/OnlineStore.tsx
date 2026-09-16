@@ -714,9 +714,9 @@ export default function OnlineStore() {
       {/* Page Header */}
       <PageHeader
         title="Boutique en Ligne"
-        subtitle="Éditeur de thème Shopify Online Store 2.0 — sections, blocs, CMS visuel & gestionnaire de domaines."
+        subtitle="Éditeur de thème — sections, blocs, CMS visuel & gestionnaire de domaines."
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Link to="/app/online-store">
               <Button variant="secondary" size="sm">
                 <ArrowLeft size={14} /> Retour aux Thèmes
@@ -743,7 +743,7 @@ export default function OnlineStore() {
           inside the narrow 25%-wide editor column where it only ever made
           sense for the non-gallery panels. */}
       <Card className="p-2 border border-gray-100 shadow-sm mb-6">
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-4 sm:grid-cols-7 gap-1">
 
           <button
             onClick={() => setPanel('themes')}
@@ -891,8 +891,11 @@ export default function OnlineStore() {
       ) : (
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-x-hidden md:overflow-x-visible">
 
-        {/* LEFT COLUMN: Subpanels controls & managers */}
-        <div ref={leftPanelRef} className="space-y-4 col-span-1 w-full max-w-full">
+        {/* LEFT COLUMN: Subpanels controls & managers. order-2 on mobile so
+            the live preview (what a merchant actually wants to see first
+            on a phone) appears above the settings/section list, while
+            keeping the original left-then-right order on desktop. */}
+        <div ref={leftPanelRef} className="space-y-4 col-span-1 w-full max-w-full order-2 lg:order-1">
 
           {/* PANEL 2: Dynamic drag & drop Sections configuration */}
           {panel === 'sections' && !selectedSection && (
@@ -2496,7 +2499,7 @@ export default function OnlineStore() {
         </div>
 
         {/* RIGHT COLUMN: Interactive live mockups preview */}
-        <div className="col-span-1 lg:col-span-3">
+        <div className="col-span-1 lg:col-span-3 order-1 lg:order-2">
           <Card className="p-4 border border-gray-100 shadow-sm">
 
             {/* Mockup controller header */}

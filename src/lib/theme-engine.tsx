@@ -266,6 +266,54 @@ export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; c
   },
 };
 
+// Per-preset hero copy + generated artwork (spec: real, distinct visuals per
+// template instead of the same generic "L'Élégance de la Mode Africaine"
+// fashion copy — and a literally blank hero, since `image` defaulted to ''
+// — shown for every preset regardless of what kind of store it's for).
+//
+// The artwork is a generated SVG data URI, not a hotlinked stock photo:
+// no external network dependency (never breaks, never 404s), no licensing
+// risk from embedding someone else's photography as permanent default
+// content in a commercial product, and it's colored from the preset's own
+// palette so it never clashes with the template it represents.
+const HERO_CONTENT: Record<ThemePreset, { title: string; subtitle: string; cta: string; variant: 'blobs' | 'grid' | 'waves' | 'diagonal' }> = {
+  universal: { title: 'Bienvenue dans votre boutique', subtitle: 'Un thème de référence, minimal et rapide, prêt à être personnalisé.', cta: 'Découvrir', variant: 'blobs' },
+  luxury: { title: "L'Excellence, sans compromis", subtitle: 'Une sélection raffinée de pièces d\'exception, pensées pour durer.', cta: 'Explorer la collection', variant: 'diagonal' },
+  african: { title: "L'Élégance de la Mode Africaine", subtitle: 'Découvrez notre collection exclusive de robes en Wax Royal faites à la main par des couturiers locaux de renom.', cta: 'Acheter Maintenant', variant: 'waves' },
+  editorial: { title: 'Une histoire, une marque', subtitle: 'Racontez ce qui vous rend unique à travers un design éditorial soigné.', cta: 'En savoir plus', variant: 'grid' },
+  'ecommerce-pro': { title: 'Nouvelle Collection', subtitle: 'Des produits sélectionnés avec soin, livrés rapidement où que vous soyez.', cta: 'Acheter Maintenant', variant: 'diagonal' },
+  vitrine: { title: 'Notre savoir-faire, votre confiance', subtitle: 'Découvrez qui nous sommes et ce qui nous anime au quotidien.', cta: 'Nous découvrir', variant: 'blobs' },
+  'business-corp': { title: 'Des solutions pensées pour votre croissance', subtitle: 'Un partenaire fiable pour accompagner votre entreprise à chaque étape.', cta: 'Demander un devis', variant: 'grid' },
+  services: { title: 'Réservez votre prochain rendez-vous', subtitle: 'Un service professionnel, disponible quand vous en avez besoin.', cta: 'Réserver maintenant', variant: 'waves' },
+  'creative-magazine': { title: 'Des histoires qui inspirent', subtitle: 'Articles, idées et créations, sélectionnés pour vous chaque semaine.', cta: 'Lire les derniers articles', variant: 'grid' },
+};
+
+function generateHeroArt(colors: ThemeConfig['colors'], variant: 'blobs' | 'grid' | 'waves' | 'diagonal'): string {
+  const { primary, accent, secondary } = colors;
+  let shapes = '';
+  if (variant === 'blobs') {
+    shapes = `
+      <circle cx="220" cy="180" r="260" fill="${primary}" opacity="0.85" />
+      <circle cx="1180" cy="620" r="320" fill="${accent}" opacity="0.55" />
+      <circle cx="900" cy="120" r="150" fill="${secondary}" opacity="0.35" />`;
+  } else if (variant === 'grid') {
+    const lines = Array.from({ length: 8 }, (_, i) => `<line x1="${i * 200}" y1="0" x2="${i * 200}" y2="900" stroke="${accent}" stroke-width="1.5" opacity="0.25" />`).join('');
+    shapes = `<rect width="1600" height="900" fill="${primary}" />${lines}<circle cx="1300" cy="200" r="220" fill="${secondary}" opacity="0.3" />`;
+  } else if (variant === 'waves') {
+    shapes = `
+      <rect width="1600" height="900" fill="${primary}" />
+      <path d="M0,550 C400,650 1200,450 1600,550 L1600,900 L0,900 Z" fill="${accent}" opacity="0.6" />
+      <path d="M0,650 C500,750 1100,600 1600,700 L1600,900 L0,900 Z" fill="${secondary}" opacity="0.4" />`;
+  } else {
+    shapes = `
+      <rect width="1600" height="900" fill="${primary}" />
+      <polygon points="1600,0 1600,900 700,900" fill="${accent}" opacity="0.5" />
+      <polygon points="1600,0 1600,500 1000,0" fill="${secondary}" opacity="0.4" />`;
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">${shapes}</svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 /**
  * The 5 professional templates — exactly five, each for a distinct use case.
  * This is the canonical list shown in the theme selector: the user picks one,
@@ -699,18 +747,21 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
     }
   };
 
-  // Hero Default Props
+  // Hero Default Props — real per-preset copy + generated artwork (see
+  // HERO_CONTENT/generateHeroArt above), instead of the same fashion copy
+  // and a blank image for every template.
+  const heroContent = HERO_CONTENT[preset];
   const heroSection: ThemeSection = {
     id: 'hero-1',
     type: 'hero',
     visible: true,
     props: {
-      title: 'L’Élégance de la Mode Africaine',
-      subtitle: 'Découvrez notre collection exclusive de robes en Wax Royal faites à la main par des couturiers locaux de renom.',
-      cta: 'Acheter Maintenant',
-      image: '',
+      title: heroContent.title,
+      subtitle: heroContent.subtitle,
+      cta: heroContent.cta,
+      image: generateHeroArt(colors, heroContent.variant),
       align: 'center',
-      overlayOpacity: '50',
+      overlayOpacity: '35',
       textColor: '#ffffff',
     }
   };

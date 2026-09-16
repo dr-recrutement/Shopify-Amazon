@@ -48,6 +48,8 @@ import AdminStores from './pages/admin/AdminStores';import AdminThemes from './p
 import AdminSuperAdmins from './pages/admin/AdminSuperAdmins';
 import AdminGeneric from './pages/admin/AdminGeneric';
 import AdminBilling from './pages/admin/AdminBilling';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminModeration from './pages/admin/AdminModeration';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCms from './pages/admin/AdminCms';
@@ -143,8 +145,8 @@ export default function App() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="billing" element={<AdminBilling />} />
           <Route path="content" element={<AdminCms />} />
-          <Route path="moderation" element={<AdminGeneric title="Modération" subtitle="Suspension, validation, produits interdits, litiges." />} />
-          <Route path="analytics" element={<AdminGeneric title="Statistiques globales" subtitle="Rapports avancés et exportables." />} />
+          <Route path="moderation" element={<AdminModeration />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="audit" element={<AdminAudit />} />
           <Route path="settings" element={<AdminGeneric title="Configuration" subtitle="Intégrations globales, paiements par pays." />} />
         </Route>

@@ -2,14 +2,14 @@ import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../lib/hooks';
-import { signOut } from '../../lib/auth';
+import { signOut, isSuperAdminEmail } from '../../lib/auth';
 import { getOrders, getProducts, getCustomers, getNotifications, markNotificationRead, markAllNotificationsRead, type StoreNotification } from '../../lib/app-state';
 import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 import { runAutomationsCheck } from '../../lib/automations-engine';
 import {
   Home, ShoppingCart, Package, Users, TrendingUp, Tag, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
-  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles,
+  FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles, ShieldCheck,
 } from 'lucide-react';
 
 const NAV = [
@@ -260,6 +260,11 @@ export default function DashboardLayout() {
                     <div className="text-sm font-medium text-gray-900 truncate">{user?.email}</div>
                     <div className="text-xs text-gray-500">Vendeur</div>
                   </div>
+                  {user?.email && isSuperAdminEmail(user.email) && (
+                    <button onClick={() => { setUserMenu(false); nav('/admin'); }} className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                      <ShieldCheck size={14} className="text-brand-600" /> Espace Super Admin
+                    </button>
+                  )}
                   <button onClick={logout} className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
                     <LogOut size={14} /> Déconnexion
                   </button>

@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Logo } from '../components/Logo';
+import { PhoneInput } from '../components/PhoneInput';
 import { GLOBAL_COUNTRIES, PLANS } from '../lib/constants';
+import { DIAL_CODES } from '../lib/dial-codes';
 import { saveShopProfile } from '../lib/app-state';
 import { Check, ChevronRight, Store, MapPin, Palette, Package, CreditCard, Sparkles, ArrowRight, ChevronDown } from 'lucide-react';
 
@@ -25,6 +27,9 @@ export default function OnboardingPage() {
     theme: 'universal', productName: '', productPrice: '', gateway: 'flutterwave',
     plan: 'premium', billing: 'monthly',
   });
+  const [phoneCountry, setPhoneCountry] = useState('CI');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const fullPhone = phoneNumber ? `${DIAL_CODES[phoneCountry] || ''}${phoneNumber.replace(/\s+/g, '')}` : '';
 
   const [countrySearch, setCountrySearch] = useState('');
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
@@ -72,6 +77,7 @@ export default function OnboardingPage() {
         plan: data.plan,
         billing_cycle: data.billing,
         status: 'trial',
+        phone: fullPhone || null,
       });
     }
     saveShopProfile({
@@ -145,6 +151,13 @@ export default function OnboardingPage() {
                   {['Mode & vêtements', 'High-tech & électronique', 'Restauration', 'Pharmacie & santé', 'Artisanat', 'Beauté & cosmétiques', 'Services', 'Grossiste', 'Créateur de contenu', 'Autre'].map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
+              <PhoneInput
+                label="Téléphone de la boutique"
+                countryCode={phoneCountry}
+                number={phoneNumber}
+                onCountryChange={setPhoneCountry}
+                onNumberChange={setPhoneNumber}
+              />
               <div className="flex gap-2 pt-4">
                 <button onClick={back} className="px-4 py-2.5 border border-gray-200 rounded-full font-medium hover:bg-gray-50">Retour</button>
                 <button onClick={next} disabled={!data.shopName} className="flex-1 py-2.5 bg-brand-600 text-white font-semibold rounded-full hover:bg-brand-700 disabled:opacity-50">Continuer</button>

@@ -333,3 +333,13 @@ GLOBAL_COUNTRIES.push(
   { code: 'WS', name: 'Samoa', nameEn: 'Samoa', currency: 'WST', flag: '🇼🇸' },
   { code: 'YE', name: 'Yémen', nameEn: 'Yemen', currency: 'YER', flag: '🇾🇪' },
 );
+
+/** Every country in the platform, Africa-first (merchants' primary
+ *  market) then the rest of the world, alphabetical within each group —
+ *  used by the phone number country-code picker (see
+ *  components/PhoneInput.tsx) so every listed country resolves to a
+ *  real flag + dial code, not a partial subset. */
+export const ALL_COUNTRIES: GlobalCountry[] = [
+  ...AFRICAN_COUNTRIES,
+  ...GLOBAL_COUNTRIES,
+].sort((a, b) => a.name.localeCompare(b.name, 'fr'));

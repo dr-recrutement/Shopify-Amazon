@@ -9,32 +9,34 @@
 @tailwind utilities;
 
 :root {
-  /* Sellia brand palette — vivid royal blue, adopted to match the
-     BigCommerce-style marketing site reference. */
-  --primary-50: #eef3ff;
-  --primary-100: #dce6ff;
-  --primary-200: #b8cdff;
-  --primary-300: #8fadff;
-  --primary-400: #6087ff;
-  --primary-500: #3b5fe3;
-  --primary-600: #2f4fd1;
-  --primary-700: #2540b0;
-  --primary-800: #1d338c;
-  --primary-900: #16266b;
+  /* Sellia brand palette — deep, muted blue (toned down from the earlier
+     vivid "BigCommerce-style" royal blue per direct feedback that it read
+     as too bright/electric for a professional SaaS dashboard). Same hue
+     family, lower saturation and lower lightness at every step. */
+  --primary-50: #eef1f8;
+  --primary-100: #dde3f2;
+  --primary-200: #b9c5e3;
+  --primary-300: #93a3d0;
+  --primary-400: #6478b8;
+  --primary-500: #44569c;
+  --primary-600: #37447d;
+  --primary-700: #2c3665;
+  --primary-800: #232a4f;
+  --primary-900: #1a1f3b;
 }
 
 [data-theme='coral'] {
   /* Deprecated orange theme — now mirrors Sellia default to stay on-brand */
-  --primary-50: #eef3ff;
-  --primary-100: #dce6ff;
-  --primary-200: #b8cdff;
-  --primary-300: #8fadff;
-  --primary-400: #6087ff;
-  --primary-500: #3b5fe3;
-  --primary-600: #2f4fd1;
-  --primary-700: #2540b0;
-  --primary-800: #1d338c;
-  --primary-900: #16266b;
+  --primary-50: #eef1f8;
+  --primary-100: #dde3f2;
+  --primary-200: #b9c5e3;
+  --primary-300: #93a3d0;
+  --primary-400: #6478b8;
+  --primary-500: #44569c;
+  --primary-600: #37447d;
+  --primary-700: #2c3665;
+  --primary-800: #232a4f;
+  --primary-900: #1a1f3b;
 }
 
 @layer base {

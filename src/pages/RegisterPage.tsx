@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase, setLocalAuthMode } from '../lib/supabase';
 import { Logo } from '../components/Logo';
+import { PhoneInput } from '../components/PhoneInput';
+import { DIAL_CODES } from '../lib/dial-codes';
 import { Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -9,9 +11,12 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState('CI');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showDemoFallback, setShowDemoFallback] = useState(false);
+  const fullPhone = phoneNumber ? `${DIAL_CODES[phoneCountry] || ''}${phoneNumber.replace(/\s+/g, '')}` : '';
 
   const handleDemoMode = async () => {
     setError('');
@@ -24,7 +29,7 @@ export default function RegisterPage() {
     const { data, error: err } = await supabase.auth.signUp({
       email: demoEmail,
       password: password || 'demopassword',
-      options: { data: { full_name: demoName } },
+      options: { data: { full_name: demoName, phone: fullPhone || undefined } },
     });
     setLoading(false);
     if (err) {
@@ -42,7 +47,7 @@ export default function RegisterPage() {
     try {
       const { data, error: err } = await supabase.auth.signUp({
         email, password,
-        options: { data: { full_name: fullName } },
+        options: { data: { full_name: fullName, phone: fullPhone || undefined } },
       });
       setLoading(false);
       if (err) {
@@ -136,6 +141,14 @@ export default function RegisterPage() {
                     className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
                 </div>
               </div>
+              <PhoneInput
+                label="Téléphone"
+                countryCode={phoneCountry}
+                number={phoneNumber}
+                onCountryChange={setPhoneCountry}
+                onNumberChange={setPhoneNumber}
+                required
+              />
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
                 <div className="relative">
@@ -151,7 +164,7 @@ export default function RegisterPage() {
             </form>
             <div className="mt-6 grid grid-cols-3 gap-2 text-xs text-gray-500">
               <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-green-600" /> 0% commission</div>
-              <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-green-600" /> 54 pays</div>
+              <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-green-600" /> 190+ pays</div>
               <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-green-600" /> IA incluse</div>
             </div>
             <p className="mt-6 text-center text-sm text-gray-600">

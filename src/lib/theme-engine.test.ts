@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultThemeForType, renderSection, THEME_PRESETS, getTemplateSections, setTemplateSections, deviceViewportWidth } from './theme-engine';
+import { defaultThemeForType, renderSection, THEME_PRESETS, getTemplateSections, setTemplateSections, deviceViewportWidth, defaultSectionsForTemplate } from './theme-engine';
 
 describe('theme engine', () => {
   it('creates professional presets per site type', () => {
@@ -71,5 +71,30 @@ describe('theme engine', () => {
     expect(tablet as number).toBeLessThan(1024);
 
     expect(tablet as number).toBeGreaterThan(mobile as number);
+  });
+
+  // Regression guard for a severe shipped bug: defaultSectionsForTemplate
+  // used to mint a fresh Date.now()+Math.random() id per section on every
+  // single call. getTemplateSections() calls it fresh on every render for
+  // any template the merchant hasn't customized yet (nothing is persisted
+  // to read stable ids from until their first edit) - so ids changed every
+  // render, and the exact section a merchant had just clicked no longer
+  // existed by the next render. That silently broke selecting a section,
+  // editing its properties, and drag-and-drop reordering on every template
+  // except Home (whose sections come from the already-stable theme.sections
+  // array) the moment a merchant tried to use them.
+  it('gives every non-home template stable section ids across repeated calls', () => {
+    (['product', 'collection', 'cart', 'search', 'page404'] as const).forEach(templateId => {
+      const first = defaultSectionsForTemplate(templateId);
+      const second = defaultSectionsForTemplate(templateId);
+      expect(second.map(s => s.id)).toEqual(first.map(s => s.id));
+    });
+  });
+
+  it('keeps getTemplateSections ids stable across repeated calls on an uncustomized template', () => {
+    const theme = defaultThemeForType('ecommerce');
+    const first = getTemplateSections(theme, 'product').map(s => s.id);
+    const second = getTemplateSections(theme, 'product').map(s => s.id);
+    expect(second).toEqual(first);
   });
 });

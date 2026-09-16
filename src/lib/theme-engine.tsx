@@ -195,9 +195,21 @@ export const TEMPLATE_TABS: { id: TemplateId; label: string }[] = [
  *  Header/footer are shared chrome on every template, matching how the
  *  storefront actually renders them. */
 export function defaultSectionsForTemplate(templateId: TemplateId): ThemeSection[] {
-  const now = Date.now();
+  // IDs must be STABLE across calls, not random. getTemplateSections() calls
+  // this fresh on every render for any template the merchant hasn't
+  // customized yet (nothing is persisted to save an id against until their
+  // first edit). The previous version used Date.now()+Math.random() per
+  // section, so every single render produced brand-new ids for the same
+  // template — the exact section a merchant just clicked would no longer
+  // exist by the next render. That broke selection, prop editing, and
+  // drag-and-drop reordering on every template except Home the moment a
+  // merchant tried to use them: clicking a section immediately deselected
+  // it, typing into a field lost focus/reset, and reordering silently did
+  // nothing, because the id being updated no longer matched anything by
+  // the time state re-rendered.
+  let counter = 0;
   const mk = (type: SectionType, props: Record<string, any> = {}): ThemeSection =>
-    ({ id: `${type}-${now}-${Math.random().toString(36).slice(2, 7)}`, type, visible: true, props });
+    ({ id: `${templateId}-${type}-${counter++}`, type, visible: true, props });
 
   switch (templateId) {
     case 'product':

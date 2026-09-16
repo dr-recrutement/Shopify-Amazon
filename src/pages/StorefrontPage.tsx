@@ -295,7 +295,11 @@ export default function StorefrontPage() {
       // (sourced from this same section's props) — rendering it again here
       // produced two stacked headers: a decorative CMS one with dead
       // buttons, directly above the real one with working cart/search.
-      .filter(s => s.type !== 'header')
+      // Same issue with 'footer': the functional <footer> below (legal
+      // policy links, WhatsApp contact, order tracking) is the real one —
+      // rendering the CMS FooterSection here too produced two stacked
+      // footers, since FooterSection doesn't even have those link slots.
+      .filter(s => s.type !== 'header' && s.type !== 'footer')
       .map(s => {
         if (s.type === 'product-grid' || s.type === 'featured-collection' || s.type === 'filters-list') {
           const filtered = categoryFilter ? products.filter(p => p.category === categoryFilter) : products;

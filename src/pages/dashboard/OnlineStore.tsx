@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeConfig, ThemeSection, ThemePreset, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
+import { ThemeConfig, ThemeSection, ThemePreset, TemplateId, TEMPLATE_TABS, getTemplateSections, setTemplateSections, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
@@ -94,6 +94,9 @@ export default function OnlineStore() {
     return planRank >= PLANS.findIndex(p => p.id === minPlan);
   };
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  // Multi-template editing (spec item 17). 'home' maps to theme.sections so
+  // every already-stored theme keeps working with no migration.
+  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('home');
   const [theme, setTheme] = useState<ThemeConfig>(() => {
     const saved = localStorage.getItem(getTenantStorageKey('liafrikos_theme_config'));
     if (saved) {
@@ -407,12 +410,12 @@ export default function OnlineStore() {
     setPanel('sections');
     showToast(`Template « ${preset.name} » activé — personnalisez-le via le CMS.`);
   };
+  const currentSections = getTemplateSections(theme, activeTemplate);
+  const updateSections = (sections: ThemeSection[]) =>
+    setTheme(prev => setTemplateSections(prev, activeTemplate, sections));
 
   const addSection = (type: ThemeSection['type']) => {
-    setTheme({
-      ...theme,
-      sections: [...theme.sections, { id: `s${Date.now()}`, type, visible: true, props: {} }],
-    });
+    updateSections([...currentSections, { id: `s${Date.now()}`, type, visible: true, props: {} }]);
     setShowAddSection(false);
     setAddSectionQuery('');
     setAddSectionCategory('Toutes');
@@ -420,36 +423,36 @@ export default function OnlineStore() {
   };
 
   const removeSection = (id: string) => {
-    setTheme({ ...theme, sections: theme.sections.filter(s => s.id !== id) });
+    updateSections(currentSections.filter(s => s.id !== id));
     showToast('Section retirée.');
   };
 
   const duplicateSection = (id: string) => {
-    const idx = theme.sections.findIndex(s => s.id === id);
+    const idx = currentSections.findIndex(s => s.id === id);
     if (idx === -1) return;
-    const original = theme.sections[idx];
+    const original = currentSections[idx];
     const copy: ThemeSection = {
       ...original,
       id: `s${Date.now()}`,
       props: JSON.parse(JSON.stringify(original.props ?? {})),
     };
-    const sections = [...theme.sections];
+    const sections = [...currentSections];
     sections.splice(idx + 1, 0, copy);
-    setTheme({ ...theme, sections });
+    updateSections(sections);
     showToast('Section dupliquée.');
   };
 
   const toggleSection = (id: string) => {
-    setTheme({ ...theme, sections: theme.sections.map(s => s.id === id ? { ...s, visible: !s.visible } : s) });
+    updateSections(currentSections.map(s => s.id === id ? { ...s, visible: !s.visible } : s));
   };
 
   const moveSection = (id: string, dir: -1 | 1) => {
-    const idx = theme.sections.findIndex(s => s.id === id);
+    const idx = currentSections.findIndex(s => s.id === id);
     const newIdx = idx + dir;
-    if (newIdx < 0 || newIdx >= theme.sections.length) return;
-    const sections = [...theme.sections];
+    if (newIdx < 0 || newIdx >= currentSections.length) return;
+    const sections = [...currentSections];
     [sections[idx], sections[newIdx]] = [sections[newIdx], sections[idx]];
-    setTheme({ ...theme, sections });
+    updateSections(sections);
   };
 
   // --- Drag & drop reordering (native HTML5 DnD, no external deps) ---
@@ -464,13 +467,13 @@ export default function OnlineStore() {
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
     if (!draggedId || draggedId === targetId) { setDraggedId(null); setDragOverId(null); return; }
-    const fromIdx = theme.sections.findIndex(s => s.id === draggedId);
-    const toIdx = theme.sections.findIndex(s => s.id === targetId);
+    const fromIdx = currentSections.findIndex(s => s.id === draggedId);
+    const toIdx = currentSections.findIndex(s => s.id === targetId);
     if (fromIdx === -1 || toIdx === -1) { setDraggedId(null); setDragOverId(null); return; }
-    const sections = [...theme.sections];
+    const sections = [...currentSections];
     const [moved] = sections.splice(fromIdx, 1);
     sections.splice(toIdx, 0, moved);
-    setTheme({ ...theme, sections });
+    updateSections(sections);
     setDraggedId(null);
     setDragOverId(null);
     showToast('Section déplacée par glisser-déposer.');
@@ -482,9 +485,10 @@ export default function OnlineStore() {
   };
 
   const updateSectionProp = (sectionId: string, propKey: string, value: any) => {
-    setTheme(prev => ({
-      ...prev,
-      sections: prev.sections.map(s => {
+    setTheme(prev => setTemplateSections(
+      prev,
+      activeTemplate,
+      getTemplateSections(prev, activeTemplate).map(s => {
         if (s.id === sectionId) {
           return {
             ...s,
@@ -496,7 +500,7 @@ export default function OnlineStore() {
         }
         return s;
       })
-    }));
+    ));
   };
 
   const handleCreatePage = (e: React.FormEvent) => {
@@ -909,7 +913,7 @@ export default function OnlineStore() {
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                 <p className="text-[10px] text-gray-400 mb-1 flex items-center gap-1"><GripVertical size={11} /> Glissez les sections pour réordonner (drag & drop)</p>
-                {theme.sections.map((s) => {
+                {currentSections.map((s) => {
                   const lib = SECTION_LIBRARY.find(l => l.type === s.type);
                   const isDragging = draggedId === s.id;
                   const isDragOver = dragOverId === s.id && draggedId !== s.id;
@@ -1078,7 +1082,7 @@ export default function OnlineStore() {
           )}
 
           {panel === 'sections' && selectedSection && (() => {
-            const activeSection = theme.sections.find(s => s.id === selectedSection);
+            const activeSection = currentSections.find(s => s.id === selectedSection);
             if (!activeSection) return null;
 
             return (
@@ -2503,12 +2507,11 @@ export default function OnlineStore() {
           <Card className="p-4 border border-gray-100 shadow-sm">
 
             {/* Mockup controller header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Badge color={theme.isPublished ? 'green' : 'brand'}>
                   {theme.isPublished ? 'Publié' : 'Brouillon'}
                 </Badge>
-                <span className="text-xs font-semibold text-gray-500 capitalize">{theme.siteType} Editor</span>
                 <span className={`text-[11px] font-medium flex items-center gap-1 ${
                   saveStatus === 'saved' ? 'text-green-600' : saveStatus === 'saving' ? 'text-brand-600' : 'text-gray-400'
                 }`}>
@@ -2549,6 +2552,26 @@ export default function OnlineStore() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Template switcher (spec item 17) — the editor is no longer
+                limited to the home page. Each template keeps its own
+                section stack; 'Accueil' maps to theme.sections so nothing
+                about existing stored themes changes. */}
+            <div className="flex items-center gap-1 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
+              {TEMPLATE_TABS.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => { setActiveTemplate(t.id); setSelectedSection(null); }}
+                  className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                    activeTemplate === t.id
+                      ? 'bg-brand-600 text-white border-brand-600'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-brand-300'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
 
             {/* Custom injected styling tag — colors + font as CSS vars for
@@ -2617,7 +2640,7 @@ export default function OnlineStore() {
                 className={`theme-storefront-root preview-element transition-all ${theme.scrollAnimation === 'fade' ? 'animate-pulse' : ''}`}
                 style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
               >
-                {theme.sections.filter(s => s.visible).map(s => {
+                {currentSections.filter(s => s.visible).map(s => {
                   const sectionWithRealData = { ...s };
                   if (s.type === 'product-grid' || s.type === 'featured-collection') {
                     // Inject REAL catalog products (active only) into the storefront

@@ -141,7 +141,64 @@ export interface ThemeConfig {
   /** Global button style. 'default' keeps each layout variant's own look. */
   buttonStyle?: 'default' | 'solid' | 'outline' | 'pill';
   sections: ThemeSection[];
+  /** Per-template section stacks (spec item 17: the editor must not be
+   *  limited to the home page). `sections` above remains the home-page
+   *  stack — it is NOT migrated or removed, so every theme already stored
+   *  keeps working untouched and older code paths that read `sections`
+   *  directly still behave exactly as before. Additional templates live
+   *  here and are created lazily the first time a merchant edits one. */
+  templates?: Partial<Record<TemplateId, ThemeSection[]>>;
   isPublished: boolean;
+}
+
+/** Editable page templates. 'home' is backed by ThemeConfig.sections for
+ *  backward compatibility; the rest live in ThemeConfig.templates. */
+export type TemplateId = 'home' | 'product' | 'collection' | 'cart' | 'search' | 'page404';
+
+export const TEMPLATE_TABS: { id: TemplateId; label: string }[] = [
+  { id: 'home', label: 'Accueil' },
+  { id: 'product', label: 'Produit' },
+  { id: 'collection', label: 'Collection' },
+  { id: 'cart', label: 'Panier' },
+  { id: 'search', label: 'Recherche' },
+  { id: 'page404', label: '404' },
+];
+
+/** Default section stack for a template the merchant hasn't customized yet.
+ *  Header/footer are shared chrome on every template, matching how the
+ *  storefront actually renders them. */
+export function defaultSectionsForTemplate(templateId: TemplateId): ThemeSection[] {
+  const now = Date.now();
+  const mk = (type: SectionType, props: Record<string, any> = {}): ThemeSection =>
+    ({ id: `${type}-${now}-${Math.random().toString(36).slice(2, 7)}`, type, visible: true, props });
+
+  switch (templateId) {
+    case 'product':
+      return [mk('header'), mk('product-detail'), mk('product-grid', { title: 'Vous aimerez aussi' }), mk('newsletter'), mk('footer')];
+    case 'collection':
+      return [mk('header'), mk('filters-list'), mk('footer')];
+    case 'cart':
+      return [mk('header'), mk('rich-text', { title: 'Votre panier', text: 'Vérifiez vos articles avant de passer commande.' }), mk('product-grid', { title: 'Ajoutez encore un article' }), mk('footer')];
+    case 'search':
+      return [mk('header'), mk('filters-list'), mk('footer')];
+    case 'page404':
+      return [mk('header'), mk('rich-text', { title: 'Page introuvable', text: "Cette page n'existe pas ou a été déplacée." }), mk('product-grid', { title: 'Nos produits populaires' }), mk('footer')];
+    default:
+      return [mk('header'), mk('hero'), mk('product-grid'), mk('footer')];
+  }
+}
+
+/** Reads a template's sections, falling back to its default stack. Home
+ *  always maps to theme.sections so nothing about existing themes changes. */
+export function getTemplateSections(theme: ThemeConfig, templateId: TemplateId): ThemeSection[] {
+  if (templateId === 'home') return theme.sections;
+  return theme.templates?.[templateId] ?? defaultSectionsForTemplate(templateId);
+}
+
+/** Writes a template's sections back, keeping home on theme.sections. */
+export function setTemplateSections(theme: ThemeConfig, templateId: TemplateId, sections: ThemeSection[]): ThemeConfig {
+  if (templateId === 'home') return { ...theme, sections };
+  return { ...theme, templates: { ...theme.templates, [templateId]: sections } };
 }
 
 // Each variant produces a genuinely different design, not just a colour swap.

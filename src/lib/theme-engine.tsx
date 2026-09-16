@@ -1658,17 +1658,35 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
 }
 
 function PaymentsSection({ props, colors, fonts }: { props: any; colors: any; fonts: any; spacingClass: string }) {
-  const list = props.list || ['Orange Money', 'Wave', 'MTN MoMo', 'Visa', 'Mastercard'];
+  // `logos` (merchant-uploaded images, [{ name, image }]) takes precedence
+  // over `list` (plain text labels). Before, this section could ONLY ever
+  // render text chips with a generic 💳 emoji — a merchant could not show
+  // the actual Orange Money / Wave / Visa marks their customers recognise.
+  const logos: { name: string; image?: string }[] = props.logos?.length
+    ? props.logos
+    : (props.list || ['Orange Money', 'Wave', 'MTN MoMo', 'Visa', 'Mastercard']).map((n: string) => ({ name: n }));
+
   return (
     <div className={`text-center py-8 border-y px-4`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, borderColor: `${colors.text}10` }}>
       <span className="block text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase mb-4">
         {props.title || 'Moyens de paiement acceptés'}
       </span>
       <div className="flex flex-wrap justify-center items-center gap-3">
-        {list.map((p: string) => (
-          <span key={p} className="text-xs font-extrabold tracking-wide px-3 py-1.5 rounded-full bg-slate-100 text-slate-800 shadow-sm border border-slate-200">
-            💳 {p}
-          </span>
+        {logos.map((p, i) => (
+          p.image ? (
+            <img
+              key={`${p.name}-${i}`}
+              src={p.image}
+              alt={p.name}
+              title={p.name}
+              className="h-7 sm:h-8 w-auto max-w-[96px] object-contain"
+              loading="lazy"
+            />
+          ) : (
+            <span key={`${p.name}-${i}`} className="text-xs font-extrabold tracking-wide px-3 py-1.5 rounded-full bg-slate-100 text-slate-800 shadow-sm border border-slate-200">
+              💳 {p.name}
+            </span>
+          )
         ))}
       </div>
     </div>

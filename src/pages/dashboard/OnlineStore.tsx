@@ -14,6 +14,7 @@ import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getC
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
 import { supabase } from '../../lib/supabase';
+import { PreviewFrame } from '../../components/PreviewFrame';
 import { getCmsPages, createCmsPage, saveCmsPage, deleteCmsPage, type CmsPage } from '../../lib/cms';
 
 interface CustomDomain {
@@ -1138,6 +1139,58 @@ export default function OnlineStore() {
                   )}
 
                   {/* Header-specific inputs */}
+                  {activeSection.type === 'payments' && (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-gray-700">Moyens de paiement</label>
+                      <p className="text-[10px] text-gray-400">Téléversez le vrai logo de chaque moyen de paiement. Sans image, le nom s'affiche en texte.</p>
+                      {((activeSection.props.logos as { name: string; image?: string }[] | undefined)
+                        ?? ((activeSection.props.list as string[] | undefined) ?? ['Orange Money', 'Wave', 'MTN MoMo', 'Visa', 'Mastercard']).map((n): { name: string; image?: string } => ({ name: n }))
+                      ).map((entry, i, arr) => (
+                        <div key={i} className="p-2 border border-gray-150 rounded-lg space-y-1.5 bg-gray-50">
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              value={entry.name}
+                              onChange={e => {
+                                const next = arr.map((x, xi) => xi === i ? { ...x, name: e.target.value } : x);
+                                updateSectionProp(activeSection.id, 'logos', next);
+                              }}
+                              className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs"
+                              placeholder="Nom (ex. Orange Money)"
+                            />
+                            <button
+                              onClick={() => updateSectionProp(activeSection.id, 'logos', arr.filter((_, xi) => xi !== i))}
+                              className="p-1 text-gray-400 hover:text-red-600 rounded"
+                              title="Retirer"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                          <ImageUploadField
+                            label=""
+                            value={entry.image || ''}
+                            onChange={dataUrl => {
+                              const next = arr.map((x, xi) => xi === i ? { ...x, image: dataUrl } : x);
+                              updateSectionProp(activeSection.id, 'logos', next);
+                            }}
+                            maxWidth={200}
+                            dimensionsHint="Logo du moyen de paiement (PNG transparent conseillé)"
+                          />
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const current = (activeSection.props.logos as { name: string; image?: string }[] | undefined)
+                            ?? ((activeSection.props.list as string[] | undefined) ?? []).map(n => ({ name: n }));
+                          updateSectionProp(activeSection.id, 'logos', [...current, { name: 'Nouveau moyen' }]);
+                        }}
+                        className="w-full py-1.5 rounded-lg text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 flex items-center justify-center gap-1"
+                      >
+                        <Plus size={13} /> Ajouter un moyen de paiement
+                      </button>
+                    </div>
+                  )}
+
                   {activeSection.type === 'header' && (
                     <div className="space-y-3">
                       <ImageUploadField
@@ -2603,7 +2656,7 @@ export default function OnlineStore() {
             ` }} />
 
             {/* Dynamic visual preview area */}
-            <div className={`mx-auto bg-white rounded-2xl border-4 border-gray-900 overflow-hidden transition-all duration-300 relative ${deviceWidth}`} style={{ minHeight: '450px' }}>
+            <div className={`mx-auto bg-white rounded-2xl border-4 border-gray-900 overflow-hidden transition-all duration-300 relative w-fit ${deviceWidth}`} style={{ minHeight: '450px' }}>
 
               {/* Fake smartphone bar if mobile */}
               {device === 'mobile' && (
@@ -2628,18 +2681,23 @@ export default function OnlineStore() {
                 </div>
               )}
 
-              {/* Rendered Live Website Sections */}
-              {/* theme-storefront-root + the injected style tag mirror the
-                  real storefront (StorefrontPage.tsx) exactly, so overrides
-                  that only exist as CSS (corner radius, background
-                  gradient, sticky header, scroll-reveal) are now actually
-                  visible in the editor's own preview instead of only
-                  taking effect once published. */}
-              <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
-              <div
-                className={`theme-storefront-root preview-element transition-all ${theme.scrollAnimation === 'fade' ? 'animate-pulse' : ''}`}
-                style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
+              {/* Rendered Live Website Sections — inside a real iframe so
+                  the responsive classes in theme-engine (md:grid-cols-3,
+                  sm:flex-row, md:text-5xl…) resolve against the SIMULATED
+                  device width. Previously the device switcher only narrowed
+                  a div, so on a desktop browser the viewport stayed ~1920px
+                  and every md:/lg: rule stayed active — "Mobile" showed a
+                  squished desktop layout, not the layout real phone
+                  visitors get. See PreviewFrame.tsx. */}
+              <PreviewFrame
+                width={device === 'mobile' ? 340 : device === 'tablet' ? 640 : null}
+                styleKey={`${theme.layoutVariant}-${theme.colors.primary}-${theme.fonts.heading}-${customCSS.length}-${activeTemplate}`}
               >
+                <style dangerouslySetInnerHTML={{ __html: buildThemeOverrideCss(theme) }} />
+                <div
+                  className={`theme-storefront-root preview-element transition-all ${theme.scrollAnimation === 'fade' ? 'animate-pulse' : ''}`}
+                  style={{ backgroundColor: theme.colors.background, color: theme.colors.text }}
+                >
                 {currentSections.filter(s => s.visible).map(s => {
                   const sectionWithRealData = { ...s };
                   if (s.type === 'product-grid' || s.type === 'featured-collection') {
@@ -2694,7 +2752,8 @@ export default function OnlineStore() {
                     </div>
                   );
                 })}
-              </div>
+                </div>
+              </PreviewFrame>
 
               {/* Embedded floating Support Live Chat preview */}
               <div className="absolute bottom-4 right-4 z-20">

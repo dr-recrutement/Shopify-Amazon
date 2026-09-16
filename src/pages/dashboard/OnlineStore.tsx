@@ -1,9 +1,11 @@
 import { PageHeader, Card, Button, Badge } from './ui';
+import { usePlanAccess } from '../../lib/plan-access';
+import { PLANS } from '../../lib/constants';
 import {
   Store, Smartphone, Tablet, Monitor, Palette, Eye, History, Layers, Plus, Trash2,
   GripVertical, FileText, ArrowUp, ArrowDown, ArrowLeft, Search,
   Globe, ChevronRight, ChevronDown, CheckCircle, MessageSquare, Code,
-  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2, Settings, Pencil
+  Sparkles, Send, ExternalLink, Copy, Undo2, Redo2, Settings, Pencil, Lock
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -42,6 +44,7 @@ const CUSTOM_PRESETS = TEMPLATE_PROFILES.map(p => ({
   features: p.features,
   colors: p.colors,
   fonts: p.fonts,
+  minPlan: p.minPlan,
 }));
 
 // Real theme thumbnail — a live, scaled-down render of that template's
@@ -84,6 +87,12 @@ function LiveThemeThumbnail({ presetId, heightClass = 'h-44' }: { presetId: Them
 }
 
 export default function OnlineStore() {
+  const { plan, unrestricted } = usePlanAccess();
+  const planRank = PLANS.findIndex(p => p.id === plan.id);
+  const hasTemplateAccess = (minPlan?: 'premium' | 'enterprise') => {
+    if (unrestricted || !minPlan) return true;
+    return planRank >= PLANS.findIndex(p => p.id === minPlan);
+  };
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [theme, setTheme] = useState<ThemeConfig>(() => {
     const saved = localStorage.getItem(getTenantStorageKey('liafrikos_theme_config'));
@@ -379,6 +388,10 @@ export default function OnlineStore() {
   };
 
   const selectPreset = (preset: typeof CUSTOM_PRESETS[0]) => {
+    if (!hasTemplateAccess(preset.minPlan)) {
+      showToast(`Le template « ${preset.name} » nécessite le plan ${preset.minPlan === 'premium' ? 'Premium' : 'Entreprise'} ou supérieur.`);
+      return;
+    }
     // Regenerate the full theme from the selected preset so the merchant gets
     // the template's distinct default section arrangement + colours + typography
     // — exactly like activating a theme on the Shopify Theme Store.
@@ -821,6 +834,7 @@ export default function OnlineStore() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {CUSTOM_PRESETS.map(p => {
               const isActive = theme.layoutVariant === p.layoutVariant;
+              const locked = !hasTemplateAccess(p.minPlan);
               return (
                 <div
                   key={p.id}
@@ -836,21 +850,29 @@ export default function OnlineStore() {
                         <CheckCircle size={10} /> Actif
                       </span>
                     )}
+                    {locked && (
+                      <div className="absolute inset-0 bg-white/55 backdrop-blur-[1px] flex items-center justify-center">
+                        <span className="text-[10px] font-bold uppercase text-white px-2.5 py-1 rounded-full bg-gray-900/80 flex items-center gap-1">
+                          <Lock size={11} /> {p.minPlan === 'premium' ? 'Premium' : 'Entreprise'}
+                        </span>
+                      </div>
+                    )}
                   </button>
 
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <button onClick={() => selectPreset(p)} className="text-base font-bold text-brand-700 hover:underline truncate block" style={{ fontFamily: p.fonts?.heading }}>
+                        <button onClick={() => selectPreset(p)} className="text-base font-bold text-brand-700 hover:underline truncate block flex items-center gap-1" style={{ fontFamily: p.fonts?.heading }}>
                           {p.name}
+                          {locked && <Lock size={12} className="text-gray-400 shrink-0" />}
                         </button>
                         <p className="text-xs text-gray-400">par Sellia</p>
                       </div>
                       <button
                         onClick={() => selectPreset(p)}
-                        className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${isActive ? 'bg-brand-50 border-brand-200 text-brand-700 cursor-default' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                        className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${isActive ? 'bg-brand-50 border-brand-200 text-brand-700 cursor-default' : locked ? 'border-gray-300 text-gray-500 hover:bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
                       >
-                        {isActive ? 'Activé' : 'Activer'}
+                        {isActive ? 'Activé' : locked ? (p.minPlan === 'premium' ? 'Premium' : 'Entreprise') : 'Activer'}
                       </button>
                     </div>
                     <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mt-2.5 block">{p.useCase}</span>

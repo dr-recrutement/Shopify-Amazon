@@ -1,6 +1,6 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useLang } from '../../lib/i18n';
 import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
@@ -74,7 +74,8 @@ export default function Settings() {
       setIsUpgrading(false);
     }
   };
-  const [active, setActive] = useState('general');
+  const [searchParams] = useSearchParams();
+  const [active, setActive] = useState(() => searchParams.get('tab') || 'general');
   const [shopProfile, setShopProfile] = useState(() => getShopProfile());
   const shopSubdomain = getShopSubdomain();
 

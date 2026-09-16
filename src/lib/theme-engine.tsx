@@ -281,6 +281,10 @@ export interface TemplateProfile {
   colors: ThemeConfig['colors'];
   fonts: { heading: string; body: string };
   features: string[];
+  /** Minimum plan tier required to use this template. Undefined = free,
+   *  available on every plan (the common case — most templates stay free
+   *  regardless of plan; only specific ones are reserved for paid tiers). */
+  minPlan?: 'premium' | 'enterprise';
 }
 
 export const TEMPLATE_PROFILES: TemplateProfile[] = [
@@ -338,6 +342,7 @@ export const TEMPLATE_PROFILES: TemplateProfile[] = [
     colors: { primary: '#DC2626', secondary: '#171717', accent: '#F59E0B', background: '#FAFAF9', text: '#171717' },
     fonts: { heading: 'Playfair Display', body: 'Lora' },
     features: ['Articles', 'Diaporama', 'Édito', 'Catégories', 'Newsletter'],
+    minPlan: 'premium',
   },
 ];
 

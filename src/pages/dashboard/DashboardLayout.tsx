@@ -7,7 +7,7 @@ import { getOrders, getProducts, getCustomers, getNotifications, markNotificatio
 import { fetchCloudOrders, fetchCloudProducts, fetchCloudCustomers } from '../../lib/tenant-sync';
 import { runAutomationsCheck } from '../../lib/automations-engine';
 import {
-  Home, ShoppingCart, Package, Users, TrendingUp, Tag, FileText, Globe,
+  Home, ShoppingCart, Package, Users, TrendingUp, Tag, Globe,
   BarChart3, Store, Megaphone, Calculator, UserCog, MessageSquare,
   FileBarChart, Zap, Settings, Menu, X, LogOut, ChevronDown, Bell, Search, Grid3x3, Sparkles,
 } from 'lucide-react';
@@ -22,7 +22,6 @@ const NAV = [
     { to: '/app/discounts', label: 'Discounts', icon: Tag },
   ]},
   { group: 'Contenu', items: [
-    { to: '/app/content', label: 'Content', icon: FileText },
     { to: '/app/markets', label: 'Markets', icon: Globe },
     { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
     {

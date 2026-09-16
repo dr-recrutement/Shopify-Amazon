@@ -45,12 +45,27 @@ const PLACEHOLDER_GRADIENTS = [
   ['#1B1B1B', '#2B2B2B'],
   ['#004C3F', '#00352B'],
 ];
-export function placeholderGradient(seed: string | number): string {
+export function placeholderGradient(seed: string | number, colors?: { primary: string; accent: string; secondary: string }): string {
   const s = String(seed);
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-  const [a, b] = PLACEHOLDER_GRADIENTS[hash % PLACEHOLDER_GRADIENTS.length];
   const angle = (hash % 4) * 45;
+  // Use the MERCHANT'S OWN theme colors when available, rotating through
+  // 3 pairings by seed for variety across a grid of cards. Previously this
+  // always used a hardcoded platform teal/green/gold palette regardless of
+  // the merchant's actual chosen colors — a merchant with a red or pink
+  // theme still saw generic green placeholder tiles everywhere they had no
+  // photo yet, which looked like a different, unrelated product.
+  if (colors) {
+    const pairs: [string, string][] = [
+      [colors.primary, colors.secondary],
+      [colors.accent, colors.primary],
+      [colors.secondary, colors.accent],
+    ];
+    const [a, b] = pairs[hash % pairs.length];
+    return `linear-gradient(${angle}deg, ${a} 0%, ${b} 100%)`;
+  }
+  const [a, b] = PLACEHOLDER_GRADIENTS[hash % PLACEHOLDER_GRADIENTS.length];
   return `linear-gradient(${angle}deg, ${a} 0%, ${b} 100%)`;
 }
 
@@ -63,8 +78,8 @@ export function placeholderImg(seed: string | number, w = 300, h = 300): string 
 }
 
 /** Returns a React style object for gradient placeholders. */
-export function gradientStyle(seed: string | number): React.CSSProperties {
-  return { background: placeholderGradient(seed) };
+export function gradientStyle(seed: string | number, colors?: { primary: string; accent: string; secondary: string }): React.CSSProperties {
+  return { background: placeholderGradient(seed, colors) };
 }
 
 /** Checks whether a string is a real fetchable image URL (http/data/asset path). */
@@ -73,16 +88,28 @@ export function isRealImage(src: string | undefined | null): boolean {  if (!src
 }
 
 /**
- * MediaBox — renders <img> when a real URL is provided, otherwise a gradient
- * placeholder div. Eliminates ALL external image dependencies.
+ * MediaBox — renders <img> when a real URL is provided, otherwise a
+ * gradient placeholder with a subtle centered icon so an empty product/
+ * category/avatar slot reads as an intentional, designed placeholder
+ * rather than a plain flat color block. Eliminates ALL external image
+ * dependencies — nothing here is ever hotlinked.
  */
-export function MediaBox({ src, alt, seed, className, style }: {
+export function MediaBox({ src, alt, seed, className, style, colors }: {
   src?: string; alt?: string; seed: string | number; className?: string; style?: React.CSSProperties;
+  colors?: { primary: string; accent: string; secondary: string };
 }) {
   if (isRealImage(src)) {
     return <img src={src as string} alt={alt || ''} className={className} style={style} />;
   }
-  return <div className={className} style={{ ...gradientStyle(seed), ...style }} aria-label={alt} />;
+  return (
+    <div className={`relative flex items-center justify-center overflow-hidden ${className || ''}`} style={{ ...gradientStyle(seed, colors), ...style }} aria-label={alt}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" className="w-[28%] h-[28%] opacity-30" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none" />
+        <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
 }
 
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
@@ -1225,7 +1252,7 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
           {/* Logo */}
           <div className="flex items-center gap-2">
             {props.logoUrl ? (
-              <MediaBox src={props.logoUrl} alt="Logo" seed="header-logo" className="h-8 max-w-[120px] object-contain" />
+              <MediaBox src={props.logoUrl} alt="Logo" seed="header-logo" className="h-8 max-w-[120px] object-contain" colors={colors} />
             ) : (
               <div className="text-lg font-black tracking-wider uppercase flex items-center gap-1" style={{ fontFamily: fonts.heading, color: colors.primary }}>
                 <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
@@ -1368,7 +1395,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
             return (
               <div key={i} className="group flex flex-col h-full bg-white relative overflow-hidden transition-all duration-300 border-b-2 hover:shadow-2xl p-2" style={{ borderColor: `${colors.primary}40` }}>
                 <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-100">
-                  <MediaBox src={p.image} alt={p.name} seed={`prod-lux-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <MediaBox src={p.image} alt={p.name} seed={`prod-lux-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" colors={colors} />
                   <button className="absolute top-2 right-2 p-1 bg-white/90 rounded-full shadow-sm text-gray-500 hover:text-red-500 transition-colors">
                     <Heart className="w-3.5 h-3.5" />
                   </button>
@@ -1395,7 +1422,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
             return (
               <div key={i} className="group flex flex-col h-full bg-transparent overflow-hidden transition-all duration-300">
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
-                  <MediaBox src={p.image} alt={p.name} seed={`prod-edit-${i}`} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300" />
+                  <MediaBox src={p.image} alt={p.name} seed={`prod-edit-${i}`} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300" colors={colors} />
                 </div>
                 <div className="py-3 flex-1 flex flex-col justify-between text-left">
                   <div>
@@ -1422,7 +1449,7 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
             <div key={i} className={`group overflow-hidden transition-all duration-300 flex flex-col h-full bg-white relative ${cardClass || (isAfrican ? 'rounded-2xl border-brand-100 shadow-sm hover:shadow-2xl' : 'rounded-2xl border border-gray-100 hover:shadow-2xl')}`}>
               {/* Image Wrap */}
               <Link to={productLinkBase ? `${productLinkBase}/products/${p.id}` : '#'} className="relative aspect-square overflow-hidden bg-gray-50 block">
-                                  <MediaBox src={p.image} alt={p.name} seed={`prod-def-${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                  <MediaBox src={p.image} alt={p.name} seed={`prod-def-${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" colors={colors} />
                 {p.oldPrice > p.price && (
                   <span className="absolute top-3 left-3 text-[9px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse" style={{ backgroundColor: colors.primary }}>
                     PROMO
@@ -1489,7 +1516,7 @@ function CategoryGridSection({ props, colors, fonts, spacingClass, onCategoryCli
             onClick={() => onCategoryClick?.(c.name)}
             className="group relative aspect-[4/3] rounded-xl overflow-hidden shadow-sm cursor-pointer hover:shadow-lg transition-all duration-300 text-left"
           >
-            <MediaBox src={c.image} alt={c.name} seed={`cat-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <MediaBox src={c.image} alt={c.name} seed={`cat-${i}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" colors={colors} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-3 left-3 right-3 text-white">
               <p className="font-extrabold text-xs tracking-wider uppercase" style={{ fontFamily: fonts.heading }}>{c.name}</p>
@@ -1597,7 +1624,7 @@ function ProductDetailSection({ props, colors, fonts, spacingClass }: { props: a
 
         {/* Left: Beautiful Product Image */}
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-50 border border-black/5 shadow-sm">
-          <MediaBox src={props.image} alt="Détail" seed="pdetail" className="w-full h-full object-cover" />
+          <MediaBox src={props.image} alt="Détail" seed="pdetail" className="w-full h-full object-cover" colors={colors} />
           <span className="absolute top-4 left-4 text-[10px] font-black text-white px-3 py-1 rounded-full uppercase tracking-widest bg-emerald-500 shadow-sm animate-pulse">
             EN STOCK • ARTISANAL
           </span>
@@ -1737,7 +1764,7 @@ function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: an
             </div>
 
             <div className="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
-              <MediaBox src={t.avatar} alt={t.name} seed={`avatar-${i}`} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" />
+              <MediaBox src={t.avatar} alt={t.name} seed={`avatar-${i}`} className="w-10 h-10 rounded-full object-cover border border-brand-500/20" colors={colors} />
               <div>
                 <p className="text-xs font-extrabold" style={{ color: colors.text, fontFamily: fonts.heading }}>{t.name}</p>
                 {t.verified && (
@@ -1781,7 +1808,7 @@ function AboutSection({ props, colors, fonts, spacingClass }: { props: any; colo
 
         {/* Image Area */}
         <div className={`aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-black/5 shadow-md ${imageOnRight ? 'order-2' : 'order-2 md:order-1'}`}>
-          <MediaBox src={imageSrc} alt="Story" seed="hero-story" className="w-full h-full object-cover" />
+          <MediaBox src={imageSrc} alt="Story" seed="hero-story" className="w-full h-full object-cover" colors={colors} />
         </div>
       </div>
     </div>
@@ -2025,7 +2052,7 @@ function ImageBannerSection({ props, colors, fonts, spacingClass }: { props: any
   const img = props.image || '';
   return (
     <section className={`relative flex ${heightClass} ${align} justify-center overflow-hidden`} style={{ fontFamily: fonts.body }}>
-      <MediaBox src={img} alt={props.title || 'Banner'} seed="image-banner" className="absolute inset-0 w-full h-full object-cover" />
+      <MediaBox src={img} alt={props.title || 'Banner'} seed="image-banner" className="absolute inset-0 w-full h-full object-cover" colors={colors} />
       <div className="absolute inset-0" style={{ backgroundColor: '#000', opacity: overlay }} />
       <div className={`relative z-10 max-w-2xl px-6 py-12 flex flex-col ${align} ${spacingClass}`}>
         {props.subtitle && (
@@ -2137,7 +2164,7 @@ function MulticolumnSection({ props, colors, fonts, spacingClass }: { props: any
         {columns.map((c, i) => (
           <div key={i} className="flex flex-col items-center">
             <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3" style={{ backgroundColor: `${colors.primary}15` }}>
-              {c.image ? <MediaBox src={c.image} alt={c.title} seed={`coll-${i}`} className="w-full h-full rounded-full object-cover" /> : c.icon || '✦'}
+              {c.image ? <MediaBox src={c.image} alt={c.title} seed={`coll-${i}`} className="w-full h-full rounded-full object-cover" colors={colors} /> : c.icon || '✦'}
             </div>
             <h4 className="font-extrabold text-sm mb-1" style={{ fontFamily: fonts.heading, color: colors.text }}>{c.title}</h4>
             <p className="text-xs text-gray-500 leading-relaxed max-w-[220px]">{c.text}</p>
@@ -2156,7 +2183,7 @@ function ImageWithTextSection({ props, colors, fonts, spacingClass }: { props: a
     <section className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body, color: colors.text }}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div className={`aspect-[4/3] rounded-xl overflow-hidden ${imageRight ? 'md:order-2' : ''}`}>
-          <MediaBox src={img} alt={props.title || 'Image'} seed="img-text" className="w-full h-full object-cover" />
+          <MediaBox src={img} alt={props.title || 'Image'} seed="img-text" className="w-full h-full object-cover" colors={colors} />
         </div>
         <div className={`space-y-4 ${imageRight ? 'md:order-1' : ''}`}>
           {props.badge && <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: colors.primary }}>{props.badge}</span>}
@@ -2198,7 +2225,7 @@ function VideoSection({ props, colors, fonts, spacingClass }: { props: any; colo
             <iframe src={props.videoUrl} className="absolute inset-0 w-full h-full" allow="autoplay; encrypted-media" allowFullScreen title={props.title || 'Video'} />
           ) : (
             <>
-              <MediaBox src={poster} alt="Video poster" seed="video-poster" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+              <MediaBox src={poster} alt="Video poster" seed="video-poster" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" colors={colors} />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
                   <Play className="w-7 h-7 text-gray-900 fill-current ml-1" />

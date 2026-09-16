@@ -394,27 +394,53 @@ const HERO_CONTENT: Record<ThemePreset, { title: string; subtitle: string; cta: 
 
 function generateHeroArt(colors: ThemeConfig['colors'], variant: 'blobs' | 'grid' | 'waves' | 'diagonal'): string {
   const { primary, accent, secondary } = colors;
+  // Gradients (not flat fills) + a soft blur filter for depth, so this reads
+  // as an intentional, modern abstract composition rather than a handful of
+  // solid-color shapes. Still 100% generated (no external image), still
+  // colored entirely from the merchant's own palette.
+  const defs = `
+    <defs>
+      <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${primary}" />
+        <stop offset="100%" stop-color="${secondary}" />
+      </linearGradient>
+      <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${accent}" />
+        <stop offset="100%" stop-color="${primary}" />
+      </linearGradient>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="60" />
+      </filter>
+    </defs>`;
   let shapes = '';
   if (variant === 'blobs') {
     shapes = `
-      <circle cx="220" cy="180" r="260" fill="${primary}" opacity="0.85" />
-      <circle cx="1180" cy="620" r="320" fill="${accent}" opacity="0.55" />
-      <circle cx="900" cy="120" r="150" fill="${secondary}" opacity="0.35" />`;
+      <rect width="1600" height="900" fill="${primary}" />
+      <circle cx="250" cy="200" r="300" fill="url(#g1)" opacity="0.9" filter="url(#soft)" />
+      <circle cx="1250" cy="680" r="380" fill="url(#g2)" opacity="0.7" filter="url(#soft)" />
+      <circle cx="950" cy="150" r="180" fill="${accent}" opacity="0.5" filter="url(#soft)" />
+      <circle cx="250" cy="200" r="140" fill="${secondary}" opacity="0.4" />`;
   } else if (variant === 'grid') {
-    const lines = Array.from({ length: 8 }, (_, i) => `<line x1="${i * 200}" y1="0" x2="${i * 200}" y2="900" stroke="${accent}" stroke-width="1.5" opacity="0.25" />`).join('');
-    shapes = `<rect width="1600" height="900" fill="${primary}" />${lines}<circle cx="1300" cy="200" r="220" fill="${secondary}" opacity="0.3" />`;
+    const lines = Array.from({ length: 8 }, (_, i) => `<line x1="${i * 200}" y1="0" x2="${i * 200}" y2="900" stroke="${accent}" stroke-width="1.5" opacity="0.2" />`).join('');
+    shapes = `
+      <rect width="1600" height="900" fill="url(#g1)" />
+      ${lines}
+      <circle cx="1300" cy="200" r="260" fill="${secondary}" opacity="0.35" filter="url(#soft)" />
+      <circle cx="200" cy="750" r="200" fill="${accent}" opacity="0.3" filter="url(#soft)" />`;
   } else if (variant === 'waves') {
     shapes = `
-      <rect width="1600" height="900" fill="${primary}" />
-      <path d="M0,550 C400,650 1200,450 1600,550 L1600,900 L0,900 Z" fill="${accent}" opacity="0.6" />
-      <path d="M0,650 C500,750 1100,600 1600,700 L1600,900 L0,900 Z" fill="${secondary}" opacity="0.4" />`;
+      <rect width="1600" height="900" fill="url(#g1)" />
+      <path d="M0,500 C400,620 1200,400 1600,520 L1600,900 L0,900 Z" fill="${accent}" opacity="0.55" />
+      <path d="M0,620 C500,740 1100,580 1600,680 L1600,900 L0,900 Z" fill="${secondary}" opacity="0.45" />
+      <circle cx="1350" cy="180" r="200" fill="${accent}" opacity="0.3" filter="url(#soft)" />`;
   } else {
     shapes = `
-      <rect width="1600" height="900" fill="${primary}" />
-      <polygon points="1600,0 1600,900 700,900" fill="${accent}" opacity="0.5" />
-      <polygon points="1600,0 1600,500 1000,0" fill="${secondary}" opacity="0.4" />`;
+      <rect width="1600" height="900" fill="url(#g1)" />
+      <polygon points="1600,0 1600,900 650,900" fill="url(#g2)" opacity="0.6" />
+      <polygon points="1600,0 1600,520 980,0" fill="${secondary}" opacity="0.4" />
+      <circle cx="250" cy="700" r="220" fill="${accent}" opacity="0.25" filter="url(#soft)" />`;
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">${shapes}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">${defs}${shapes}</svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
@@ -1742,7 +1768,15 @@ function PaymentsSection({ props, colors, fonts }: { props: any; colors: any; fo
 
 function TestimonialsSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
-  const list = props.list || [];
+  // Unlike Multicolumn/Countdown/CollapsibleContent/Slideshow, this had NO
+  // fallback — an added-but-uncustomized Testimonials section rendered
+  // just a bare heading with nothing below it, looking broken rather than
+  // like an intentional starting point.
+  const list: any[] = Array.isArray(props.list) && props.list.length ? props.list : [
+    { name: 'Aïcha K.', comment: 'Livraison rapide et produit conforme à la description. Je recommande !', verified: true },
+    { name: 'Moussa D.', comment: 'Excellent service client, très réactif sur WhatsApp. Je repasserai commande.', verified: true },
+    { name: 'Fatou S.', comment: 'Qualité au rendez-vous, exactement ce que je cherchais.', verified: false },
+  ];
 
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background }}>
@@ -1868,7 +1902,13 @@ function NewsletterSection({ props, colors, fonts, tenantId }: { props: any; col
 function FaqSection({ props, colors, fonts, spacingClass }: { props: any; colors: any; fonts: any; spacingClass: string }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const headingStyle = { fontFamily: fonts.heading, color: colors.text };
-  const list = props.list || [];
+  // Same gap as Testimonials — rendered a bare heading with zero questions
+  // when just added, unlike every other list-driven section in this file.
+  const list: any[] = Array.isArray(props.list) && props.list.length ? props.list : [
+    { q: 'Quels sont les délais de livraison ?', a: 'Comptez 24 à 48h pour les grandes villes, 3 à 5 jours pour le reste du pays.' },
+    { q: 'Quels moyens de paiement acceptez-vous ?', a: 'Orange Money, Wave, MTN MoMo, ainsi que les cartes Visa et Mastercard.' },
+    { q: 'Puis-je retourner un article ?', a: 'Oui, sous 14 jours après réception, dans son état d\'origine.' },
+  ];
 
   return (
     <div className={`${spacingClass}`} style={{ backgroundColor: colors.background, fontFamily: fonts.body }}>

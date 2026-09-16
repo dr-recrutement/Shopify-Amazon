@@ -8,7 +8,7 @@ import {
 import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
-import { useSeo } from '../lib/seo';
+import { useSeo, useJsonLd } from '../lib/seo';
 import { ImageLightbox } from '../components/ImageLightbox';
 
 /**
@@ -79,6 +79,22 @@ export default function ProductDetailPage() {
     image: images[0],
     type: 'product',
   });
+
+  useJsonLd(product ? {
+    '@type': 'Product',
+    name: product.name,
+    description: product.description || `${product.name} disponible sur ${shopName}.`,
+    image: images.length ? images : undefined,
+    sku: product.id,
+    brand: { '@type': 'Brand', name: shopName },
+    offers: {
+      '@type': 'Offer',
+      url: window.location.href,
+      priceCurrency: currency,
+      price: product.price,
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+  } : null);
 
   const handleAddToCart = () => {
     if (!product) return;

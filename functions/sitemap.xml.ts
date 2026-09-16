@@ -43,14 +43,42 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   try {
     const res = await fetch(
-      `${env.SUPABASE_URL}/rest/v1/tenants?select=slug,created_at&slug=not.is.null`,
+      `${env.SUPABASE_URL}/rest/v1/tenants?select=id,slug,created_at&slug=not.is.null`,
       { headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` } }
     );
     if (res.ok) {
-      const tenants: Array<{ slug: string; created_at: string }> = await res.json();
+      const tenants: Array<{ id: string; slug: string; created_at: string }> = await res.json();
       for (const t of tenants) {
         if (!t.slug) continue;
         urls.push({ loc: `${origin}/s/${t.slug}`, priority: '0.7', changefreq: 'weekly', lastmod: t.created_at?.slice(0, 10) });
+
+        // Per-product and published-page URLs — previously only each
+        // tenant's storefront root ever made it into the sitemap, so a
+        // merchant's individual product/page URLs (the ones actually
+        // worth ranking for buyer search terms) were invisible to
+        // crawlers unless linked from elsewhere. One extra request per
+        // tenant, fetched in parallel below rather than serially.
+        const [productsRes, cmsRes] = await Promise.all([
+          fetch(`${env.SUPABASE_URL}/rest/v1/products?select=id,updated_at&tenant_id=eq.${t.id}&status=eq.active`, {
+            headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+          }),
+          fetch(`${env.SUPABASE_URL}/rest/v1/cms_pages?select=pages&tenant_id=eq.${t.id}&limit=1`, {
+            headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+          }),
+        ]);
+        if (productsRes.ok) {
+          const products: Array<{ id: string; updated_at?: string }> = await productsRes.json();
+          for (const p of products) {
+            urls.push({ loc: `${origin}/s/${t.slug}/products/${p.id}`, priority: '0.6', changefreq: 'weekly', lastmod: p.updated_at?.slice(0, 10) });
+          }
+        }
+        if (cmsRes.ok) {
+          const cmsRows: Array<{ pages?: Array<{ slug: string; status: string; updatedAt?: string }> }> = await cmsRes.json();
+          for (const page of cmsRows?.[0]?.pages || []) {
+            if (page.status !== 'published' || !page.slug) continue;
+            urls.push({ loc: `${origin}/s/${t.slug}/pages/${page.slug}`, priority: '0.4', changefreq: 'monthly', lastmod: page.updatedAt?.slice(0, 10) });
+          }
+        }
       }
     }
   } catch {

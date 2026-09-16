@@ -69,3 +69,30 @@ export function useSeo({ title, description, image, type = 'website', noIndex = 
     setCanonical(window.location.pathname);
   }, [title, description, image, type, noIndex]);
 }
+
+/** Injects/updates a single <script type="application/ld+json"> tag with
+ *  Schema.org structured data for the current page — real Product rich
+ *  snippets (price, currency, availability) for product pages, real
+ *  Organization data on the landing page, etc. Google (and other engines
+ *  that execute JS, same caveat as useSeo above) reads this to power
+ *  rich search results; without it a listing is plain blue-link text
+ *  even when the page itself has the data. Pass null to remove it (e.g.
+ *  product not loaded yet) rather than emit incomplete/invalid JSON-LD. */
+export function useJsonLd(data: Record<string, unknown> | null) {
+  useEffect(() => {
+    const id = 'jsonld-page-data';
+    let el = document.getElementById(id) as HTMLScriptElement | null;
+    if (!data) {
+      el?.remove();
+      return;
+    }
+    if (!el) {
+      el = document.createElement('script');
+      el.id = id;
+      el.type = 'application/ld+json';
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify({ '@context': 'https://schema.org', ...data });
+    return () => { el?.remove(); };
+  }, [data]);
+}

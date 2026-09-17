@@ -259,10 +259,13 @@ export default function StorefrontPage() {
   }, [theme, shopName]);
 
   const handleAddToCart = useCallback((product: any) => {
+    const stock = typeof product.stock === 'number' ? product.stock : Infinity;
+    if (stock <= 0) return; // real stock check — a product with 0 in stock can never be added, regardless of which UI path triggered this (grid button, search, quick-view)
     setCart(prev => {
       const existing = prev.find(i => i.id === String(product.id));
       let updated: CartDrawerItem[];
       if (existing) {
+        if (existing.qty >= stock) return prev; // already at the maximum available — silently cap rather than oversell
         updated = prev.map(i => i.id === String(product.id) ? { ...i, qty: i.qty + 1 } : i);
       } else {
         updated = [...prev, {
@@ -283,7 +286,9 @@ export default function StorefrontPage() {
 
   const updateQty = (id: string, delta: number) => {
     setCart(prev => {
-      const updated = prev.map(i => i.id === id ? { ...i, qty: Math.max(0, i.qty + delta) } : i).filter(i => i.qty > 0);
+      const stockFor = allProducts.find(p => String(p.id) === id)?.stock;
+      const maxQty = typeof stockFor === 'number' ? stockFor : Infinity;
+      const updated = prev.map(i => i.id === id ? { ...i, qty: Math.min(maxQty, Math.max(0, i.qty + delta)) } : i).filter(i => i.qty > 0);
       saveCartItems(updated, resolvedTenant?.id);
       return updated;
     });
@@ -375,11 +380,15 @@ export default function StorefrontPage() {
 
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [redirectingToPayment, setRedirectingToPayment] = useState(false);
+  const [submittingOrder, setSubmittingOrder] = useState(false);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!custName.trim() || !custPhone.trim() || cart.length === 0) return;
+    if (submittingOrder) return; // guards against a double-click creating two orders
     setCheckoutError(null);
+    setSubmittingOrder(true);
+    try {
     const orderId = resolvedTenant ? crypto.randomUUID() : `LA-${Date.now().toString().slice(-6)}`;
     const order = {
       id: orderId,
@@ -441,6 +450,9 @@ export default function StorefrontPage() {
     setOrderConfirmed(order.orderNumber || orderId);
     setCart([]);
     saveCartItems([], resolvedTenant?.id);
+    } finally {
+      setSubmittingOrder(false);
+    }
   };
 
   const fmtPrice = (amt: number) => `${amt.toLocaleString('fr-FR')} ${currency}`;
@@ -798,8 +810,8 @@ export default function StorefrontPage() {
                   {checkoutError && (
                     <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg p-3">{checkoutError}</p>
                   )}
-                  <button type="submit" disabled={redirectingToPayment} className="w-full py-3 rounded-full font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60" style={{ backgroundColor: theme.colors.primary }}>
-                    <Lock size={16} /> {redirectingToPayment ? 'Redirection vers le paiement...' : `Confirmer la commande · ${fmtPrice(cartTotal)}`}
+                  <button type="submit" disabled={redirectingToPayment || submittingOrder} className="w-full py-3 rounded-full font-bold text-white flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60" style={{ backgroundColor: theme.colors.primary }}>
+                    <Lock size={16} /> {redirectingToPayment ? 'Redirection vers le paiement...' : submittingOrder ? 'Traitement en cours…' : `Confirmer la commande · ${fmtPrice(cartTotal)}`}
                   </button>
                   <p className="text-xs text-gray-400 text-center">Paiement sécurisé · Vos données sont protégées</p>
                 </form>

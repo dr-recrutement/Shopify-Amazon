@@ -1516,8 +1516,12 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
                     <span className="text-xs font-bold tracking-widest" style={{ color: colors.primary }}>
                       {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                    <button onClick={() => onAddToCart?.(p)} className="w-full py-1 text-[9px] font-black uppercase tracking-widest border text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white transition-all">
-                      Ajouter au panier
+                    <button
+                      onClick={() => (p.stock ?? 1) > 0 && onAddToCart?.(p)}
+                      disabled={(p.stock ?? 1) <= 0}
+                      className={`w-full py-1 text-[9px] font-black uppercase tracking-widest border transition-all ${(p.stock ?? 1) <= 0 ? 'text-gray-300 border-gray-200 cursor-not-allowed' : 'text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white'}`}
+                    >
+                      {(p.stock ?? 1) <= 0 ? 'Rupture de stock' : 'Ajouter au panier'}
                     </button>
                   </div>
                 </div>
@@ -1539,7 +1543,12 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
                     <span className="text-sm font-black" style={{ color: colors.text }}>
                       {formatCurrency(p.price || 10000, getShopProfile().currency)}
                     </span>
-                    <span className="text-[10px] underline cursor-pointer font-bold hover:text-brand-600" onClick={() => onAddToCart?.(p)}>Acheter</span>
+                    <span
+                      className={`text-[10px] underline font-bold ${(p.stock ?? 1) <= 0 ? 'text-gray-300 cursor-not-allowed no-underline' : 'cursor-pointer hover:text-brand-600'}`}
+                      onClick={() => (p.stock ?? 1) > 0 && onAddToCart?.(p)}
+                    >
+                      {(p.stock ?? 1) <= 0 ? 'Épuisé' : 'Acheter'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1588,8 +1597,14 @@ function ProductGridSection({ props, colors, fonts, spacingClass, theme, onAddTo
                       </span>
                     )}
                   </div>
-                  <button onClick={() => onAddToCart?.(p)} className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase text-white hover:opacity-90 transition-opacity" style={{ backgroundColor: colors.primary }}>
-                    Acheter
+                  <button
+                    data-primary-button
+                    onClick={() => (p.stock ?? 1) > 0 && onAddToCart?.(p)}
+                    disabled={(p.stock ?? 1) <= 0}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-opacity ${(p.stock ?? 1) <= 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'text-white hover:opacity-90'}`}
+                    style={(p.stock ?? 1) > 0 ? { backgroundColor: colors.primary } : undefined}
+                  >
+                    {(p.stock ?? 1) <= 0 ? 'Épuisé' : 'Acheter'}
                   </button>
                 </div>
               </div>

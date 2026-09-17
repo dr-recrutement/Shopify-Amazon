@@ -1871,6 +1871,21 @@ export default function OnlineStore() {
                   )}
 
                   {/* Categories list */}
+                  {activeSection.type === 'category-grid' && !('categories' in activeSection.props) && (
+                    <div className="pt-2 border-t border-gray-100">
+                      <p className="text-[11px] text-gray-500 mb-2">Par défaut, cette section affiche vos catégories de produits automatiquement, sans image personnalisée. Pour ajouter une image à chaque catégorie :</p>
+                      <button
+                        onClick={() => {
+                          const realCats = Object.keys(getCategories()).map(cat => ({ name: cat, image: '' }));
+                          updateSectionProp(activeSection.id, 'categories', realCats.length ? realCats : [{ name: 'Nouvelle Catégorie', image: '' }]);
+                        }}
+                        className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
+                      >
+                        Personnaliser mes catégories (ajouter des images)
+                      </button>
+                    </div>
+                  )}
+
                   {activeSection.type === 'category-grid' && 'categories' in activeSection.props && (
                     <div className="space-y-3 pt-2 border-t border-gray-100">
                       <span className="block text-xs font-bold text-gray-700 uppercase">Catégories d'articles</span>
@@ -2823,11 +2838,24 @@ export default function OnlineStore() {
                       }));
                     sectionWithRealData.props = { ...s.props, products: realProds };
                   } else if (s.type === 'category-grid' || s.type === 'collection-list') {
-                    const realCats = Object.keys(getCategories()).map(cat => ({
-                      name: cat,
-                      image: '',
-                    }));
-                    sectionWithRealData.props = { ...s.props, categories: realCats };
+                    // A merchant can manually curate categories with their own
+                    // uploaded images (see the section settings panel below,
+                    // 'categories' in activeSection.props). This used to be
+                    // overwritten UNCONDITIONALLY with auto-derived catalog
+                    // categories (always image: '') on every single render —
+                    // so uploading a category image did nothing: the preview
+                    // (and the live storefront, same bug) always discarded it
+                    // a moment later. Now only auto-fills when the merchant
+                    // hasn't curated their own list yet.
+                    if (Array.isArray(s.props.categories) && s.props.categories.length > 0) {
+                      sectionWithRealData.props = { ...s.props };
+                    } else {
+                      const realCats = Object.keys(getCategories()).map(cat => ({
+                        name: cat,
+                        image: '',
+                      }));
+                      sectionWithRealData.props = { ...s.props, categories: realCats };
+                    }
                   }
 
                   return (

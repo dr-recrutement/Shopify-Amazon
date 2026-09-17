@@ -306,6 +306,15 @@ export default function StorefrontPage() {
           return { ...s, props: { ...s.props, products: filtered } };
         }
         if (s.type === 'category-grid' || s.type === 'collection-list') {
+          // Same fix as the editor preview (OnlineStore.tsx): a merchant's
+          // manually curated categories (with their own uploaded images)
+          // were unconditionally overwritten with auto-derived catalog
+          // categories (always blank images) on every render — so a
+          // category image upload never actually appeared on the live
+          // storefront either. Respect a real curated list when present.
+          if (Array.isArray(s.props.categories) && s.props.categories.length > 0) {
+            return s;
+          }
           return { ...s, props: { ...s.props, categories } };
         }
         return s;

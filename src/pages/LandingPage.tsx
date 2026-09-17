@@ -310,8 +310,21 @@ export default function LandingPage() {
               headline and overlaps down into the section below, matching
               the reference layout's dashboard-screenshot treatment. */}
           <div className="mt-16 max-w-3xl mx-auto text-left -mb-40 sm:-mb-48">
-            <div className="relative bg-white rounded-3xl p-6 border border-gray-100 shadow-2xl hover:shadow-brand-100 transition-all duration-300">
+            <div className="relative bg-white rounded-3xl border border-gray-100 shadow-2xl hover:shadow-brand-100 transition-all duration-300 overflow-hidden">
 
+              {/* Browser chrome — reads as a real screenshot in a browser
+                  window (Stripe/BigCommerce-style hero presentation)
+                  instead of a bare floating card. */}
+              <div className="flex items-center gap-1.5 px-4 py-3 bg-gray-50 border-b border-gray-100">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-green-300" />
+                <span className="ml-3 flex-1 max-w-[220px] bg-white border border-gray-200 rounded-md px-2.5 py-1 text-[10px] text-gray-400 truncate">
+                  {boutiques[activeSlide].title.toLowerCase().replace(/[^a-z0-9]+/g, '')}.sellia.shop
+                </span>
+              </div>
+
+              <div className="p-6">
               {/* Visual Slide */}
               <div
                 className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-500 ${boutiques[activeSlide].animationClass}`}
@@ -385,6 +398,7 @@ export default function LandingPage() {
                 <span className="text-xs text-gray-400 font-semibold">{activeSlide + 1} / {boutiques.length}</span>
               </div>
 
+              </div>
             </div>
           </div>
         </div>

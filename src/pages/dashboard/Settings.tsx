@@ -955,7 +955,10 @@ export default function Settings() {
           {active === 'apps' && (
             <div className="space-y-3 text-xs sm:text-sm text-left">
               <h3 className="font-bold text-gray-900 text-sm">Apps</h3>
-              <p className="text-gray-500">La marketplace de connecteurs d'apps arrive dans un prochain lot — un peu de patience.</p>
+              <p className="text-gray-500">Connectez Google Analytics, Meta Pixel, TikTok Pixel et vos webhooks (Zapier/Make.com) depuis la page Apps dédiée — connexions réelles, injectées sur votre boutique publiée.</p>
+              <Link to="/app/apps" className="inline-flex items-center gap-1.5 text-brand-600 font-semibold hover:underline">
+                Ouvrir la page Apps →
+              </Link>
             </div>
           )}
           {active === 'locations' && (

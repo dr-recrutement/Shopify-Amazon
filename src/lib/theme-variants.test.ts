@@ -38,7 +38,7 @@ describe('theme variants — distinct templates per Shopify theme', () => {
   });
 });
 
-describe('5 professional templates — distinct use cases', () => {
+describe('professional templates — distinct use cases', () => {
   const stubNames = [
     'announcementBarSection', 'headerSection', 'imageBannerSection', 'heroSection',
     'imageWithTextSection', 'multicolumnSection', 'richTextSection', 'aboutSection',
@@ -50,8 +50,12 @@ describe('5 professional templates — distinct use cases', () => {
   const stubs: Record<string, any> = {};
   stubNames.forEach(n => { stubs[n] = { id: n, type: n, blocks: [], block_order: [], settings: {} }; });
 
-  it('exposes exactly 5 template profiles', () => {
-    expect(TEMPLATE_PROFILES).toHaveLength(5);
+  // Not pinned to a literal count: templates get added over time (see
+  // the 'banga' addition), and what actually matters is that whatever
+  // set exists stays fully distinct - no two templates sharing a layout,
+  // label, use case, icon, or section arrangement.
+  it('exposes at least the 5 original template profiles', () => {
+    expect(TEMPLATE_PROFILES.length).toBeGreaterThanOrEqual(5);
   });
 
   it('each template has a distinct layoutVariant, label, useCase and icon', () => {
@@ -59,21 +63,22 @@ describe('5 professional templates — distinct use cases', () => {
     const labels = new Set(TEMPLATE_PROFILES.map(p => p.label));
     const useCases = new Set(TEMPLATE_PROFILES.map(p => p.useCase));
     const icons = new Set(TEMPLATE_PROFILES.map(p => p.icon));
-    expect(variants.size).toBe(5);
-    expect(labels.size).toBe(5);
-    expect(useCases.size).toBe(5);
-    expect(icons.size).toBe(5);
+    const n = TEMPLATE_PROFILES.length;
+    expect(variants.size).toBe(n);
+    expect(labels.size).toBe(n);
+    expect(useCases.size).toBe(n);
+    expect(icons.size).toBe(n);
   });
 
-  it('the 5 templates produce 5 DISTINCT section arrangements', () => {
+  it('every template produces a DISTINCT section arrangement', () => {
     const fingerprints = TEMPLATE_PROFILES.map(p =>
       sectionsForVariantPublic(p.layoutVariant, stubs).map(s => s.id).join('|')
     );
     const unique = new Set(fingerprints);
-    expect(unique.size).toBe(5);
+    expect(unique.size).toBe(TEMPLATE_PROFILES.length);
   });
 
-  it('templates cover the 5 required use cases', () => {
+  it('templates cover the original 5 required use cases', () => {
     const useCases = TEMPLATE_PROFILES.map(p => p.useCase);
     expect(useCases).toContain('E-commerce');
     expect(useCases).toContain('Site vitrine');
@@ -92,6 +97,19 @@ describe('5 professional templates — distinct use cases', () => {
     // Each produces a different section fingerprint
     const fp = [ecommerce, vitrine, creative].map(t => t.sections.map(s => s.type).join('|'));
     expect(new Set(fp).size).toBe(3);
+  });
+
+  it('Banga Mono is a real, distinct, sharp-cornered template', () => {
+    const banga = defaultThemeForType('ecommerce', 'banga');
+    expect(banga.layoutVariant).toBe('banga');
+    expect(banga.cornerRadius).toBe('sharp');
+    expect(banga.sections.length).toBeGreaterThan(0);
+    // Not the same arrangement as any existing template
+    const others = TEMPLATE_PROFILES.filter(p => p.id !== 'banga').map(p =>
+      sectionsForVariantPublic(p.layoutVariant, stubs).map(s => s.id).join('|')
+    );
+    const bangaFingerprint = sectionsForVariantPublic('banga', stubs).map(s => s.id).join('|');
+    expect(others).not.toContain(bangaFingerprint);
   });
 });
 

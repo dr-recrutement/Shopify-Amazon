@@ -26,6 +26,7 @@ export default function ProductDetailPage() {
   const [resolvedTenant, setResolvedTenant] = useState<PublicTenant | null>(null);
   const [products, setProducts] = useState<StoreProduct[] | null>(null);
   const [qty, setQty] = useState(1);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [activeImage, setActiveImage] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -98,11 +99,18 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
+    // Real variant selection (e.g. Taille: M, Couleur: Rouge) instead of
+    // always defaulting to the category/subcategory as a stand-in "variant"
+    // label, which told the customer nothing about what they actually chose.
+    const variantLabel = product.variants?.length
+      ? product.variants.map(v => `${v.name}: ${selectedOptions[v.name] || v.options[0]}`).join(', ')
+      : (product.subcategory || product.category || '');
+    const lineId = product.variants?.length ? `${product.id}::${variantLabel}` : product.id;
     setCart(prev => {
-      const existing = prev.find(i => i.id === product.id);
+      const existing = prev.find(i => i.id === lineId);
       const next = existing
-        ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + qty } : i)
-        : [...prev, { id: product.id, name: product.name, variant: product.subcategory || product.category || '', price: product.price, qty, currency: product.currency, image: images[0] }];
+        ? prev.map(i => i.id === lineId ? { ...i, qty: i.qty + qty } : i)
+        : [...prev, { id: lineId, name: product.name, variant: variantLabel, price: product.price, qty, currency: product.currency, image: images[0] }];
       saveCartItems(next, resolvedTenant?.id);
       return next;
     });
@@ -192,6 +200,30 @@ export default function ProductDetailPage() {
           {product.description && (
             <p className="mt-5 text-sm leading-relaxed text-gray-600 whitespace-pre-line">{product.description}</p>
           )}
+
+          {/* Real variant selection — previously the cart line's "variant"
+              label was always just the product's category/subcategory,
+              never something the customer actually chose. */}
+          {product.variants?.map(v => (
+            <div key={v.name} className="mt-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">{v.name}</p>
+              <div className="flex flex-wrap gap-2">
+                {v.options.map(opt => {
+                  const active = (selectedOptions[v.name] || v.options[0]) === opt;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => setSelectedOptions(prev => ({ ...prev, [v.name]: opt }))}
+                      className="px-3.5 py-1.5 rounded-full text-xs font-semibold border-2 transition-colors"
+                      style={active ? { borderColor: theme.colors.primary, backgroundColor: `${theme.colors.primary}10`, color: theme.colors.primary } : { borderColor: '#e5e7eb', color: '#374151' }}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
 
           <div className="mt-6 flex items-center gap-4">
             <div className="flex items-center border border-gray-200 rounded-lg">

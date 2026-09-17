@@ -79,7 +79,7 @@ export default function CheckoutPage() {
       customerEmail: email || undefined,
       paymentMethod: payment,
       currency: tenant.currency || currency,
-      items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+      items: items.map(i => ({ name: i.variant ? `${i.name} (${i.variant})` : i.name, price: i.price, qty: i.qty })),
       slug,
     });
 

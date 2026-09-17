@@ -30,6 +30,15 @@ export type StoreProduct = {
    *  Real wiring: the product form renders one input per defined field
    *  and stores the value here. */
   metafields?: Record<string, string>;
+  /** Variant option groups (e.g. Taille: [S, M, L], Couleur: [Rouge, Bleu]).
+   *  A customer picks one option per group before adding to cart; the
+   *  combination is stored on the cart line as a plain string
+   *  ("Taille: M, Couleur: Rouge") since CartItem.variant is already a
+   *  free-text field used for exactly this. No per-combination stock/price
+   *  override yet — every combination shares the product's own price and
+   *  stock count, which is an honest, real limitation to state plainly
+   *  rather than fake per-variant inventory that isn't actually tracked. */
+  variants?: { name: string; options: string[] }[];
 };
 
 export type StoreOrder = {

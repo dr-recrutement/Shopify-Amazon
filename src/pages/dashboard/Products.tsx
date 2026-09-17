@@ -30,6 +30,7 @@ export default function Products() {
   const [aiDescLoading, setAiDescLoading] = useState(false);
   const [prodMetafields, setProdMetafields] = useState<Record<string, string>>({});
   const [metafieldDefs, setMetafieldDefs] = useState<Array<{ id: string; label: string }>>([]);
+  const [prodVariants, setProdVariants] = useState<{ name: string; options: string[] }[]>([]);
 
   // States to add new category/subcategory inline
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
@@ -84,6 +85,7 @@ export default function Products() {
     setProdImages([]);
     setProdDescription('');
     setProdMetafields({});
+    setProdVariants([]);
 
     // Default to the first category if available
     const keys = Object.keys(categories);
@@ -105,6 +107,7 @@ export default function Products() {
     setProdImages(getProductImages(p));
     setProdDescription(p.description || '');
     setProdMetafields(p.metafields || {});
+    setProdVariants(p.variants || []);
     setProdCategory(p.category || '');
     setProdSubcategory(p.subcategory || '');
 
@@ -142,6 +145,7 @@ export default function Products() {
             image: prodImages[0] || p.image,
             description: prodDescription,
             metafields: prodMetafields,
+            variants: prodVariants.filter(v => v.name.trim() && v.options.length > 0),
           };
         }
         return p;
@@ -160,6 +164,7 @@ export default function Products() {
         image: prodImages[0],
         description: prodDescription,
         metafields: prodMetafields,
+        variants: prodVariants.filter(v => v.name.trim() && v.options.length > 0),
       };
       updatedList = [newProd, ...products];
     }
@@ -458,6 +463,53 @@ export default function Products() {
                   </div>
                 </div>
               )}
+
+              {/* Variantes (Taille, Couleur, etc.) — the customer picks one
+                  option per group on the storefront before adding to cart.
+                  No per-combination price/stock override yet: every
+                  combination shares this product's own price and stock,
+                  stated plainly in the helper text rather than faking
+                  per-variant inventory tracking that doesn't exist. */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Variantes (taille, couleur...)
+                </label>
+                <p className="text-[10px] text-gray-400">Chaque variante partage le même prix et le même stock que ce produit.</p>
+                {prodVariants.map((v, vi) => (
+                  <div key={vi} className="p-2.5 bg-gray-50 border border-gray-150 rounded-lg space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={v.name}
+                        onChange={e => setProdVariants(prodVariants.map((x, xi) => xi === vi ? { ...x, name: e.target.value } : x))}
+                        placeholder="Nom (ex. Taille, Couleur)"
+                        className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs font-semibold"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setProdVariants(prodVariants.filter((_, xi) => xi !== vi))}
+                        className="p-1.5 text-gray-400 hover:text-red-600 rounded"
+                      >
+                        <Trash size={13} />
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={v.options.join(', ')}
+                      onChange={e => setProdVariants(prodVariants.map((x, xi) => xi === vi ? { ...x, options: e.target.value.split(',').map(o => o.trim()).filter(Boolean) } : x))}
+                      placeholder="Options séparées par une virgule (ex. S, M, L)"
+                      className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs"
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setProdVariants([...prodVariants, { name: '', options: [] }])}
+                  className="w-full py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200"
+                >
+                  + Ajouter une variante
+                </button>
+              </div>
 
               {/* Price & Stock Row */}
               <div className="grid grid-cols-2 gap-4">

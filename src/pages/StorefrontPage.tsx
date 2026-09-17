@@ -200,7 +200,7 @@ export default function StorefrontPage() {
     const t = setTimeout(() => {
       trackAbandonedCart(
         resolvedTenant.id,
-        cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
+        cart.map(c => ({ name: c.variant ? `${c.name} (${c.variant})` : c.name, qty: c.qty, price: c.price })),
         cart.reduce((sum, c) => sum + c.price * c.qty, 0),
         currency,
         custEmail || undefined,
@@ -400,7 +400,7 @@ export default function StorefrontPage() {
       status: 'pending' as const,
       payment: paymentMethod === 'payunit' ? 'PayUnit' : 'Paiement à la livraison',
       currency,
-      items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+      items: cart.map(i => ({ name: i.variant ? `${i.name} (${i.variant})` : i.name, qty: i.qty, price: i.price })),
     };
     // Real customer on a resolved public tenant → write directly to that
     // tenant's Supabase orders (anon insert, status locked to 'pending' by
@@ -426,7 +426,7 @@ export default function StorefrontPage() {
               amount: cartTotal,
               currency,
               customerEmail: custEmail,
-              items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+              items: cart.map(i => ({ name: i.variant ? `${i.name} (${i.variant})` : i.name, price: i.price, qty: i.qty })),
               slug,
               orderNumber: order.orderNumber,
             }),

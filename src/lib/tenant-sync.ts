@@ -63,6 +63,11 @@ function productToRow(tenantId: string, p: StoreProduct) {
     category: p.category || null,
     subcategory: p.subcategory || null,
     images: p.images && p.images.length ? p.images : (p.image ? [p.image] : []),
+    // Both were previously dropped silently on every cloud sync — no column
+    // existed for either, so a merchant's variant setup or custom field
+    // values vanished the moment they reloaded on another device.
+    variants: p.variants || [],
+    metafields: p.metafields || {},
   };
 }
 
@@ -80,6 +85,8 @@ function rowToProduct(row: Record<string, any>): StoreProduct {
     images,
     image: images[0] || undefined,
     description: row.description || undefined,
+    variants: Array.isArray(row.variants) && row.variants.length ? row.variants : undefined,
+    metafields: row.metafields && Object.keys(row.metafields).length ? row.metafields : undefined,
   };
 }
 

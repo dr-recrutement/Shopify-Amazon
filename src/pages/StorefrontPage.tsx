@@ -22,7 +22,7 @@ import {
   type CartItem,
   type StoreProduct,
 } from '../lib/app-state';
-import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, trackAbandonedCart, markCartRecovered, fetchActiveGatewayNames, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, fetchPublicProducts, fetchPublicTheme, createPublicOrder, fireOrderWebhook, fetchCloudSettingsFor, trackAbandonedCart, markCartRecovered, fetchActiveGatewayNames, getOrCreateCartSessionId, pingLiveVisitor, type PublicTenant } from '../lib/tenant-sync';
 import { injectAnalyticsScripts, injectChatWidget } from '../lib/analytics-injector';
 import { useSeo, applyFavicon } from '../lib/seo';
 import { TemplateRenderer } from '../lib/theme-system/TemplateRenderer';
@@ -210,6 +210,20 @@ export default function StorefrontPage() {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, resolvedTenant?.id, currency]);
+
+  // Real "live visitors" presence signal for the merchant's Analytics
+  // page (see fetchLiveVisitors/ping.ts) — pings on load and every 25s
+  // while this tab stays open, so a merchant's "online now" count stays
+  // accurate without needing the visitor to do anything. Uses the same
+  // anonymous per-browser session id as abandoned-cart tracking.
+  useEffect(() => {
+    if (!resolvedTenant?.id) return;
+    const sessionId = getOrCreateCartSessionId();
+    const ping = () => pingLiveVisitor(resolvedTenant.id, sessionId, window.location.pathname);
+    ping();
+    const interval = setInterval(ping, 25000);
+    return () => clearInterval(interval);
+  }, [resolvedTenant?.id]);
 
   // Per-tenant SEO: each merchant's storefront gets its own real title and
   // description (their actual shop name), not the platform's generic

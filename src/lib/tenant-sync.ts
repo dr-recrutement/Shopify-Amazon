@@ -766,6 +766,48 @@ export async function fetchOpenAbandonedCarts(): Promise<AbandonedCartRow[]> {
   }
 }
 
+/** Real visitor-presence ping — called periodically from the public
+ *  storefront (StorefrontPage.tsx) while a shopper has the page open.
+ *  Anonymous-safe (goes through the ping Cloudflare Function, which uses
+ *  the service role — see functions/api/analytics/ping.ts). Silently
+ *  no-ops on failure, exactly like trackAbandonedCart above: must never
+ *  interfere with the shopping experience. */
+export function pingLiveVisitor(tenantId: string, sessionId: string, path: string): void {
+  fetch('/api/analytics/ping', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tenantId, sessionId, path }),
+  }).catch(() => {});
+}
+
+export interface LiveVisitorRow {
+  id: string;
+  country: string | null;
+  path: string | null;
+  last_seen: string;
+}
+
+/** Merchant-side read of currently-online visitors (last_seen within the
+ *  last 2 minutes) — real destination for Analytics' "live visitors"
+ *  panel. Owner-only per RLS. */
+export async function fetchLiveVisitors(): Promise<LiveVisitorRow[]> {
+  if (!isCloudSyncActive()) return [];
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return [];
+  try {
+    const since = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+    const { data, error } = await supabase
+      .from('live_visitors')
+      .select('id, country, path, last_seen')
+      .eq('tenant_id', tenantId)
+      .gte('last_seen', since);
+    if (error || !data) return [];
+    return data as LiveVisitorRow[];
+  } catch {
+    return [];
+  }
+}
+
 /** Real fix for the checkout screen: which of the merchant's connected
  *  payment gateways are actually active, so only genuinely-wired,
  *  merchant-connected options are offered to shoppers — see

@@ -1265,11 +1265,38 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
 // SUB-COMPONENTS WITH PROPER REACT STATES FOR INTERACTION & REAL RENDERING
 // ---------------------------------------------------------------------------
 
-function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colors: any; fonts: any; headerClass?: string }) {
+function HeaderSection({ props, colors, fonts, headerClass, onCategoryClick, storeUrl }: { props: any; colors: any; fonts: any; headerClass?: string; onCategoryClick?: (name: string) => void; storeUrl?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const logoText = props.logoText || 'Ma Boutique';
-  const navItems = props.nav || ['Accueil', 'Boutique', 'À propos', 'Contact'];
   const profile = getShopProfile();
+
+  // Nav items used to be plain strings rendered as href="#label" — every
+  // click was a dead anchor, never navigating anywhere real ("si il clique
+  // sur collection que ça pointe vers la page de collection" — it didn't
+  // point anywhere). Now each item carries a real destination: home (the
+  // storefront root), collection (filters the product grid in place, same
+  // mechanism CategoryGridSection already uses), page (a real CMS page),
+  // or an external url. Old string-only data (props.nav = ['Accueil', ...])
+  // still renders — as a 'home' link — rather than breaking existing themes.
+  type NavItem = { label: string; type: 'home' | 'collection' | 'page' | 'url'; value?: string };
+  const rawNav = props.nav || ['Accueil', 'Boutique', 'À propos', 'Contact'];
+  const navItems: NavItem[] = rawNav.map((item: string | NavItem) =>
+    typeof item === 'string' ? { label: item, type: 'home' as const } : item
+  );
+
+  const renderNavItem = (item: NavItem, className: string) => {
+    const style = { color: colors.text };
+    if (item.type === 'collection' && item.value) {
+      return <button onClick={() => onCategoryClick?.(item.value!)} className={className} style={style}>{item.label}</button>;
+    }
+    if (item.type === 'page' && item.value) {
+      return <Link to={`${storeUrl || ''}/pages/${item.value}`} className={className} style={style}>{item.label}</Link>;
+    }
+    if (item.type === 'url' && item.value) {
+      return <a href={item.value} target="_blank" rel="noopener noreferrer" className={className} style={style}>{item.label}</a>;
+    }
+    return <Link to={storeUrl || '/'} className={className} style={style}>{item.label}</Link>;
+  };
 
   const announcement = props.announcementText || `✨ LIVRAISON GRATUITE dès ${formatCurrency(35000, profile.currency)} avec nos paiements connectés ! ✨`;
   const hClass = headerClass || 'border-b border-gray-100 py-3';
@@ -1301,10 +1328,10 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-bold tracking-wider uppercase">
-            {navItems.map((item: string) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="hover:opacity-80 transition-opacity" style={{ color: colors.text }}>
-                {item}
-              </a>
+            {navItems.map((item, i) => (
+              <span key={`${item.label}-${i}`}>
+                {renderNavItem(item, 'hover:opacity-80 transition-opacity')}
+              </span>
             ))}
           </nav>
 
@@ -1334,10 +1361,10 @@ function HeaderSection({ props, colors, fonts, headerClass }: { props: any; colo
         {/* Mobile Menu Dropdown */}
         {mobileOpen && (
           <div className="md:hidden border-t bg-white px-4 py-3 space-y-2 text-sm font-semibold border-gray-100 shadow-lg">
-            {navItems.map((item: string) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="block py-1 hover:text-brand-500" onClick={() => setMobileOpen(false)}>
-                {item}
-              </a>
+            {navItems.map((item, i) => (
+              <div key={`${item.label}-${i}`} onClick={() => setMobileOpen(false)}>
+                {renderNavItem(item, 'block py-1 hover:text-brand-500')}
+              </div>
             ))}
           </div>
         )}
@@ -2454,7 +2481,7 @@ export function renderSection(section: ThemeSection, theme: ThemeConfig, callbac
 
   switch (section.type) {
     case 'header':
-      return <HeaderSection props={section.props} colors={colors} fonts={fonts} headerClass={variantStyles.headerClass} />;
+      return <HeaderSection props={section.props} colors={colors} fonts={fonts} headerClass={variantStyles.headerClass} onCategoryClick={callbacks?.onCategoryClick} storeUrl={callbacks?.productLinkBase} />;
     case 'announcement-bar':
       return <AnnouncementBarSection props={section.props} colors={colors} fonts={fonts} />;
     case 'hero':

@@ -1234,6 +1234,95 @@ export default function OnlineStore() {
                           className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                         />
                       </div>
+
+                      {/* Real navigation menu editor. Nav items used to be
+                          plain strings rendered as href="#label" - every
+                          click was a dead anchor. Each item here now
+                          carries a real destination (page réelle,
+                          collection existante, ou lien externe). */}
+                      <div className="pt-2 border-t border-gray-100">
+                        <label className="block text-xs font-bold text-gray-700 mb-1.5">Menu de navigation</label>
+                        <div className="space-y-2">
+                          {(() => {
+                            const rawNav = activeSection.props.nav || ['Accueil', 'Boutique', 'À propos', 'Contact'];
+                            const navItems = rawNav.map((item: any) => typeof item === 'string' ? { label: item, type: 'home' } : item);
+                            const cmsPages = getCmsPages();
+                            const realCategories = Object.keys(getCategories());
+                            const updateNav = (next: any[]) => updateSectionProp(activeSection.id, 'nav', next);
+                            return (
+                              <>
+                                {navItems.map((item: any, i: number) => (
+                                  <div key={i} className="p-2 bg-gray-50 border border-gray-150 rounded-lg space-y-1.5">
+                                    <div className="flex items-center gap-1.5">
+                                      <input
+                                        type="text"
+                                        value={item.label}
+                                        onChange={e => updateNav(navItems.map((x: any, xi: number) => xi === i ? { ...x, label: e.target.value } : x))}
+                                        placeholder="Libellé"
+                                        className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs"
+                                      />
+                                      <button
+                                        onClick={() => updateNav(navItems.filter((_: any, xi: number) => xi !== i))}
+                                        className="p-1 text-gray-400 hover:text-red-600 rounded"
+                                        title="Retirer"
+                                      >
+                                        <Trash2 size={13} />
+                                      </button>
+                                    </div>
+                                    <div className="flex gap-1.5">
+                                      <select
+                                        value={item.type}
+                                        onChange={e => updateNav(navItems.map((x: any, xi: number) => xi === i ? { ...x, type: e.target.value, value: undefined } : x))}
+                                        className="flex-1 px-1.5 py-1 border border-gray-200 rounded text-[11px] bg-white"
+                                      >
+                                        <option value="home">Accueil de la boutique</option>
+                                        <option value="collection">Collection (catégorie)</option>
+                                        <option value="page">Page institutionnelle</option>
+                                        <option value="url">Lien externe</option>
+                                      </select>
+                                      {item.type === 'collection' && (
+                                        <select
+                                          value={item.value || ''}
+                                          onChange={e => updateNav(navItems.map((x: any, xi: number) => xi === i ? { ...x, value: e.target.value } : x))}
+                                          className="flex-1 px-1.5 py-1 border border-gray-200 rounded text-[11px] bg-white"
+                                        >
+                                          <option value="">Choisir...</option>
+                                          {realCategories.map((c: string) => <option key={c} value={c}>{c}</option>)}
+                                        </select>
+                                      )}
+                                      {item.type === 'page' && (
+                                        <select
+                                          value={item.value || ''}
+                                          onChange={e => updateNav(navItems.map((x: any, xi: number) => xi === i ? { ...x, value: e.target.value } : x))}
+                                          className="flex-1 px-1.5 py-1 border border-gray-200 rounded text-[11px] bg-white"
+                                        >
+                                          <option value="">Choisir...</option>
+                                          {cmsPages.map((p: any) => <option key={p.id} value={p.slug}>{p.title}</option>)}
+                                        </select>
+                                      )}
+                                      {item.type === 'url' && (
+                                        <input
+                                          type="text"
+                                          value={item.value || ''}
+                                          onChange={e => updateNav(navItems.map((x: any, xi: number) => xi === i ? { ...x, value: e.target.value } : x))}
+                                          placeholder="https://..."
+                                          className="flex-1 px-1.5 py-1 border border-gray-200 rounded text-[11px]"
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                                <button
+                                  onClick={() => updateNav([...navItems, { label: 'Nouveau lien', type: 'home' }])}
+                                  className="w-full py-1.5 rounded-lg text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 flex items-center justify-center gap-1"
+                                >
+                                  <Plus size={13} /> Ajouter un lien au menu
+                                </button>
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </div>
                     </div>
                   )}
 

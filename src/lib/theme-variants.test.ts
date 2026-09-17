@@ -51,7 +51,7 @@ describe('professional templates — distinct use cases', () => {
   stubNames.forEach(n => { stubs[n] = { id: n, type: n, blocks: [], block_order: [], settings: {} }; });
 
   // Not pinned to a literal count: templates get added over time (see
-  // the 'banga' addition), and what actually matters is that whatever
+  // the 'liyah' addition), and what actually matters is that whatever
   // set exists stays fully distinct - no two templates sharing a layout,
   // label, use case, icon, or section arrangement.
   it('exposes at least the 5 original template profiles', () => {
@@ -99,17 +99,17 @@ describe('professional templates — distinct use cases', () => {
     expect(new Set(fp).size).toBe(3);
   });
 
-  it('Banga Mono is a real, distinct, sharp-cornered template', () => {
-    const banga = defaultThemeForType('ecommerce', 'banga');
-    expect(banga.layoutVariant).toBe('banga');
-    expect(banga.cornerRadius).toBe('sharp');
-    expect(banga.sections.length).toBeGreaterThan(0);
+  it('Liyah is a real, distinct, sharp-cornered template', () => {
+    const liyah = defaultThemeForType('ecommerce', 'liyah');
+    expect(liyah.layoutVariant).toBe('liyah');
+    expect(liyah.cornerRadius).toBe('sharp');
+    expect(liyah.sections.length).toBeGreaterThan(0);
     // Not the same arrangement as any existing template
-    const others = TEMPLATE_PROFILES.filter(p => p.id !== 'banga').map(p =>
+    const others = TEMPLATE_PROFILES.filter(p => p.id !== 'liyah').map(p =>
       sectionsForVariantPublic(p.layoutVariant, stubs).map(s => s.id).join('|')
     );
-    const bangaFingerprint = sectionsForVariantPublic('banga', stubs).map(s => s.id).join('|');
-    expect(others).not.toContain(bangaFingerprint);
+    const liyahFingerprint = sectionsForVariantPublic('liyah', stubs).map(s => s.id).join('|');
+    expect(others).not.toContain(liyahFingerprint);
   });
 });
 

@@ -113,7 +113,7 @@ export function MediaBox({ src, alt, seed, className, style, colors }: {
 }
 
 export type SiteType = 'landing' | 'ecommerce' | 'business' | 'marketplace';
-export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial' | 'ecommerce-pro' | 'vitrine' | 'business-corp' | 'services' | 'creative-magazine' | 'banga';
+export type ThemePreset = 'universal' | 'luxury' | 'african' | 'editorial' | 'ecommerce-pro' | 'vitrine' | 'business-corp' | 'services' | 'creative-magazine' | 'liyah';
 
 export type SectionType =
   | 'header' | 'announcement-bar' | 'footer'
@@ -267,7 +267,7 @@ export type LayoutVariant =
   | 'business-corp'   // Business/Corporate: agency/startup, bold, trust-led
   | 'services'        // Services: consultants/freelance, booking, contact-led
   | 'creative-magazine' // Créatif/Magazine/Blog: editorial, asymmetric, typographic
-  | 'banga'           // Monochrome editorial fashion/lifestyle — sharp corners,
+  | 'liyah'           // Monochrome editorial fashion/lifestyle — sharp corners,
                        // oversized display type, sticky blurred header
   // Legacy variants kept for backward compatibility with stored themes
   | 'dawn' | 'refresh' | 'spotlight' | 'crave' | 'sense'
@@ -280,7 +280,7 @@ export const LAYOUT_VARIANTS: { id: LayoutVariant; label: string; desc: string; 
   { id: 'business-corp', label: 'Business Corporate', desc: 'Solution pro — agences, startups, sociétés, services B2B', radius: 'rounded-lg', headerStyle: 'block', cardStyle: 'shadowed' },
   { id: 'services', label: 'Services Pro', desc: 'Consultants, freelances, cabinets — réservation et contact', radius: 'rounded-md', headerStyle: 'warm', cardStyle: 'bordered' },
   { id: 'creative-magazine', label: 'Créatif / Magazine', desc: 'Éditorial, médias, blogs, créateurs — design typographique', radius: 'rounded-sm', headerStyle: 'editorial', cardStyle: 'text-led' },
-  { id: 'banga', label: 'Banga Mono', desc: 'Mode & lifestyle premium — monochrome, typographie XXL, sans arrondis', radius: 'rounded-none', headerStyle: 'ecommerce', cardStyle: 'tight' },
+  { id: 'liyah', label: 'Liyah', desc: 'Mode & lifestyle premium — monochrome, typographie XXL, sans arrondis', radius: 'rounded-none', headerStyle: 'ecommerce', cardStyle: 'tight' },
   // Legacy variants (kept for backward compat)
   { id: 'dawn', label: 'Aurora', desc: 'Minimal, bannière plein cadre, cartes nettes', radius: 'rounded-none', headerStyle: 'thin', cardStyle: 'flat' },
   { id: 'refresh', label: 'Refresh', desc: 'Éditorial centré, cartes arrondies', radius: 'rounded-2xl', headerStyle: 'centered', cardStyle: 'rounded' },
@@ -383,10 +383,10 @@ export const THEME_PRESETS: Record<ThemePreset, { label: string; desc: string; c
     colors: { primary: '#DC2626', secondary: '#171717', accent: '#F59E0B', background: '#FAFAF9', text: '#171717' },
     fonts: { heading: 'Playfair Display', body: 'Lora' }, layoutVariant: 'creative-magazine',
   },
-  banga: {
-    label: 'Banga Mono', desc: 'Mode & lifestyle premium, monochrome et typographique',
+  liyah: {
+    label: 'Liyah', desc: 'Mode & lifestyle premium, monochrome et typographique',
     colors: { primary: '#171716', secondary: '#8B867C', accent: '#D3CEC3', background: '#F5F3EE', text: '#171716' },
-    fonts: { heading: 'Manrope', body: 'Inter' }, layoutVariant: 'banga',
+    fonts: { heading: 'Manrope', body: 'Inter' }, layoutVariant: 'liyah',
   },
 };
 
@@ -410,7 +410,7 @@ const HERO_CONTENT: Record<ThemePreset, { title: string; subtitle: string; cta: 
   'business-corp': { title: 'Des solutions pensées pour votre croissance', subtitle: 'Un partenaire fiable pour accompagner votre entreprise à chaque étape.', cta: 'Demander un devis', variant: 'grid' },
   services: { title: 'Réservez votre prochain rendez-vous', subtitle: 'Un service professionnel, disponible quand vous en avez besoin.', cta: 'Réserver maintenant', variant: 'waves' },
   'creative-magazine': { title: 'Des histoires qui inspirent', subtitle: 'Articles, idées et créations, sélectionnés pour vous chaque semaine.', cta: 'Lire les derniers articles', variant: 'grid' },
-  banga: { title: 'Des objets pour le quotidien', subtitle: 'Une expérience e-commerce premium, minimaliste et pensée pour convertir sur mobile comme sur desktop.', cta: 'Explorer la collection', variant: 'diagonal' },
+  liyah: { title: 'Des objets pour le quotidien', subtitle: 'Une expérience e-commerce premium, minimaliste et pensée pour convertir sur mobile comme sur desktop.', cta: 'Explorer la collection', variant: 'diagonal' },
 };
 
 function generateHeroArt(colors: ThemeConfig['colors'], variant: 'blobs' | 'grid' | 'waves' | 'diagonal'): string {
@@ -544,9 +544,9 @@ export const TEMPLATE_PROFILES: TemplateProfile[] = [
     minPlan: 'premium',
   },
   {
-    id: 'banga',
-    layoutVariant: 'banga',
-    label: 'Banga Mono',
+    id: 'liyah',
+    layoutVariant: 'liyah',
+    label: 'Liyah',
     useCase: 'Mode / Lifestyle premium',
     description: 'Look monochrome et éditorial pour la mode, le lifestyle et les objets design — typographie XXL, coins nets, en-tête flouté au scroll.',
     icon: '🖤',
@@ -681,10 +681,10 @@ export function sectionsForVariantPublic(variant: LayoutVariant, s: Record<strin
         s.featuredCollectionSection, s.testimonialsSection,
         s.collapsibleContentSection, s.emailSignupSection, s.footerSection,
       ];
-    // 6. Banga Mono — monochrome editorial fashion/lifestyle: banner → hero →
+    // 6. Liyah — monochrome editorial fashion/lifestyle: banner → hero →
     //    curated collections → featured shop grid → studio/story → values
     //    (multicolumn) → testimonials → newsletter → footer
-    case 'banga':
+    case 'liyah':
       return [
         s.announcementBarSection, s.headerSection, s.heroSection,
         s.collectionListSection, s.featuredCollectionSection, s.imageWithTextSection,
@@ -1288,12 +1288,12 @@ export function defaultThemeForType(siteType: SiteType, presetOverride?: ThemePr
   return {
     siteType, preset, colors, fonts, spacing: siteType === 'business' ? 'spacious' : 'comfortable', layoutVariant, isPublished: false,
     sections: variantSections,
-    // Banga Mono's whole identity is sharp, unrounded corners (see the
+    // Liyah's whole identity is sharp, unrounded corners (see the
     // uploaded reference CSS: no border-radius anywhere). The LAYOUT_VARIANTS
     // 'radius' field is descriptive metadata only — never actually consumed
     // by rendering for ANY variant — so this uses the real, working
     // cornerRadius mechanism instead to make that visual trait genuine.
-    ...(preset === 'banga' ? { cornerRadius: 'sharp' as const } : {}),
+    ...(preset === 'liyah' ? { cornerRadius: 'sharp' as const } : {}),
   };
 }
 

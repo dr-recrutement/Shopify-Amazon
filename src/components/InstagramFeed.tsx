@@ -36,8 +36,8 @@ export function InstagramFeed() {
 
   if (state.loading) {
     return (
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 animate-pulse">
-        {Array.from({ length: 6 }).map((_, i) => <div key={i} className="aspect-square rounded-lg bg-gray-800" />)}
+      <div className="grid grid-cols-6 gap-1.5 max-w-md animate-pulse">
+        {Array.from({ length: 6 }).map((_, i) => <div key={i} className="aspect-square rounded-md bg-gray-800" />)}
       </div>
     );
   }
@@ -48,15 +48,15 @@ export function InstagramFeed() {
         href={IG_PROFILE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 rounded-xl border border-gray-800 bg-gray-800/40 px-6 py-5 text-sm font-semibold text-gray-300 hover:text-white hover:border-gray-700 transition-colors"
+        className="flex items-center justify-center gap-2 rounded-xl border border-gray-800 bg-gray-800/40 px-4 py-2.5 text-xs font-semibold text-gray-300 hover:text-white hover:border-gray-700 transition-colors w-fit"
       >
-        <Instagram size={18} /> Suivez @liafrik_tech sur Instagram
+        <Instagram size={14} /> Suivez @liafrik_tech sur Instagram
       </a>
     );
   }
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+    <div className="grid grid-cols-6 gap-1.5 max-w-md">
       {state.posts.map(post => (
         <a
           key={post.id}

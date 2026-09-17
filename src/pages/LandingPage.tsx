@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
@@ -7,7 +7,7 @@ import { useSeo, useJsonLd } from '../lib/seo';
 import {
   ShoppingBag, Globe, Smartphone, Bot, BarChart3, Palette, Zap, Shield,
   CheckCircle2, ArrowRight, Star, Truck, CreditCard, MessageCircle, Sparkles,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Instagram, MessageSquare
 } from 'lucide-react';
 
 function useInView<T extends HTMLElement>() {
@@ -204,6 +204,7 @@ const faqs = [
 
 export default function LandingPage() {
   const { t } = useLang();
+  const nav = useNavigate();
   useSeo({
     title: 'Sellia by LiAfrik — Créez votre boutique en ligne',
     description: 'Sellia, la plateforme SaaS e-commerce mondiale. Mobile Money natif, IA intégrée, 0% commission.',
@@ -433,7 +434,7 @@ export default function LandingPage() {
             </p>
           </Section>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 justify-center items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 justify-center items-center">
 
             {/* Visa SVG */}
             <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
@@ -515,7 +516,64 @@ export default function LandingPage() {
               <span className="text-xs font-semibold text-gray-700 mt-2">Wave</span>
             </div>
 
+            {/* Apple Pay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center font-bold text-white text-[9px] shadow-sm">
+                Pay
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">Apple Pay</span>
+            </div>
+
+            {/* Google Pay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center font-black text-gray-700 text-sm shadow-sm">
+                G
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">Google Pay</span>
+            </div>
+
+            {/* M-Pesa */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-full bg-[#4CAF50] flex items-center justify-center font-black text-white text-base shadow-sm">
+                M
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">M-Pesa</span>
+            </div>
+
+            {/* CinetPay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-full bg-[#FF6B00] flex items-center justify-center font-black text-white text-[10px] shadow-sm">
+                CP
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">CinetPay</span>
+            </div>
+
+            {/* Alipay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-full bg-[#1677FF] flex items-center justify-center font-black text-white text-base shadow-sm">
+                A
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">Alipay</span>
+            </div>
+
+            {/* WeChat Pay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-full bg-[#07C160] flex items-center justify-center font-black text-white text-base shadow-sm">
+                W
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">WeChat Pay</span>
+            </div>
+
+            {/* UnionPay */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-50 hover:border-brand-100 hover:shadow-sm transition-all grayscale opacity-60 hover:grayscale-0 hover:opacity-100 duration-300">
+              <div className="w-10 h-10 rounded-xl bg-[#E21836] flex items-center justify-center font-black text-white text-sm shadow-sm">
+                UP
+              </div>
+              <span className="text-xs font-semibold text-gray-700 mt-2">UnionPay</span>
+            </div>
+
           </div>
+          <p className="text-center text-xs text-gray-400 mt-6">+ toute passerelle compatible que vous connectez vous-même depuis Réglages → Paiements.</p>
         </div>
       </section>
 
@@ -542,43 +600,69 @@ export default function LandingPage() {
 
             <Section delay={100}>
               {/* Real mockup of the actual Inbox UI (see
-                  src/pages/dashboard/Chat.tsx) — message bubbles, channel
-                  badges, sender names — instead of a bare icon and caption
-                  standing in for the product. */}
-              <div className="relative bg-white rounded-2xl border border-gray-100 shadow-xl p-6">
-                <div className="rounded-xl bg-gray-50 border border-gray-100 aspect-[4/3] relative overflow-hidden flex flex-col">
-                  <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-white">
-                    <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-[11px] font-bold flex-shrink-0">AK</div>
-                    <div className="min-w-0">
-                      <p className="text-[11px] font-semibold text-gray-900 truncate">Aïcha K.</p>
-                      <p className="text-[9px] text-gray-400">Robe wax — question taille</p>
+                  src/pages/dashboard/Chat.tsx) — a phone-frame chat view
+                  with real channel badges above it, echoing the layout of
+                  channel-reach sections other commerce platforms use, but
+                  built entirely from Sellia's own real features (unified
+                  inbox, AI descriptions) — CSS/SVG only, no stock photo
+                  staged to look like a real customer. */}
+              <div className="relative">
+                <div className="grid grid-cols-3 gap-2 mb-5">
+                  {[
+                    { icon: MessageSquare, label: 'Chat du site', desc: 'IA qui guide et vend', color: '#2F4FD1' },
+                    { icon: Smartphone, label: 'WhatsApp', desc: 'Conversations 1:1', color: '#25D366' },
+                    { icon: Instagram, label: 'Instagram', desc: 'DM qui convertissent', color: '#E1306C' },
+                  ].map(ch => (
+                    <div key={ch.label} className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center mb-2" style={{ backgroundColor: `${ch.color}15` }}>
+                        <ch.icon size={14} style={{ color: ch.color }} />
+                      </div>
+                      <p className="text-[11px] font-bold text-gray-900">{ch.label}</p>
+                      <p className="text-[9px] text-gray-400 leading-tight">{ch.desc}</p>
                     </div>
-                    <span className="ml-auto w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
-                  </div>
-                  <div className="flex-1 p-3 space-y-2 overflow-hidden">
-                    <div className="max-w-[75%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[10px] text-gray-700 shadow-sm">Bonjour, la robe est disponible en taille M ?</div>
-                    <div className="max-w-[75%] ml-auto bg-brand-600 text-white rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[10px] shadow-sm">Oui ! Il en reste 3 en stock 😊</div>
-                    <div className="max-w-[75%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[10px] text-gray-700 shadow-sm">Parfait, je commande maintenant</div>
-                  </div>
-                  <div className="absolute top-3 right-3 bg-white rounded-lg px-2 py-1 shadow-lg flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    <span className="text-[9px] font-semibold text-gray-800">WhatsApp</span>
+                  ))}
+                </div>
+
+                <div className="flex justify-center">
+                  {/* Phone frame */}
+                  <div className="w-[220px] rounded-[2rem] border-[6px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden">
+                    <div className="bg-white rounded-[1.5rem] overflow-hidden">
+                      <div className="h-5 bg-gray-900 flex items-center justify-center">
+                        <div className="w-16 h-3 bg-gray-900 rounded-b-lg" />
+                      </div>
+                      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-white">
+                        <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0">AK</div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-semibold text-gray-900 truncate">Aïcha K.</p>
+                          <p className="text-[8px] text-gray-400">en ligne</p>
+                        </div>
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                      </div>
+                      <div className="p-2.5 space-y-2 bg-gray-50 min-h-[180px]">
+                        <div className="max-w-[80%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[9px] text-gray-700 shadow-sm">La robe est dispo en taille M ?</div>
+                        <div className="max-w-[80%] ml-auto bg-brand-600 text-white rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[9px] shadow-sm">Oui, il en reste 3 😊</div>
+                        <div className="max-w-[80%] bg-white border border-gray-100 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[9px] text-gray-700 shadow-sm">Parfait, je commande !</div>
+                      </div>
+                      <div className="px-2.5 py-2 border-t border-gray-100 bg-white flex items-center gap-2">
+                        <div className="flex-1 h-6 bg-gray-100 rounded-full" />
+                        <div className="w-6 h-6 rounded-full bg-brand-600 flex-shrink-0" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-gray-500">Ajouter un canal</span>
-                  <div className="flex -space-x-2">
-                    {[
-                      { label: 'WA', bg: '#25D366' },
-                      { label: 'FB', bg: '#1877F2' },
-                      { label: 'IG', bg: '#E1306C' },
-                      { label: 'G', bg: '#4285F4' },
-                    ].map(ch => (
-                      <div key={ch.label} className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-black text-white shadow" style={{ backgroundColor: ch.bg }}>
-                        {ch.label}
-                      </div>
-                    ))}
-                  </div>
+
+                <div className="mt-5 flex items-center justify-center gap-2">
+                  {[
+                    { label: 'WA', bg: '#25D366' },
+                    { label: 'FB', bg: '#1877F2' },
+                    { label: 'IG', bg: '#E1306C' },
+                    { label: 'G', bg: '#4285F4' },
+                  ].map(ch => (
+                    <div key={ch.label} className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-black text-white shadow" style={{ backgroundColor: ch.bg }}>
+                      {ch.label}
+                    </div>
+                  ))}
+                  <span className="text-xs font-semibold text-gray-500 ml-1">+ email, SMS…</span>
                 </div>
               </div>
             </Section>
@@ -586,6 +670,111 @@ export default function LandingPage() {
         </div>
       </section>
 
+
+      {/* Secondary CTA — headline + email capture on the left, a floating
+          store-preview card on the right, echoing how commerce-platform
+          homepages present their product front and center. Built with
+          Sellia's own real editor style (browser chrome, real section
+          layout) rather than a stock photo. */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <Section>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight leading-tight">Lancez votre boutique en ligne gratuitement.</h2>
+              <p className="mt-4 text-gray-600 text-lg">Sellia est la plateforme tout-en-un pour créer, gérer et faire grandir votre boutique. Commencez gratuitement, 7 jours d'essai, sans carte bancaire.</p>
+              <form onSubmit={e => { e.preventDefault(); nav('/register'); }} className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md">
+                <input
+                  type="email"
+                  placeholder="Votre adresse email"
+                  className="flex-1 px-5 py-3.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm"
+                />
+                <button type="submit" className="px-6 py-3.5 rounded-full bg-gray-950 text-white font-semibold hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap">
+                  Essai gratuit
+                </button>
+              </form>
+              <p className="mt-3 text-xs text-gray-400">Aucune carte bancaire requise. Annulez à tout moment.</p>
+            </Section>
+
+            <Section delay={100}>
+              <div className="relative max-w-sm mx-auto">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-2xl overflow-hidden">
+                  <div className="flex items-center gap-1.5 px-3 py-2.5 bg-gray-50 border-b border-gray-100">
+                    <span className="w-2 h-2 rounded-full bg-red-300" /><span className="w-2 h-2 rounded-full bg-amber-300" /><span className="w-2 h-2 rounded-full bg-green-300" />
+                    <span className="ml-2 text-[9px] text-gray-400">kentestore.sellia.shop</span>
+                  </div>
+                  <div className="aspect-square bg-gradient-to-br from-amber-100 via-orange-50 to-brand-50 relative flex items-end p-4">
+                    <div>
+                      <p className="text-xs font-bold text-gray-900 bg-white/90 inline-block px-2 py-1 rounded-md">Nouvelle Collection</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 p-3">
+                    {['Pagne Kente Royal', 'Écharpe Tissée', 'Sac Artisanal', 'Bijoux Perles'].map((n, i) => (
+                      <div key={n} className="rounded-lg overflow-hidden border border-gray-100">
+                        <div className="aspect-square" style={{ background: ['#FDE68A', '#FCA5A5', '#93C5FD', '#C4B5FD'][i] }} />
+                        <div className="p-1.5">
+                          <p className="text-[9px] font-semibold text-gray-800 truncate">{n}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Floating mini cart card */}
+                <div className="absolute -right-6 top-1/3 bg-white rounded-xl shadow-xl border border-gray-100 p-3 w-32">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-6 h-6 rounded bg-amber-100" />
+                    <span className="text-[10px] font-bold text-gray-900">1</span>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-200 rounded-full px-2 py-1">
+                    <span className="text-xs text-gray-400">−</span>
+                    <span className="text-[10px] font-semibold">1</span>
+                    <span className="text-xs text-gray-400">+</span>
+                  </div>
+                  <button className="mt-2 w-full py-1.5 bg-gray-950 text-white text-[10px] font-bold rounded-full">Ajouter</button>
+                </div>
+              </div>
+            </Section>
+          </div>
+        </div>
+      </section>
+
+      {/* Scrolling showcase — infinite marquee of example Sellia store
+          designs (the same illustrative demo boutiques used in the hero
+          carousel above, each clearly its own brand/product — not
+          fabricated customer testimonials), echoing how commerce
+          platforms showcase brand variety on their homepage. */}
+      <section className="py-16 bg-gray-50 border-y border-gray-100 overflow-hidden">
+        <div className="max-w-3xl mx-auto px-4 text-center mb-10">
+          <Section>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Des solutions sans limite, pour chaque type de marque.</h2>
+            <p className="mt-3 text-gray-600">Lancez rapidement et personnalisez l'essentiel, ou intégrez, développez et grandissez sur notre plateforme ouverte.</p>
+          </Section>
+        </div>
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+          <div className="flex gap-5 w-max animate-marquee hover:[animation-play-state:paused]">
+            {[...boutiques, ...boutiques].map((b, i) => (
+              <div key={`${b.id}-${i}`} className="w-64 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
+                <div className="h-32 relative flex items-end p-3" style={{ background: b.bgPattern }}>
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full bg-white/90 ${b.textColor}`}>{b.badge}</span>
+                </div>
+                <div className="p-4">
+                  <p className="font-bold text-gray-900 text-sm">{b.title}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{b.location}</p>
+                  <div className="mt-3 space-y-1">
+                    {b.products.slice(0, 2).map(p => (
+                      <div key={p.name} className="flex items-center justify-between text-[10px]">
+                        <span className="text-gray-600 truncate mr-2">{p.name}</span>
+                        <span className="font-semibold text-gray-900 whitespace-nowrap">{p.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -736,25 +925,34 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Trust badges */}
-      <section className="py-16 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { icon: Truck, label: 'Livraison flexible', desc: 'Moto-taxi, coursier, transporteur' },
-            { icon: CreditCard, label: 'Paiements directs', desc: 'Mobile Money + cartes internationales' },
-            { icon: Smartphone, label: 'PWA installable', desc: 'Android, iOS, hors-ligne partiel' },
-            { icon: Zap, label: 'Optimisé connexions lentes', desc: 'CDN, images compressées' },
-          ].map((b, i) => (
-            <Section key={b.label} delay={i * 80}>
-              <div className="flex items-start gap-3">
-                <b.icon size={22} className="text-brand-600 flex-shrink-0 mt-1" />
-                <div>
-                  <div className="font-semibold text-gray-900 text-sm">{b.label}</div>
-                  <div className="text-xs text-gray-500">{b.desc}</div>
+      {/* Trust badges — wording made explicit that Sellia is the commerce
+          platform (the Shopify alternative), not a delivery/logistics
+          company itself: merchants arrange their own delivery method
+          through Sellia's tools, Sellia doesn't dispatch riders. */}
+      <section className="py-20 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Section className="text-center max-w-2xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Une plateforme, pas un intermédiaire</h2>
+            <p className="mt-3 text-gray-600">Sellia est l'outil qui fait tourner votre boutique — la livraison, vous la gérez avec vos propres partenaires, comme sur votre propre site.</p>
+          </Section>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: Truck, color: '#2F4FD1', label: 'Livraison à votre façon', desc: 'Configurez vos propres options : moto-taxi, coursier local ou transporteur — Sellia calcule les frais, vous choisissez qui livre.' },
+              { icon: CreditCard, color: '#059669', label: 'Paiements directs sur votre compte', desc: 'Mobile Money et cartes internationales encaissés directement sur vos propres comptes — jamais via un compte Sellia.' },
+              { icon: Smartphone, color: '#7C3AED', label: 'PWA installable', desc: 'Votre boutique s\'installe comme une app sur Android et iOS, avec un mode hors-ligne partiel.' },
+              { icon: Zap, color: '#EA580C', label: 'Rapide même en 3G', desc: 'CDN mondial et images compressées automatiquement — pensé pour les connexions lentes, pas seulement la fibre.' },
+            ].map((b, i) => (
+              <Section key={b.label} delay={i * 80}>
+                <div className="h-full p-5 bg-white rounded-2xl border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: `${b.color}15` }}>
+                    <b.icon size={20} style={{ color: b.color }} />
+                  </div>
+                  <div className="font-bold text-gray-900 text-sm">{b.label}</div>
+                  <div className="text-xs text-gray-500 mt-1.5 leading-relaxed">{b.desc}</div>
                 </div>
-              </div>
-            </Section>
-          ))}
+              </Section>
+            ))}
+          </div>
         </div>
       </section>
 

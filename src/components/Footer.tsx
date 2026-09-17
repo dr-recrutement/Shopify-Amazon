@@ -107,12 +107,14 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">Suivez-nous sur Instagram</h4>
-          <InstagramFeed />
+        <div className="mt-8 pt-6 border-t border-gray-800 flex flex-col sm:flex-row sm:items-center gap-3">
+          <h4 className="text-xs font-semibold text-gray-400 flex-shrink-0">Suivez-nous</h4>
+          <div className="flex-1">
+            <InstagramFeed />
+          </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-8 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-500">
             © {new Date().getFullYear()} Sellia — Conçu et développé par{' '}
             <a href="https://liafrik.com" target="_blank" rel="noopener noreferrer" className="hover:text-brand-500 underline underline-offset-2">LiAfrik</a>.

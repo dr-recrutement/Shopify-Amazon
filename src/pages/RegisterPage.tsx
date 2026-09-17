@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showDemoFallback, setShowDemoFallback] = useState(false);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const fullPhone = phoneNumber ? `${DIAL_CODES[phoneCountry] || ''}${phoneNumber.replace(/\s+/g, '')}` : '';
 
   const handleDemoMode = async () => {
@@ -34,6 +35,10 @@ export default function RegisterPage() {
     setLoading(false);
     if (err) {
       setError(err.message);
+      return;
+    }
+    if (data.user && !data.session) {
+      setNeedsEmailConfirmation(true);
       return;
     }
     if (data.user) nav('/onboarding');
@@ -55,6 +60,16 @@ export default function RegisterPage() {
         if (err.message.includes('Failed to fetch') || err.message.includes('fetch')) {
           setShowDemoFallback(true);
         }
+        return;
+      }
+      if (data.user && !data.session) {
+        // Supabase returns a user but no session when email confirmation
+        // is required — data.user alone isn't proof of a usable account
+        // yet. Previously this branch was never checked, so a project
+        // with confirmation enabled would silently try to navigate to
+        // /onboarding (which needs an authenticated session) and the
+        // person would just bounce back to login with no explanation.
+        setNeedsEmailConfirmation(true);
         return;
       }
       if (data.user) nav('/onboarding');
@@ -99,6 +114,19 @@ export default function RegisterPage() {
             <Link to="/"><Logo size="lg" /></Link>
           </div>
           <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+            {needsEmailConfirmation ? (
+              <div className="text-center py-4">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-50 flex items-center justify-center">
+                  <Mail size={22} className="text-green-600" />
+                </div>
+                <h1 className="font-serif-display text-xl font-bold text-gray-900">Vérifiez votre boîte mail</h1>
+                <p className="mt-2 text-sm text-gray-500">
+                  Un email de confirmation a été envoyé à <strong>{email}</strong>. Cliquez sur le lien qu'il contient pour activer votre compte, puis connectez-vous.
+                </p>
+                <Link to="/login" className="mt-5 inline-block text-sm font-semibold text-brand-600 hover:underline">Aller à la connexion</Link>
+              </div>
+            ) : (
+            <>
             <h1 className="font-serif-display text-2xl font-bold text-gray-900">Créer ma boutique</h1>
             <p className="mt-1 text-sm text-gray-500">7 jours d'essai gratuit, sans carte bancaire</p>
 
@@ -170,6 +198,8 @@ export default function RegisterPage() {
             <p className="mt-6 text-center text-sm text-gray-600">
               Déjà un compte ? <Link to="/login" className="text-brand-600 font-medium hover:underline">Se connecter</Link>
             </p>
+            </>
+            )}
           </div>
         </div>
       </div>

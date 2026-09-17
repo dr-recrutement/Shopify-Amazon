@@ -2306,6 +2306,17 @@ export default function OnlineStore() {
                       <span className="text-[10px] text-gray-400">/{p.slug} · {p.status === 'published' ? 'Publiée' : 'Brouillon'}</span>
                     </div>
                     <div className="flex items-center gap-0.5 shrink-0">
+                      {p.status === 'published' && (
+                        <a
+                          href={`/s/${shopProfile.slug || getShopSubdomain().replace('.os.liafrik.com', '')}/pages/${p.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded"
+                          title="Voir la page en ligne"
+                        >
+                          <ExternalLink size={13} />
+                        </a>
+                      )}
                       <Link to="/app/content" className="p-1 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded" title="Modifier le contenu">
                         <Pencil size={13} />
                       </Link>

@@ -630,7 +630,7 @@ export async function submitPublicCheckout(params: {
     date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
     total,
     status: 'pending',
-    payment: paymentMethod === 'payunit' ? 'PayUnit' : paymentMethod === 'orange_money' ? 'Orange Money' : paymentMethod === 'wave' ? 'Wave' : paymentMethod === 'mtn' ? 'MTN MoMo' : 'Carte bancaire',
+    payment: paymentMethod === 'payunit' ? 'PayUnit' : 'Paiement à la livraison',
     currency,
     items,
   };

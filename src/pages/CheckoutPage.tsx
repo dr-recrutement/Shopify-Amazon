@@ -4,16 +4,18 @@ import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-reac
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCartItems, saveCartItems, getShopTheme } from '../lib/app-state';
-import { resolvePublicTenant, submitPublicCheckout, fetchPublicTheme, type PublicTenant } from '../lib/tenant-sync';
+import { resolvePublicTenant, submitPublicCheckout, fetchPublicTheme, fetchActiveGatewayNames, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
 
-const PAYMENT_METHODS = [
-  { id: 'payunit', name: 'PayUnit', desc: 'Mobile Money + cartes' },
-  { id: 'orange_money', name: 'Orange Money', desc: 'Orange Money marchand' },
-  { id: 'wave', name: 'Wave', desc: 'Paiement Wave' },
-  { id: 'mtn', name: 'MTN MoMo', desc: 'MTN Mobile Money' },
-];
+/** Same fix as StorefrontPage.tsx's inline checkout: only offer payment
+ *  options that are genuinely wired. PayUnit is added once confirmed
+ *  connected & active for this merchant; 'cod' (Cash on Delivery) needs
+ *  no payment processor at all, so it's always honestly available —
+ *  replaces the old Orange Money/Wave/MTN MoMo options that had no
+ *  processor behind them regardless of what a merchant connected. */
+const COD_METHOD = { id: 'cod', name: 'Paiement à la livraison', desc: 'Payez en espèces à la réception' };
+const PAYUNIT_METHOD = { id: 'payunit', name: 'PayUnit', desc: 'Mobile Money + cartes — paiement sécurisé en ligne' };
 
 /** Same brand-consistency fix as CartPage.tsx — this page ignored the
  *  merchant's theme entirely before (generic platform brand-teal
@@ -25,7 +27,8 @@ export default function CheckoutPage() {
   const [tenant, setTenant] = useState<PublicTenant | null>(null);
   const [items, setItems] = useState(() => getCartItems());
   const [theme, setTheme] = useState<ThemeConfig>(() => getShopTheme<ThemeConfig>(defaultThemeForType('ecommerce')));
-  const [payment, setPayment] = useState('payunit');
+  const [payment, setPayment] = useState('cod');
+  const [activeGateways, setActiveGateways] = useState<string[]>([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -43,6 +46,11 @@ export default function CheckoutPage() {
       if (t) {
         const cloudTheme = await fetchPublicTheme<ThemeConfig>(t.id);
         if (!cancelled && cloudTheme) setTheme(cloudTheme);
+        const gateways = await fetchActiveGatewayNames(t.id);
+        if (!cancelled) {
+          setActiveGateways(gateways);
+          if (gateways.includes('PayUnit')) setPayment('payunit');
+        }
       }
     })();
     return () => { cancelled = true; };
@@ -52,7 +60,12 @@ export default function CheckoutPage() {
   const storeUrl = slug ? `/s/${slug}` : '/store';
   const fmt = (n: number) => `${n.toLocaleString('fr-FR')} ${currency}`;
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const shippingCost = items.length > 0 ? 1000 : 0;
+  // No invented flat shipping fee — matches StorefrontPage.tsx's own
+  // inline checkout, which never charged one either. A flat 1000 XOF
+  // here regardless of merchant, destination, or real shipping-zone
+  // rates (settings.shippingZones) was a fabricated number, not a real
+  // shipping calculation.
+  const shippingCost = 0;
 
   const placeOrder = async () => {
     if (items.length === 0) return;
@@ -128,7 +141,7 @@ export default function CheckoutPage() {
             <Card className="p-5">
               <h3 className="font-semibold text-gray-900 mb-4">Moyen de paiement</h3>
               <div className="space-y-2">
-                {PAYMENT_METHODS.map(p => (
+                {[...(activeGateways.includes('PayUnit') ? [PAYUNIT_METHOD] : []), COD_METHOD].map(p => (
                   <button
                     key={p.id}
                     onClick={() => setPayment(p.id)}
@@ -140,9 +153,6 @@ export default function CheckoutPage() {
                   </button>
                 ))}
               </div>
-              {payment !== 'payunit' && (
-                <p className="mt-3 text-xs text-amber-600">Ce moyen de paiement enregistre votre commande, mais le règlement se fera directement avec le vendeur — aucune passerelle en ligne n'est encore branchée pour ce mode.</p>
-              )}
               <p className="mt-3 text-xs text-gray-500 flex items-center gap-1"><Shield size={12} /> Paiement direct au vendeur. Sellia ne prélève aucune commission.</p>
             </Card>
           </div>

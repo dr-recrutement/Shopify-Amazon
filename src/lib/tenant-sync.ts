@@ -617,9 +617,15 @@ export async function submitPublicCheckout(params: {
    *  sends the shopper back to THIS merchant's store, never a bare,
    *  tenant-less URL. */
   slug?: string;
+  /** Real discount amount to subtract from the items subtotal — from a
+   *  promo code validated via /api/discounts/validate. Never negative,
+   *  never more than the subtotal (both already enforced by the caller,
+   *  clamped again here as a last resort). */
+  discountAmount?: number;
 }): Promise<CheckoutResult> {
-  const { tenantId, customerName, customerEmail, paymentMethod, currency, items, slug } = params;
-  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const { tenantId, customerName, customerEmail, paymentMethod, currency, items, slug, discountAmount } = params;
+  const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const total = Math.max(0, subtotal - Math.max(0, Math.min(discountAmount || 0, subtotal)));
   const orderId = crypto.randomUUID();
   const orderNumber = `LA-${Date.now().toString().slice(-6)}`;
   const order: StoreOrder = {
@@ -830,6 +836,39 @@ export async function fetchActiveGatewayNames(tenantId: string): Promise<string[
   } catch {
     return [];
   }
+}
+
+export interface DiscountValidationResult {
+  valid: boolean;
+  error?: string;
+  discount?: { id: string; code: string; title: string | null; type: 'percentage' | 'fixed_amount' | 'free_shipping'; value: number };
+}
+
+/** Real promo-code validation at checkout (see
+ *  functions/api/discounts/validate.ts) — anonymous-safe. */
+export async function validateDiscountCode(tenantId: string, code: string, orderTotal: number): Promise<DiscountValidationResult> {
+  try {
+    const res = await fetch('/api/discounts/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenantId, code, orderTotal }),
+    });
+    return await res.json();
+  } catch {
+    return { valid: false, error: 'Connexion impossible, réessayez.' };
+  }
+}
+
+/** Records that a discount was actually used — call only after the
+ *  order it applies to was successfully placed, never at validation
+ *  time (see apply.ts's own comment for why). Fire-and-forget, same as
+ *  fireOrderWebhook: must never block order confirmation. */
+export function applyDiscountUsage(discountId: string): void {
+  fetch('/api/discounts/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ discountId }),
+  }).catch(() => {});
 }
 
 /** Fires the merchant's configured order webhook (Settings > Customer

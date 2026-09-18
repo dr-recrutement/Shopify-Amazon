@@ -85,13 +85,49 @@ type CartDrawerItem = CartItem & { image?: string };
  *  and most footer links just went to "#". Maps common labels to real
  *  destinations; anything unrecognized still goes to the real store root
  *  instead of a dead anchor. */
-function resolveNavHref(label: string, storeUrl: string, whatsappHref?: string): string {
-  const norm = label.trim().toLowerCase();
-  if (['accueil', 'home'].includes(norm)) return storeUrl;
-  if (['boutique', 'shop', 'produits', 'products', 'nouveautés', 'nouveautes'].includes(norm)) return `${storeUrl}#storefront-products`;
-  if (['contact', 'nous contacter'].includes(norm)) return whatsappHref || storeUrl;
-  if (['suivi de commande', 'commande', 'order tracking'].includes(norm)) return `${storeUrl}/order-tracking`;
-  return storeUrl;
+type NavMenuItem = { label: string; type: 'home' | 'collection' | 'page' | 'url'; value?: string };
+
+function resolveNavHref(item: NavMenuItem, storeUrl: string, whatsappHref?: string, contactEmail?: string): { href: string; external: boolean } {
+  // Real nav items ({label, type, value}) built by the theme editor's nav
+  // menu editor. This function used to assume `nav` was always a plain
+  // string array and guess a destination from the label text
+  // ('collection', 'contact', etc.) - a real regression from the nav
+  // editor added earlier: any merchant who used that editor to add a
+  // 'collection'/'page'/'url' link would get an item shaped
+  // {label, type, value} here, and label.trim() (the old signature took a
+  // plain string) would throw at render time on the actual live
+  // storefront, which has its own separate header from the CMS
+  // HeaderSection this was written against.
+  if (item.type === 'page' && item.value) return { href: `${storeUrl}/pages/${item.value}`, external: false };
+  if (item.type === 'url' && item.value) return { href: item.value, external: true };
+  if (item.type === 'collection' && item.value) return { href: '#', external: false }; // handled by onClick, not href
+  const norm = item.label.trim().toLowerCase();
+  if (['accueil', 'home'].includes(norm)) return { href: storeUrl, external: false };
+  if (['boutique', 'shop', 'produits', 'products', 'nouveautés', 'nouveautes'].includes(norm)) return { href: `${storeUrl}#storefront-products`, external: false };
+  if (['contact', 'nous contacter'].includes(norm)) {
+    if (whatsappHref) return { href: whatsappHref, external: true };
+    if (contactEmail) return { href: `mailto:${contactEmail}`, external: false };
+    return { href: storeUrl, external: false };
+  }
+  if (['suivi de commande', 'commande', 'order tracking'].includes(norm)) return { href: `${storeUrl}/order-tracking`, external: false };
+  return { href: storeUrl, external: false };
+}
+
+/** Renders one real header nav link, handling all 4 destination types the
+ *  theme editor's nav menu editor can produce (see resolveNavHref above
+ *  for why this replaced a plain-string assumption). */
+function NavMenuLink({ item, storeUrl, whatsappHref, contactEmail, onCategoryClick, onNavigate, className }: {
+  item: NavMenuItem; storeUrl: string; whatsappHref?: string; contactEmail?: string; onCategoryClick: (name: string) => void; onNavigate?: () => void; className?: string;
+}) {
+  if (item.type === 'collection' && item.value) {
+    return <button onClick={() => { onCategoryClick(item.value!); onNavigate?.(); }} className={className}>{item.label}</button>;
+  }
+  const { href, external } = resolveNavHref(item, storeUrl, whatsappHref, contactEmail);
+  return (
+    <Link to={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} onClick={onNavigate} className={className}>
+      {item.label}
+    </Link>
+  );
 }
 
 export default function StorefrontPage() {
@@ -247,10 +283,14 @@ export default function StorefrontPage() {
   // copy (see sectionsWithCatalog filter above).
   const headerProps = useMemo(() => {
     const headerSection = theme?.sections.find(s => s.type === 'header');
+    const rawNav = headerSection?.props?.nav as (string | NavMenuItem)[] | undefined;
+    const nav: NavMenuItem[] = (rawNav || ['Accueil', 'Boutique', 'À propos', 'Contact']).map(item =>
+      typeof item === 'string' ? { label: item, type: 'home' as const } : item
+    );
     return {
       logoText: headerSection?.props?.logoText || shopName,
       logoUrl: headerSection?.props?.logoUrl || '',
-      nav: (headerSection?.props?.nav as string[] | undefined) || ['Accueil', 'Boutique', 'À propos', 'Contact'],
+      nav,
       showSearch: headerSection?.props?.showSearch !== false,
       showCart: headerSection?.props?.showCart !== false,
       showAnnouncement: !!headerSection?.props?.showAnnouncement,
@@ -531,8 +571,8 @@ export default function StorefrontPage() {
             {headerProps.logoUrl ? <img src={headerProps.logoUrl} alt={headerProps.logoText} className="h-8 max-w-[140px] object-contain" /> : headerProps.logoText}
           </Link>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium" style={{ color: theme.colors.text }}>
-            {headerProps.nav.map(item => (
-              <Link key={item} to={resolveNavHref(item, storeUrl, merchantWhatsappHref)} target={merchantWhatsappHref && resolveNavHref(item, storeUrl, merchantWhatsappHref) === merchantWhatsappHref ? '_blank' : undefined} rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">{item}</Link>
+            {headerProps.nav.map((item, i) => (
+              <NavMenuLink key={`${item.label}-${i}`} item={item} storeUrl={storeUrl} whatsappHref={merchantWhatsappHref} contactEmail={tenantSettings.contactEmail} onCategoryClick={handleCategoryClick} className="hover:opacity-70 transition-opacity" />
             ))}
           </nav>
           <div className="flex items-center gap-3">
@@ -553,8 +593,8 @@ export default function StorefrontPage() {
         </div>
         {mobileNavOpen && (
           <nav className="lg:hidden border-t px-4 py-3 flex flex-col gap-3 text-sm font-medium" style={{ borderColor: `${theme.colors.text}10`, color: theme.colors.text }}>
-            {headerProps.nav.map(item => (
-              <Link key={item} to={resolveNavHref(item, storeUrl, merchantWhatsappHref)} target={merchantWhatsappHref && resolveNavHref(item, storeUrl, merchantWhatsappHref) === merchantWhatsappHref ? '_blank' : undefined} rel="noopener noreferrer" onClick={() => setMobileNavOpen(false)}>{item}</Link>
+            {headerProps.nav.map((item, i) => (
+              <NavMenuLink key={`${item.label}-${i}`} item={item} storeUrl={storeUrl} whatsappHref={merchantWhatsappHref} contactEmail={tenantSettings.contactEmail} onCategoryClick={handleCategoryClick} onNavigate={() => setMobileNavOpen(false)} />
             ))}
           </nav>
         )}
@@ -636,6 +676,8 @@ export default function StorefrontPage() {
               <li><Link to={`${storeUrl}/order-tracking`} className="hover:underline">Suivi de commande</Link></li>
               {merchantWhatsappHref ? (
                 <li><a href={merchantWhatsappHref} target="_blank" rel="noopener noreferrer" className="hover:underline">Nous contacter</a></li>
+              ) : tenantSettings.contactEmail ? (
+                <li><a href={`mailto:${tenantSettings.contactEmail}`} className="hover:underline">Nous contacter</a></li>
               ) : (
                 <li><Link to={storeUrl} className="hover:underline">Nous contacter</Link></li>
               )}

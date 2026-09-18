@@ -413,10 +413,50 @@ export async function pushCloudTheme(config: unknown): Promise<void> {
   const tenantId = await getCurrentTenantId();
   if (!tenantId) return;
   try {
-    await supabase.from('theme_configs').upsert({ tenant_id: tenantId, config, updated_at: new Date().toISOString() });
+    // Draft only — see publishCloudTheme below for what actually goes
+    // live. Upsert must never overwrite published_config here, or every
+    // autosave would silently re-publish the draft (the exact bug this
+    // split exists to fix).
+    await supabase.from('theme_configs').upsert({ tenant_id: tenantId, config, updated_at: new Date().toISOString() }, { onConflict: 'tenant_id' });
   } catch {
     // ignore — local cache still authoritative.
   }
+}
+
+/** Real "Publier" action — copies the current draft to
+ *  published_config, which is the only thing fetchPublicTheme ever
+ *  reads. This is the one and only place a merchant's changes actually
+ *  become visible to shoppers; autosave (pushCloudTheme above) never
+ *  does this on its own. */
+export async function publishCloudTheme(config: unknown): Promise<boolean> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return false;
+  try {
+    const { error } = await supabase.from('theme_configs').upsert(
+      { tenant_id: tenantId, config, published_config: config, updated_at: new Date().toISOString(), published_at: new Date().toISOString() },
+      { onConflict: 'tenant_id' }
+    );
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/** Whether the current draft (theme.config) differs from what's
+ *  actually live (published_config) — powers a real "Modifications non
+ *  publiées" indicator instead of the old isPublished flag nobody read.
+ *  Returns null (not false) when nothing has ever been published yet,
+ *  so the caller can show a distinct "never published" state. */
+export async function fetchThemePublishStatus(): Promise<{ hasUnpublishedChanges: boolean; publishedAt: string | null } | null> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return null;
+  const { data, error } = await supabase.from('theme_configs').select('config, published_config, published_at').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data) return null;
+  if (data.published_config == null) return { hasUnpublishedChanges: true, publishedAt: null };
+  return {
+    hasUnpublishedChanges: JSON.stringify(data.config) !== JSON.stringify(data.published_config),
+    publishedAt: data.published_at,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -569,9 +609,12 @@ export async function fetchPublicProducts(tenantId: string) {
 }
 
 export async function fetchPublicTheme<T = any>(tenantId: string): Promise<T | null> {
-  const { data, error } = await supabase.from('theme_configs').select('config').eq('tenant_id', tenantId).maybeSingle();
-  if (error || !data) return null;
-  return data.config as T;
+  // Reads published_config — what's actually live for shoppers — never
+  // the merchant's in-progress draft (theme_configs.config). See the
+  // draft/publish split migration + publishCloudTheme above.
+  const { data, error } = await supabase.from('theme_configs').select('published_config').eq('tenant_id', tenantId).maybeSingle();
+  if (error || !data || data.published_config == null) return null;
+  return data.published_config as T;
 }
 
 export async function fetchPublicCmsPages<T = any>(tenantId: string): Promise<T[] | null> {

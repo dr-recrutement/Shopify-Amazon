@@ -11,7 +11,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeConfig, ThemeSection, ThemePreset, TemplateId, TEMPLATE_TABS, getTemplateSections, setTemplateSections, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss, deviceViewportWidth } from '../../lib/theme-engine';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getCatalogCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
-import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
+import { fetchCloudTheme, pushCloudTheme, publishCloudTheme, fetchThemePublishStatus } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
 import { supabase } from '../../lib/supabase';
 import { PreviewFrame } from '../../components/PreviewFrame';
@@ -163,6 +163,8 @@ export default function OnlineStore() {
 
   // --- Save status (item 21: Saved / Saving… / Unsaved changes) --------
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
+  const [publishStatus, setPublishStatus] = useState<{ hasUnpublishedChanges: boolean; publishedAt: string | null } | null>(null);
+  const [publishing, setPublishing] = useState(false);
   const isFirstSaveEffect = useRef(true);
 
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -224,7 +226,10 @@ export default function OnlineStore() {
     }
     const timeout = setTimeout(() => {
       setSaveStatus('saving');
-      pushCloudTheme(theme).then(() => setSaveStatus('saved'));
+      pushCloudTheme(theme).then(() => {
+        setSaveStatus('saved');
+        fetchThemePublishStatus().then(setPublishStatus);
+      });
     }, 800);
     return () => clearTimeout(timeout);
   }, [theme]);
@@ -235,6 +240,7 @@ export default function OnlineStore() {
     fetchCloudTheme<ThemeConfig>().then(cloud => {
       if (cloud) setTheme(cloud);
     });
+    fetchThemePublishStatus().then(setPublishStatus);
   }, []);
 
   // Custom states
@@ -694,13 +700,24 @@ export default function OnlineStore() {
     }
   };
 
-  const publish = () => {
-    setTheme({ ...theme, isPublished: true });
-    showToast('Félicitations ! Votre boutique moderne a été publiée en ligne.');
+  const publish = async () => {
+    setPublishing(true);
+    const ok = await publishCloudTheme(theme);
+    setPublishing(false);
+    if (ok) {
+      showToast('Boutique publiée — vos clients voient maintenant ces changements.');
+      setPublishStatus({ hasUnpublishedChanges: false, publishedAt: new Date().toISOString() });
+    } else {
+      showToast("Échec de la publication — vérifiez votre connexion et réessayez.");
+    }
   };
   const saveDraft = () => {
-    setTheme({ ...theme, isPublished: false });
-    showToast('Brouillon de thème sauvegardé localement.');
+    // The autosave effect above already persists every change
+    // continuously (draft only — theme_configs.config, never seen by
+    // shoppers until "Publier"). This button's job is just to give
+    // immediate, explicit confirmation rather than the merchant having
+    // to trust a silent background timer.
+    showToast(saveStatus === 'saved' ? 'Brouillon déjà à jour.' : 'Brouillon en cours de sauvegarde…');
   };
 
   // Explicit device widths. These are the iframe's INNER viewport width,
@@ -740,10 +757,10 @@ export default function OnlineStore() {
               </Button>
             </Link>
             <Button variant="secondary" size="sm" onClick={saveDraft}>
-              <History size={14} /> Brouillon
+              <History size={14} /> {saveStatus === 'saving' ? 'Enregistrement…' : 'Brouillon'}
             </Button>
-            <Button size="sm" onClick={publish} className="bg-brand-600 hover:bg-brand-700 text-white">
-              <Eye size={14} /> Publier le site
+            <Button size="sm" onClick={publish} disabled={publishing || (publishStatus !== null && !publishStatus.hasUnpublishedChanges)} className="bg-brand-600 hover:bg-brand-700 text-white disabled:opacity-60">
+              <Eye size={14} /> {publishing ? 'Publication…' : publishStatus && !publishStatus.hasUnpublishedChanges ? 'À jour ✓' : 'Publier le site'}
             </Button>
           </div>
         }
@@ -2765,8 +2782,8 @@ export default function OnlineStore() {
             {/* Mockup controller header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge color={theme.isPublished ? 'green' : 'brand'}>
-                  {theme.isPublished ? 'Publié' : 'Brouillon'}
+                <Badge color={publishStatus && !publishStatus.hasUnpublishedChanges ? 'green' : 'brand'}>
+                  {!publishStatus ? '…' : !publishStatus.hasUnpublishedChanges ? 'Publié' : publishStatus.publishedAt ? 'Modifications non publiées' : 'Jamais publié'}
                 </Badge>
                 <span className={`text-[11px] font-medium flex items-center gap-1 ${
                   saveStatus === 'saved' ? 'text-green-600' : saveStatus === 'saving' ? 'text-brand-600' : 'text-gray-400'

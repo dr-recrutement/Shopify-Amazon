@@ -10,7 +10,7 @@ import {
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeConfig, ThemeSection, ThemePreset, TemplateId, TEMPLATE_TABS, getTemplateSections, setTemplateSections, SECTION_LIBRARY, FONT_OPTIONS, LAYOUT_VARIANTS, TEMPLATE_PROFILES, defaultThemeForType, renderSection, getResponsivePadding, buildThemeOverrideCss, deviceViewportWidth } from '../../lib/theme-engine';
-import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
+import { getShopProfile, saveShopProfile, getTenantStorageKey, getProducts, getCategories, getCatalogCategories, getShopSubdomain, getProductImage, getProductImages } from '../../lib/app-state';
 import { fetchCloudTheme, pushCloudTheme } from '../../lib/tenant-sync';
 import { ImageUploadField } from '../../components/ImageUpload';
 import { supabase } from '../../lib/supabase';
@@ -1954,15 +1954,15 @@ export default function OnlineStore() {
                   {/* Categories list */}
                   {activeSection.type === 'category-grid' && !('categories' in activeSection.props) && (
                     <div className="pt-2 border-t border-gray-100">
-                      <p className="text-[11px] text-gray-500 mb-2">Par défaut, cette section affiche vos catégories de produits automatiquement, sans image personnalisée. Pour ajouter une image à chaque catégorie :</p>
+                      <p className="text-[11px] text-gray-500 mb-2">Cette section affiche automatiquement vos catégories de produits, avec l'image définie pour chacune dans Produits → Catégories. Pour choisir une sélection différente ici uniquement :</p>
                       <button
                         onClick={() => {
-                          const realCats = Object.keys(getCategories()).map(cat => ({ name: cat, image: '' }));
+                          const realCats = getCatalogCategories();
                           updateSectionProp(activeSection.id, 'categories', realCats.length ? realCats : [{ name: 'Nouvelle Catégorie', image: '' }]);
                         }}
                         className="w-full py-1.5 bg-brand-50 text-brand-700 font-bold rounded-lg border border-brand-200 text-xs hover:bg-brand-100 transition-colors"
                       >
-                        Personnaliser mes catégories (ajouter des images)
+                        Personnaliser la sélection de cette section
                       </button>
                     </div>
                   )}
@@ -2942,11 +2942,7 @@ export default function OnlineStore() {
                     if (Array.isArray(s.props.categories) && s.props.categories.length > 0) {
                       sectionWithRealData.props = { ...s.props };
                     } else {
-                      const realCats = Object.keys(getCategories()).map(cat => ({
-                        name: cat,
-                        image: '',
-                      }));
-                      sectionWithRealData.props = { ...s.props, categories: realCats };
+                      sectionWithRealData.props = { ...s.props, categories: getCatalogCategories() };
                     }
                   }
 

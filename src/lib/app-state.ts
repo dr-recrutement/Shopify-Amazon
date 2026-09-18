@@ -151,6 +151,35 @@ export function saveCategories(categories: CategoryMap) {
   writeStorage(CATEGORIES_KEY, categories);
 }
 
+const CATEGORY_IMAGES_KEY = 'liafrikos_category_images';
+
+/** One real image per category, set once where categories are actually
+ *  managed (Products page) and reused everywhere a category is shown
+ *  (category-grid sections, collection lists) — instead of merchants
+ *  having to separately re-curate a duplicate list with images inside
+ *  the theme editor just to tell two categories apart visually. */
+export function getCategoryImages(): Record<string, string> {
+  return readStorage<Record<string, string>>(CATEGORY_IMAGES_KEY, {});
+}
+
+export function saveCategoryImage(category: string, image: string) {
+  const images = getCategoryImages();
+  if (image) images[category] = image;
+  else delete images[category];
+  writeStorage(CATEGORY_IMAGES_KEY, images);
+}
+
+/** Renames a category's stored image when the category itself is renamed,
+ *  and drops it entirely when the category is deleted. */
+export function renameCategoryImage(oldName: string, newName: string | null) {
+  const images = getCategoryImages();
+  if (!(oldName in images)) return;
+  const image = images[oldName];
+  delete images[oldName];
+  if (newName) images[newName] = image;
+  writeStorage(CATEGORY_IMAGES_KEY, images);
+}
+
 export function saveProducts(products: StoreProduct[]) {
   try {
     writeStorage(PRODUCTS_KEY, products);
@@ -646,7 +675,8 @@ export type CatalogCategoryCard = { name: string; image: string };
 /** Returns the merchant's categories, mapped to the card shape the storefront
  *  category sections expect. */
 export function getCatalogCategories(): CatalogCategoryCard[] {
-  return Object.keys(getCategories()).map(cat => ({ name: cat, image: '' }));
+  const images = getCategoryImages();
+  return Object.keys(getCategories()).map(cat => ({ name: cat, image: images[cat] || '' }));
 }
 
 // ---------------------------------------------------------------------------

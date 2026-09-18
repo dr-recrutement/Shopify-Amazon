@@ -1,8 +1,8 @@
 import { PageHeader, Card, Button, EmptyState, Table, Badge } from './ui';
-import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash, Sparkles } from 'lucide-react';
+import { Package, Plus, Folder, Boxes, Truck, Gift, FileIcon, X, Tag, Layers, Check, Edit2, Trash, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getProducts, saveProducts, getCategories, saveCategories, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
-import { MultiImageUpload } from '../../components/ImageUpload';
+import { getProducts, saveProducts, getCategories, saveCategories, getCategoryImages, saveCategoryImage, getProductImages, getProductImage, type StoreProduct, type CategoryMap } from '../../lib/app-state';
+import { MultiImageUpload, ImageUploadField } from '../../components/ImageUpload';
 import { fetchCloudProducts, pushCloudProducts, deleteCloudProduct, ensureUuidId, fetchCloudSettings } from '../../lib/tenant-sync';
 import { usePlanAccess, isOverLimit } from '../../lib/plan-access';
 import { generateAIContent } from '../../lib/ai';
@@ -243,6 +243,13 @@ export default function Products() {
     { label: 'Gift cards', icon: Gift, desc: 'Cartes cadeaux' },
     { label: 'Files', icon: FileIcon, desc: 'Bibliothèque de médias' },
   ];
+  // Only 'Collections' is wired to something real right now — the others
+  // (Inventory, Purchase orders, Transfers, Gift cards, Files) don't have
+  // a real screen behind them yet, so they stay visually inert rather
+  // than pretending to open something that isn't there.
+  const [showCollectionsModal, setShowCollectionsModal] = useState(false);
+  const [categoryImages, setCategoryImages] = useState<Record<string, string>>(() => getCategoryImages());
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
@@ -263,8 +270,13 @@ export default function Products() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         {subModules.map(s => {
           const Icon = s.icon;
+          const isReal = s.label === 'Collections';
           return (
-            <Card key={s.label} className="p-4 hover:shadow-md transition-all cursor-pointer">
+            <Card
+              key={s.label}
+              className={`p-4 transition-all ${isReal ? 'hover:shadow-md cursor-pointer' : 'opacity-60 cursor-default'}`}
+              onClick={isReal ? () => setShowCollectionsModal(true) : undefined}
+            >
               <Icon size={18} className="text-emerald-600 mb-2" />
               <div className="text-sm font-semibold text-gray-900">{s.label}</div>
               <div className="text-xs text-gray-500 mt-0.5">{s.desc}</div>
@@ -730,6 +742,110 @@ export default function Products() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Real Collections manager — the card above used to be purely
+          decorative (cursor-pointer styling, no onClick at all). Lets a
+          merchant set a real image per category so categories can
+          actually be told apart visually wherever they're shown
+          (category-grid theme sections, collection lists on the
+          storefront) — previously there was no way to do this anywhere
+          in the app; categories only ever existed as plain text. */}
+      {showCollectionsModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-emerald-50/50">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+                  <Folder size={16} />
+                </div>
+                <h3 className="font-bold text-gray-900">Collections</h3>
+              </div>
+              <button onClick={() => setShowCollectionsModal(false)} className="text-gray-400 hover:text-gray-700">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-3 max-h-[70vh] overflow-y-auto">
+              {Object.keys(categories).length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-6">Aucune catégorie pour le moment. Créez-en une depuis le formulaire produit.</p>
+              ) : (
+                Object.keys(categories).map(cat => {
+                  const count = products.filter(p => p.category === cat).length;
+                  return (
+                    <div key={cat} className="p-3 border border-gray-150 rounded-xl flex items-center gap-3">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
+                        {categoryImages[cat] ? (
+                          <img src={categoryImages[cat]} alt={cat} className="w-full h-full object-cover" />
+                        ) : (
+                          <ImageIcon size={18} className="text-gray-300" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{cat}</p>
+                        <p className="text-xs text-gray-400">{count} produit{count !== 1 ? 's' : ''}</p>
+                        <div className="mt-1.5">
+                          <ImageUploadField
+                            label=""
+                            value={categoryImages[cat] || ''}
+                            onChange={dataUrl => {
+                              saveCategoryImage(cat, dataUrl);
+                              setCategoryImages(getCategoryImages());
+                            }}
+                            maxWidth={400}
+                            dimensionsHint="Image pour différencier cette catégorie"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setCategoryToDelete(cat)}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0"
+                        title="Supprimer la catégorie"
+                      >
+                        <Trash size={14} />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete-category confirmation — a category with products assigned
+          to it is not silently deleted: the merchant is told how many
+          products reference it, since those products would keep their
+          old category string but it would no longer appear in any
+          category list or filter. */}
+      {categoryToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 space-y-4">
+            <h3 className="font-bold text-gray-900">Supprimer « {categoryToDelete} » ?</h3>
+            <p className="text-sm text-gray-500">
+              {products.filter(p => p.category === categoryToDelete).length > 0
+                ? `${products.filter(p => p.category === categoryToDelete).length} produit(s) utilisent cette catégorie. Ils la garderont en texte, mais elle n'apparaîtra plus dans vos listes de catégories.`
+                : "Cette catégorie n'est utilisée par aucun produit."}
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" onClick={() => setCategoryToDelete(null)}>Annuler</Button>
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={() => {
+                  const updated = { ...categories };
+                  delete updated[categoryToDelete];
+                  setCategories(updated);
+                  saveCategories(updated);
+                  saveCategoryImage(categoryToDelete, '');
+                  setCategoryImages(getCategoryImages());
+                  setCategoryToDelete(null);
+                }}
+              >
+                Supprimer
+              </Button>
+            </div>
           </div>
         </div>
       )}

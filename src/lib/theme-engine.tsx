@@ -2270,10 +2270,12 @@ function SlideshowSection({ props, colors, fonts, spacingClass }: { props: any; 
       onMouseLeave={() => setPaused(false)}
     >
       {slides.map((s, i) => (
-        <img
+        <MediaBox
           key={i}
           src={s.image}
           alt={s.title}
+          seed={`slide-${i}`}
+          colors={colors}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === active ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}

@@ -1570,7 +1570,88 @@ export default function OnlineStore() {
                         <label className="block text-xs font-bold text-gray-700 mb-1">Opacité overlay ({activeSection.props.overlayOpacity || 35}%)</label>
                         <input type="range" min="0" max="90" value={activeSection.props.overlayOpacity || 35} onChange={e => updateSectionProp(activeSection.id, 'overlayOpacity', e.target.value)} className="w-full" />
                       </div>
-                      <p className="text-xs text-gray-500 bg-gray-50 rounded-lg p-2">{(activeSection.props.slides || []).length} diapositives configurées. Modifiez les titres/images directement dans le code du thème pour le slideshow multi-slides.</p>
+
+                      {/* Real slide editor — this used to just tell the
+                          merchant "modifiez le code du thème" to add a
+                          scrolling banner slide, with no UI at all. */}
+                      <div className="pt-2 border-t border-gray-100 space-y-2">
+                        <span className="block text-xs font-bold text-gray-700 uppercase">Diapositives</span>
+                        {(() => {
+                          const slides = activeSection.props.slides?.length ? activeSection.props.slides : [
+                            { title: 'Collection Printemps', subtitle: 'Nouveautés', cta: 'Découvrir', image: '' },
+                            { title: "Soldes d'été", subtitle: '-30%', cta: "J'en profite", image: '' },
+                          ];
+                          const updateSlides = (next: any[]) => updateSectionProp(activeSection.id, 'slides', next);
+                          return (
+                            <>
+                              {slides.map((slide: any, i: number) => (
+                                <div key={i} className="p-2.5 bg-gray-50 border border-gray-150 rounded-lg space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase">Diapo {i + 1}</span>
+                                    <button
+                                      onClick={() => updateSlides(slides.filter((_: any, si: number) => si !== i))}
+                                      className="p-1 text-gray-400 hover:text-red-600 rounded"
+                                      title="Supprimer cette diapositive"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
+                                  <ImageUploadField
+                                    label="Image de fond"
+                                    value={slide.image || ''}
+                                    onChange={dataUrl => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, image: dataUrl } : x))}
+                                  />
+                                  <input
+                                    type="text"
+                                    value={slide.subtitle || ''}
+                                    onChange={e => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, subtitle: e.target.value } : x))}
+                                    placeholder="Sur-titre (ex. -30%)"
+                                    className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                  />
+                                  <input
+                                    type="text"
+                                    value={slide.title || ''}
+                                    onChange={e => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, title: e.target.value } : x))}
+                                    placeholder="Titre principal"
+                                    className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-semibold"
+                                  />
+                                  <textarea
+                                    value={slide.description || ''}
+                                    onChange={e => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, description: e.target.value } : x))}
+                                    placeholder="Description courte"
+                                    rows={2}
+                                    className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                                  />
+                                  <div className="flex gap-1.5">
+                                    <input
+                                      type="text"
+                                      value={slide.cta || ''}
+                                      onChange={e => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, cta: e.target.value } : x))}
+                                      placeholder="Texte du bouton"
+                                      className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs"
+                                    />
+                                    <select
+                                      value={slide.align || 'center'}
+                                      onChange={e => updateSlides(slides.map((x: any, si: number) => si === i ? { ...x, align: e.target.value } : x))}
+                                      className="px-1.5 py-1 border border-gray-200 rounded text-[11px] bg-white"
+                                    >
+                                      <option value="left">Gauche</option>
+                                      <option value="center">Centre</option>
+                                      <option value="right">Droite</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              ))}
+                              <button
+                                onClick={() => updateSlides([...slides, { title: 'Nouvelle diapositive', subtitle: '', cta: 'En savoir plus', image: '' }])}
+                                className="w-full py-1.5 rounded-lg text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 flex items-center justify-center gap-1"
+                              >
+                                <Plus size={13} /> Ajouter une diapositive
+                              </button>
+                            </>
+                          );
+                        })()}
+                      </div>
                     </div>
                   )}
 

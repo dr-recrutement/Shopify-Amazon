@@ -33,6 +33,8 @@ export default function CheckoutPage() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [promoCode, setPromoCode] = useState('');
@@ -101,8 +103,8 @@ export default function CheckoutPage() {
 
   const placeOrder = async () => {
     if (items.length === 0) return;
-    if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
-      setError('Renseignez au moins votre nom, prénom et téléphone.');
+    if (!firstName.trim() || !lastName.trim() || !phone.trim() || !address.trim() || !city.trim()) {
+      setError('Renseignez au moins votre nom, prénom, téléphone et adresse de livraison.');
       return;
     }
     setError(null);
@@ -122,6 +124,9 @@ export default function CheckoutPage() {
       tenantId: tenant.id,
       customerName: `${firstName} ${lastName}`.trim(),
       customerEmail: email || undefined,
+      customerPhone: phone.trim(),
+      shippingAddress: address.trim(),
+      shippingCity: city.trim(),
       paymentMethod: payment,
       currency: tenant.currency || currency,
       items: items.map(i => ({ name: i.variant ? `${i.name} (${i.variant})` : i.name, price: i.price, qty: i.qty })),
@@ -165,16 +170,32 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Informations de livraison</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-5 h-5 rounded-full text-white text-[11px] font-bold flex items-center justify-center shrink-0" style={{ backgroundColor: theme.colors.primary }}>1</span>
+                <h3 className="font-semibold text-gray-900">Contact</h3>
+              </div>
+              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email (pour le suivi de commande)" type="email" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+            </Card>
+
+            <Card className="p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-5 h-5 rounded-full text-white text-[11px] font-bold flex items-center justify-center shrink-0" style={{ backgroundColor: theme.colors.primary }}>2</span>
+                <h3 className="font-semibold text-gray-900">Adresse de livraison</h3>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <input value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Prénom" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                 <input value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Nom" className="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" className="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                 <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Téléphone" className="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                <input value={address} onChange={e => setAddress(e.target.value)} placeholder="Adresse (rue, quartier, repère)" className="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                <input value={city} onChange={e => setCity(e.target.value)} placeholder="Ville" className="col-span-2 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
               </div>
             </Card>
+
             <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Moyen de paiement</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-5 h-5 rounded-full text-white text-[11px] font-bold flex items-center justify-center shrink-0" style={{ backgroundColor: theme.colors.primary }}>3</span>
+                <h3 className="font-semibold text-gray-900">Paiement</h3>
+              </div>
               <div className="space-y-2">
                 {[...(activeGateways.includes('PayUnit') ? [PAYUNIT_METHOD] : []), COD_METHOD].map(p => (
                   <button

@@ -45,6 +45,13 @@ export type StoreOrder = {
   id: string;
   customer: string;
   customerEmail?: string;
+  /** Real shipping/contact info — was collected and required by the
+   *  checkout form but silently discarded before, never reaching the
+   *  merchant. Optional here only because older stored orders (before
+   *  this field existed) won't have it. */
+  customerPhone?: string;
+  shippingAddress?: string;
+  shippingCity?: string;
   date: string;
   total: number;
   status: 'pending' | 'paid' | 'shipped' | 'cancelled';

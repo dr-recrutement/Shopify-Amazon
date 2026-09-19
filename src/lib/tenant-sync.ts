@@ -136,6 +136,9 @@ function orderToRow(tenantId: string, o: StoreOrder) {
     tenant_id: tenantId,
     customer_name: o.customer,
     customer_email: o.customerEmail || null,
+    customer_phone: o.customerPhone || null,
+    shipping_address: o.shippingAddress || null,
+    shipping_city: o.shippingCity || null,
     total_cents: Math.round((o.total || 0) * 100),
     currency: o.currency || 'XOF',
     status: o.status,
@@ -150,6 +153,9 @@ function rowToOrder(row: Record<string, any>): StoreOrder {
     id: row.id,
     customer: row.customer_name || 'Client',
     customerEmail: row.customer_email || undefined,
+    customerPhone: row.customer_phone || undefined,
+    shippingAddress: row.shipping_address || undefined,
+    shippingCity: row.shipping_city || undefined,
     date: row.created_at ? new Date(row.created_at).toLocaleDateString('fr-FR') : '',
     total: (row.total_cents || 0) / 100,
     status: row.status,
@@ -653,6 +659,12 @@ export async function submitPublicCheckout(params: {
   tenantId: string;
   customerName: string;
   customerEmail?: string;
+  /** Real shipping/contact info (see the orders_shipping_address
+   *  migration) — was collected and required by the checkout form but
+   *  silently discarded before, never reaching the merchant. */
+  customerPhone?: string;
+  shippingAddress?: string;
+  shippingCity?: string;
   paymentMethod: string;
   currency: string;
   items: CheckoutLineItem[];
@@ -666,7 +678,7 @@ export async function submitPublicCheckout(params: {
    *  clamped again here as a last resort). */
   discountAmount?: number;
 }): Promise<CheckoutResult> {
-  const { tenantId, customerName, customerEmail, paymentMethod, currency, items, slug, discountAmount } = params;
+  const { tenantId, customerName, customerEmail, customerPhone, shippingAddress, shippingCity, paymentMethod, currency, items, slug, discountAmount } = params;
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
   const total = Math.max(0, subtotal - Math.max(0, Math.min(discountAmount || 0, subtotal)));
   const orderId = crypto.randomUUID();
@@ -676,6 +688,9 @@ export async function submitPublicCheckout(params: {
     orderNumber,
     customer: customerName,
     customerEmail: customerEmail || undefined,
+    customerPhone: customerPhone || undefined,
+    shippingAddress: shippingAddress || undefined,
+    shippingCity: shippingCity || undefined,
     date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
     total,
     status: 'pending',

@@ -12,6 +12,7 @@ export default function Orders() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'paid' | 'shipped' | 'cancelled'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [detailOrder, setDetailOrder] = useState<StoreOrder | null>(null);
 
   // New order form state — real customer + real product line items instead
   // of a one-click generator that used to create the identical fake order
@@ -141,7 +142,7 @@ export default function Orders() {
                   </select>
                 </td>
                 <td className="py-3 px-4">
-                  <button onClick={() => alert(`🔍 Commande ${o.orderNumber || o.id}\nClient : ${o.customer}\nMode de Paiement : ${o.payment}\nArticles : ${o.items.map(i => `${i.qty}x ${i.name}`).join(', ') || 'aucun'}\nTotal : ${o.total.toLocaleString('fr-FR')} ${o.currency}`)} className="text-brand-600 text-xs font-bold hover:underline">
+                  <button onClick={() => setDetailOrder(o)} className="text-brand-600 text-xs font-bold hover:underline">
                     Détail
                   </button>
                 </td>
@@ -213,6 +214,54 @@ export default function Orders() {
                 </div>
               )}
               <Button onClick={createOrder} disabled={!customerName.trim() || lineItems.length === 0} className="w-full">Créer la commande</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Real order detail — was a browser alert() popup with no shipping
+          info at all (there was none to show: phone/address weren't
+          persisted anywhere before). Now shows the real contact and
+          delivery info a merchant actually needs to fulfill the order. */}
+      {detailOrder && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="font-bold text-gray-900">Commande {detailOrder.orderNumber || detailOrder.id}</h3>
+              <button onClick={() => setDetailOrder(null)} className="text-gray-400 hover:text-gray-700"><X size={20} /></button>
+            </div>
+            <div className="p-6 space-y-4 text-sm">
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Client</span>
+                <p className="font-medium text-gray-900">{detailOrder.customer}</p>
+                {detailOrder.customerEmail && <p className="text-gray-500">{detailOrder.customerEmail}</p>}
+                {detailOrder.customerPhone && <p className="text-gray-500">{detailOrder.customerPhone}</p>}
+              </div>
+              {(detailOrder.shippingAddress || detailOrder.shippingCity) && (
+                <div>
+                  <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Adresse de livraison</span>
+                  <p className="text-gray-700">{detailOrder.shippingAddress}{detailOrder.shippingAddress && detailOrder.shippingCity ? ', ' : ''}{detailOrder.shippingCity}</p>
+                </div>
+              )}
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Paiement</span>
+                <p className="text-gray-700">{detailOrder.payment}</p>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Articles</span>
+                <div className="space-y-1">
+                  {detailOrder.items.map((it, i) => (
+                    <div key={i} className="flex justify-between text-gray-700">
+                      <span>{it.qty}x {it.name}</span>
+                      <span>{(it.price * it.qty).toLocaleString('fr-FR')} {detailOrder.currency}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-100 flex justify-between font-bold text-gray-900">
+                <span>Total</span>
+                <span>{detailOrder.total.toLocaleString('fr-FR')} {detailOrder.currency}</span>
+              </div>
             </div>
           </div>
         </div>

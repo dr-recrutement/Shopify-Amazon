@@ -2,11 +2,11 @@ import { PageHeader, Card, Button, Badge } from './ui';
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useLang } from '../../lib/i18n';
-import { GLOBAL_COUNTRIES, PLANS } from '../../lib/constants';
+import { GLOBAL_COUNTRIES, PLANS, CURRENCIES } from '../../lib/constants';
 import { getShopProfile, saveShopProfile, getTenantStorageKey, getShopSubdomain } from '../../lib/app-state';
 import { supabase } from '../../lib/supabase';
 import { usePlanAccess } from '../../lib/plan-access';
-import { fetchCloudSettings, pushCloudSettings, fetchCloudGateways, pushCloudGateway } from '../../lib/tenant-sync';
+import { fetchCloudSettings, pushCloudSettings, fetchCloudGateways, pushCloudGateway, pushCloudTenantProfile } from '../../lib/tenant-sync';
 import {
   Globe, CreditCard, RefreshCw,
   Trash2, Plus, ChevronDown
@@ -376,10 +376,10 @@ export default function Settings() {
             <div className="space-y-4 text-xs sm:text-sm">
               <h3 className="font-bold text-gray-900 text-sm">Informations boutique</h3>
               {settingsSaved && <p className="text-green-600 text-xs">Enregistré ✓</p>}
-              <div><label className="block font-semibold text-gray-700 mb-1">Nom</label><input value={shopProfile.name} onChange={e => { const updated = { ...shopProfile, name: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
+              <div><label className="block font-semibold text-gray-700 mb-1">Nom</label><input value={shopProfile.name} onChange={e => { const updated = { ...shopProfile, name: e.target.value }; setShopProfile(updated); saveShopProfile(updated); pushCloudTenantProfile({ name: e.target.value }); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
               <div><label className="block font-semibold text-gray-700 mb-1">Email contact</label><input type="email" value={shopProfile.contactEmail || ''} onChange={e => { const updated = { ...shopProfile, contactEmail: e.target.value }; setShopProfile(updated); saveShopProfile(updated); const nextSettings = { ...settings, contactEmail: e.target.value }; setSettings(nextSettings); pushCloudSettings(nextSettings); }} placeholder="contact@os.liafrik.com" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select value={shopProfile.currency} onChange={e => { const updated = { ...shopProfile, currency: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>XOF</option><option>GHS</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>
+                <div><label className="block font-semibold text-gray-700 mb-1">Devise</label><select value={shopProfile.currency} onChange={e => { const updated = { ...shopProfile, currency: e.target.value }; setShopProfile(updated); saveShopProfile(updated); pushCloudTenantProfile({ currency: e.target.value }); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white">{CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.code} — {c.label}</option>)}</select></div>
                 <div><label className="block font-semibold text-gray-700 mb-1">Fuseau horaire</label><select value={shopProfile.timezone || 'Africa/Abidjan'} onChange={e => { const updated = { ...shopProfile, timezone: e.target.value }; setShopProfile(updated); saveShopProfile(updated); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs bg-white"><option>Africa/Abidjan</option><option>Africa/Lagos</option><option>Africa/Nairobi</option></select></div>
               </div>
               <div className="relative">
@@ -435,6 +435,7 @@ export default function Settings() {
                 const updated = { ...shopProfile, country: selectedCountryCode };
                 saveShopProfile(updated);
                 setShopProfile(updated);
+                pushCloudTenantProfile({ country: selectedCountryCode });
                 setSettingsSaved(true);
                 setTimeout(() => setSettingsSaved(false), 2000);
               }}>{settingsSaved ? 'Enregistré ✓' : 'Sauvegarder'}</Button>

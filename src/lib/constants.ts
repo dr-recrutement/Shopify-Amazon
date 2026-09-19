@@ -343,3 +343,16 @@ export const ALL_COUNTRIES: GlobalCountry[] = [
   ...AFRICAN_COUNTRIES,
   ...GLOBAL_COUNTRIES,
 ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+/** Every real currency used by a country in ALL_COUNTRIES (142, deduped),
+ *  each with one representative country's flag/name for display — powers
+ *  the merchant currency picker in Settings.tsx so a merchant can pick
+ *  ANY world currency for their store, not a hardcoded shortlist of 5. */
+export interface CurrencyOption { code: string; label: string; flag: string }
+export const CURRENCIES: CurrencyOption[] = (() => {
+  const seen = new Map<string, CurrencyOption>();
+  for (const c of ALL_COUNTRIES) {
+    if (!seen.has(c.currency)) seen.set(c.currency, { code: c.currency, label: c.name, flag: c.flag });
+  }
+  return Array.from(seen.values()).sort((a, b) => a.code.localeCompare(b.code));
+})();

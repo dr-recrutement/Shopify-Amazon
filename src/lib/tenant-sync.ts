@@ -525,6 +525,25 @@ export async function pushCloudSettings(settings: Record<string, any>): Promise<
   }
 }
 
+/** Real sync for the merchant's core identity fields — name, currency,
+ *  country — to the actual `tenants` row. Previously Settings.tsx only
+ *  ever called saveShopProfile (localStorage on the merchant's own
+ *  browser); nothing pushed these to the cloud, so the real storefront
+ *  (resolvePublicTenant, read by every shopper) kept showing whatever
+ *  currency/name/country was set at onboarding forever, regardless of
+ *  what a merchant later "changed" in Settings. Same silent-desync bug
+ *  shape as the theme draft/publish split. */
+export async function pushCloudTenantProfile(profile: { name?: string; currency?: string; country?: string }): Promise<boolean> {
+  const tenantId = await getCurrentTenantId();
+  if (!tenantId) return false;
+  try {
+    const { error } = await supabase.from('tenants').update(profile).eq('id', tenantId);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Vendor payment gateways — each merchant's own Flutterwave/Paystack/Stripe
 // etc. credentials, used for THEIR storefront checkout (separate from the

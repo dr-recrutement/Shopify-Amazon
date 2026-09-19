@@ -127,6 +127,27 @@ export function clearCart(scopeId?: string) {
   writeStorage(cartKey(scopeId), []);
 }
 
+export type AppliedDiscount = { id: string; code: string; title: string | null; type: 'percentage' | 'fixed_amount' | 'free_shipping'; value: number };
+
+function cartDiscountKey(scopeId?: string): string {
+  return scopeId ? `liafrikos_cart_discount_shop_${scopeId}` : 'liafrikos_cart_discount';
+}
+
+/** The coupon applied in the cart, carried through to checkout — scoped
+ *  the same way the cart itself is (per-tenant for a real storefront) so
+ *  it survives navigating from /cart to /checkout as a real WooCommerce-
+ *  style applied coupon, not just a cart-page-only cosmetic total. The
+ *  checkout page re-validates it against the real subtotal at that point
+ *  (see validateDiscountCode) rather than trusting this stored amount,
+ *  since the cart contents (and so the subtotal) can change in between. */
+export function getCartDiscount(scopeId?: string): AppliedDiscount | null {
+  return readStorage<AppliedDiscount | null>(cartDiscountKey(scopeId), null);
+}
+
+export function saveCartDiscount(discount: AppliedDiscount | null, scopeId?: string) {
+  writeStorage(cartDiscountKey(scopeId), discount);
+}
+
 export function getProducts(): StoreProduct[] {
   return readStorage<StoreProduct[]>(PRODUCTS_KEY, [
     { id: 'p1', name: 'Robe wax traditionnelle', price: 15000, stock: 12, status: 'active', currency: 'XOF', category: 'Mode Femme', subcategory: 'Robes' },

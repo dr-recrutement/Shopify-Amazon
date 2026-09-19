@@ -3,7 +3,7 @@ import { Card, Button } from '../pages/dashboard/ui';
 import { Shield, Truck, CreditCard, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCartItems, saveCartItems, getShopTheme } from '../lib/app-state';
+import { getCartItems, saveCartItems, getShopTheme, getCartDiscount, saveCartDiscount } from '../lib/app-state';
 import { resolvePublicTenant, submitPublicCheckout, fetchPublicTheme, fetchActiveGatewayNames, validateDiscountCode, applyDiscountUsage, type PublicTenant } from '../lib/tenant-sync';
 import type { ThemeConfig } from '../lib/theme-engine';
 import { defaultThemeForType } from '../lib/theme-engine';
@@ -47,6 +47,14 @@ export default function CheckoutPage() {
       if (cancelled) return;
       setTenant(t);
       setItems(getCartItems(t?.id));
+      // A coupon applied on the cart page (see CartPage.tsx) carries
+      // through here rather than requiring it to be re-typed — this is
+      // only a starting point though: the total may have changed since
+      // then (items added/removed), so it's still just the same
+      // validateDiscountCode() result, re-checked against whatever total
+      // this page computes, not a value trusted as-is.
+      const cartDiscount = getCartDiscount(t?.id);
+      if (cartDiscount) setAppliedDiscount(cartDiscount);
       if (t) {
         const cloudTheme = await fetchPublicTheme<ThemeConfig>(t.id);
         if (!cancelled && cloudTheme) setTheme(cloudTheme);
@@ -128,6 +136,7 @@ export default function CheckoutPage() {
     }
     if (appliedDiscount) applyDiscountUsage(appliedDiscount.id);
     saveCartItems([], tenant.id);
+    saveCartDiscount(null, tenant.id);
     if (result.redirectUrl) {
       window.location.href = result.redirectUrl;
       return;
@@ -203,7 +212,7 @@ export default function CheckoutPage() {
               {appliedDiscount && (
                 <div className="flex items-center justify-between mb-3 bg-green-50 border border-green-100 rounded-lg px-3 py-2">
                   <span className="text-xs font-semibold text-green-700 flex items-center gap-1.5"><CheckCircle2 size={13} /> Code {appliedDiscount.code} appliqué</span>
-                  <button onClick={() => { setAppliedDiscount(null); setPromoCode(''); }} className="text-xs text-green-600 hover:underline">Retirer</button>
+                  <button onClick={() => { setAppliedDiscount(null); setPromoCode(''); saveCartDiscount(null, tenant?.id); }} className="text-xs text-green-600 hover:underline">Retirer</button>
                 </div>
               )}
 

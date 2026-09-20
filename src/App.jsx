@@ -34,6 +34,13 @@ import Accounting from '@/pages/Accounting';
 import Markets from '@/pages/Markets';
 import Chat from '@/pages/Chat';
 import Apps from '@/pages/Apps';
+import Payments from '@/pages/Payments';
+import Superadmin from '@/pages/Superadmin';
+import Profile from '@/pages/Profile';
+import StorePreview from '@/pages/StorePreview';
+import ActivityLogs from '@/pages/ActivityLogs';
+import SeoIa from '@/pages/SeoIa';
+import Onboarding from '@/pages/Onboarding';
 import ArticleDetail from '@/pages/ArticleDetail';
 import Team from '@/pages/Team';
 import Reports from '@/pages/Reports';
@@ -88,6 +95,7 @@ const AuthenticatedApp = () => {
 
       {/* Authenticated admin routes */}
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route element={<AdminLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/theme-editor" element={<ThemeEditor />} />
@@ -108,6 +116,11 @@ const AuthenticatedApp = () => {
           <Route path="/markets" element={<Markets />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/apps" element={<Apps />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/superadmin" element={<Superadmin />} />
+          <Route path="/store-preview" element={<StorePreview />} />
+          <Route path="/activity-logs" element={<ActivityLogs />} />
+          <Route path="/seo-ia" element={<SeoIa />} />
           <Route path="/team" element={<Team />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />

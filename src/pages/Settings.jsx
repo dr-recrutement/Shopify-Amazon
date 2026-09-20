@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Settings as SettingsIcon, Loader2 } from 'lucide-react';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
-  SettingsGeneral, SettingsPlan, SettingsBilling, SettingsUsers, SettingsPayments,
+  SettingsGeneral, SettingsPlan, SettingsBilling, SettingsUsers,
   SettingsCheckout, SettingsCustomerAccounts, SettingsShippingDelivery, SettingsTaxes,
   SettingsLocations, SettingsApps, SettingsSalesChannels, SettingsDomains,
   SettingsCustomerEvents, SettingsNotifications, SettingsMetafields, SettingsLanguages,
   SettingsCustomerPrivacy, SettingsPolicies, SettingsSupportChat,
 } from '@/components/settings/SettingsSections';
 import Billing from '@/pages/Billing';
+import Payments from '@/pages/Payments';
+import Profile from '@/pages/Profile';
 import StaffManagement from '@/pages/StaffManagement';
 import StoreSettings from '@/pages/StoreSettings';
 import StoreSetup from '@/pages/StoreSetup';
@@ -16,6 +18,9 @@ import Support from '@/pages/Support';
 import Chat from '@/pages/Chat';
 
 const SECTIONS = [
+  { group: 'Compte', items: [
+    { id: 'profile', label: 'Profil', comp: Profile },
+  ]},
   { group: 'Boutique', items: [
     { id: 'general', label: 'Général', comp: SettingsGeneral },
     { id: 'plan', label: 'Plan', comp: SettingsPlan },
@@ -26,7 +31,7 @@ const SECTIONS = [
     { id: 'locations', label: 'Emplacements', comp: SettingsLocations },
   ]},
   { group: 'Paiements', items: [
-    { id: 'payments', label: 'Paiements', comp: SettingsPayments },
+    { id: 'payments', label: 'Paiements', comp: Payments },
     { id: 'checkout', label: 'Commande', comp: SettingsCheckout },
     { id: 'customer_accounts', label: 'Comptes clients', comp: SettingsCustomerAccounts },
     { id: 'customer_events', label: 'Événements client', comp: SettingsCustomerEvents },

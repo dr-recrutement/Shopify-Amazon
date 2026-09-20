@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   LayoutGrid, Loader2, AlertCircle, Plus, CreditCard, Truck, Megaphone, Plug,
 } from 'lucide-react';
@@ -68,6 +68,7 @@ function LogoBadge({ app }) {
 
 export default function Apps() {
   const { store, loading: storeLoading } = useCurrentStore();
+  const navigate = useNavigate();
 
   if (storeLoading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
   if (!store) {
@@ -128,7 +129,7 @@ export default function Apps() {
                   </div>
                 </div>
                 <p className="text-xs text-[#6D7175] leading-relaxed mb-3">{app.desc}</p>
-                <button className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-2 rounded-full hover:bg-[#00694d]">
+                <button onClick={() => navigate(app.type === 'payment' ? '/payments' : app.type === 'shipping' ? '/shipping-settings' : app.type === 'marketing' ? '/marketing' : '/settings')} className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-2 rounded-full hover:bg-[#00694d]">
                   <Plus className="w-3.5 h-3.5" /> Connecter
                 </button>
               </div>

@@ -4,7 +4,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package } from 'lucide-react';
+import { Upload, X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package, Sparkles, Wand2 } from 'lucide-react';
 import { formatMoney } from '@/lib/world/currencies';
 
 const STATUSES = [
@@ -165,6 +165,9 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [tagsText, setTagsText] = useState('');
+  const [aiBrief, setAiBrief] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -180,6 +183,28 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
   if (!form) return null;
   const set = (patch) => setForm({ ...form, ...patch });
   const isNew = !form.id;
+
+  const generateWithAI = async () => {
+    if (!aiBrief.trim()) return;
+    setAiLoading(true); setAiError('');
+    try {
+      const res = await base44.functions.invoke('aiAssistant', {
+        task: 'product_description',
+        input: aiBrief,
+        context: store?.name || '',
+      });
+      if (res.data?.error) throw new Error(res.data.error);
+      const r = res.data?.result || {};
+      set({
+        title: r.title || form.title,
+        description: r.description || form.description,
+        seo: { title: r.title || '', description: r.short_description || '' },
+      });
+      if (Array.isArray(r.tags) && r.tags.length) setTagsText(r.tags.join(', '));
+    } catch (e) {
+      setAiError(e.message || 'Échec de la génération IA');
+    } finally { setAiLoading(false); }
+  };
 
   const save = async () => {
     if (!form.title) return;
@@ -205,6 +230,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
         options: (form.options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length),
         variants: form.variants || [],
+        seo: form.seo || { title: '', description: '' },
       };
       if (isNew) {
         await base44.entities.Product.create(payload);
@@ -224,6 +250,20 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         </DialogHeader>
         <div className="space-y-4">
           <Field label="Titre *"><input value={form.title} onChange={(e) => set({ title: e.target.value })} className={inputCls} placeholder="Ex : Boubou wax premium" /></Field>
+          <div className="rounded-lg border border-[#008060]/30 bg-[#008060]/[0.03] p-3">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Sparkles className="w-4 h-4 text-[#008060]" />
+              <span className="text-xs font-bold text-[#202223]">Assistant IA</span>
+            </div>
+            <textarea value={aiBrief} onChange={(e) => setAiBrief(e.target.value)} rows={2} placeholder="Décrivez le produit en quelques mots (matière, origine, public, atouts)…" className={inputCls + ' mb-2'} />
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] text-[#6D7175]">Génère titre, description & tags SEO.</p>
+              <button type="button" onClick={generateWithAI} disabled={aiLoading || !aiBrief.trim()} className="flex items-center gap-1.5 bg-[#008060] text-white text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-[#00694d] disabled:opacity-40">
+                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />} Rédiger avec l'IA
+              </button>
+            </div>
+            {aiError && <p className="text-[11px] text-red-600 mt-1.5">{aiError}</p>}
+          </div>
           <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label={`Prix (${store.currency})`}><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set({ price: e.target.value })} className={inputCls} /></Field>

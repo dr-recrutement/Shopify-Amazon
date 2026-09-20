@@ -21,6 +21,32 @@ function Stars({ n, color }) {
   );
 }
 
+function scrollToProducts() {
+  const el = document.getElementById('sellia-products');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function NewsletterBlock({ c, p, primary, primaryText, headingFont, storefront }) {
+  const [email, setEmail] = useState('');
+  const [done, setDone] = useState(false);
+  const submit = (e) => { e.preventDefault(); if (!email.trim()) return; setDone(true); setEmail(''); setTimeout(() => setDone(false), 4000); };
+  return (
+    <div className="px-5 sm:px-10 py-14 text-center">
+      <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: headingFont, color: p.dark }}>{c.title}</h2>
+      <p className="mt-3 text-sm max-w-md mx-auto" style={{ color: p.muted }}>{c.subtitle}</p>
+      {done ? (
+        <p className="mt-6 text-sm font-semibold" style={{ color: primary }}>Merci ! Votre inscription est confirmée.</p>
+      ) : (
+        <form onSubmit={storefront ? submit : (e) => e.preventDefault()} className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={c.placeholder} className="flex-1 px-4 py-3 rounded-md text-sm border" style={{ borderColor: p.border, background: p.surface, color: p.text }} />
+          <button type="submit" className="px-6 py-3 rounded-md text-sm font-semibold transition hover:opacity-90" style={{ background: primary, color: primaryText }}>{c.buttonLabel}</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function ImageReplace({ sectionId, path, onUpload, onSetUrl }) {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -91,6 +117,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
   const editor = mode === 'editor';
   const storefront = mode === 'storefront';
   const visible = sections.filter((s) => s.visible);
+  const firstPgId = visible.find((s) => s.type === 'productGrid')?.id;
   const wrap = (s, content) => (
     <SectionShell key={s.id} section={s} editor={editor} selectedId={selectedId} onSelect={onSelectSection}>
       {content}
@@ -113,8 +140,8 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             return wrap(s, (
               <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
                 {c.logoImage
-                  ? <Img src={c.logoImage} className="h-8 sm:h-9 w-24 sm:w-32" fittingType="fit" {...ip} path="logoImage" />
-                  : <span className="font-bold tracking-[0.25em] text-sm sm:text-base" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.logo}</span>}
+                  ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className="h-8 sm:h-9 w-24 sm:w-32" fittingType="fit" {...ip} path="logoImage" /></span>
+                  : <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={`font-bold tracking-[0.25em] text-sm sm:text-base ${storefront ? 'cursor-pointer' : ''}`} style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.logo}</span>}
                 <nav className="hidden sm:flex gap-6 text-xs font-medium">{(c.links || []).map((l, i) => <span key={i} style={{ color: p.text }}>{l}</span>)}</nav>
                 <nav className="sm:hidden flex gap-3 text-[11px] font-medium">{(c.links || []).slice(0, 3).map((l, i) => <span key={i} style={{ color: p.text }}>{l}</span>)}</nav>
               </div>
@@ -131,7 +158,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     <p className="mt-4 text-sm sm:text-lg text-white/90 max-w-md">{c.subtitle}</p>
                     <div className="mt-6 flex flex-wrap gap-3">
                       {(c.buttons || []).map((b, i) => (
-                        <button key={i} className="text-xs sm:text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={b.variant === 'primary' ? { background: primary, color: p.primaryText } : { border: '1px solid #fff', color: '#fff' }}>{b.label}</button>
+                        <button key={i} onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="text-xs sm:text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={b.variant === 'primary' ? { background: primary, color: p.primaryText } : { border: '1px solid #fff', color: '#fff' }}>{b.label}</button>
                       ))}
                     </div>
                   </div>
@@ -174,9 +201,9 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
           case 'productGrid':
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">
-                <div className="flex items-end justify-between mb-8">
+                <div id={s.id === firstPgId ? 'sellia-products' : undefined} className="flex items-end justify-between mb-8">
                   <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
-                  <button className="hidden sm:flex items-center gap-1 text-xs font-semibold" style={{ color: primary }}>Tout voir <ArrowRight className="w-3.5 h-3.5" /></button>
+                  <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="hidden sm:flex items-center gap-1 text-xs font-semibold" style={{ color: primary }}>Tout voir <ArrowRight className="w-3.5 h-3.5" /></button>
                 </div>
                 <div className={`grid grid-cols-2 sm:grid-cols-${c.columns || 4} gap-4`}>
                   {(c.products || []).map((pr, i) => (
@@ -219,7 +246,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   <div className={rev ? 'sm:order-1' : ''}>
                     <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                     <p className="mt-4 text-sm sm:text-base leading-relaxed" style={{ color: p.muted }}>{c.text}</p>
-                    {c.button && <button className="mt-6 text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{c.button}</button>}
+                    {c.button && <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-6 text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{c.button}</button>}
                   </div>
                 </div>
               </div>
@@ -325,7 +352,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                             </li>
                           ))}
                         </ul>
-                        <button className="mt-6 w-full py-2.5 rounded-md font-semibold text-sm transition hover:opacity-90" style={hi ? { background: p.primaryText, color: primary } : { background: primary, color: p.primaryText }}>{hi ? 'Commencer' : 'Choisir'}</button>
+                        <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-6 w-full py-2.5 rounded-md font-semibold text-sm transition hover:opacity-90" style={hi ? { background: p.primaryText, color: primary } : { background: primary, color: p.primaryText }}>{hi ? 'Commencer' : 'Choisir'}</button>
                       </div>
                     );
                   })}
@@ -338,21 +365,12 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
               <div className="px-5 sm:px-10 py-16 text-center" style={{ background: primary, color: p.primaryText }}>
                 <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading }}>{c.title}</h2>
                 <p className="mt-3 text-sm sm:text-base opacity-90 max-w-md mx-auto">{c.subtitle}</p>
-                <button className="mt-7 text-sm font-semibold px-6 py-3 rounded-md transition hover:opacity-90" style={{ background: p.primaryText, color: primary }}>{c.buttonLabel}</button>
+                <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-7 text-sm font-semibold px-6 py-3 rounded-md transition hover:opacity-90" style={{ background: p.primaryText, color: primary }}>{c.buttonLabel}</button>
               </div>
             ));
 
           case 'newsletter':
-            return wrap(s, (
-              <div className="px-5 sm:px-10 py-14 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
-                <p className="mt-3 text-sm max-w-md mx-auto" style={{ color: p.muted }}>{c.subtitle}</p>
-                <div className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-                  <input placeholder={c.placeholder} className="flex-1 px-4 py-3 rounded-md text-sm border" style={{ borderColor: p.border, background: p.surface, color: p.text }} />
-                  <button className="px-6 py-3 rounded-md text-sm font-semibold transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{c.buttonLabel}</button>
-                </div>
-              </div>
-            ));
+            return wrap(s, <NewsletterBlock c={c} p={p} primary={primary} primaryText={p.primaryText} headingFont={theme.fonts?.heading} storefront={storefront} />);
 
           case 'footer':
             return wrap(s, (
@@ -416,7 +434,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                       return <h2 key={i} style={{ ...spanStyle, textAlign: al }} className="text-xl sm:text-3xl font-bold self-center">{b.text}</h2>;
                     }
                     if (b.kind === 'button') {
-                      return <div key={i} style={spanStyle} className="flex"><button className="text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{b.text}</button></div>;
+                      return <div key={i} style={spanStyle} className="flex"><button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="text-sm font-semibold px-5 py-3 rounded-md transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{b.text}</button></div>;
                     }
                     return <p key={i} style={{ ...spanStyle, textAlign: al }} className="text-sm leading-relaxed self-center">{b.text}</p>;
                   })}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
@@ -17,9 +17,10 @@ const STATUS_LABEL = { active: 'Actif', draft: 'Brouillon', archived: 'Archivé'
 
 export default function Products() {
   const { store, loading: storeLoading } = useCurrentStore();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(() => new URLSearchParams(window.location.search).get('q') || '');
   const [status, setStatus] = useState('all');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -34,6 +35,10 @@ export default function Products() {
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const uq = new URLSearchParams(location.search).get('q');
+    if (uq != null) setQ(uq);
+  }, [location.search]);
 
   const filtered = products.filter((p) => {
     if (status !== 'all' && p.status !== status) return false;

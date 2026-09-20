@@ -30,8 +30,9 @@ const STATS = [
 ];
 
 export default function LandingTestimonials() {
+  const loop = [...ITEMS, ...ITEMS];
   return (
-    <section id="temoignages" className="py-20 lg:py-24 bg-background">
+    <section id="temoignages" className="py-14 lg:py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center max-w-2xl mx-auto">
           <span className="text-sm font-semibold text-gold uppercase tracking-wide">Témoignages</span>
@@ -39,30 +40,37 @@ export default function LandingTestimonials() {
           <p className="mt-3 text-muted-foreground text-lg">Des milliers de marchands à travers le monde font confiance à Sellia.</p>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
           {STATS.map((s) => (
-            <div key={s.label} className="text-center rounded-2xl border border-border bg-surface p-6">
-              <p className="font-landing font-extrabold text-3xl text-brand">{s.value}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+            <div key={s.label} className="text-center rounded-xl border border-border bg-surface p-4">
+              <p className="font-landing font-extrabold text-2xl text-brand">{s.value}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>
+      </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5">
-          {ITEMS.map((t) => (
-            <div key={t.author} className="rounded-2xl border border-border bg-white p-7 flex flex-col hover:shadow-lg transition-shadow">
-              <Quote className="w-8 h-8 text-brand/20" />
-              <div className="mt-2 flex gap-0.5 text-gold">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+      {/* Scrolling testimonials banner */}
+      <div className="relative mt-10 overflow-hidden">
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
+        <div className="flex gap-4 w-max animate-scroll-x">
+          {loop.map((t, i) => (
+            <div key={i} className="w-[320px] shrink-0 rounded-2xl border border-border bg-white p-5 flex flex-col">
+              <div className="flex items-center justify-between">
+                <Quote className="w-6 h-6 text-brand/20" />
+                <div className="flex gap-0.5 text-gold">
+                  {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="w-3.5 h-3.5 fill-current" />)}
+                </div>
               </div>
-              <p className="mt-4 text-foreground leading-relaxed flex-1">{t.quote}</p>
-              <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full overflow-hidden bg-surface shrink-0">
+              <p className="mt-3 text-sm text-foreground leading-relaxed flex-1 line-clamp-4">{t.quote}</p>
+              <div className="mt-4 pt-3 border-t border-border flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-surface shrink-0">
                   <Image src={t.avatar} alt={t.author} fittingType="fill" className="w-full h-full" />
                 </div>
-                <div>
-                  <p className="font-landing font-bold text-foreground text-sm">{t.author}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                <div className="min-w-0">
+                  <p className="font-landing font-bold text-foreground text-xs truncate">{t.author}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{t.role}</p>
                 </div>
               </div>
             </div>

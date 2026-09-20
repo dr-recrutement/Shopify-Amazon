@@ -38,7 +38,7 @@ export default function LandingFooter() {
             <a href={BRAND.site} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-brand hover:opacity-80">{BRAND.site.replace('https://', '')}</a>
             <div className="mt-5 flex items-center gap-3">
               {[Facebook, Instagram, Twitter, Linkedin].map((Ic, i) => (
-                <a key={i} href="#" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"><Ic className="w-4 h-4" /></a>
+                <span key={i} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"><Ic className="w-4 h-4" /></span>
               ))}
             </div>
           </div>
@@ -47,7 +47,7 @@ export default function LandingFooter() {
               <p className="font-landing font-semibold text-sm text-background">{c.title}</p>
               <ul className="mt-4 space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l}><a href="#" className="text-sm text-background/70 hover:text-background transition-colors">{l}</a></li>
+                  <li key={l}><span className="text-sm text-background/70">{l}</span></li>
                 ))}
               </ul>
             </div>
@@ -70,8 +70,8 @@ export default function LandingFooter() {
           <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
           <div className="flex items-center gap-5 text-xs text-background/70">
             <Link to="/login" className="hover:text-background transition-colors">Connexion</Link>
-            <a href="#" className="hover:text-background transition-colors">Confidentialité</a>
-            <a href="#" className="hover:text-background transition-colors">Conditions</a>
+            <span className="text-background/60">Confidentialité</span>
+            <span className="text-background/60">Conditions</span>
           </div>
         </div>
       </div>

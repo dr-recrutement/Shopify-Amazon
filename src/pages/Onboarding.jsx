@@ -1,0 +1,210 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import {
+  Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles,
+} from 'lucide-react';
+import { COUNTRIES } from '@/lib/world/countries';
+
+const STEPS = [
+  { id: 'store', label: 'Votre boutique', icon: Store },
+  { id: 'products', label: 'Produits', icon: Package },
+  { id: 'theme', label: 'Thème', icon: Palette },
+  { id: 'payments', label: 'Paiements', icon: CreditCard },
+  { id: 'shipping', label: 'Livraison', icon: Truck },
+  { id: 'launch', label: 'Lancement', icon: Rocket },
+];
+
+const CURRENCIES = [
+  { code: 'USD', label: 'USD ($)' }, { code: 'EUR', label: 'EUR (€)' },
+  { code: 'XOF', label: 'XOF (FCFA)' }, { code: 'NGN', label: 'NGN (₦)' }, { code: 'GBP', label: 'GBP (£)' },
+];
+const BUSINESS_TYPES = ['Mode & accessoires', 'Beauté & cosmétiques', 'Électronique', 'Maison & déco', 'Alimentation', 'Artisanat', 'Autre'];
+const PROVIDERS = [
+  { id: 'manual', label: 'Paiement manuel' }, { id: 'flutterwave', label: 'Flutterwave' },
+  { id: 'paystack', label: 'Paystack' }, { id: 'stripe', label: 'Stripe' }, { id: 'payunit', label: 'PayUnit' },
+];
+
+const fld = 'w-full px-3 py-2.5 border border-[#E1E1E1] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+const lbl = 'text-xs font-semibold text-[#6D7175] mb-1.5 block';
+
+export default function Onboarding() {
+  const { store, reload } = useCurrentStore();
+  const navigate = useNavigate();
+  const [step, setStep] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState({});
+
+  // step 1 state
+  const [f, setF] = useState({ name: store?.name || '', country: store?.country || 'SN', currency: store?.currency || 'XOF', business_type: store?.business_type || BUSINESS_TYPES[0] });
+  // step 2 state
+  const [items, setItems] = useState([{ title: '', price: '' }]);
+  // step 4 state
+  const [pay, setPay] = useState('manual');
+  // step 5 state
+  const [ship, setShip] = useState({ country: 'SN', rate: '' });
+
+  const next = async () => {
+    setBusy(true);
+    try {
+      if (step === 0) {
+        const payload = { name: f.name || 'Ma boutique', country: f.country, currency: f.currency, business_type: f.business_type, status: 'active', plan: 'growth', plan_status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() };
+        if (store?.id) await base44.entities.Store.update(store.id, payload);
+        else await base44.entities.Store.create(payload);
+        await reload();
+      }
+      if (step === 1) {
+        for (const it of items) {
+          if (it.title.trim()) await base44.entities.Product.create({ store_id: store?.id, title: it.title.trim(), price: Number(it.price) || 0, currency: f.currency, status: 'draft' });
+        }
+      }
+      if (step === 3) {
+        if (store?.id) await base44.entities.PaymentProvider.create({ store_id: store.id, provider: pay, is_active: true, mode: 'test' });
+      }
+      if (step === 4) {
+        if (store?.id && ship.rate) await base44.entities.ShippingZone.create({ store_id: store.id, name: 'Zone principale', countries: [ship.country], rate: Number(ship.rate), currency: f.currency, rate_type: 'flat' });
+      }
+      setDone((d) => ({ ...d, [STEPS[step].id]: true }));
+      if (step < STEPS.length - 1) setStep((s) => s + 1);
+    } finally { setBusy(false); }
+  };
+
+  const skip = () => { setStep((s) => Math.min(s + 1, STEPS.length - 1)); };
+  const finish = () => navigate('/dashboard');
+
+  const StepContent = () => {
+    switch (STEPS[step].id) {
+      case 'store':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Parlez-nous de votre boutique</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Ces informations apparaissent sur votre vitrine et vos factures.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2"><label className={lbl}>Nom de la boutique</label><input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={fld} placeholder="Ex : AfriStyle" /></div>
+              <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => setF({ ...f, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+              <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{CURRENCIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}</select></div>
+              <div className="sm:col-span-2"><label className={lbl}>Type d'activité</label><select value={f.business_type} onChange={(e) => setF({ ...f, business_type: e.target.value })} className={fld}>{BUSINESS_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}</select></div>
+            </div>
+          </>
+        );
+      case 'products':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Ajoutez vos premiers produits</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Vous pourrez en ajouter d'autres plus tard. Laissez vide pour passer.</p>
+            <div className="space-y-3">
+              {items.map((it, i) => (
+                <div key={i} className="flex gap-2">
+                  <input value={it.title} onChange={(e) => setItems(items.map((x, j) => j === i ? { ...x, title: e.target.value } : x))} className={fld} placeholder={`Produit ${i + 1}`} />
+                  <input value={it.price} onChange={(e) => setItems(items.map((x, j) => j === i ? { ...x, price: e.target.value } : x))} className={fld + ' w-28'} placeholder="Prix" type="number" />
+                  {items.length > 1 && <button onClick={() => setItems(items.filter((_, j) => j !== i))} className="px-3 rounded-lg border border-[#E1E1E1] text-[#6D7175] hover:bg-black/5"><X className="w-4 h-4" /></button>}
+                </div>
+              ))}
+              <button onClick={() => setItems([...items, { title: '', price: '' }])} className="flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline"><Plus className="w-4 h-4" /> Ajouter un produit</button>
+            </div>
+          </>
+        );
+      case 'theme':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Personnalisez votre thème</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Choisissez l'apparence de votre boutique. Vous pourrez tout ajuster plus tard.</p>
+            <div className="rounded-xl border border-[#E1E1E1] p-6 flex flex-col sm:flex-row items-center gap-4 justify-between bg-[#F4F4F4]">
+              <div className="flex items-center gap-3"><Palette className="w-8 h-8 text-[#008060]" /><div><p className="text-sm font-semibold text-[#202223]">Éditeur de thème</p><p className="text-xs text-[#6D7175]">Couleurs, sections, mise en page par glisser-déposer.</p></div></div>
+              <Link to="/theme-editor" target="_blank" className="flex items-center gap-1.5 text-sm font-semibold text-white bg-[#008060] px-4 py-2 rounded-full hover:bg-[#00694d] shrink-0">Ouvrir l'éditeur <ArrowRight className="w-4 h-4" /></Link>
+            </div>
+          </>
+        );
+      case 'payments':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Configurez vos paiements</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Acceptez les paiements en ligne. Vous pourrez ajouter vos clés plus tard.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {PROVIDERS.map((p) => (
+                <button key={p.id} onClick={() => setPay(p.id)} className={`flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition ${pay === p.id ? 'border-[#008060] bg-[#008060]/5 text-[#008060]' : 'border-[#E1E1E1] text-[#202223] hover:bg-black/5'}`}>
+                  {p.label}{pay === p.id && <Check className="w-4 h-4" />}
+                </button>
+              ))}
+            </div>
+          </>
+        );
+      case 'shipping':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Définissez vos frais de livraison</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Ajoutez une première zone de livraison. Configurable en détail plus tard.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label className={lbl}>Pays de la zone</label><select value={ship.country} onChange={(e) => setShip({ ...ship, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+              <div><label className={lbl}>Frais de livraison ({f.currency})</label><input value={ship.rate} onChange={(e) => setShip({ ...ship, rate: e.target.value })} className={fld} type="number" placeholder="Ex : 5" /></div>
+            </div>
+          </>
+        );
+      case 'launch':
+        return (
+          <>
+            <h2 className="text-lg font-bold text-[#202223]">Votre boutique est prête ! 🎉</h2>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Vérifiez le rendu, puis lancez-vous. Vous pouvez tout modifier depuis le tableau de bord.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link to="/store-preview" target="_blank" className="flex items-center gap-2 px-4 py-3 rounded-lg border border-[#E1E1E1] hover:bg-black/5 text-sm font-semibold text-[#202223]"><Store className="w-4 h-4 text-[#008060]" /> Aperçu de la boutique</Link>
+              <Link to="/domains" className="flex items-center gap-2 px-4 py-3 rounded-lg border border-[#E1E1E1] hover:bg-black/5 text-sm font-semibold text-[#202223]"><Rocket className="w-4 h-4 text-[#008060]" /> Connecter un domaine</Link>
+              <Link to="/products" className="flex items-center gap-2 px-4 py-3 rounded-lg border border-[#E1E1E1] hover:bg-black/5 text-sm font-semibold text-[#202223]"><Package className="w-4 h-4 text-[#008060]" /> Gérer mes produits</Link>
+              <Link to="/theme-editor" className="flex items-center gap-2 px-4 py-3 rounded-lg border border-[#E1E1E1] hover:bg-black/5 text-sm font-semibold text-[#202223]"><Palette className="w-4 h-4 text-[#008060]" /> Personnaliser le thème</Link>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F4F4F4] flex flex-col">
+      <header className="h-14 bg-white border-b border-[#E1E1E1] flex items-center px-4 sm:px-6 justify-between">
+        <div className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-[#008060]" /><span className="font-bold text-[#202223]">Configuration de votre boutique</span></div>
+        <Link to="/dashboard" className="text-sm font-medium text-[#6D7175] hover:text-[#202223]">Passer pour l'instant</Link>
+      </header>
+
+      <div className="flex-1 flex flex-col lg:flex-row max-w-5xl mx-auto w-full p-4 sm:p-6 gap-6">
+        {/* Steps sidebar */}
+        <aside className="lg:w-64 shrink-0">
+          <div className="bg-white rounded-xl border border-[#E1E1E1] p-3">
+            {STEPS.map((s, i) => {
+              const isDone = done[s.id];
+              const isCurrent = i === step;
+              return (
+                <button key={s.id} onClick={() => setStep(i)} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition mb-0.5 ${isCurrent ? 'bg-[#008060]/5 text-[#008060] font-semibold' : 'text-[#6D7175] hover:bg-black/5'}`}>
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${isDone ? 'bg-[#008060] text-white' : isCurrent ? 'border-2 border-[#008060] text-[#008060]' : 'border border-[#E1E1E1] text-[#6D7175]'}`}>
+                    {isDone ? <Check className="w-3.5 h-3.5" /> : i + 1}
+                  </span>
+                  <span className="text-left">{s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </aside>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0 bg-white rounded-xl border border-[#E1E1E1] p-5 sm:p-7 flex flex-col">
+          <div className="flex-1">
+            <StepContent />
+          </div>
+          <div className="flex items-center justify-between mt-7 pt-5 border-t border-[#F4F4F4]">
+            <button onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0} className="flex items-center gap-1.5 text-sm font-medium text-[#6D7175] hover:text-[#202223] disabled:opacity-30"><ArrowLeft className="w-4 h-4" /> Retour</button>
+            <div className="flex items-center gap-2">
+              {step < STEPS.length - 1 && step !== 2 && <button onClick={skip} className="text-sm font-medium text-[#6D7175] hover:text-[#202223] px-3 py-2">Passer</button>}
+              {step < STEPS.length - 1 ? (
+                <button onClick={next} disabled={busy} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">
+                  {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />} Continuer
+                </button>
+              ) : (
+                <button onClick={finish} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#00694d]"><Rocket className="w-4 h-4" /> Aller au tableau de bord</button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

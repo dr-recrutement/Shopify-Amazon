@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
-import { ShoppingBag, Wallet, Clock, Package, Users, Tag, Plus, Loader2, AlertCircle, ArrowRight, Boxes } from 'lucide-react';
+import { ShoppingBag, Wallet, Clock, Package, Users, Tag, Plus, Loader2, AlertCircle, ArrowRight, Boxes, Palette } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
@@ -24,6 +24,15 @@ const STATUS_LABEL = {
   pending: 'En attente', paid: 'Payée', processing: 'En préparation', fulfilled: 'Traitée',
   shipped: 'Expédiée', delivered: 'Livrée', cancelled: 'Annulée', refunded: 'Remboursée',
 };
+
+const SHORTCUTS = [
+  { to: '/products', label: 'Produits', icon: Package },
+  { to: '/orders', label: 'Commandes', icon: ShoppingBag },
+  { to: '/customers', label: 'Clients', icon: Users },
+  { to: '/discounts', label: 'Réductions', icon: Tag },
+  { to: '/inventory', label: 'Inventaire', icon: Boxes },
+  { to: '/theme-editor', label: 'Thème', icon: Palette },
+];
 const timeAgo = (d) => {
   if (!d) return '';
   const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000);
@@ -87,8 +96,8 @@ export default function Dashboard() {
       <div className="max-w-md mx-auto mt-20 text-center">
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Bienvenue sur Sellia</h1>
-        <p className="text-sm text-[#6D7175] mt-1 mb-4">Créez votre boutique pour commencer à vendre.</p>
-        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]">Configurer ma boutique</Link>
+        <p className="text-sm text-[#6D7175] mt-1 mb-4">Configurez votre boutique en quelques étapes simples.</p>
+        <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]">Commencer la configuration</Link>
       </div>
     );
   }
@@ -132,12 +141,15 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white rounded-lg border border-[#E1E1E1] p-5">
-          <h2 className="text-sm font-semibold text-[#202223] mb-4">Catalogue</h2>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-[#008060]/10 flex items-center justify-center"><Package className="w-6 h-6 text-[#008060]" /></div>
-            <div><p className="text-2xl font-bold text-[#202223]">{stats.products}</p><p className="text-xs text-[#6D7175]">produits</p></div>
+          <h2 className="text-sm font-semibold text-[#202223] mb-4">Raccourcis</h2>
+          <div className="grid grid-cols-3 gap-2">
+            {SHORTCUTS.map((s) => (
+              <Link key={s.to} to={s.to} className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-[#E1E1E1] py-3 hover:border-[#008060]/40 hover:bg-[#008060]/5 transition-colors">
+                <s.icon className="w-5 h-5 text-[#008060]" />
+                <span className="text-[11px] font-medium text-[#202223]">{s.label}</span>
+              </Link>
+            ))}
           </div>
-          <Link to="/products" className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/40 rounded-md py-2 hover:bg-[#008060]/5">Gérer le catalogue <ArrowRight className="w-3.5 h-3.5" /></Link>
         </div>
       </div>
 

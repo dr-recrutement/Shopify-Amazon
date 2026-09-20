@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
+import { base44 } from '@/api/base44Client';
+import { isSuperadmin } from '@/lib/superadmin';
 
 const NAV_GROUPS = [
   {
@@ -41,6 +43,7 @@ const NAV_GROUPS = [
       ] },
       { label: 'Domaines', to: '/domains', icon: Globe },
       { label: 'Analytics', to: '/analytics', icon: BarChart3 },
+      { label: 'Aperçu boutique', to: '/store-preview', icon: Eye },
     ],
   },
   {
@@ -51,6 +54,7 @@ const NAV_GROUPS = [
       { label: 'Rapports', to: '/reports', icon: FileBarChart },
       { label: 'Analyses produits', to: '/product-analytics', icon: TrendingUp },
       { label: 'Automations', to: '/automations', icon: Zap },
+      { label: 'SEO IA', to: '/seo-ia', icon: Search },
     ],
   },
   {
@@ -65,6 +69,7 @@ const NAV_GROUPS = [
     title: 'Système',
     items: [
       { label: 'Apps', to: '/apps', icon: LayoutGrid },
+      { label: 'Activité', to: '/activity-logs', icon: Activity },
       { label: 'Paramètres', to: '/settings', icon: SettingsIcon },
     ],
   },
@@ -121,7 +126,7 @@ function NavItem({ item, onNavigate }) {
   );
 }
 
-function NavContent({ onNavigate }) {
+function NavContent({ onNavigate, superadmin }) {
   return (
     <>
       {NAV_GROUPS.map((g, gi) => (
@@ -134,12 +139,44 @@ function NavContent({ onNavigate }) {
           ))}
         </div>
       ))}
+      {superadmin && (
+        <div className="mb-1">
+          <p className="px-4 pt-3 pb-1 text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">Superadmin</p>
+          <div className="mx-2">
+            <NavLink to="/superadmin" onClick={onNavigate} className={({ isActive }) => `flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] ${isActive ? 'bg-white text-[#202223] font-medium shadow-sm' : 'text-[#202223] hover:bg-black/5'}`}>
+              <ShieldCheck className="w-4 h-4 opacity-70" /> Superadmin
+            </NavLink>
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const menuRef = useRef(null);
+  const notifRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+    const onClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
+  const initials = (user?.full_name || user?.email || 'U').split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase();
+  const superadmin = isSuperadmin(user?.email);
+  const doLogout = () => { base44.auth.logout('/login'); };
+  const submitSearch = (e) => { e.preventDefault(); navigate(q.trim() ? `/products?q=${encodeURIComponent(q.trim())}` : '/products'); };
 
   return (
     <div className="min-h-screen bg-[#F4F4F4] text-[#202223] flex flex-col">
@@ -155,19 +192,49 @@ export default function AdminLayout() {
             <span className="text-[9px] font-medium text-white/55">by Liafrik</span>
           </span>
         </Link>
-        <div className="hidden md:flex items-center gap-2 bg-white/10 rounded-md px-3 py-1.5 w-80 max-w-full">
+        <form onSubmit={submitSearch} className="hidden md:flex items-center gap-2 bg-white/10 rounded-md px-3 py-1.5 w-80 max-w-full">
           <Search className="w-4 h-4 opacity-60" />
           <input
-            placeholder="Rechercher"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Rechercher un produit…"
             className="bg-transparent outline-none text-sm placeholder:text-white/50 w-full"
           />
-          <kbd className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded">⌘K</kbd>
-        </div>
+          <kbd className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded">⏎</kbd>
+        </form>
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <Bell className="w-5 h-5 opacity-80" />
-          <div className="flex items-center gap-1.5 cursor-pointer">
-            <div className="w-7 h-7 rounded-full bg-[#008060] flex items-center justify-center text-xs font-bold">SM</div>
-            <ChevronDown className="w-4 h-4 opacity-60" />
+          <div className="relative" ref={notifRef}>
+            <button onClick={() => setNotifOpen((o) => !o)} className="relative p-1.5 rounded-md hover:bg-white/10">
+              <Bell className="w-5 h-5 opacity-80" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#2EE6A8]" />
+            </button>
+            {notifOpen && (
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-[#E1E1E1] py-2 text-[#202223] z-50">
+                <p className="px-4 py-2 text-xs font-bold uppercase text-[#6D7175]">Notifications</p>
+                <div className="px-4 py-8 text-center">
+                  <Bell className="w-7 h-7 text-[#C9C9C9] mx-auto mb-2" />
+                  <p className="text-sm text-[#6D7175]">Aucune notification pour le moment.</p>
+                </div>
+                <Link to="/orders" onClick={() => setNotifOpen(false)} className="block px-4 py-2 text-xs font-semibold text-[#008060] hover:bg-black/5 border-t border-[#F4F4F4]">Voir les commandes</Link>
+              </div>
+            )}
+          </div>
+          <div className="relative" ref={menuRef}>
+            <button onClick={() => setMenuOpen((o) => !o)} className="flex items-center gap-1.5 cursor-pointer p-1 rounded-md hover:bg-white/10">
+              <div className="w-7 h-7 rounded-full bg-[#008060] flex items-center justify-center text-xs font-bold">{initials}</div>
+              <ChevronDown className="w-4 h-4 opacity-60" />
+            </button>
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl border border-[#E1E1E1] py-2 text-[#202223] z-50">
+                <div className="px-4 py-2 border-b border-[#F4F4F4]">
+                  <p className="text-sm font-bold truncate">{user?.full_name || 'Utilisateur'}</p>
+                  <p className="text-xs text-[#6D7175] truncate">{user?.email || ''}</p>
+                </div>
+                <Link to="/store-settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-black/5"><SettingsIcon className="w-4 h-4 opacity-60" /> Paramètres de la boutique</Link>
+                <Link to="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-black/5"><UserIcon className="w-4 h-4 opacity-60" /> Mes paramètres</Link>
+                <button onClick={doLogout} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-[#F4F4F4]"><LogOut className="w-4 h-4" /> Déconnexion</button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -175,7 +242,7 @@ export default function AdminLayout() {
       <div className="flex flex-1 min-h-0">
         {/* Desktop sidebar */}
         <aside className="w-60 bg-[#F4F4F4] border-r border-[#E1E1E1] overflow-y-auto py-3 shrink-0 hidden md:block">
-          <NavContent />
+          <NavContent superadmin={superadmin} />
         </aside>
 
         {/* Mobile drawer */}
@@ -192,7 +259,7 @@ export default function AdminLayout() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <NavContent onNavigate={() => setMobileOpen(false)} />
+              <NavContent onNavigate={() => setMobileOpen(false)} superadmin={superadmin} />
             </aside>
           </>
         )}

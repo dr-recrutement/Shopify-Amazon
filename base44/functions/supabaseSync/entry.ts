@@ -92,7 +92,43 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const totalSynced = report.reduce((s, r) => s + (typeof r.synced === 'number' ? r.synced : 0), 0);
-    return Response.json({ ok: true, project: ref, totalSynced, report });
+
+    // Phase 3: auto-push a data snapshot to GitHub after a successful sync
+    let githubBackup: any = null;
+    try {
+      const { accessToken: ghToken } = await base44.asServiceRole.connectors.getConnection('github');
+      const ghHeaders: Record<string, string> = { Authorization: `Bearer ${ghToken}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'Sellia-Builder' };
+      const jget = async (res: Response) => {
+        const t = await res.text();
+        let j: any = null; try { j = JSON.parse(t); } catch {}
+        return { ok: res.ok, status: res.status, text: t, json: j };
+      };
+      const reposR = await jget(await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', { headers: ghHeaders }));
+      if (!reposR.ok || !Array.isArray(reposR.json)) {
+        githubBackup = { error: `repos list HTTP ${reposR.status}: ${reposR.text.slice(0, 200)}` };
+      } else {
+        const match = reposR.json.find((r: any) => /afristore|sellia|builder/i.test(r.name)) || reposR.json[0];
+        const owner = match.owner?.login || match.full_name.split('/')[0];
+        const repo = match.name;
+        const branch = 'main';
+        const path = 'sellia-backup.json';
+        const snapshot: any = {};
+        for (const p of prepared) if (p.insertRows) snapshot[p.name] = p.insertRows;
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify({ generated_at: new Date().toISOString(), totalSynced, entities: snapshot }, null, 2))));
+        let sha: string | undefined;
+        const getR = await jget(await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, { headers: ghHeaders }));
+        if (getR.ok && getR.json?.sha) sha = getR.json.sha;
+        const putR = await jget(await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+          method: 'PUT', headers: { ...ghHeaders, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'chore: auto backup Sellia data snapshot', content, branch, ...(sha ? { sha } : {}) }),
+        }));
+        githubBackup = { repo: `${owner}/${repo}`, path, ok: putR.ok, commit: putR.json?.commit?.sha || null, error: putR.ok ? null : `HTTP ${putR.status}: ${putR.text.slice(0, 200)}` };
+      }
+    } catch (e: any) {
+      githubBackup = { error: e.message };
+    }
+
+    return Response.json({ ok: true, project: ref, totalSynced, report, githubBackup });
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }

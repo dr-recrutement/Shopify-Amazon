@@ -12,7 +12,6 @@ export default function Inventory() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [adjusting, setAdjusting] = useState(null);
-  const [newStock, setNewStock] = useState('');
   const [alertDismissed, setAlertDismissed] = useState(false);
 
   const load = useCallback(async () => {
@@ -28,7 +27,7 @@ export default function Inventory() {
       if (p.variants?.length) {
         p.variants.forEach((v, i) => rows.push({ id: p.id, variantIndex: i, title: p.title, variantTitle: v.title || 'Défaut', sku: v.sku || p.sku || '—', stock: v.stock ?? 0, price: v.price ?? p.price, track: p.track_inventory }));
       } else {
-        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: 0, price: p.price, track: p.track_inventory });
+        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: p.stock ?? 0, price: p.price, track: p.track_inventory });
       }
     });
     return rows;
@@ -54,14 +53,13 @@ export default function Inventory() {
     try {
       const prod = products.find((p) => p.id === row.id);
       if (!prod) return;
-      let updated;
       if (row.variantIndex >= 0 && prod.variants) {
-        updated = [...prod.variants];
+        const updated = [...prod.variants];
         updated[row.variantIndex] = { ...updated[row.variantIndex], stock: Math.max(0, (updated[row.variantIndex].stock || 0) + delta) };
+        await base44.entities.Product.update(row.id, { variants: updated });
       } else {
-        return;
+        await base44.entities.Product.update(row.id, { stock: Math.max(0, (prod.stock || 0) + delta) });
       }
-      await base44.entities.Product.update(row.id, { variants: updated });
       await load();
     } finally { setAdjusting(null); }
   };
@@ -70,12 +68,15 @@ export default function Inventory() {
     setAdjusting(row.id + row.variantIndex + 'set');
     try {
       const prod = products.find((p) => p.id === row.id);
-      if (!prod || row.variantIndex < 0) return;
-      const updated = [...prod.variants];
-      updated[row.variantIndex] = { ...updated[row.variantIndex], stock: Math.max(0, val) };
-      await base44.entities.Product.update(row.id, { variants: updated });
+      if (!prod) return;
+      if (row.variantIndex >= 0 && prod.variants) {
+        const updated = [...prod.variants];
+        updated[row.variantIndex] = { ...updated[row.variantIndex], stock: Math.max(0, val) };
+        await base44.entities.Product.update(row.id, { variants: updated });
+      } else {
+        await base44.entities.Product.update(row.id, { stock: Math.max(0, val) });
+      }
       await load();
-      setNewStock('');
     } finally { setAdjusting(null); }
   };
 
@@ -142,7 +143,7 @@ export default function Inventory() {
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1.5">
                     <button onClick={() => adjustStock(r, -1)} disabled={adjusting === r.id + r.variantIndex} className="w-7 h-7 rounded-md border border-[#E1E1E1] text-[#6D7175] hover:bg-red-50 hover:text-red-600 disabled:opacity-40 font-bold">−</button>
-                    <input type="number" value={newStock && adjusting === r.id + r.variantIndex + 'set' ? newStock : ''} onChange={(e) => setNewStock(e.target.value)} onBlur={() => newStock !== '' && setStockAbsolute(r, +newStock)} placeholder={String(r.stock)} className="w-16 text-center border border-[#E1E1E1] rounded-md py-1 text-xs" />
+                    <input type="number" defaultValue="" onBlur={(e) => { const v = e.target.value; if (v !== '') setStockAbsolute(r, +v); }} placeholder={String(r.stock)} className="w-16 text-center border border-[#E1E1E1] rounded-md py-1 text-xs" />
                     <button onClick={() => adjustStock(r, 1)} disabled={adjusting === r.id + r.variantIndex} className="w-7 h-7 rounded-md border border-[#E1E1E1] text-[#6D7175] hover:bg-[#008060]/10 hover:text-[#008060] disabled:opacity-40 font-bold">+</button>
                   </div>
                 </td>

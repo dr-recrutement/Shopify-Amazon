@@ -1,0 +1,101 @@
+{
+  "name": "PaymentProvider",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "flutterwave",
+        "paystack",
+        "payunit",
+        "manual"
+      ],
+      "default": "manual",
+      "description": "PSP connect\u00e9 par le marchand"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Nom affich\u00e9 en checkout"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "test",
+        "live"
+      ],
+      "default": "test"
+    },
+    "credentials": {
+      "type": "object",
+      "properties": {
+        "secret_key": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "string"
+        },
+        "webhook_secret": {
+          "type": "string"
+        },
+        "merchant_id": {
+          "type": "string"
+        }
+      },
+      "description": "Identifiants PSP du marchand (isol\u00e9s par boutique, lisibles uniquement par le propri\u00e9taire)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "store_id",
+    "provider"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

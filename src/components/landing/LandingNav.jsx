@@ -33,12 +33,9 @@ const PLATFORM_LINKS = [
 ];
 
 const RESOURCES_LINKS = [
-  { label: 'Documentation', desc: 'Guides techniques & API' },
-  { label: 'Centre d\u2019aide', desc: 'FAQ & tutoriels' },
-  { label: 'Blog', desc: 'Tendances e-commerce' },
-  { label: 'Communauté', desc: 'Échangez avec d\u2019autres marchands' },
-  { label: 'Développeurs', desc: 'Référence API & webhooks' },
-  { label: 'Statut système', desc: 'Suivi en temps réel' },
+  { label: 'Documentation', desc: 'Guides techniques & API', to: '/support' },
+  { label: 'Centre d\u2019aide', desc: 'FAQ & tutoriels', to: '/support' },
+  { label: 'Blog', desc: 'Tendances e-commerce', to: '/blog' },
 ];
 
 export default function LandingNav() {
@@ -103,10 +100,10 @@ export default function LandingNav() {
                   ) : (
                     <div className="absolute left-0 top-full mt-2 w-[320px] bg-white rounded-2xl border border-border shadow-2xl p-3">
                       {item.links.map((it) => (
-                        <a key={it.label} href="#" className="block px-3 py-2.5 rounded-xl hover:bg-surface transition-colors">
+                        <Link key={it.label} to={it.to} className="block px-3 py-2.5 rounded-xl hover:bg-surface transition-colors">
                           <p className="text-sm font-semibold text-foreground">{it.label}</p>
                           <p className="text-xs text-muted-foreground">{it.desc}</p>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   )
@@ -167,7 +164,7 @@ export default function LandingNav() {
                         ))}
                       </div>
                     )) : item.links.map((i) => (
-                      <a key={i.label} href="#" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-foreground">{i.label}</a>
+                      <Link key={i.label} to={i.to} onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-foreground">{i.label}</Link>
                     ))}
                   </div>
                 )}

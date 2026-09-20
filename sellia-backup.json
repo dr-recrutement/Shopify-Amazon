@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T20:22:59.433Z",
+  "generated_at": "2026-09-20T20:51:17.284Z",
   "totalSynced": 9,
   "entities": {
     "Store": [
@@ -54,12 +54,16 @@
         "currency": "XOF",
         "collection_ids": [],
         "sku": "grgrg122",
-        "seo": null,
+        "stock": 6,
+        "seo": {
+          "title": "Vernis à Ongles Longue Tenue | Beauté et Cosmétique Afrique",
+          "description": "Sublimez vos mains avec notre sélection de vernis à ongles longue tenue. Couleurs vibrantes et éclatantes adaptées à toutes les carnations. Livraison en Afrique."
+        },
         "barcode": "151212",
         "status": "active",
         "id": "6ab01febe7a69bd88e771cde",
         "created_date": "2026-09-20T18:03:23.912000",
-        "updated_date": "2026-09-20T18:03:59.710000",
+        "updated_date": "2026-09-20T20:40:33.453000",
         "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       }

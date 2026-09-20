@@ -1,1 +1,29 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKCi8vIExvYWRzIHRoZSBmaXJzdCBzdG9yZSBvd25lZCBieSB0aGUgY3VycmVudCB1c2VyIChjcmVhdGVkX2J5X2lkKS4KLy8gUmV0dXJucyB7IHN0b3JlLCBsb2FkaW5nLCBlcnJvciwgcmVsb2FkIH0uCmV4cG9ydCBmdW5jdGlvbiB1c2VDdXJyZW50U3RvcmUoKSB7CiAgY29uc3QgW3N0b3JlLCBzZXRTdG9yZV0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTsKICBjb25zdCBbZXJyb3IsIHNldEVycm9yXSA9IHVzZVN0YXRlKG51bGwpOwoKICBjb25zdCBsb2FkID0gYXN5bmMgKCkgPT4gewogICAgc2V0TG9hZGluZyh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBiYXNlNDQuYXV0aC5tZSgpOwogICAgICBjb25zdCBsaXN0ID0gYXdhaXQgYmFzZTQ0LmVudGl0aWVzLlN0b3JlLmZpbHRlcih7IGNyZWF0ZWRfYnlfaWQ6IHVzZXIuaWQgfSk7CiAgICAgIHNldFN0b3JlKGxpc3RbMF0gfHwgbnVsbCk7CiAgICAgIHNldEVycm9yKG51bGwpOwogICAgfSBjYXRjaCAoZSkgewogICAgICBzZXRFcnJvcihlKTsKICAgIH0gZmluYWxseSB7CiAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgfQogIH07CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW10pOwogIHJldHVybiB7IHN0b3JlLCBsb2FkaW5nLCBlcnJvciwgcmVsb2FkOiBsb2FkIH07Cn0KCmV4cG9ydCBkZWZhdWx0IHVzZUN1cnJlbnRTdG9yZTs=
+import { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+
+// Loads the first store owned by the current user (created_by_id).
+// Returns { store, loading, error, reload }.
+export function useCurrentStore() {
+  const [store, setStore] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const user = await base44.auth.me();
+      const list = await base44.entities.Store.filter({ created_by_id: user.id });
+      setStore(list[0] || null);
+      setError(null);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
+  return { store, loading, error, reload: load };
+}
+
+export default useCurrentStore;

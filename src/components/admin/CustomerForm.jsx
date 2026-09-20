@@ -1,1 +1,86 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsKICBEaWFsb2csIERpYWxvZ0NvbnRlbnQsIERpYWxvZ0hlYWRlciwgRGlhbG9nVGl0bGUsIERpYWxvZ0Zvb3RlciwKfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvZGlhbG9nJzsKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7CmltcG9ydCB7IExvYWRlcjIgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwoKY29uc3QgaW5wdXRDbHMgPSAndy1mdWxsIHB4LTMgcHktMiBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSByb3VuZGVkLW1kIHRleHQtc20gYmctd2hpdGUgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLVsjMDA4MDYwXS8zMCc7CgpmdW5jdGlvbiBGaWVsZCh7IGxhYmVsLCBjaGlsZHJlbiB9KSB7CiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxsYWJlbCBjbGFzc05hbWU9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjMjAyMjIzXSBtYi0xLjUiPntsYWJlbH08L2xhYmVsPgogICAgICB7Y2hpbGRyZW59CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBDdXN0b21lckZvcm0oeyBvcGVuLCBvbk9wZW5DaGFuZ2UsIHN0b3JlLCBjdXN0b21lciwgb25TYXZlZCB9KSB7CiAgY29uc3QgW2Zvcm0sIHNldEZvcm1dID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW3NhdmluZywgc2V0U2F2aW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbdGFnc1RleHQsIHNldFRhZ3NUZXh0XSA9IHVzZVN0YXRlKCcnKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGlmICghb3BlbikgcmV0dXJuOwogICAgY29uc3QgYmFzZSA9IGN1c3RvbWVyIHx8IHsgZmlyc3RfbmFtZTogJycsIGxhc3RfbmFtZTogJycsIGVtYWlsOiAnJywgcGhvbmU6ICcnLCBhY2NlcHRzX21hcmtldGluZzogZmFsc2UsIHRhZ3M6IFtdLCBub3RlOiAnJyB9OwogICAgc2V0Rm9ybSh7IC4uLmJhc2UgfSk7CiAgICBzZXRUYWdzVGV4dCgoYmFzZS50YWdzIHx8IFtdKS5qb2luKCcsICcpKTsKICB9LCBbb3BlbiwgY3VzdG9tZXJdKTsKCiAgaWYgKCFmb3JtKSByZXR1cm4gbnVsbDsKICBjb25zdCBzZXQgPSAocGF0Y2gpID0+IHNldEZvcm0oeyAuLi5mb3JtLCAuLi5wYXRjaCB9KTsKICBjb25zdCBpc05ldyA9ICFmb3JtLmlkOwoKICBjb25zdCBzYXZlID0gYXN5bmMgKCkgPT4gewogICAgaWYgKCFmb3JtLmVtYWlsKSByZXR1cm47CiAgICBzZXRTYXZpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBjb25zdCBwYXlsb2FkID0gewogICAgICAgIHN0b3JlX2lkOiBzdG9yZS5pZCwKICAgICAgICBmaXJzdF9uYW1lOiBmb3JtLmZpcnN0X25hbWUgfHwgJycsCiAgICAgICAgbGFzdF9uYW1lOiBmb3JtLmxhc3RfbmFtZSB8fCAnJywKICAgICAgICBlbWFpbDogZm9ybS5lbWFpbCwKICAgICAgICBwaG9uZTogZm9ybS5waG9uZSB8fCAnJywKICAgICAgICBhY2NlcHRzX21hcmtldGluZzogISFmb3JtLmFjY2VwdHNfbWFya2V0aW5nLAogICAgICAgIHRhZ3M6IHRhZ3NUZXh0LnNwbGl0KCcsJykubWFwKCh0KSA9PiB0LnRyaW0oKSkuZmlsdGVyKEJvb2xlYW4pLAogICAgICAgIG5vdGU6IGZvcm0ubm90ZSB8fCAnJywKICAgICAgfTsKICAgICAgaWYgKGlzTmV3KSBhd2FpdCBiYXNlNDQuZW50aXRpZXMuQ3VzdG9tZXIuY3JlYXRlKHBheWxvYWQpOwogICAgICBlbHNlIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5DdXN0b21lci51cGRhdGUoZm9ybS5pZCwgcGF5bG9hZCk7CiAgICAgIG9uU2F2ZWQoKTsKICAgICAgb25PcGVuQ2hhbmdlKGZhbHNlKTsKICAgIH0gZmluYWxseSB7IHNldFNhdmluZyhmYWxzZSk7IH0KICB9OwoKICByZXR1cm4gKAogICAgPERpYWxvZyBvcGVuPXtvcGVufSBvbk9wZW5DaGFuZ2U9e29uT3BlbkNoYW5nZX0+CiAgICAgIDxEaWFsb2dDb250ZW50IGNsYXNzTmFtZT0ibWF4LXctbGciPgogICAgICAgIDxEaWFsb2dIZWFkZXI+CiAgICAgICAgICA8RGlhbG9nVGl0bGU+e2lzTmV3ID8gJ05vdXZlYXUgY2xpZW50JyA6ICdNb2RpZmllciBsZSBjbGllbnQnfTwvRGlhbG9nVGl0bGU+CiAgICAgICAgPC9EaWFsb2dIZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktNCI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iUHLDqW5vbSI+PGlucHV0IHZhbHVlPXtmb3JtLmZpcnN0X25hbWV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgZmlyc3RfbmFtZTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IC8+PC9GaWVsZD4KICAgICAgICAgICAgPEZpZWxkIGxhYmVsPSJOb20iPjxpbnB1dCB2YWx1ZT17Zm9ybS5sYXN0X25hbWV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgbGFzdF9uYW1lOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30gLz48L0ZpZWxkPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8RmllbGQgbGFiZWw9IkUtbWFpbCAqIj48aW5wdXQgdHlwZT0iZW1haWwiIHZhbHVlPXtmb3JtLmVtYWlsfSBvbkNoYW5nZT17KGUpID0+IHNldCh7IGVtYWlsOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30gLz48L0ZpZWxkPgogICAgICAgICAgPEZpZWxkIGxhYmVsPSJUw6lsw6lwaG9uZSI+PGlucHV0IHZhbHVlPXtmb3JtLnBob25lfSBvbkNoYW5nZT17KGUpID0+IHNldCh7IHBob25lOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30gcGxhY2Vob2xkZXI9IisyMjHigKYiIC8+PC9GaWVsZD4KICAgICAgICAgIDxGaWVsZCBsYWJlbD0iVGFncyI+PGlucHV0IHZhbHVlPXt0YWdzVGV4dH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRUYWdzVGV4dChlLnRhcmdldC52YWx1ZSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IHBsYWNlaG9sZGVyPSJWSVAsIGdyb3NzaXN0ZSAoc8OpcGFyw6lzIHBhciB2aXJndWxlcykiIC8+PC9GaWVsZD4KICAgICAgICAgIDxGaWVsZCBsYWJlbD0iTm90ZSI+PHRleHRhcmVhIHZhbHVlPXtmb3JtLm5vdGV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgbm90ZTogZS50YXJnZXQudmFsdWUgfSl9IHJvd3M9ezJ9IGNsYXNzTmFtZT17aW5wdXRDbHN9IC8+PC9GaWVsZD4KICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHRleHQtc20gdGV4dC1bIzIwMjIyM10gY3Vyc29yLXBvaW50ZXIiPgogICAgICAgICAgICA8aW5wdXQgdHlwZT0iY2hlY2tib3giIGNoZWNrZWQ9eyEhZm9ybS5hY2NlcHRzX21hcmtldGluZ30gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyBhY2NlcHRzX21hcmtldGluZzogZS50YXJnZXQuY2hlY2tlZCB9KX0gY2xhc3NOYW1lPSJhY2NlbnQtWyMwMDgwNjBdIiAvPgogICAgICAgICAgICBBY2NlcHRlIGRlIHJlY2V2b2lyIG5vcyBjb21tdW5pY2F0aW9ucyBtYXJrZXRpbmcKICAgICAgICAgIDwvbGFiZWw+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPERpYWxvZ0Zvb3RlciBjbGFzc05hbWU9InB0LTIiPgogICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PSJvdXRsaW5lIiBvbkNsaWNrPXsoKSA9PiBvbk9wZW5DaGFuZ2UoZmFsc2UpfT5Bbm51bGVyPC9CdXR0b24+CiAgICAgICAgICA8QnV0dG9uIG9uQ2xpY2s9e3NhdmV9IGRpc2FibGVkPXtzYXZpbmcgfHwgIWZvcm0uZW1haWx9IGNsYXNzTmFtZT0iYmctWyMwMDgwNjBdIGhvdmVyOmJnLVsjMDA2OTRkXSI+CiAgICAgICAgICAgIHtzYXZpbmcgPyA8TG9hZGVyMiBjbGFzc05hbWU9InctNCBoLTQgYW5pbWF0ZS1zcGluIiAvPiA6IG51bGx9IHtpc05ldyA/ICdDcsOpZXInIDogJ0VucmVnaXN0cmVyJ30KICAgICAgICAgIDwvQnV0dG9uPgogICAgICAgIDwvRGlhbG9nRm9vdGVyPgogICAgICA8L0RpYWxvZ0NvbnRlbnQ+CiAgICA8L0RpYWxvZz4KICApOwp9
+import { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+
+const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-[#202223] mb-1.5">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+export default function CustomerForm({ open, onOpenChange, store, customer, onSaved }) {
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [tagsText, setTagsText] = useState('');
+
+  useEffect(() => {
+    if (!open) return;
+    const base = customer || { first_name: '', last_name: '', email: '', phone: '', accepts_marketing: false, tags: [], note: '' };
+    setForm({ ...base });
+    setTagsText((base.tags || []).join(', '));
+  }, [open, customer]);
+
+  if (!form) return null;
+  const set = (patch) => setForm({ ...form, ...patch });
+  const isNew = !form.id;
+
+  const save = async () => {
+    if (!form.email) return;
+    setSaving(true);
+    try {
+      const payload = {
+        store_id: store.id,
+        first_name: form.first_name || '',
+        last_name: form.last_name || '',
+        email: form.email,
+        phone: form.phone || '',
+        accepts_marketing: !!form.accepts_marketing,
+        tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
+        note: form.note || '',
+      };
+      if (isNew) await base44.entities.Customer.create(payload);
+      else await base44.entities.Customer.update(form.id, payload);
+      onSaved();
+      onOpenChange(false);
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{isNew ? 'Nouveau client' : 'Modifier le client'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Prénom"><input value={form.first_name} onChange={(e) => set({ first_name: e.target.value })} className={inputCls} /></Field>
+            <Field label="Nom"><input value={form.last_name} onChange={(e) => set({ last_name: e.target.value })} className={inputCls} /></Field>
+          </div>
+          <Field label="E-mail *"><input type="email" value={form.email} onChange={(e) => set({ email: e.target.value })} className={inputCls} /></Field>
+          <Field label="Téléphone"><input value={form.phone} onChange={(e) => set({ phone: e.target.value })} className={inputCls} placeholder="+221…" /></Field>
+          <Field label="Tags"><input value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} placeholder="VIP, grossiste (séparés par virgules)" /></Field>
+          <Field label="Note"><textarea value={form.note} onChange={(e) => set({ note: e.target.value })} rows={2} className={inputCls} /></Field>
+          <label className="flex items-center gap-2 text-sm text-[#202223] cursor-pointer">
+            <input type="checkbox" checked={!!form.accepts_marketing} onChange={(e) => set({ accepts_marketing: e.target.checked })} className="accent-[#008060]" />
+            Accepte de recevoir nos communications marketing
+          </label>
+        </div>
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Annuler</Button>
+          <Button onClick={save} disabled={saving || !form.email} className="bg-[#008060] hover:bg-[#00694d]">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} {isNew ? 'Créer' : 'Enregistrer'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,1 +1,80 @@
-aW1wb3J0IHsgTGluayB9IGZyb20gJ3JlYWN0LXJvdXRlci1kb20nOwppbXBvcnQgeyBGYWNlYm9vaywgSW5zdGFncmFtLCBUd2l0dGVyLCBMaW5rZWRpbiwgQXJyb3dSaWdodCB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IEJSQU5EIH0gZnJvbSAnQC9saWIvYnJhbmQnOwoKCmNvbnN0IENPTFMgPSBbCiAgeyB0aXRsZTogJ1BsYXRlZm9ybWUnLCBsaW5rczogWyfDiWRpdGV1ciBkZSBib3V0aXF1ZScsICdUaMOobWVzIHByZW1pdW0nLCAnQ2hlY2tvdXQnLCAnUGFpZW1lbnRzJywgJ0dlc3Rpb24gZGVzIHN0b2NrcycsICdBbmFseXRpY3MnLCAnQXNzaXN0YW50IElBJ10gfSwKICB7IHRpdGxlOiAnU29sdXRpb25zJywgbGlua3M6IFsnTW9kZSAmIFRleHRpbGUnLCAnQmVhdXTDqSAmIENvc23DqXRpcXVlcycsICfDiWxlY3Ryb25pcXVlJywgJ1Jlc3RhdXJhbnQgJiBGb29kJywgJ01hcmtldHBsYWNlJywgJ011bHRpLWJvdXRpcXVlcyddIH0sCiAgeyB0aXRsZTogJ1Jlc3NvdXJjZXMnLCBsaW5rczogWydEb2N1bWVudGF0aW9uJywgJ0NlbnRyZSBk4oCZYWlkZScsICdCbG9nJywgJ0NvbW11bmF1dMOpJywgJ0TDqXZlbG9wcGV1cnMnLCAnU3RhdHV0IHN5c3TDqG1lJ10gfSwKICB7IHRpdGxlOiAnRW50cmVwcmlzZScsIGxpbmtzOiBbJ8OAIHByb3BvcycsICdDYXJyacOocmVzJywgJ1BhcnRlbmFpcmVzJywgJ0NvbnRhY3QnLCAnUHJlc3NlJywgJ1PDqWN1cml0w6knXSB9LAogIHsgdGl0bGU6ICdMw6lnYWwnLCBsaW5rczogWydDb25kaXRpb25zIGTigJl1dGlsaXNhdGlvbicsICdDb25maWRlbnRpYWxpdMOpJywgJ0Nvb2tpZXMnLCAnUkdQRCcsICdNZW50aW9ucyBsw6lnYWxlcyddIH0sCl07CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBMYW5kaW5nRm9vdGVyKCkgewogIHJldHVybiAoCiAgICA8Zm9vdGVyIGNsYXNzTmFtZT0iYmctZm9yZWdyb3VuZCB0ZXh0LWJhY2tncm91bmQiPgogICAgICB7LyogQ1RBIHN0cmlwICovfQogICAgICA8ZGl2IGNsYXNzTmFtZT0iYm9yZGVyLWIgYm9yZGVyLXdoaXRlLzEwIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctN3hsIG14LWF1dG8gcHgtNCBzbTpweC02IHB5LTEyIGZsZXggZmxleC1jb2wgbWQ6ZmxleC1yb3cgaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBnYXAtNiI+CiAgICAgICAgICA8ZGl2PgogICAgICAgICAgICA8aDMgY2xhc3NOYW1lPSJmb250LWxhbmRpbmcgZm9udC1leHRyYWJvbGQgdGV4dC0yeGwgdGV4dC1iYWNrZ3JvdW5kIj5QcsOqdCDDoCBsYW5jZXIgdm90cmUgYm91dGlxdWUgPzwvaDM+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMS41IHRleHQtYmFja2dyb3VuZC83MCI+RXNzYXlleiBTZWxsaWEgZ3JhdHVpdGVtZW50IHBlbmRhbnQgMTQgam91cnMuIFNhbnMgY2FydGUgYmFuY2FpcmUuPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8TGluayB0bz0iL3JlZ2lzdGVyIiBjbGFzc05hbWU9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBiZy1icmFuZCB0ZXh0LWJyYW5kLWZvcmVncm91bmQgZm9udC1zZW1pYm9sZCBweC02IHB5LTMuNSByb3VuZGVkLWZ1bGwgdGV4dC1iYXNlIGhvdmVyOmJnLWJyYW5kLzkwIHRyYW5zaXRpb24tY29sb3JzIHNoYWRvdy1sZyBzaGFkb3ctYnJhbmQvMzAgc2hyaW5rLTAiPgogICAgICAgICAgICBDb21tZW5jZXIgbWFpbnRlbmFudCA8QXJyb3dSaWdodCBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAgICA8L0xpbms+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgoKICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LTd4bCBteC1hdXRvIHB4LTQgc206cHgtNiBweS0xNCI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTIgbWQ6Z3JpZC1jb2xzLTMgbGc6Z3JpZC1jb2xzLTYgZ2FwLTgiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImNvbC1zcGFuLTIiPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIuNSI+CiAgICAgICAgICAgICAgPGltZyBzcmM9e0JSQU5ELmxvZ299IGFsdD0iU2VsbGlhIiBjbGFzc05hbWU9ImgtOSB3LWF1dG8gb2JqZWN0LWNvbnRhaW4iIC8+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmb250LWxhbmRpbmcgZm9udC1ib2xkIHRleHQtbGcgdGV4dC1iYWNrZ3JvdW5kIj5TZWxsaWE8L3NwYW4+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTQgdGV4dC1zbSB0ZXh0LWJhY2tncm91bmQvNzAgbWF4LXcteHMiPkxhIHBsYXRlZm9ybWUgZS1jb21tZXJjZSBwcmVtaXVtIHBvdXIgbGVzIG1hcmNoYW5kcyBkdSBtb25kZSBlbnRpZXIuIExhbmNleiB2b3RyZSBib3V0aXF1ZSwgdmVuZGV6IGF1IG1vbmRlLjwvcD4KICAgICAgICAgICAgPGEgaHJlZj17QlJBTkQuc2l0ZX0gdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9yZWZlcnJlciIgY2xhc3NOYW1lPSJtdC0zIGlubGluZS1ibG9jayB0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1icmFuZCBob3ZlcjpvcGFjaXR5LTgwIj57QlJBTkQuc2l0ZS5yZXBsYWNlKCdodHRwczovLycsICcnKX08L2E+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC01IGZsZXggaXRlbXMtY2VudGVyIGdhcC0zIj4KICAgICAgICAgICAgICB7W0ZhY2Vib29rLCBJbnN0YWdyYW0sIFR3aXR0ZXIsIExpbmtlZGluXS5tYXAoKEljLCBpKSA9PiAoCiAgICAgICAgICAgICAgICA8YSBrZXk9e2l9IGhyZWY9IiMiIGNsYXNzTmFtZT0idy05IGgtOSByb3VuZGVkLWZ1bGwgYmctd2hpdGUvMTAgaG92ZXI6Ymctd2hpdGUvMjAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdHJhbnNpdGlvbi1jb2xvcnMiPjxJYyBjbGFzc05hbWU9InctNCBoLTQiIC8+PC9hPgogICAgICAgICAgICAgICkpfQogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAge0NPTFMubWFwKChjKSA9PiAoCiAgICAgICAgICAgIDxkaXYga2V5PXtjLnRpdGxlfT4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9ImZvbnQtbGFuZGluZyBmb250LXNlbWlib2xkIHRleHQtc20gdGV4dC1iYWNrZ3JvdW5kIj57Yy50aXRsZX08L3A+CiAgICAgICAgICAgICAgPHVsIGNsYXNzTmFtZT0ibXQtNCBzcGFjZS15LTIuNSI+CiAgICAgICAgICAgICAgICB7Yy5saW5rcy5tYXAoKGwpID0+ICgKICAgICAgICAgICAgICAgICAgPGxpIGtleT17bH0+PGEgaHJlZj0iIyIgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtYmFja2dyb3VuZC83MCBob3Zlcjp0ZXh0LWJhY2tncm91bmQgdHJhbnNpdGlvbi1jb2xvcnMiPntsfTwvYT48L2xpPgogICAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgICAgPC91bD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApKX0KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIFBTUCBuYW1lcyBzdHJpcCAqL30KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMTAgcHQtOCBib3JkZXItdCBib3JkZXItd2hpdGUvMTAgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIgZ2FwLTQiPgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1iYWNrZ3JvdW5kLzYwIHVwcGVyY2FzZSB0cmFja2luZy13aWRlIj5QYWllbWVudHMgc8OpY3VyaXPDqXMgdmlhPC9wPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZmxleC13cmFwIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBnYXAteC0zIGdhcC15LTIiPgogICAgICAgICAgICB7WydQYXlzdGFjaycsJ0ZsdXR0ZXJ3YXZlJywnTS1QZXNhJywnU3RyaXBlJywnUGF5UGFsJywnUGF5dW5pdCcsJ1dhdmUnLCdPcmFuZ2UgTW9uZXknLCdLa2lhcGF5JywnU3F1YXJlJywnS2xhcm5hJywnQWR5ZW4nLCdSYXpvcnBheScsJ01lcmNhZG8gUGFnbyddLm1hcCgobmFtZSwgaSkgPT4gKAogICAgICAgICAgICAgIDxzcGFuIGtleT17bmFtZX0gY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgdGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtYmFja2dyb3VuZC84MCI+CiAgICAgICAgICAgICAgICB7aSA+IDAgJiYgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LWJhY2tncm91bmQvMzAiPuKAojwvc3Bhbj59e25hbWV9CiAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICApKX0KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMTAgcHQtNiBib3JkZXItdCBib3JkZXItd2hpdGUvMTAgZmxleCBmbGV4LWNvbCBzbTpmbGV4LXJvdyBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIGdhcC0zIj4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LWJhY2tncm91bmQvNjAiPsKpIHtuZXcgRGF0ZSgpLmdldEZ1bGxZZWFyKCl9IFNlbGxpYSDigJQge0JSQU5ELnRhZ2xpbmV9LiBUb3VzIGRyb2l0cyByw6lzZXJ2w6lzLjwvcD4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtNSB0ZXh0LXhzIHRleHQtYmFja2dyb3VuZC83MCI+CiAgICAgICAgICAgIDxMaW5rIHRvPSIvbG9naW4iIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1iYWNrZ3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIj5Db25uZXhpb248L0xpbms+CiAgICAgICAgICAgIDxhIGhyZWY9IiMiIGNsYXNzTmFtZT0iaG92ZXI6dGV4dC1iYWNrZ3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIj5Db25maWRlbnRpYWxpdMOpPC9hPgogICAgICAgICAgICA8YSBocmVmPSIjIiBjbGFzc05hbWU9ImhvdmVyOnRleHQtYmFja2dyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyI+Q29uZGl0aW9uczwvYT4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZm9vdGVyPgogICk7Cn0=
+import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Twitter, Linkedin, ArrowRight } from 'lucide-react';
+import { BRAND } from '@/lib/brand';
+
+
+const COLS = [
+  { title: 'Plateforme', links: ['Éditeur de boutique', 'Thèmes premium', 'Checkout', 'Paiements', 'Gestion des stocks', 'Analytics', 'Assistant IA'] },
+  { title: 'Solutions', links: ['Mode & Textile', 'Beauté & Cosmétiques', 'Électronique', 'Restaurant & Food', 'Marketplace', 'Multi-boutiques'] },
+  { title: 'Ressources', links: ['Documentation', 'Centre d’aide', 'Blog', 'Communauté', 'Développeurs', 'Statut système'] },
+  { title: 'Entreprise', links: ['À propos', 'Carrières', 'Partenaires', 'Contact', 'Presse', 'Sécurité'] },
+  { title: 'Légal', links: ['Conditions d’utilisation', 'Confidentialité', 'Cookies', 'RGPD', 'Mentions légales'] },
+];
+
+export default function LandingFooter() {
+  return (
+    <footer className="bg-foreground text-background">
+      {/* CTA strip */}
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="font-landing font-extrabold text-2xl text-background">Prêt à lancer votre boutique ?</h3>
+            <p className="mt-1.5 text-background/70">Essayez Sellia gratuitement pendant 14 jours. Sans carte bancaire.</p>
+          </div>
+          <Link to="/register" className="inline-flex items-center gap-2 bg-brand text-brand-foreground font-semibold px-6 py-3.5 rounded-full text-base hover:bg-brand/90 transition-colors shadow-lg shadow-brand/30 shrink-0">
+            Commencer maintenant <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+          <div className="col-span-2">
+            <div className="flex items-center gap-2.5">
+              <img src={BRAND.logo} alt="Sellia" className="h-9 w-auto object-contain" />
+              <span className="font-landing font-bold text-lg text-background">Sellia</span>
+            </div>
+            <p className="mt-4 text-sm text-background/70 max-w-xs">La plateforme e-commerce premium pour les marchands du monde entier. Lancez votre boutique, vendez au monde.</p>
+            <a href={BRAND.site} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-brand hover:opacity-80">{BRAND.site.replace('https://', '')}</a>
+            <div className="mt-5 flex items-center gap-3">
+              {[Facebook, Instagram, Twitter, Linkedin].map((Ic, i) => (
+                <a key={i} href="#" className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"><Ic className="w-4 h-4" /></a>
+              ))}
+            </div>
+          </div>
+          {COLS.map((c) => (
+            <div key={c.title}>
+              <p className="font-landing font-semibold text-sm text-background">{c.title}</p>
+              <ul className="mt-4 space-y-2.5">
+                {c.links.map((l) => (
+                  <li key={l}><a href="#" className="text-sm text-background/70 hover:text-background transition-colors">{l}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* PSP names strip */}
+        <div className="mt-10 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
+          <p className="text-xs font-semibold text-background/60 uppercase tracking-wide">Paiements sécurisés via</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            {['Paystack','Flutterwave','M-Pesa','Stripe','PayPal','Payunit','Wave','Orange Money','Kkiapay','Square','Klarna','Adyen','Razorpay','Mercado Pago'].map((name, i) => (
+              <span key={name} className="inline-flex items-center gap-3 text-sm font-semibold text-background/80">
+                {i > 0 && <span className="text-background/30">•</span>}{name}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
+          <div className="flex items-center gap-5 text-xs text-background/70">
+            <Link to="/login" className="hover:text-background transition-colors">Connexion</Link>
+            <a href="#" className="hover:text-background transition-colors">Confidentialité</a>
+            <a href="#" className="hover:text-background transition-colors">Conditions</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

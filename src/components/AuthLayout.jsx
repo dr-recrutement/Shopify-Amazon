@@ -1,1 +1,31 @@
-aW1wb3J0IFJlYWN0IGZyb20gInJlYWN0IjsKCmNvbnN0IEFVVEhfQkcgPSAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1NTY3NDIwNDktMGNmZWQ0ZjZhNDVkP2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTkyMCZxPTgwJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEF1dGhMYXlvdXQoeyBpY29uOiBJY29uLCB0aXRsZSwgc3VidGl0bGUsIGZvb3RlciwgY2hpbGRyZW4gfSkgewogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLWgtc2NyZWVuIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGJnLWJhY2tncm91bmQgcHgtNCByZWxhdGl2ZSBvdmVyZmxvdy1oaWRkZW4iPgogICAgICB7LyogU2hvcHBpbmcgYmFja2dyb3VuZCAqL30KICAgICAgPGRpdiBjbGFzc05hbWU9ImFic29sdXRlIGluc2V0LTAiPgogICAgICAgIDxpbWcgc3JjPXtBVVRIX0JHfSBhbHQ9IiIgY2xhc3NOYW1lPSJ3LWZ1bGwgaC1mdWxsIG9iamVjdC1jb3ZlciBhbmltYXRlLWtlbi1idXJucyIgLz4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYWJzb2x1dGUgaW5zZXQtMCBiZy1ncmFkaWVudC10by1iciBmcm9tLWJsYWNrLzkwIHZpYS1ibGFjay83MCB0by1ibGFjay81MCIgLz4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0icmVsYXRpdmUgdy1mdWxsIG1heC13LW1kIHB5LTEwIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idGV4dC1jZW50ZXIgbWItOCI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHctMTQgaC0xNCByb3VuZGVkLTJ4bCBiZy13aGl0ZS8xMCBiYWNrZHJvcC1ibHVyIGJvcmRlciBib3JkZXItd2hpdGUvMjAgbWItNCI+CiAgICAgICAgICAgIDxJY29uIGNsYXNzTmFtZT0idy03IGgtNyB0ZXh0LXdoaXRlIiBhcmlhLWhpZGRlbj0idHJ1ZSIgLz4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC0zeGwgZm9udC1ib2xkIHRyYWNraW5nLXRpZ2h0IHRleHQtd2hpdGUiPnt0aXRsZX08L2gxPgogICAgICAgICAge3N1YnRpdGxlICYmIDxwIGNsYXNzTmFtZT0idGV4dC13aGl0ZS83MCBtdC0yIj57c3VidGl0bGV9PC9wPn0KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYmctd2hpdGUvOTUgYmFja2Ryb3AtYmx1ci14bCByb3VuZGVkLTJ4bCBzaGFkb3ctMnhsIGJvcmRlciBib3JkZXItd2hpdGUvMjAgcC04Ij4KICAgICAgICAgIHtjaGlsZHJlbn0KICAgICAgICA8L2Rpdj4KICAgICAgICB7Zm9vdGVyICYmICgKICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1jZW50ZXIgdGV4dC1zbSB0ZXh0LXdoaXRlLzYwIG10LTYiPntmb290ZXJ9PC9wPgogICAgICAgICl9CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQ==
+import React from "react";
+
+const AUTH_BG = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1920&q=80';
+
+export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden">
+      {/* Shopping background */}
+      <div className="absolute inset-0">
+        <img src={AUTH_BG} alt="" className="w-full h-full object-cover animate-ken-burns" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/70 to-black/50" />
+      </div>
+
+      <div className="relative w-full max-w-md py-10">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 backdrop-blur border border-white/20 mb-4">
+            <Icon className="w-7 h-7 text-white" aria-hidden="true" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
+          {subtitle && <p className="text-white/70 mt-2">{subtitle}</p>}
+        </div>
+        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8">
+          {children}
+        </div>
+        {footer && (
+          <p className="text-center text-sm text-white/60 mt-6">{footer}</p>
+        )}
+      </div>
+    </div>
+  );
+}

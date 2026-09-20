@@ -1,1 +1,52 @@
-aW1wb3J0IHsgTGluayB9IGZyb20gJ3JlYWN0LXJvdXRlci1kb20nOwppbXBvcnQgeyBBcnJvd1JpZ2h0LCBTcGFya2xlcywgV2FsbGV0LCBTaGllbGRDaGVjaywgR2xvYmUyLCBTdGFyIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCmNvbnN0IEhFUk9fQkcgPSAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE0ODM5ODU5ODgzNTUtNzYzNzI4ZTE5MzViP2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTkyMCZxPTgwJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIExhbmRpbmdIZXJvKCkgewogIHJldHVybiAoCiAgICA8c2VjdGlvbiBjbGFzc05hbWU9InJlbGF0aXZlIG92ZXJmbG93LWhpZGRlbiBiZy1bIzBBMEEwQV0gbWluLWgtWzY0MHB4XSBmbGV4IGl0ZW1zLWNlbnRlciI+CiAgICAgIHsvKiBWaWRlby9pbWFnZSBiYWNrZ3JvdW5kICovfQogICAgICA8ZGl2IGNsYXNzTmFtZT0iYWJzb2x1dGUgaW5zZXQtMCI+CiAgICAgICAgPGltZyBzcmM9e0hFUk9fQkd9IGFsdD0iIiBjbGFzc05hbWU9InctZnVsbCBoLWZ1bGwgb2JqZWN0LWNvdmVyIGFuaW1hdGUta2VuLWJ1cm5zIiAvPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSBpbnNldC0wIGJnLWdyYWRpZW50LXRvLXIgZnJvbS1ibGFjay84NSB2aWEtYmxhY2svNjAgdG8tYmxhY2svMzAiIC8+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImFic29sdXRlIGluc2V0LTAgYmctZ3JhZGllbnQtdG8tdCBmcm9tLWJsYWNrLzcwIHZpYS10cmFuc3BhcmVudCB0by1ibGFjay8yMCIgLz4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0icmVsYXRpdmUgbWF4LXctN3hsIG14LWF1dG8gcHgtNCBzbTpweC02IHB5LTIwIGxnOnB5LTI4IHctZnVsbCI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LTJ4bCI+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiByb3VuZGVkLWZ1bGwgYmctd2hpdGUvMTAgYmFja2Ryb3AtYmx1ciBib3JkZXIgYm9yZGVyLXdoaXRlLzIwIHB4LTQgcHktMiB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC13aGl0ZSI+CiAgICAgICAgICAgIDxTcGFya2xlcyBjbGFzc05hbWU9InctMy41IGgtMy41IHRleHQtYW1iZXItNDAwIiAvPgogICAgICAgICAgICBMYSBwbGF0ZWZvcm1lIGUtY29tbWVyY2UgZ2xvYmFsZSDigJQgNyBsYW5ndWVzCiAgICAgICAgICA8L3NwYW4+CgogICAgICAgICAgPGgxIGNsYXNzTmFtZT0ibXQtNiBmb250LWxhbmRpbmcgZm9udC1zZW1pYm9sZCB0cmFja2luZy10aWdodCB0ZXh0LXdoaXRlIHRleHQtM3hsIHNtOnRleHQtNHhsIGxnOnRleHQtWzIuNzVyZW1dIGxlYWRpbmctWzEuMTJdIj4KICAgICAgICAgICAgTGFuY2V6IHZvdHJlIGJvdXRpcXVlPGJyIC8+CiAgICAgICAgICAgIGVuIGxpZ25lIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzJFRTZBOF0iPmludGVybmF0aW9uYWxlPC9zcGFuPjxiciAvPgogICAgICAgICAgICBlbiBxdWVscXVlcyBtaW51dGVzLgogICAgICAgICAgPC9oMT4KCiAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTUgdGV4dC1iYXNlIHNtOnRleHQtbGcgdGV4dC13aGl0ZS84MCBtYXgtdy14bCBsZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICBTZWxsaWEgcsOpdW5pdCDDqWRpdGV1ciBkZSB0aMOobWVzLCBwYWllbWVudHMgaW50w6lncsOpcywgbXVsdGktZGV2aXNlcyBldCAyNSsgUFNQIG1vbmRpYXV4IOKAlCBwb3VyIGxlcyBtYXJjaGFuZHMgZHUgbW9uZGUgZW50aWVyLiBTYW5zIGNvZGUsIHNhbnMgZnJpY3Rpb24uCiAgICAgICAgICA8L3A+CgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9Im10LTcgZmxleCBmbGV4LWNvbCBzbTpmbGV4LXJvdyBnYXAtMyI+CiAgICAgICAgICAgIDxMaW5rIHRvPSIvcmVnaXN0ZXIiIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdhcC0yIGJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIGZvbnQtc2VtaWJvbGQgcHgtNiBweS0yLjUgcm91bmRlZC1mdWxsIHRleHQtc20gaG92ZXI6YmctWyMwMDY5NGRdIHRyYW5zaXRpb24tY29sb3JzIHNoYWRvdy14bCBzaGFkb3ctWyMwMDgwNjBdLzMwIj4KICAgICAgICAgICAgICBDcsOpZXIgbWEgYm91dGlxdWUgPEFycm93UmlnaHQgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPgogICAgICAgICAgICA8L0xpbms+CiAgICAgICAgICAgIDxhIGhyZWY9IiN0YXJpZnMiIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdhcC0yIGJnLXdoaXRlLzEwIGJhY2tkcm9wLWJsdXIgYm9yZGVyIGJvcmRlci13aGl0ZS8zMCB0ZXh0LXdoaXRlIGZvbnQtc2VtaWJvbGQgcHgtNiBweS0yLjUgcm91bmRlZC1mdWxsIHRleHQtc20gaG92ZXI6Ymctd2hpdGUvMjAgdHJhbnNpdGlvbi1jb2xvcnMiPgogICAgICAgICAgICAgIFZvaXIgbGVzIHRhcmlmcwogICAgICAgICAgICA8L2E+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNyBmbGV4IGZsZXgtd3JhcCBpdGVtcy1jZW50ZXIgZ2FwLXgtNiBnYXAteS0yIHRleHQteHMgdGV4dC13aGl0ZS83MCI+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSI+PEdsb2JlMiBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1bIzJFRTZBOF0iIC8+IE11bHRpLWRldmlzZXMgKFhPRiwgTkdOLCBVU0QsIEVVUuKApik8L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSI+PFdhbGxldCBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1bIzJFRTZBOF0iIC8+IDI1KyBQU1AgbW9uZGlhdXg8L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSI+PFNoaWVsZENoZWNrIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjMkVFNkE4XSIgLz4gUGFpZW1lbnRzIHNhbnMgcmVkaXJlY3Rpb248L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSI+PFN0YXIgY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtYW1iZXItNDAwIiAvPiAxNCBqb3VycyBkJ2Vzc2FpIGdyYXR1aXQ8L3NwYW4+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L3NlY3Rpb24+CiAgKTsKfQ==
+import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, Wallet, ShieldCheck, Globe2, Star } from 'lucide-react';
+
+const HERO_BG = 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80';
+
+export default function LandingHero() {
+  return (
+    <section className="relative overflow-hidden bg-[#0A0A0A] min-h-[640px] flex items-center">
+      {/* Video/image background */}
+      <div className="absolute inset-0">
+        <img src={HERO_BG} alt="" className="w-full h-full object-cover animate-ken-burns" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28 w-full">
+        <div className="max-w-2xl">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-4 py-2 text-xs font-semibold text-white">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            La plateforme e-commerce globale — 7 langues
+          </span>
+
+          <h1 className="mt-6 font-landing font-semibold tracking-tight text-white text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.12]">
+            Lancez votre boutique<br />
+            en ligne <span className="text-[#2EE6A8]">internationale</span><br />
+            en quelques minutes.
+          </h1>
+
+          <p className="mt-5 text-base sm:text-lg text-white/80 max-w-xl leading-relaxed">
+            Sellia réunit éditeur de thèmes, paiements intégrés, multi-devises et 25+ PSP mondiaux — pour les marchands du monde entier. Sans code, sans friction.
+          </p>
+
+          <div className="mt-7 flex flex-col sm:flex-row gap-3">
+            <Link to="/register" className="inline-flex items-center justify-center gap-2 bg-[#008060] text-white font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-[#00694d] transition-colors shadow-xl shadow-[#008060]/30">
+              Créer ma boutique <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a href="#tarifs" className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur border border-white/30 text-white font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-white/20 transition-colors">
+              Voir les tarifs
+            </a>
+          </div>
+
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-white/70">
+            <span className="flex items-center gap-1.5"><Globe2 className="w-4 h-4 text-[#2EE6A8]" /> Multi-devises (XOF, NGN, USD, EUR…)</span>
+            <span className="flex items-center gap-1.5"><Wallet className="w-4 h-4 text-[#2EE6A8]" /> 25+ PSP mondiaux</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#2EE6A8]" /> Paiements sans redirection</span>
+            <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-400" /> 14 jours d'essai gratuit</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

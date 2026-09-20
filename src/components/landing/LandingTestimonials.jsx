@@ -1,1 +1,74 @@
-aW1wb3J0IHsgU3RhciwgUXVvdGUgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgeyBJbWFnZSB9IGZyb20gJ0AvY29tcG9uZW50cy91aS9pbWFnZSc7Cgpjb25zdCBJVEVNUyA9IFsKICB7CiAgICBxdW90ZTogJ0rigJlhaSBsYW5jw6kgbWEgYm91dGlxdWUgZGUgbW9kZSB3YXggZW4gdW4gYXByw6hzLW1pZGkuIExlcyBwYWllbWVudHMgbW9iaWxlIG1vbmV5IG9udCB0cmFuc2Zvcm3DqSBtZXMgdmVudGVzIOKAlCBtZXMgY2xpZW50cyBu4oCZb250IHBsdXMgYmVzb2luIGRlIGNhc2guJywKICAgIGF1dGhvcjogJ0HDr3NzYXRvdSBEaW9wJywKICAgIHJvbGU6ICdGb25kYXRyaWNlLCBCb3V0aXF1ZSBNb2RlIFdheCDigJQgRGFrYXInLAogICAgYXZhdGFyOiAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE0OTQ3OTAxMDgzNzctYmU5YzI5YjI5MzMwP2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MjAwJnE9ODAnLAogIH0sCiAgewogICAgcXVvdGU6ICdTZWxsaWEgZ8OocmUgbGUgbXVsdGktZGV2aXNlcyBuYXRpdmVtZW50LiBNZXMgY2xpZW50cyBhdSBOaWdlcmlhIGV0IGVuIEPDtHRlIGTigJlJdm9pcmUgcGFpZW50IHNhbnMgZnJpY3Rpb24sIGV0IGplIHN1aXMgdG91dCBkZXB1aXMgdW4gc2V1bCBkYXNoYm9hcmQuJywKICAgIGF1dGhvcjogJ0VtZWthIE9rb3JvJywKICAgIHJvbGU6ICdDRU8sIFRlY2hNYXJ0IOKAlCBMYWdvcycsCiAgICBhdmF0YXI6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTUwNzAwMzIxMTE2OS0wYTFkZDcyMjhmMmQ/YXV0bz1mb3JtYXQmZml0PWNyb3Amdz0yMDAmcT04MCcsCiAgfSwKICB7CiAgICBxdW90ZTogJ0zigJnDqWRpdGV1ciBkZSB0aMOobWUgZXN0IGludHVpdGlmIGV0IGxlcyB0aMOobWVzIHNvbnQgc3VibGltZXMuIE1vbiBpbWFnZSBkZSBtYXJxdWUgYSBjaGFuZ8OpIGRlIG5pdmVhdSwgZXQgbOKAmWFzc2lzdGFudCBJQSBt4oCZYSBmYWl0IGdhZ25lciBkZXMgaGV1cmVzLicsCiAgICBhdXRob3I6ICdTYXJhaCBLb27DqScsCiAgICByb2xlOiAnRm9uZGF0cmljZSwgQWJpZGphbiBCZWF1dHknLAogICAgYXZhdGFyOiAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE0Mzg3NjE2ODEwMzMtNjQ2MWZmYWQ4ZDgwP2F1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MjAwJnE9ODAnLAogIH0sCl07Cgpjb25zdCBTVEFUUyA9IFsKICB7IHZhbHVlOiAnMTIgMDAwKycsIGxhYmVsOiAnTWFyY2hhbmRzIGFjdGlmcycgfSwKICB7IHZhbHVlOiAnNDArJywgbGFiZWw6ICdQYXlzIGNvdXZlcnRzJyB9LAogIHsgdmFsdWU6ICc4LDUgTSQnLCBsYWJlbDogJ1ZlbnRlcyB0cmFpdMOpZXMnIH0sCiAgeyB2YWx1ZTogJzk5LDkgJScsIGxhYmVsOiAnRGlzcG9uaWJpbGl0w6knIH0sCl07CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBMYW5kaW5nVGVzdGltb25pYWxzKCkgewogIHJldHVybiAoCiAgICA8c2VjdGlvbiBpZD0idGVtb2lnbmFnZXMiIGNsYXNzTmFtZT0icHktMjAgbGc6cHktMjQgYmctYmFja2dyb3VuZCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ0ZXh0LWNlbnRlciBtYXgtdy0yeGwgbXgtYXV0byI+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LWdvbGQgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUiPlTDqW1vaWduYWdlczwvc3Bhbj4KICAgICAgICAgIDxoMiBjbGFzc05hbWU9Im10LTIgZm9udC1sYW5kaW5nIGZvbnQtc2VtaWJvbGQgdGV4dC0yeGwgc206dGV4dC1bMnJlbV0gdGV4dC1mb3JlZ3JvdW5kIHRyYWNraW5nLXRpZ2h0Ij5JbHMgdmVuZGVudCBhdmVjIFNlbGxpYTwvaDI+CiAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtbGciPkRlcyBtaWxsaWVycyBkZSBtYXJjaGFuZHMgw6AgdHJhdmVycyBsZSBtb25kZSBmb250IGNvbmZpYW5jZSDDoCBTZWxsaWEuPC9wPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMTAgZ3JpZCBncmlkLWNvbHMtMiBtZDpncmlkLWNvbHMtNCBnYXAtNCI+CiAgICAgICAgICB7U1RBVFMubWFwKChzKSA9PiAoCiAgICAgICAgICAgIDxkaXYga2V5PXtzLmxhYmVsfSBjbGFzc05hbWU9InRleHQtY2VudGVyIHJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXN1cmZhY2UgcC02Ij4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9ImZvbnQtbGFuZGluZyBmb250LWV4dHJhYm9sZCB0ZXh0LTN4bCB0ZXh0LWJyYW5kIj57cy52YWx1ZX08L3A+CiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJtdC0xIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj57cy5sYWJlbH08L3A+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0xMiBncmlkIGdyaWQtY29scy0xIG1kOmdyaWQtY29scy0zIGdhcC01Ij4KICAgICAgICAgIHtJVEVNUy5tYXAoKHQpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e3QuYXV0aG9yfSBjbGFzc05hbWU9InJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXdoaXRlIHAtNyBmbGV4IGZsZXgtY29sIGhvdmVyOnNoYWRvdy1sZyB0cmFuc2l0aW9uLXNoYWRvdyI+CiAgICAgICAgICAgICAgPFF1b3RlIGNsYXNzTmFtZT0idy04IGgtOCB0ZXh0LWJyYW5kLzIwIiAvPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0yIGZsZXggZ2FwLTAuNSB0ZXh0LWdvbGQiPgogICAgICAgICAgICAgICAge0FycmF5LmZyb20oeyBsZW5ndGg6IDUgfSkubWFwKChfLCBpKSA9PiA8U3RhciBrZXk9e2l9IGNsYXNzTmFtZT0idy00IGgtNCBmaWxsLWN1cnJlbnQiIC8+KX0KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTQgdGV4dC1mb3JlZ3JvdW5kIGxlYWRpbmctcmVsYXhlZCBmbGV4LTEiPnt0LnF1b3RlfTwvcD4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNSBwdC00IGJvcmRlci10IGJvcmRlci1ib3JkZXIgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InctMTEgaC0xMSByb3VuZGVkLWZ1bGwgb3ZlcmZsb3ctaGlkZGVuIGJnLXN1cmZhY2Ugc2hyaW5rLTAiPgogICAgICAgICAgICAgICAgICA8SW1hZ2Ugc3JjPXt0LmF2YXRhcn0gYWx0PXt0LmF1dGhvcn0gZml0dGluZ1R5cGU9ImZpbGwiIGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCIgLz4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJmb250LWxhbmRpbmcgZm9udC1ib2xkIHRleHQtZm9yZWdyb3VuZCB0ZXh0LXNtIj57dC5hdXRob3J9PC9wPgogICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj57dC5yb2xlfTwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvc2VjdGlvbj4KICApOwp9
+import { Star, Quote } from 'lucide-react';
+import { Image } from '@/components/ui/image';
+
+const ITEMS = [
+  {
+    quote: 'J’ai lancé ma boutique de mode wax en un après-midi. Les paiements mobile money ont transformé mes ventes — mes clients n’ont plus besoin de cash.',
+    author: 'Aïssatou Diop',
+    role: 'Fondatrice, Boutique Mode Wax — Dakar',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+  },
+  {
+    quote: 'Sellia gère le multi-devises nativement. Mes clients au Nigeria et en Côte d’Ivoire paient sans friction, et je suis tout depuis un seul dashboard.',
+    author: 'Emeka Okoro',
+    role: 'CEO, TechMart — Lagos',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+  },
+  {
+    quote: 'L’éditeur de thème est intuitif et les thèmes sont sublimes. Mon image de marque a changé de niveau, et l’assistant IA m’a fait gagner des heures.',
+    author: 'Sarah Koné',
+    role: 'Fondatrice, Abidjan Beauty',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80',
+  },
+];
+
+const STATS = [
+  { value: '12 000+', label: 'Marchands actifs' },
+  { value: '40+', label: 'Pays couverts' },
+  { value: '8,5 M$', label: 'Ventes traitées' },
+  { value: '99,9 %', label: 'Disponibilité' },
+];
+
+export default function LandingTestimonials() {
+  return (
+    <section id="temoignages" className="py-20 lg:py-24 bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto">
+          <span className="text-sm font-semibold text-gold uppercase tracking-wide">Témoignages</span>
+          <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Ils vendent avec Sellia</h2>
+          <p className="mt-3 text-muted-foreground text-lg">Des milliers de marchands à travers le monde font confiance à Sellia.</p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center rounded-2xl border border-border bg-surface p-6">
+              <p className="font-landing font-extrabold text-3xl text-brand">{s.value}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5">
+          {ITEMS.map((t) => (
+            <div key={t.author} className="rounded-2xl border border-border bg-white p-7 flex flex-col hover:shadow-lg transition-shadow">
+              <Quote className="w-8 h-8 text-brand/20" />
+              <div className="mt-2 flex gap-0.5 text-gold">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+              </div>
+              <p className="mt-4 text-foreground leading-relaxed flex-1">{t.quote}</p>
+              <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full overflow-hidden bg-surface shrink-0">
+                  <Image src={t.avatar} alt={t.author} fittingType="fill" className="w-full h-full" />
+                </div>
+                <div>
+                  <p className="font-landing font-bold text-foreground text-sm">{t.author}</p>
+                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

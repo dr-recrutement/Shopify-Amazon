@@ -1,1 +1,199 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsKICBNZXNzYWdlU3F1YXJlLCBMb2FkZXIyLCBBbGVydENpcmNsZSwgTWFpbCwgU2VuZCwgVHJhc2gyLAogIEluYm94LCBDaGVja0NoZWNrLCBDbG9jaywgQXJjaGl2ZSwgU2VhcmNoLAp9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IGJhc2U0NCB9IGZyb20gJ0AvYXBpL2Jhc2U0NENsaWVudCc7CmltcG9ydCB7IHVzZUN1cnJlbnRTdG9yZSB9IGZyb20gJ0AvaG9va3MvdXNlQ3VycmVudFN0b3JlJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIENoYXQoKSB7CiAgY29uc3QgeyBzdG9yZSwgbG9hZGluZzogc3RvcmVMb2FkaW5nIH0gPSB1c2VDdXJyZW50U3RvcmUoKTsKICBjb25zdCBbbWVzc2FnZXMsIHNldE1lc3NhZ2VzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW3NlbGVjdGVkLCBzZXRTZWxlY3RlZF0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbcmVwbHksIHNldFJlcGx5XSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbc2VhcmNoLCBzZXRTZWFyY2hdID0gdXNlU3RhdGUoJycpOwogIGNvbnN0IFtmaWx0ZXIsIHNldEZpbHRlcl0gPSB1c2VTdGF0ZSgnYWxsJyk7CiAgY29uc3QgW3NlbmRpbmcsIHNldFNlbmRpbmddID0gdXNlU3RhdGUoZmFsc2UpOwoKICBjb25zdCBsb2FkID0gdXNlQ2FsbGJhY2soYXN5bmMgKCkgPT4gewogICAgaWYgKCFzdG9yZT8uaWQpIHJldHVybjsKICAgIHNldExvYWRpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBzZXRNZXNzYWdlcyhhd2FpdCBiYXNlNDQuZW50aXRpZXMuTWVzc2FnZS5maWx0ZXIoeyBzdG9yZV9pZDogc3RvcmUuaWQgfSwgJy1jcmVhdGVkX2RhdGUnLCAyMDApKTsKICAgIH0gZmluYWxseSB7IHNldExvYWRpbmcoZmFsc2UpOyB9CiAgfSwgW3N0b3JlPy5pZF0pOwoKICB1c2VFZmZlY3QoKCkgPT4geyBsb2FkKCk7IH0sIFtsb2FkXSk7CgogIGNvbnN0IGZpbHRlcmVkID0gbWVzc2FnZXMuZmlsdGVyKChtKSA9PiB7CiAgICBpZiAoZmlsdGVyID09PSAndW5yZWFkJyAmJiBtLnN0YXR1cyAhPT0gJ3VucmVhZCcpIHJldHVybiBmYWxzZTsKICAgIGlmIChmaWx0ZXIgPT09ICdhcmNoaXZlZCcgJiYgbS5zdGF0dXMgIT09ICdhcmNoaXZlZCcpIHJldHVybiBmYWxzZTsKICAgIGlmIChzZWFyY2ggJiYgIW0uY3VzdG9tZXJfbmFtZT8udG9Mb3dlckNhc2UoKS5pbmNsdWRlcyhzZWFyY2gudG9Mb3dlckNhc2UoKSkgJiYgIW0uc3ViamVjdD8udG9Mb3dlckNhc2UoKS5pbmNsdWRlcyhzZWFyY2gudG9Mb3dlckNhc2UoKSkpIHJldHVybiBmYWxzZTsKICAgIHJldHVybiB0cnVlOwogIH0pOwoKICBjb25zdCBvcGVuTWVzc2FnZSA9IGFzeW5jIChtKSA9PiB7CiAgICBzZXRTZWxlY3RlZChtKTsKICAgIGlmIChtLnN0YXR1cyA9PT0gJ3VucmVhZCcpIHsKICAgICAgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLk1lc3NhZ2UudXBkYXRlKG0uaWQsIHsgc3RhdHVzOiAncmVhZCcgfSk7CiAgICAgIHNldE1lc3NhZ2VzKChwcmV2KSA9PiBwcmV2Lm1hcCgoeCkgPT4gKHguaWQgPT09IG0uaWQgPyB7IC4uLngsIHN0YXR1czogJ3JlYWQnIH0gOiB4KSkpOwogICAgfQogIH07CgogIGNvbnN0IHNlbmRSZXBseSA9IGFzeW5jICgpID0+IHsKICAgIGlmICghc2VsZWN0ZWQgfHwgIXJlcGx5LnRyaW0oKSkgcmV0dXJuOwogICAgc2V0U2VuZGluZyh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGF3YWl0IGJhc2U0NC5pbnRlZ3JhdGlvbnMuQ29yZS5TZW5kRW1haWwoewogICAgICAgIHRvOiBzZWxlY3RlZC5jdXN0b21lcl9lbWFpbCwKICAgICAgICBzdWJqZWN0OiBgUmU6ICR7c2VsZWN0ZWQuc3ViamVjdCB8fCAnVm90cmUgbWVzc2FnZSd9YCwKICAgICAgICBodG1sOiBgPGRpdiBzdHlsZT0iZm9udC1mYW1pbHk6SW50ZXIsQXJpYWwsc2Fucy1zZXJpZjttYXgtd2lkdGg6NTYwcHg7bWFyZ2luOmF1dG87cGFkZGluZzoyNHB4Ij48aDIgc3R5bGU9ImNvbG9yOiMwMDgwNjAiPkJvbmpvdXIgJHtzZWxlY3RlZC5jdXN0b21lcl9uYW1lfSw8L2gyPjxkaXYgc3R5bGU9ImNvbG9yOiMyMDIyMjM7Zm9udC1zaXplOjE0cHg7bGluZS1oZWlnaHQ6MS42Ij4ke3JlcGx5LnJlcGxhY2UoL1xuL2csICc8YnI+Jyl9PC9kaXY+PHAgc3R5bGU9ImNvbG9yOiM2RDcxNzU7Zm9udC1zaXplOjEycHg7bWFyZ2luLXRvcDoyNHB4Ij7igJQgTCdcdTAwZTlxdWlwZSAke3N0b3JlPy5uYW1lIHx8ICcnfTwvcD48L2Rpdj5gLAogICAgICB9KTsKICAgICAgY29uc3QgdXBkYXRlZCA9IGF3YWl0IGJhc2U0NC5lbnRpdGllcy5NZXNzYWdlLnVwZGF0ZShzZWxlY3RlZC5pZCwgewogICAgICAgIHJlcGx5LAogICAgICAgIHN0YXR1czogJ3JlcGxpZWQnLAogICAgICAgIHJlcGxpZWRfYXQ6IG5ldyBEYXRlKCkudG9JU09TdHJpbmcoKSwKICAgICAgfSk7CiAgICAgIHNldE1lc3NhZ2VzKChwcmV2KSA9PiBwcmV2Lm1hcCgoeCkgPT4gKHguaWQgPT09IHNlbGVjdGVkLmlkID8gdXBkYXRlZCA6IHgpKSk7CiAgICAgIHNldFNlbGVjdGVkKHVwZGF0ZWQpOwogICAgICBzZXRSZXBseSgnJyk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIGFsZXJ0KCdFcnJldXIgOiAnICsgKGUubWVzc2FnZSkpOwogICAgfSBmaW5hbGx5IHsgc2V0U2VuZGluZyhmYWxzZSk7IH0KICB9OwoKICBjb25zdCBhcmNoaXZlID0gYXN5bmMgKG0pID0+IHsKICAgIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5NZXNzYWdlLnVwZGF0ZShtLmlkLCB7IHN0YXR1czogJ2FyY2hpdmVkJyB9KTsKICAgIHNldE1lc3NhZ2VzKChwcmV2KSA9PiBwcmV2Lm1hcCgoeCkgPT4gKHguaWQgPT09IG0uaWQgPyB7IC4uLngsIHN0YXR1czogJ2FyY2hpdmVkJyB9IDogeCkpKTsKICAgIGlmIChzZWxlY3RlZD8uaWQgPT09IG0uaWQpIHNldFNlbGVjdGVkKG51bGwpOwogIH07CgogIGNvbnN0IHJlbW92ZSA9IGFzeW5jIChtKSA9PiB7CiAgICBpZiAoIWNvbmZpcm0oJ1N1cHByaW1lciBjZSBtZXNzYWdlID8nKSkgcmV0dXJuOwogICAgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLk1lc3NhZ2UuZGVsZXRlKG0uaWQpOwogICAgc2V0TWVzc2FnZXMoKHByZXYpID0+IHByZXYuZmlsdGVyKCh4KSA9PiB4LmlkICE9PSBtLmlkKSk7CiAgICBpZiAoc2VsZWN0ZWQ/LmlkID09PSBtLmlkKSBzZXRTZWxlY3RlZChudWxsKTsKICB9OwoKICBjb25zdCB1bnJlYWRDb3VudCA9IG1lc3NhZ2VzLmZpbHRlcigobSkgPT4gbS5zdGF0dXMgPT09ICd1bnJlYWQnKS5sZW5ndGg7CgogIGlmIChzdG9yZUxvYWRpbmcgfHwgbG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CiAgaWYgKCFzdG9yZSkgewogICAgcmV0dXJuICgKICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LW1kIG14LWF1dG8gbXQtMjAgdGV4dC1jZW50ZXIiPgogICAgICAgIDxBbGVydENpcmNsZSBjbGFzc05hbWU9InctMTAgaC0xMCB0ZXh0LVsjMDA4MDYwXSBteC1hdXRvIG1iLTMiIC8+CiAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkNvbmZpZ3VyZXogdm90cmUgYm91dGlxdWU8L2gxPgogICAgICAgIDxMaW5rIHRvPSIvc3RvcmUtc2V0dXAiIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIgcm91bmRlZC1mdWxsIGhvdmVyOmJnLVsjMDA2OTRkXSBtdC0zIj5Db25maWd1cmVyPC9MaW5rPgogICAgICA8L2Rpdj4KICAgICk7CiAgfQoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InAtNCBzbTpwLTYgbWF4LXctNnhsIG14LWF1dG8iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItNiI+CiAgICAgICAgPE1lc3NhZ2VTcXVhcmUgY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtWyM2RDcxNzVdIiAvPgogICAgICAgIDxkaXY+CiAgICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+Q2hhdDwvaDE+CiAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0iPk1lc3NhZ2VzIGRlIHZvcyBjbGllbnRzLiB7dW5yZWFkQ291bnQgPiAwICYmIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzAwODA2MF0gZm9udC1zZW1pYm9sZCI+e3VucmVhZENvdW50fSBub24gbHUocyk8L3NwYW4+fTwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMSBsZzpncmlkLWNvbHMtMiBnYXAtNCBoLVtjYWxjKDEwMHZoLTIyMHB4KV0gbWluLWgtWzUwMHB4XSI+CiAgICAgICAgey8qIE1lc3NhZ2UgbGlzdCAqL30KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvbCBiZy13aGl0ZSByb3VuZGVkLXhsIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIG92ZXJmbG93LWhpZGRlbiI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icC0zIGJvcmRlci1iIGJvcmRlci1bI0UxRTFFMV0gc3BhY2UteS0yIj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIGJnLVsjRjRGNEY0XSByb3VuZGVkLW1kIHB4LTMgcHktMS41Ij4KICAgICAgICAgICAgICA8U2VhcmNoIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjNkQ3MTc1XSIgLz4KICAgICAgICAgICAgICA8aW5wdXQgdmFsdWU9e3NlYXJjaH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRTZWFyY2goZS50YXJnZXQudmFsdWUpfSBwbGFjZWhvbGRlcj0iUmVjaGVyY2hlclx1MjAyNiIgY2xhc3NOYW1lPSJiZy10cmFuc3BhcmVudCBvdXRsaW5lLW5vbmUgdGV4dC1zbSBmbGV4LTEiIC8+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEiPgogICAgICAgICAgICAgIHtbWydhbGwnLCAnVG91cycsIEluYm94XSwgWyd1bnJlYWQnLCAnTm9uIGx1cycsIENsb2NrXSwgWydhcmNoaXZlZCcsICdBcmNoaXZcdTAwZTlzJywgQXJjaGl2ZV1dLm1hcCgoW2ssIGwsIEljXSkgPT4gKAogICAgICAgICAgICAgICAgPGJ1dHRvbiBrZXk9e2t9IG9uQ2xpY2s9eygpID0+IHNldEZpbHRlcihrKX0gY2xhc3NOYW1lPXtgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBweC0zIHB5LTEuNSB0ZXh0LXhzIGZvbnQtbWVkaXVtIHJvdW5kZWQtbWQgJHtmaWx0ZXIgPT09IGsgPyAnYmctWyMwMDgwNjBdIHRleHQtd2hpdGUnIDogJ3RleHQtWyM2RDcxNzVdIGhvdmVyOmJnLWJsYWNrLzUnfWB9PgogICAgICAgICAgICAgICAgICA8SWMgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4ge2x9CiAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgb3ZlcmZsb3cteS1hdXRvIj4KICAgICAgICAgICAge2ZpbHRlcmVkLmxlbmd0aCA9PT0gMCA/ICgKICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1bIzZENzE3NV0gdGV4dC1jZW50ZXIgcHktMTIiPkF1Y3VuIG1lc3NhZ2UuPC9wPgogICAgICAgICAgICApIDogKAogICAgICAgICAgICAgIGZpbHRlcmVkLm1hcCgobSkgPT4gKAogICAgICAgICAgICAgICAgPGJ1dHRvbiBrZXk9e20uaWR9IG9uQ2xpY2s9eygpID0+IG9wZW5NZXNzYWdlKG0pfSBjbGFzc05hbWU9e2B3LWZ1bGwgdGV4dC1sZWZ0IHAtMy41IGJvcmRlci1iIGJvcmRlci1bI0UxRTFFMV0gaG92ZXI6YmctWyNGNEY0RjRdIHRyYW5zaXRpb24gJHtzZWxlY3RlZD8uaWQgPT09IG0uaWQgPyAnYmctWyMwMDgwNjBdLzUnIDogJyd9YH0+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLXN0YXJ0IGdhcC0zIj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT17YHctOSBoLTkgcm91bmRlZC1mdWxsIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRleHQteHMgZm9udC1ib2xkIHNocmluay0wICR7bS5zdGF0dXMgPT09ICd1bnJlYWQnID8gJ2JnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlJyA6ICdiZy1bI0Y0RjRGNF0gdGV4dC1bIzZENzE3NV0nfWB9PgogICAgICAgICAgICAgICAgICAgICAge20uY3VzdG9tZXJfbmFtZT8uY2hhckF0KDApLnRvVXBwZXJDYXNlKCkgfHwgJz8nfQogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgbWluLXctMCI+CiAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIGdhcC0yIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPXtgdGV4dC1zbSB0cnVuY2F0ZSAke20uc3RhdHVzID09PSAndW5yZWFkJyA/ICdmb250LWJvbGQgdGV4dC1bIzIwMjIyM10nIDogJ2ZvbnQtbWVkaXVtIHRleHQtWyMyMDIyMjNdJ31gfT57bS5jdXN0b21lcl9uYW1lfTwvcD4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSB0ZXh0LVsjNkQ3MTc1XSBzaHJpbmstMCI+e25ldyBEYXRlKG0uY3JlYXRlZF9kYXRlKS50b0xvY2FsZURhdGVTdHJpbmcoKX08L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgIHttLnN1YmplY3QgJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRleHQtWyM2RDcxNzVdIHRydW5jYXRlIj57bS5zdWJqZWN0fTwvcD59CiAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gdHJ1bmNhdGUgbXQtMC41Ij57bS5ib2R5fTwvcD4KICAgICAgICAgICAgICAgICAgICAgIHttLnN0YXR1cyA9PT0gJ3JlcGxpZWQnICYmIDxzcGFuIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHRleHQtWzEwcHhdIHRleHQtWyMwMDgwNjBdIGZvbnQtc2VtaWJvbGQgbXQtMSI+PENoZWNrQ2hlY2sgY2xhc3NOYW1lPSJ3LTMgaC0zIiAvPiBSXHUwMGU5cG9uZHU8L3NwYW4+fQogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICkpCiAgICAgICAgICAgICl9CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIERldGFpbCAvIFJlcGx5ICovfQogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtY29sIGJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICAgIHshc2VsZWN0ZWQgPyAoCiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcC02IHRleHQtY2VudGVyIj4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPE1haWwgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgdGV4dC1bI0M5QzlDOV0gbXgtYXV0byBtYi0zIiAvPgogICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtWyM2RDcxNzVdIj5TXHUwMGU5bGVjdGlvbm5leiB1biBtZXNzYWdlIHBvdXIgbGUgbGlyZSBldCByXHUwMGU5cG9uZHJlLjwvcD4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApIDogKAogICAgICAgICAgICA8PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJwLTQgYm9yZGVyLWIgYm9yZGVyLVsjRTFFMUUxXSI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj57c2VsZWN0ZWQuY3VzdG9tZXJfbmFtZX08L3A+CiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIj57c2VsZWN0ZWQuY3VzdG9tZXJfZW1haWx9PC9wPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xIj4KICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGFyY2hpdmUoc2VsZWN0ZWQpfSB0aXRsZT0iQXJjaGl2ZXIiIGNsYXNzTmFtZT0icC0yIHJvdW5kZWQtbWQgdGV4dC1bIzZENzE3NV0gaG92ZXI6YmctYmxhY2svNSI+PEFyY2hpdmUgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPjwvYnV0dG9uPgogICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gcmVtb3ZlKHNlbGVjdGVkKX0gdGl0bGU9IlN1cHByaW1lciIgY2xhc3NOYW1lPSJwLTIgcm91bmRlZC1tZCB0ZXh0LVsjNkQ3MTc1XSBob3ZlcjpiZy1yZWQtNTAgaG92ZXI6dGV4dC1yZWQtNTAwIj48VHJhc2gyIGNsYXNzTmFtZT0idy00IGgtNCIgLz48L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIHtzZWxlY3RlZC5zdWJqZWN0ICYmIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtWyMyMDIyMjNdIG10LTIiPntzZWxlY3RlZC5zdWJqZWN0fTwvcD59CiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtWzExcHhdIHRleHQtWyM2RDcxNzVdIG10LTEiPntuZXcgRGF0ZShzZWxlY3RlZC5jcmVhdGVkX2RhdGUpLnRvTG9jYWxlU3RyaW5nKCl9PC9wPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgb3ZlcmZsb3cteS1hdXRvIHAtNCBzcGFjZS15LTQiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImJnLVsjRjRGNEY0XSByb3VuZGVkLXhsIHAtMy41Ij4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0gbWItMSI+TWVzc2FnZSBkdSBjbGllbnQ8L3A+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSB0ZXh0LVsjMjAyMjIzXSB3aGl0ZXNwYWNlLXByZS13cmFwIj57c2VsZWN0ZWQuYm9keX08L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIHtzZWxlY3RlZC5yZXBseSAmJiAoCiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy1bIzAwODA2MF0vNSBib3JkZXIgYm9yZGVyLVsjMDA4MDYwXS8yMCByb3VuZGVkLXhsIHAtMy41Ij4KICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjMDA4MDYwXSBtYi0xIj5Wb3RyZSByXHUwMGU5cG9uc2U8L3A+CiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtWyMyMDIyMjNdIHdoaXRlc3BhY2UtcHJlLXdyYXAiPntzZWxlY3RlZC5yZXBseX08L3A+CiAgICAgICAgICAgICAgICAgICAge3NlbGVjdGVkLnJlcGxpZWRfYXQgJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSB0ZXh0LVsjNkQ3MTc1XSBtdC0xLjUiPntuZXcgRGF0ZShzZWxlY3RlZC5yZXBsaWVkX2F0KS50b0xvY2FsZVN0cmluZygpfTwvcD59CiAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgKX0KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICB7c2VsZWN0ZWQuc3RhdHVzICE9PSAnYXJjaGl2ZWQnICYmICgKICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJwLTMgYm9yZGVyLXQgYm9yZGVyLVsjRTFFMUUxXSI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGdhcC0yIj4KICAgICAgICAgICAgICAgICAgICA8dGV4dGFyZWEgdmFsdWU9e3JlcGx5fSBvbkNoYW5nZT17KGUpID0+IHNldFJlcGx5KGUudGFyZ2V0LnZhbHVlKX0gcm93cz17Mn0gcGxhY2Vob2xkZXI9IlZvdHJlIHJcdTAwZTlwb25zZVx1MjAyNiIgY2xhc3NOYW1lPSJmbGV4LTEgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbWQgdGV4dC1zbSByZXNpemUtbm9uZSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctWyMwMDgwNjBdLzMwIiAvPgogICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17c2VuZFJlcGx5fSBkaXNhYmxlZD17c2VuZGluZyB8fCAhcmVwbHkudHJpbSgpfSBjbGFzc05hbWU9InNlbGYtZW5kIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIuNSByb3VuZGVkLW1kIGhvdmVyOmJnLVsjMDA2OTRkXSBkaXNhYmxlZDpvcGFjaXR5LTQwIj4KICAgICAgICAgICAgICAgICAgICAgIHtzZW5kaW5nID8gPExvYWRlcjIgY2xhc3NOYW1lPSJ3LTQgaC00IGFuaW1hdGUtc3BpbiIgLz4gOiA8U2VuZCBjbGFzc05hbWU9InctNCBoLTQiIC8+fQogICAgICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICl9CiAgICAgICAgICAgIDwvPgogICAgICAgICAgKX0KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  MessageSquare, Loader2, AlertCircle, Mail, Send, Trash2,
+  Inbox, CheckCheck, Clock, Archive, Search,
+} from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+
+export default function Chat() {
+  const { store, loading: storeLoading } = useCurrentStore();
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [reply, setReply] = useState('');
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [sending, setSending] = useState(false);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    setLoading(true);
+    try {
+      setMessages(await base44.entities.Message.filter({ store_id: store.id }, '-created_date', 200));
+    } finally { setLoading(false); }
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const filtered = messages.filter((m) => {
+    if (filter === 'unread' && m.status !== 'unread') return false;
+    if (filter === 'archived' && m.status !== 'archived') return false;
+    if (search && !m.customer_name?.toLowerCase().includes(search.toLowerCase()) && !m.subject?.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const openMessage = async (m) => {
+    setSelected(m);
+    if (m.status === 'unread') {
+      await base44.entities.Message.update(m.id, { status: 'read' });
+      setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, status: 'read' } : x)));
+    }
+  };
+
+  const sendReply = async () => {
+    if (!selected || !reply.trim()) return;
+    setSending(true);
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: selected.customer_email,
+        subject: `Re: ${selected.subject || 'Votre message'}`,
+        html: `<div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:auto;padding:24px"><h2 style="color:#008060">Bonjour ${selected.customer_name},</h2><div style="color:#202223;font-size:14px;line-height:1.6">${reply.replace(/\n/g, '<br>')}</div><p style="color:#6D7175;font-size:12px;margin-top:24px">— L'\u00e9quipe ${store?.name || ''}</p></div>`,
+      });
+      const updated = await base44.entities.Message.update(selected.id, {
+        reply,
+        status: 'replied',
+        replied_at: new Date().toISOString(),
+      });
+      setMessages((prev) => prev.map((x) => (x.id === selected.id ? updated : x)));
+      setSelected(updated);
+      setReply('');
+    } catch (e) {
+      alert('Erreur : ' + (e.message));
+    } finally { setSending(false); }
+  };
+
+  const archive = async (m) => {
+    await base44.entities.Message.update(m.id, { status: 'archived' });
+    setMessages((prev) => prev.map((x) => (x.id === m.id ? { ...x, status: 'archived' } : x)));
+    if (selected?.id === m.id) setSelected(null);
+  };
+
+  const remove = async (m) => {
+    if (!confirm('Supprimer ce message ?')) return;
+    await base44.entities.Message.delete(m.id);
+    setMessages((prev) => prev.filter((x) => x.id !== m.id));
+    if (selected?.id === m.id) setSelected(null);
+  };
+
+  const unreadCount = messages.filter((m) => m.status === 'unread').length;
+
+  if (storeLoading || loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+  if (!store) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-[#202223]">Configurez votre boutique</h1>
+        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] mt-3">Configurer</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <div className="flex items-center gap-2 mb-6">
+        <MessageSquare className="w-5 h-5 text-[#6D7175]" />
+        <div>
+          <h1 className="text-xl font-bold text-[#202223]">Chat</h1>
+          <p className="text-xs text-[#6D7175]">Messages de vos clients. {unreadCount > 0 && <span className="text-[#008060] font-semibold">{unreadCount} non lu(s)</span>}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-220px)] min-h-[500px]">
+        {/* Message list */}
+        <div className="flex flex-col bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+          <div className="p-3 border-b border-[#E1E1E1] space-y-2">
+            <div className="flex items-center gap-2 bg-[#F4F4F4] rounded-md px-3 py-1.5">
+              <Search className="w-4 h-4 text-[#6D7175]" />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher\u2026" className="bg-transparent outline-none text-sm flex-1" />
+            </div>
+            <div className="flex items-center gap-1">
+              {[['all', 'Tous', Inbox], ['unread', 'Non lus', Clock], ['archived', 'Archiv\u00e9s', Archive]].map(([k, l, Ic]) => (
+                <button key={k} onClick={() => setFilter(k)} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md ${filter === k ? 'bg-[#008060] text-white' : 'text-[#6D7175] hover:bg-black/5'}`}>
+                  <Ic className="w-3.5 h-3.5" /> {l}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="text-sm text-[#6D7175] text-center py-12">Aucun message.</p>
+            ) : (
+              filtered.map((m) => (
+                <button key={m.id} onClick={() => openMessage(m)} className={`w-full text-left p-3.5 border-b border-[#E1E1E1] hover:bg-[#F4F4F4] transition ${selected?.id === m.id ? 'bg-[#008060]/5' : ''}`}>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${m.status === 'unread' ? 'bg-[#008060] text-white' : 'bg-[#F4F4F4] text-[#6D7175]'}`}>
+                      {m.customer_name?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className={`text-sm truncate ${m.status === 'unread' ? 'font-bold text-[#202223]' : 'font-medium text-[#202223]'}`}>{m.customer_name}</p>
+                        <span className="text-[10px] text-[#6D7175] shrink-0">{new Date(m.created_date).toLocaleDateString()}</span>
+                      </div>
+                      {m.subject && <p className="text-xs font-medium text-[#6D7175] truncate">{m.subject}</p>}
+                      <p className="text-xs text-[#6D7175] truncate mt-0.5">{m.body}</p>
+                      {m.status === 'replied' && <span className="inline-flex items-center gap-1 text-[10px] text-[#008060] font-semibold mt-1"><CheckCheck className="w-3 h-3" /> R\u00e9pondu</span>}
+                    </div>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Detail / Reply */}
+        <div className="flex flex-col bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+          {!selected ? (
+            <div className="flex-1 flex items-center justify-center p-6 text-center">
+              <div>
+                <Mail className="w-10 h-10 text-[#C9C9C9] mx-auto mb-3" />
+                <p className="text-sm text-[#6D7175]">S\u00e9lectionnez un message pour le lire et r\u00e9pondre.</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="p-4 border-b border-[#E1E1E1]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-[#202223]">{selected.customer_name}</p>
+                    <p className="text-xs text-[#6D7175]">{selected.customer_email}</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => archive(selected)} title="Archiver" className="p-2 rounded-md text-[#6D7175] hover:bg-black/5"><Archive className="w-4 h-4" /></button>
+                    <button onClick={() => remove(selected)} title="Supprimer" className="p-2 rounded-md text-[#6D7175] hover:bg-red-50 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+                {selected.subject && <p className="text-sm font-semibold text-[#202223] mt-2">{selected.subject}</p>}
+                <p className="text-[11px] text-[#6D7175] mt-1">{new Date(selected.created_date).toLocaleString()}</p>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="bg-[#F4F4F4] rounded-xl p-3.5">
+                  <p className="text-xs font-semibold text-[#6D7175] mb-1">Message du client</p>
+                  <p className="text-sm text-[#202223] whitespace-pre-wrap">{selected.body}</p>
+                </div>
+                {selected.reply && (
+                  <div className="bg-[#008060]/5 border border-[#008060]/20 rounded-xl p-3.5">
+                    <p className="text-xs font-semibold text-[#008060] mb-1">Votre r\u00e9ponse</p>
+                    <p className="text-sm text-[#202223] whitespace-pre-wrap">{selected.reply}</p>
+                    {selected.replied_at && <p className="text-[10px] text-[#6D7175] mt-1.5">{new Date(selected.replied_at).toLocaleString()}</p>}
+                  </div>
+                )}
+              </div>
+              {selected.status !== 'archived' && (
+                <div className="p-3 border-t border-[#E1E1E1]">
+                  <div className="flex gap-2">
+                    <textarea value={reply} onChange={(e) => setReply(e.target.value)} rows={2} placeholder="Votre r\u00e9ponse\u2026" className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#008060]/30" />
+                    <button onClick={sendReply} disabled={sending || !reply.trim()} className="self-end flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2.5 rounded-md hover:bg-[#00694d] disabled:opacity-40">
+                      {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,1 +1,30 @@
-aW1wb3J0IHsgVHJlbmRpbmdVcCwgVHJlbmRpbmdEb3duLCBTaG9wcGluZ0JhZywgRXllLCBXYWxsZXQsIENsb2NrLCBQYWNrYWdlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFN0YXRDYXJkKHsgaWNvbjogSWNvbiwgbGFiZWwsIHZhbHVlLCBkZWx0YSwgcG9zaXRpdmUgPSB0cnVlLCBoaW50IH0pIHsKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImJnLXdoaXRlIHJvdW5kZWQtbGcgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcC00Ij4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtc3RhcnQganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICA8ZGl2PgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIGZvbnQtbWVkaXVtIj57bGFiZWx9PC9wPgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LTJ4bCBmb250LWJvbGQgbXQtMSB0ZXh0LVsjMjAyMjIzXSI+e3ZhbHVlfTwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idy05IGgtOSByb3VuZGVkLW1kIGJnLVsjRjRGNEY0XSBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICA8SWNvbiBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1bIzIwMjIyM10iIC8+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgICB7KGRlbHRhIHx8IGhpbnQpICYmICgKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMyBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHRleHQteHMiPgogICAgICAgICAge2RlbHRhICYmICgKICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPXtgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTAuNSBmb250LXNlbWlib2xkICR7cG9zaXRpdmUgPyAndGV4dC1bIzAwODA2MF0nIDogJ3RleHQtcmVkLTYwMCd9YH0+CiAgICAgICAgICAgICAge3Bvc2l0aXZlID8gPFRyZW5kaW5nVXAgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4gOiA8VHJlbmRpbmdEb3duIGNsYXNzTmFtZT0idy0zLjUgaC0zLjUiIC8+fQogICAgICAgICAgICAgIHtkZWx0YX0KICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgKX0KICAgICAgICAgIHtoaW50ICYmIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0iPntoaW50fTwvc3Bhbj59CiAgICAgICAgPC9kaXY+CiAgICAgICl9CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgeyBTaG9wcGluZ0JhZywgRXllLCBXYWxsZXQsIENsb2NrLCBQYWNrYWdlIH07
+import { TrendingUp, TrendingDown, ShoppingBag, Eye, Wallet, Clock, Package } from 'lucide-react';
+
+export default function StatCard({ icon: Icon, label, value, delta, positive = true, hint }) {
+  return (
+    <div className="bg-white rounded-lg border border-[#E1E1E1] p-4">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs text-[#6D7175] font-medium">{label}</p>
+          <p className="text-2xl font-bold mt-1 text-[#202223]">{value}</p>
+        </div>
+        <div className="w-9 h-9 rounded-md bg-[#F4F4F4] flex items-center justify-center">
+          <Icon className="w-4 h-4 text-[#202223]" />
+        </div>
+      </div>
+      {(delta || hint) && (
+        <div className="mt-3 flex items-center gap-1.5 text-xs">
+          {delta && (
+            <span className={`flex items-center gap-0.5 font-semibold ${positive ? 'text-[#008060]' : 'text-red-600'}`}>
+              {positive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+              {delta}
+            </span>
+          )}
+          {hint && <span className="text-[#6D7175]">{hint}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export { ShoppingBag, Eye, Wallet, Clock, Package };

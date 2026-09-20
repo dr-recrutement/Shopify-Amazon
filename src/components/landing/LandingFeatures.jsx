@@ -1,1 +1,109 @@
-aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFN0b3JlLCBQYWxldHRlLCBDcmVkaXRDYXJkLCBHbG9iZTIsIEJhckNoYXJ0MywgQm90LCBTaG9wcGluZ0JhZywgTGF5ZXJzLCBUcnVjaywgVGFnLCBVc2VycywgU21hcnRwaG9uZSwgWmFwLCBTaGllbGRDaGVjaywgVHJlbmRpbmdVcCwgQm94ZXMsIE1lZ2FwaG9uZSwgU3RhciwgV2FsbGV0LCBCZWxsIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCmNvbnN0IFRBQlMgPSBbCiAgewogICAgaWQ6ICdjcmVhdGUnLCBsYWJlbDogJ0Nyw6llciAmIFBlcnNvbm5hbGlzZXInLCBpY29uOiBQYWxldHRlLAogICAgZmVhdHVyZXM6IFsKICAgICAgeyBpY29uOiBTdG9yZSwgdGl0bGU6ICfDiWRpdGV1ciB2aXN1ZWwgZHJhZyAmIGRyb3AnLCB0ZXh0OiAnQ3LDqWV6IHVuZSB2aXRyaW5lIHByZW1pdW0gc2FucyB0b3VjaGVyIGF1IGNvZGUuIFByw6l2aXN1YWxpc2F0aW9uIGRlc2t0b3AsIHRhYmxldHRlIGV0IG1vYmlsZSBlbiB0ZW1wcyByw6llbC4nIH0sCiAgICAgIHsgaWNvbjogUGFsZXR0ZSwgdGl0bGU6ICdUaMOobWVzIHByZW1pdW0gaW50ZXJuYXRpb25hdXgnLCB0ZXh0OiAnRGVzIHRow6htZXMgcmFmZmluw6lzIGV0IHBlcnNvbm5hbGlzYWJsZXMgYXV4IGNvdWxldXJzIGRlIHZvdHJlIG1hcnF1ZSwgcGVuc8OpcyBwb3VyIGxlcyBtYXJjaGFuZHMgZHUgbW9uZGUgZW50aWVyLicgfSwKICAgICAgeyBpY29uOiBMYXllcnMsIHRpdGxlOiAnQ29sbGVjdGlvbnMgaW50ZWxsaWdlbnRlcycsIHRleHQ6ICdDb2xsZWN0aW9ucyBtYW51ZWxsZXMgb3UgYXV0b21hdGlxdWVzIGF2ZWMgcsOoZ2xlcyBkeW5hbWlxdWVzIHN1ciB0YWdzLCBwcml4LCBzdG9jayBldCBzdGF0dXQuJyB9LAogICAgICB7IGljb246IFNtYXJ0cGhvbmUsIHRpdGxlOiAnUmVzcG9uc2l2ZSBuYXRpZicsIHRleHQ6ICdDaGFxdWUgYm91dGlxdWUgc+KAmWFkYXB0ZSBwYXJmYWl0ZW1lbnQgYXUgbW9iaWxlIOKAlCBsw6Agb8O5IHZvcyBjbGllbnRzIGFjaMOodGVudCByw6llbGxlbWVudC4nIH0sCiAgICBdLAogIH0sCiAgewogICAgaWQ6ICdzZWxsJywgbGFiZWw6ICdWZW5kcmUgJiBFbmNhaXNzZXInLCBpY29uOiBXYWxsZXQsCiAgICBmZWF0dXJlczogWwogICAgICB7IGljb246IENyZWRpdENhcmQsIHRpdGxlOiAnMjUrIFBTUCBtb25kaWF1eCcsIHRleHQ6ICdQYXlzdGFjaywgRmx1dHRlcndhdmUsIE0tUGVzYSwgU3RyaXBlLCBQYXlQYWwsIFBheXVuaXTigKYgQ2FydGVzLCBNb2JpbGUgTW9uZXkgZXQgdmlyZW1lbnRzIHNhbnMgcmVkaXJlY3Rpb24uJyB9LAogICAgICB7IGljb246IEdsb2JlMiwgdGl0bGU6ICdNdWx0aS1kZXZpc2VzICYgbWFyY2jDqXMnLCB0ZXh0OiAnVmVuZGV6IHBhcnRvdXQgYXZlYyBnZXN0aW9uIG5hdGl2ZSBkZXMgZGV2aXNlcyBJU08gKFhPRiwgTkdOLCBVU0QsIEVVUikgZXQgdHJhZHVjdGlvbiBlbiA3IGxhbmd1ZXMuJyB9LAogICAgICB7IGljb246IFNoaWVsZENoZWNrLCB0aXRsZTogJ0NoZWNrb3V0IHNhbnMgcmVkaXJlY3Rpb24nLCB0ZXh0OiAnVHVubmVsIGTigJlhY2hhdCAxMDAlIGludMOpZ3LDqSDigJQgdm9zIGNsaWVudHMgbmUgcXVpdHRlbnQgamFtYWlzIHZvdHJlIGJvdXRpcXVlLiBBYmFuZG9uIHLDqWR1aXQsIGNvbnZlcnNpb24gbWF4aW1hbGUuJyB9LAogICAgICB7IGljb246IFRhZywgdGl0bGU6ICdQcm9tb3Rpb25zICYgcsOpZHVjdGlvbnMnLCB0ZXh0OiAnQ29kZXMgcHJvbW8sIHJlbWlzZXMgZW4gcG91cmNlbnRhZ2UsIG1vbnRhbnQgZml4ZSBvdSBsaXZyYWlzb24gb2ZmZXJ0ZSBhdmVjIHLDqGdsZXMgYXV0b21hdGlxdWVzLicgfSwKICAgIF0sCiAgfSwKICB7CiAgICBpZDogJ21hbmFnZScsIGxhYmVsOiAnR8OpcmVyICYgTGl2cmVyJywgaWNvbjogQm94ZXMsCiAgICBmZWF0dXJlczogWwogICAgICB7IGljb246IEJveGVzLCB0aXRsZTogJ1N0b2NrcyAmIHZhcmlhbnRlcycsIHRleHQ6ICdTdWl2aSBwYXIgdmFyaWFudGUsIGFsZXJ0ZXMgZGUgc3RvY2sgYmFzIGV0IGdlc3Rpb24gbXVsdGktZW1wbGFjZW1lbnRzIHBvdXIgbmUgamFtYWlzIMOqdHJlIGVuIHJ1cHR1cmUuJyB9LAogICAgICB7IGljb246IFRydWNrLCB0aXRsZTogJ0xpdnJhaXNvbiBtdWx0aS16b25lcycsIHRleHQ6ICdUYXJpZnMgcGFyIHLDqWdpb24sIHBheXMgZXQgcG9pZHMuIExpdnJhaXNvbiBncmF0dWl0ZSBjb25kaXRpb25uZWxsZSBldCBzdWl2aSBhdXRvbWF0aXPDqSBkZXMgY29saXMuJyB9LAogICAgICB7IGljb246IFVzZXJzLCB0aXRsZTogJ0dlc3Rpb24gY2xpZW50cycsIHRleHQ6ICdQcm9maWxzIGNsaWVudHMsIGhpc3RvcmlxdWUgZOKAmWFjaGF0cywgYWRyZXNzZXMgbXVsdGlwbGVzIGV0IHRhZ3MgcG91ciB1biBzdWl2aSBjb21wbGV0IGV0IHBlcnNvbm5hbGlzw6kuJyB9LAogICAgICB7IGljb246IFNob3BwaW5nQmFnLCB0aXRsZTogJ1BsYWNlIGRlIG1hcmNow6knLCB0ZXh0OiAnTGFuY2V6IHVuZSBtYXJrZXRwbGFjZSBtdWx0aS12ZW5kZXVycyBhdmVjIGdlc3Rpb24gZGVzIHZlbmRldXJzLCBjb21taXNzaW9ucyBldCBwYWllbWVudHMgcsOpcGFydGlzLicgfSwKICAgIF0sCiAgfSwKICB7CiAgICBpZDogJ2dyb3cnLCBsYWJlbDogJ0Nyb8OudHJlICYgQW5hbHlzZXInLCBpY29uOiBUcmVuZGluZ1VwLAogICAgZmVhdHVyZXM6IFsKICAgICAgeyBpY29uOiBCYXJDaGFydDMsIHRpdGxlOiAnQW5hbHl0aWNzIHRlbXBzIHLDqWVsJywgdGV4dDogJ1N1aXZleiB2ZW50ZXMsIHZpc2l0ZXVycywgdGF1eCBkZSBjb252ZXJzaW9uIHBhciBwcm9kdWl0IGV0IHR1bm5lbCBk4oCZYWNoYXQgc3VyIHVuIHRhYmxlYXUgZGUgYm9yZCBhY3Rpb25uYWJsZS4nIH0sCiAgICAgIHsgaWNvbjogQm90LCB0aXRsZTogJ0Fzc2lzdGFudCBJQScsIHRleHQ6ICdHw6luw6lyZXogZGVzY3JpcHRpb25zIHByb2R1aXQsIGNvbnRlbnVzIFNFTyBldCB0aMOobWVzIGVudGllcnMgZ3LDomNlIMOgIGzigJlJQSBpbnTDqWdyw6llIFNlbGxpYS4nIH0sCiAgICAgIHsgaWNvbjogTWVnYXBob25lLCB0aXRsZTogJ01hcmtldGluZyAmIGF1dG9tYXRpb25zJywgdGV4dDogJ0NhbXBhZ25lcyBlLW1haWwsIHLDqWN1cMOpcmF0aW9uIGRlIHBhbmllcnMgYWJhbmRvbm7DqXMgZXQgYXV0b21hdGlzYXRpb25zIGTDqWNsZW5jaMOpZXMgcGFyIMOpdsOpbmVtZW50cy4nIH0sCiAgICAgIHsgaWNvbjogQmVsbCwgdGl0bGU6ICdBbGVydGVzIGludGVsbGlnZW50ZXMnLCB0ZXh0OiAnTm90aWZpY2F0aW9ucyBhdXRvbWF0aXF1ZXMgZGUgc3RvY2sgYmFzLCBub3V2ZWxsZXMgY29tbWFuZGVzIGV0IGFub21hbGllcyDigJQgcGFyIGUtbWFpbCBvdSBwdXNoLicgfSwKICAgIF0sCiAgfSwKXTsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIExhbmRpbmdGZWF0dXJlcygpIHsKICBjb25zdCBbYWN0aXZlLCBzZXRBY3RpdmVdID0gdXNlU3RhdGUoJ2NyZWF0ZScpOwogIGNvbnN0IGN1cnJlbnQgPSBUQUJTLmZpbmQoKHQpID0+IHQuaWQgPT09IGFjdGl2ZSkgfHwgVEFCU1swXTsKCiAgcmV0dXJuICgKICAgIDxzZWN0aW9uIGlkPSJmb25jdGlvbm5hbGl0ZXMiIGNsYXNzTmFtZT0icHktMjAgbGc6cHktMjQgYmctYmFja2dyb3VuZCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ0ZXh0LWNlbnRlciBtYXgtdy0yeGwgbXgtYXV0byI+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LWdvbGQgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUiPkZvbmN0aW9ubmFsaXTDqXM8L3NwYW4+CiAgICAgICAgICA8aDIgY2xhc3NOYW1lPSJtdC0yIGZvbnQtbGFuZGluZyBmb250LXNlbWlib2xkIHRleHQtMnhsIHNtOnRleHQtWzJyZW1dIHRleHQtZm9yZWdyb3VuZCB0cmFja2luZy10aWdodCI+VG91dCBjZSBxdeKAmWlsIGZhdXQgcG91ciB2ZW5kcmUgZW4gbGlnbmU8L2gyPgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJtdC0zIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCB0ZXh0LWxnIj5VbmUgcGxhdGVmb3JtZSBjb21wbMOodGUsIGRlIGxhIGNyw6lhdGlvbiBkZSBib3V0aXF1ZSDDoCBs4oCZZW5jYWlzc2VtZW50IOKAlCBlbiB1biBzZXVsIG91dGlsLjwvcD4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIFRhYiBwaWxscyAqL30KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMTAgZmxleCBmbGV4LXdyYXAganVzdGlmeS1jZW50ZXIgZ2FwLTIiPgogICAgICAgICAge1RBQlMubWFwKCh0KSA9PiAoCiAgICAgICAgICAgIDxidXR0b24KICAgICAgICAgICAgICBrZXk9e3QuaWR9CiAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0QWN0aXZlKHQuaWQpfQogICAgICAgICAgICAgIGNsYXNzTmFtZT17YGlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBweC01IHB5LTIuNSByb3VuZGVkLWZ1bGwgdGV4dC1zbSBmb250LXNlbWlib2xkIHRyYW5zaXRpb24tYWxsICR7CiAgICAgICAgICAgICAgICBhY3RpdmUgPT09IHQuaWQKICAgICAgICAgICAgICAgICAgPyAnYmctYnJhbmQgdGV4dC1icmFuZC1mb3JlZ3JvdW5kIHNoYWRvdy1sZyBzaGFkb3ctYnJhbmQvMjAnCiAgICAgICAgICAgICAgICAgIDogJ2JnLXdoaXRlIGJvcmRlciBib3JkZXItYm9yZGVyIHRleHQtZm9yZWdyb3VuZCBob3Zlcjpib3JkZXItYnJhbmQvNDAgaG92ZXI6Ymctc3VyZmFjZScKICAgICAgICAgICAgICB9YH0KICAgICAgICAgICAgPgogICAgICAgICAgICAgIDx0Lmljb24gY2xhc3NOYW1lPSJ3LTQgaC00IiAvPgogICAgICAgICAgICAgIHt0LmxhYmVsfQogICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgoKICAgICAgICB7LyogRmVhdHVyZSBncmlkIGZvciBhY3RpdmUgdGFiICovfQogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0xMCBncmlkIGdyaWQtY29scy0xIHNtOmdyaWQtY29scy0yIGdhcC01Ij4KICAgICAgICAgIHtjdXJyZW50LmZlYXR1cmVzLm1hcCgoZikgPT4gKAogICAgICAgICAgICA8ZGl2IGtleT17Zi50aXRsZX0gY2xhc3NOYW1lPSJncm91cCByb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy13aGl0ZSBwLTYgaG92ZXI6Ym9yZGVyLWJyYW5kLzQwIGhvdmVyOnNoYWRvdy1sZyB0cmFuc2l0aW9uLWFsbCI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtc3RhcnQgZ2FwLTQiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InctMTIgaC0xMiByb3VuZGVkLXhsIGJnLWJyYW5kLW11dGVkIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdyb3VwLWhvdmVyOmJnLWJyYW5kIHRyYW5zaXRpb24tY29sb3JzIHNocmluay0wIj4KICAgICAgICAgICAgICAgICAgPGYuaWNvbiBjbGFzc05hbWU9InctNiBoLTYgdGV4dC1icmFuZCBncm91cC1ob3Zlcjp0ZXh0LWJyYW5kLWZvcmVncm91bmQgdHJhbnNpdGlvbi1jb2xvcnMiIC8+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9ImZvbnQtbGFuZGluZyBmb250LWJvbGQgdGV4dC1sZyB0ZXh0LWZvcmVncm91bmQiPntmLnRpdGxlfTwvaDM+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMS41IHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGxlYWRpbmctcmVsYXhlZCI+e2YudGV4dH08L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApKX0KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIEJvdHRvbSBzdGF0IHN0cmlwICovfQogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0xMiBncmlkIGdyaWQtY29scy0yIGxnOmdyaWQtY29scy00IGdhcC00Ij4KICAgICAgICAgIHtbCiAgICAgICAgICAgIHsgaWNvbjogWmFwLCB2YWx1ZTogJzI1KycsIGxhYmVsOiAnUFNQIGludMOpZ3LDqXMnIH0sCiAgICAgICAgICAgIHsgaWNvbjogR2xvYmUyLCB2YWx1ZTogJzcnLCBsYWJlbDogJ0xhbmd1ZXMgbmF0aXZlcycgfSwKICAgICAgICAgICAgeyBpY29uOiBTdGFyLCB2YWx1ZTogJzQsOS81JywgbGFiZWw6ICdTYXRpc2ZhY3Rpb24gbWFyY2hhbmRzJyB9LAogICAgICAgICAgICB7IGljb246IFRyZW5kaW5nVXAsIHZhbHVlOiAnOTksOSUnLCBsYWJlbDogJ0Rpc3BvbmliaWxpdMOpJyB9LAogICAgICAgICAgXS5tYXAoKHMpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e3MubGFiZWx9IGNsYXNzTmFtZT0idGV4dC1jZW50ZXIgcm91bmRlZC0yeGwgYmctc3VyZmFjZSBib3JkZXIgYm9yZGVyLWJvcmRlciBwLTUiPgogICAgICAgICAgICAgIDxzLmljb24gY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtYnJhbmQgbXgtYXV0byBtYi0yIiAvPgogICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0iZm9udC1sYW5kaW5nIGZvbnQtYm9sZCB0ZXh0LTJ4bCB0ZXh0LWZvcmVncm91bmQiPntzLnZhbHVlfTwvcD4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj57cy5sYWJlbH08L3A+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICk7Cn0=
+import { useState } from 'react';
+import { Store, Palette, CreditCard, Globe2, BarChart3, Bot, ShoppingBag, Layers, Truck, Tag, Users, Smartphone, Zap, ShieldCheck, TrendingUp, Boxes, Megaphone, Star, Wallet, Bell } from 'lucide-react';
+
+const TABS = [
+  {
+    id: 'create', label: 'Créer & Personnaliser', icon: Palette,
+    features: [
+      { icon: Store, title: 'Éditeur visuel drag & drop', text: 'Créez une vitrine premium sans toucher au code. Prévisualisation desktop, tablette et mobile en temps réel.' },
+      { icon: Palette, title: 'Thèmes premium internationaux', text: 'Des thèmes raffinés et personnalisables aux couleurs de votre marque, pensés pour les marchands du monde entier.' },
+      { icon: Layers, title: 'Collections intelligentes', text: 'Collections manuelles ou automatiques avec règles dynamiques sur tags, prix, stock et statut.' },
+      { icon: Smartphone, title: 'Responsive natif', text: 'Chaque boutique s’adapte parfaitement au mobile — là où vos clients achètent réellement.' },
+    ],
+  },
+  {
+    id: 'sell', label: 'Vendre & Encaisser', icon: Wallet,
+    features: [
+      { icon: CreditCard, title: '25+ PSP mondiaux', text: 'Paystack, Flutterwave, M-Pesa, Stripe, PayPal, Payunit… Cartes, Mobile Money et virements sans redirection.' },
+      { icon: Globe2, title: 'Multi-devises & marchés', text: 'Vendez partout avec gestion native des devises ISO (XOF, NGN, USD, EUR) et traduction en 7 langues.' },
+      { icon: ShieldCheck, title: 'Checkout sans redirection', text: 'Tunnel d’achat 100% intégré — vos clients ne quittent jamais votre boutique. Abandon réduit, conversion maximale.' },
+      { icon: Tag, title: 'Promotions & réductions', text: 'Codes promo, remises en pourcentage, montant fixe ou livraison offerte avec règles automatiques.' },
+    ],
+  },
+  {
+    id: 'manage', label: 'Gérer & Livrer', icon: Boxes,
+    features: [
+      { icon: Boxes, title: 'Stocks & variantes', text: 'Suivi par variante, alertes de stock bas et gestion multi-emplacements pour ne jamais être en rupture.' },
+      { icon: Truck, title: 'Livraison multi-zones', text: 'Tarifs par région, pays et poids. Livraison gratuite conditionnelle et suivi automatisé des colis.' },
+      { icon: Users, title: 'Gestion clients', text: 'Profils clients, historique d’achats, adresses multiples et tags pour un suivi complet et personnalisé.' },
+      { icon: ShoppingBag, title: 'Place de marché', text: 'Lancez une marketplace multi-vendeurs avec gestion des vendeurs, commissions et paiements répartis.' },
+    ],
+  },
+  {
+    id: 'grow', label: 'Croître & Analyser', icon: TrendingUp,
+    features: [
+      { icon: BarChart3, title: 'Analytics temps réel', text: 'Suivez ventes, visiteurs, taux de conversion par produit et tunnel d’achat sur un tableau de bord actionnable.' },
+      { icon: Bot, title: 'Assistant IA', text: 'Générez descriptions produit, contenus SEO et thèmes entiers grâce à l’IA intégrée Sellia.' },
+      { icon: Megaphone, title: 'Marketing & automations', text: 'Campagnes e-mail, récupération de paniers abandonnés et automatisations déclenchées par événements.' },
+      { icon: Bell, title: 'Alertes intelligentes', text: 'Notifications automatiques de stock bas, nouvelles commandes et anomalies — par e-mail ou push.' },
+    ],
+  },
+];
+
+export default function LandingFeatures() {
+  const [active, setActive] = useState('create');
+  const current = TABS.find((t) => t.id === active) || TABS[0];
+
+  return (
+    <section id="fonctionnalites" className="py-20 lg:py-24 bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto">
+          <span className="text-sm font-semibold text-gold uppercase tracking-wide">Fonctionnalités</span>
+          <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Tout ce qu’il faut pour vendre en ligne</h2>
+          <p className="mt-3 text-muted-foreground text-lg">Une plateforme complète, de la création de boutique à l’encaissement — en un seul outil.</p>
+        </div>
+
+        {/* Tab pills */}
+        <div className="mt-10 flex flex-wrap justify-center gap-2">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActive(t.id)}
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                active === t.id
+                  ? 'bg-brand text-brand-foreground shadow-lg shadow-brand/20'
+                  : 'bg-white border border-border text-foreground hover:border-brand/40 hover:bg-surface'
+              }`}
+            >
+              <t.icon className="w-4 h-4" />
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Feature grid for active tab */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {current.features.map((f) => (
+            <div key={f.title} className="group rounded-2xl border border-border bg-white p-6 hover:border-brand/40 hover:shadow-lg transition-all">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-brand-muted flex items-center justify-center group-hover:bg-brand transition-colors shrink-0">
+                  <f.icon className="w-6 h-6 text-brand group-hover:text-brand-foreground transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-landing font-bold text-lg text-foreground">{f.title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom stat strip */}
+        <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { icon: Zap, value: '25+', label: 'PSP intégrés' },
+            { icon: Globe2, value: '7', label: 'Langues natives' },
+            { icon: Star, value: '4,9/5', label: 'Satisfaction marchands' },
+            { icon: TrendingUp, value: '99,9%', label: 'Disponibilité' },
+          ].map((s) => (
+            <div key={s.label} className="text-center rounded-2xl bg-surface border border-border p-5">
+              <s.icon className="w-5 h-5 text-brand mx-auto mb-2" />
+              <p className="font-landing font-bold text-2xl text-foreground">{s.value}</p>
+              <p className="text-xs text-muted-foreground">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

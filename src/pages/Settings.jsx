@@ -1,1 +1,107 @@
-aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFNldHRpbmdzIGFzIFNldHRpbmdzSWNvbiwgTG9hZGVyMiB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IHVzZUN1cnJlbnRTdG9yZSB9IGZyb20gJ0AvaG9va3MvdXNlQ3VycmVudFN0b3JlJzsKaW1wb3J0IHsKICBTZXR0aW5nc0dlbmVyYWwsIFNldHRpbmdzUGxhbiwgU2V0dGluZ3NCaWxsaW5nLCBTZXR0aW5nc1VzZXJzLCBTZXR0aW5nc1BheW1lbnRzLAogIFNldHRpbmdzQ2hlY2tvdXQsIFNldHRpbmdzQ3VzdG9tZXJBY2NvdW50cywgU2V0dGluZ3NTaGlwcGluZ0RlbGl2ZXJ5LCBTZXR0aW5nc1RheGVzLAogIFNldHRpbmdzTG9jYXRpb25zLCBTZXR0aW5nc0FwcHMsIFNldHRpbmdzU2FsZXNDaGFubmVscywgU2V0dGluZ3NEb21haW5zLAogIFNldHRpbmdzQ3VzdG9tZXJFdmVudHMsIFNldHRpbmdzTm90aWZpY2F0aW9ucywgU2V0dGluZ3NNZXRhZmllbGRzLCBTZXR0aW5nc0xhbmd1YWdlcywKICBTZXR0aW5nc0N1c3RvbWVyUHJpdmFjeSwgU2V0dGluZ3NQb2xpY2llcywgU2V0dGluZ3NTdXBwb3J0Q2hhdCwKfSBmcm9tICdAL2NvbXBvbmVudHMvc2V0dGluZ3MvU2V0dGluZ3NTZWN0aW9ucyc7CmltcG9ydCBCaWxsaW5nIGZyb20gJ0AvcGFnZXMvQmlsbGluZyc7CmltcG9ydCBTdGFmZk1hbmFnZW1lbnQgZnJvbSAnQC9wYWdlcy9TdGFmZk1hbmFnZW1lbnQnOwppbXBvcnQgU3RvcmVTZXR0aW5ncyBmcm9tICdAL3BhZ2VzL1N0b3JlU2V0dGluZ3MnOwppbXBvcnQgU3RvcmVTZXR1cCBmcm9tICdAL3BhZ2VzL1N0b3JlU2V0dXAnOwppbXBvcnQgU3VwcG9ydCBmcm9tICdAL3BhZ2VzL1N1cHBvcnQnOwppbXBvcnQgQ2hhdCBmcm9tICdAL3BhZ2VzL0NoYXQnOwoKY29uc3QgU0VDVElPTlMgPSBbCiAgeyBncm91cDogJ0JvdXRpcXVlJywgaXRlbXM6IFsKICAgIHsgaWQ6ICdnZW5lcmFsJywgbGFiZWw6ICdHw6luw6lyYWwnLCBjb21wOiBTZXR0aW5nc0dlbmVyYWwgfSwKICAgIHsgaWQ6ICdwbGFuJywgbGFiZWw6ICdQbGFuJywgY29tcDogU2V0dGluZ3NQbGFuIH0sCiAgICB7IGlkOiAnYmlsbGluZycsIGxhYmVsOiAnRmFjdHVyYXRpb24nLCBjb21wOiBCaWxsaW5nIH0sCiAgICB7IGlkOiAndXNlcnMnLCBsYWJlbDogJ1BlcnNvbm5lbCAmIHBlcm1pc3Npb25zJywgY29tcDogU3RhZmZNYW5hZ2VtZW50IH0sCiAgICB7IGlkOiAnc3RvcmUtY29uZmlnJywgbGFiZWw6ICdDb25maWd1cmF0aW9uIGJvdXRpcXVlJywgY29tcDogU3RvcmVTZXR1cCB9LAogICAgeyBpZDogJ3N0b3JlLXNldHRpbmdzJywgbGFiZWw6ICdQYXJhbcOodHJlcyBib3V0aXF1ZScsIGNvbXA6IFN0b3JlU2V0dGluZ3MgfSwKICAgIHsgaWQ6ICdsb2NhdGlvbnMnLCBsYWJlbDogJ0VtcGxhY2VtZW50cycsIGNvbXA6IFNldHRpbmdzTG9jYXRpb25zIH0sCiAgXX0sCiAgeyBncm91cDogJ1BhaWVtZW50cycsIGl0ZW1zOiBbCiAgICB7IGlkOiAncGF5bWVudHMnLCBsYWJlbDogJ1BhaWVtZW50cycsIGNvbXA6IFNldHRpbmdzUGF5bWVudHMgfSwKICAgIHsgaWQ6ICdjaGVja291dCcsIGxhYmVsOiAnQ29tbWFuZGUnLCBjb21wOiBTZXR0aW5nc0NoZWNrb3V0IH0sCiAgICB7IGlkOiAnY3VzdG9tZXJfYWNjb3VudHMnLCBsYWJlbDogJ0NvbXB0ZXMgY2xpZW50cycsIGNvbXA6IFNldHRpbmdzQ3VzdG9tZXJBY2NvdW50cyB9LAogICAgeyBpZDogJ2N1c3RvbWVyX2V2ZW50cycsIGxhYmVsOiAnw4l2w6luZW1lbnRzIGNsaWVudCcsIGNvbXA6IFNldHRpbmdzQ3VzdG9tZXJFdmVudHMgfSwKICAgIHsgaWQ6ICd0YXhlcycsIGxhYmVsOiAnVGF4ZXMgZXQgZHJvaXRzJywgY29tcDogU2V0dGluZ3NUYXhlcyB9LAogIF19LAogIHsgZ3JvdXA6ICdCb3V0aXF1ZSBlbiBsaWduZScsIGl0ZW1zOiBbCiAgICB7IGlkOiAnc2hpcHBpbmcnLCBsYWJlbDogJ0xpdnJhaXNvbiBldCBleHDDqWRpdGlvbicsIGNvbXA6IFNldHRpbmdzU2hpcHBpbmdEZWxpdmVyeSB9LAogICAgeyBpZDogJ2RvbWFpbnMnLCBsYWJlbDogJ0RvbWFpbmVzJywgY29tcDogU2V0dGluZ3NEb21haW5zIH0sCiAgICB7IGlkOiAnY2hhbm5lbHMnLCBsYWJlbDogJ0NhbmF1eCBkZSB2ZW50ZScsIGNvbXA6IFNldHRpbmdzU2FsZXNDaGFubmVscyB9LAogICAgeyBpZDogJ2xhbmd1YWdlcycsIGxhYmVsOiAnTGFuZ3VlcycsIGNvbXA6IFNldHRpbmdzTGFuZ3VhZ2VzIH0sCiAgXX0sCiAgeyBncm91cDogJ1LDqGdsZXMgZXQgY29uZmlkZW50aWFsaXTDqScsIGl0ZW1zOiBbCiAgICB7IGlkOiAnbm90aWZpY2F0aW9ucycsIGxhYmVsOiAnTm90aWZpY2F0aW9ucycsIGNvbXA6IFNldHRpbmdzTm90aWZpY2F0aW9ucyB9LAogICAgeyBpZDogJ3ByaXZhY3knLCBsYWJlbDogJ0NvbmZpZGVudGlhbGl0w6kgY2xpZW50JywgY29tcDogU2V0dGluZ3NDdXN0b21lclByaXZhY3kgfSwKICAgIHsgaWQ6ICdwb2xpY2llcycsIGxhYmVsOiAnUG9saXRpcXVlcycsIGNvbXA6IFNldHRpbmdzUG9saWNpZXMgfSwKICAgIHsgaWQ6ICdtZXRhZmllbGRzJywgbGFiZWw6ICdNw6l0YWRvbm7DqWVzJywgY29tcDogU2V0dGluZ3NNZXRhZmllbGRzIH0sCiAgXX0sCiAgeyBncm91cDogJ0V4dGVuc2lvbnMgJiBzdXBwb3J0JywgaXRlbXM6IFsKICAgIHsgaWQ6ICdhcHBzJywgbGFiZWw6ICdBcHBsaWNhdGlvbnMnLCBjb21wOiBTZXR0aW5nc0FwcHMgfSwKICAgIHsgaWQ6ICdzdXBwb3J0JywgbGFiZWw6ICdTdXBwb3J0ICYgYWlkZScsIGNvbXA6IFN1cHBvcnQgfSwKICAgIHsgaWQ6ICdjaGF0JywgbGFiZWw6ICdDaGF0IGNsaWVudHMnLCBjb21wOiBDaGF0IH0sCiAgXX0sCl07CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBTZXR0aW5ncygpIHsKICBjb25zdCB7IGxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFthY3RpdmUsIHNldEFjdGl2ZV0gPSB1c2VTdGF0ZSgnZ2VuZXJhbCcpOwoKICBjb25zdCBBY3RpdmVDb21wID0gKCgpID0+IHsKICAgIGZvciAoY29uc3QgZyBvZiBTRUNUSU9OUykgewogICAgICBjb25zdCBpdGVtID0gZy5pdGVtcy5maW5kKChpKSA9PiBpLmlkID09PSBhY3RpdmUpOwogICAgICBpZiAoaXRlbSkgcmV0dXJuIGl0ZW0uY29tcDsKICAgIH0KICAgIHJldHVybiBTZXR0aW5nc0dlbmVyYWw7CiAgfSkoKTsKCiAgY29uc3QgYWN0aXZlTGFiZWwgPSAoKCkgPT4gewogICAgZm9yIChjb25zdCBnIG9mIFNFQ1RJT05TKSB7CiAgICAgIGNvbnN0IGl0ZW0gPSBnLml0ZW1zLmZpbmQoKGkpID0+IGkuaWQgPT09IGFjdGl2ZSk7CiAgICAgIGlmIChpdGVtKSByZXR1cm4gaXRlbS5sYWJlbDsKICAgIH0KICAgIHJldHVybiAnR8OpbsOpcmFsJzsKICB9KSgpOwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0icC00IHNtOnAtNiBtYXgtdy02eGwgbXgtYXV0byI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi02Ij4KICAgICAgICA8U2V0dGluZ3NJY29uIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LVsjNkQ3MTc1XSIgLz4KICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+UGFyYW3DqHRyZXM8L2gxPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtY29sIGxnOmZsZXgtcm93IGdhcC02Ij4KICAgICAgICB7LyogU2lkZWJhciAqL30KICAgICAgICA8YXNpZGUgY2xhc3NOYW1lPSJsZzp3LTY0IHNocmluay0wIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy13aGl0ZSByb3VuZGVkLXhsIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHAtMiBzdGlja3kgdG9wLTQgbWF4LWgtW2NhbGMoMTAwdmgtMnJlbSldIG92ZXJmbG93LXktYXV0byI+CiAgICAgICAgICAgIHtTRUNUSU9OUy5tYXAoKGcpID0+ICgKICAgICAgICAgICAgICA8ZGl2IGtleT17Zy5ncm91cH0gY2xhc3NOYW1lPSJtYi0xIj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0icHgtMyBwdC0yLjUgcGItMSB0ZXh0LVsxMHB4XSBmb250LWJvbGQgdGV4dC1bIzZENzE3NV0gdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUiPntnLmdyb3VwfTwvcD4KICAgICAgICAgICAgICAgIHtnLml0ZW1zLm1hcCgoaXRlbSkgPT4gKAogICAgICAgICAgICAgICAgICA8YnV0dG9uIGtleT17aXRlbS5pZH0gb25DbGljaz17KCkgPT4gc2V0QWN0aXZlKGl0ZW0uaWQpfSBjbGFzc05hbWU9e2B3LWZ1bGwgdGV4dC1sZWZ0IHB4LTMgcHktMiByb3VuZGVkLWxnIHRleHQtc20gdHJhbnNpdGlvbi1jb2xvcnMgJHthY3RpdmUgPT09IGl0ZW0uaWQgPyAnYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgZm9udC1zZW1pYm9sZCcgOiAndGV4dC1bIzIwMjIyM10gaG92ZXI6YmctYmxhY2svNSd9YH0+CiAgICAgICAgICAgICAgICAgICAge2l0ZW0ubGFiZWx9CiAgICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICkpfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9hc2lkZT4KCiAgICAgICAgey8qIENvbnRlbnQgKi99CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXgtMSBtaW4tdy0wIj4KICAgICAgICAgIDxBY3RpdmVDb21wIC8+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQ==
+import { useState } from 'react';
+import { Settings as SettingsIcon, Loader2 } from 'lucide-react';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import {
+  SettingsGeneral, SettingsPlan, SettingsBilling, SettingsUsers, SettingsPayments,
+  SettingsCheckout, SettingsCustomerAccounts, SettingsShippingDelivery, SettingsTaxes,
+  SettingsLocations, SettingsApps, SettingsSalesChannels, SettingsDomains,
+  SettingsCustomerEvents, SettingsNotifications, SettingsMetafields, SettingsLanguages,
+  SettingsCustomerPrivacy, SettingsPolicies, SettingsSupportChat,
+} from '@/components/settings/SettingsSections';
+import Billing from '@/pages/Billing';
+import StaffManagement from '@/pages/StaffManagement';
+import StoreSettings from '@/pages/StoreSettings';
+import StoreSetup from '@/pages/StoreSetup';
+import Support from '@/pages/Support';
+import Chat from '@/pages/Chat';
+
+const SECTIONS = [
+  { group: 'Boutique', items: [
+    { id: 'general', label: 'Général', comp: SettingsGeneral },
+    { id: 'plan', label: 'Plan', comp: SettingsPlan },
+    { id: 'billing', label: 'Facturation', comp: Billing },
+    { id: 'users', label: 'Personnel & permissions', comp: StaffManagement },
+    { id: 'store-config', label: 'Configuration boutique', comp: StoreSetup },
+    { id: 'store-settings', label: 'Paramètres boutique', comp: StoreSettings },
+    { id: 'locations', label: 'Emplacements', comp: SettingsLocations },
+  ]},
+  { group: 'Paiements', items: [
+    { id: 'payments', label: 'Paiements', comp: SettingsPayments },
+    { id: 'checkout', label: 'Commande', comp: SettingsCheckout },
+    { id: 'customer_accounts', label: 'Comptes clients', comp: SettingsCustomerAccounts },
+    { id: 'customer_events', label: 'Événements client', comp: SettingsCustomerEvents },
+    { id: 'taxes', label: 'Taxes et droits', comp: SettingsTaxes },
+  ]},
+  { group: 'Boutique en ligne', items: [
+    { id: 'shipping', label: 'Livraison et expédition', comp: SettingsShippingDelivery },
+    { id: 'domains', label: 'Domaines', comp: SettingsDomains },
+    { id: 'channels', label: 'Canaux de vente', comp: SettingsSalesChannels },
+    { id: 'languages', label: 'Langues', comp: SettingsLanguages },
+  ]},
+  { group: 'Règles et confidentialité', items: [
+    { id: 'notifications', label: 'Notifications', comp: SettingsNotifications },
+    { id: 'privacy', label: 'Confidentialité client', comp: SettingsCustomerPrivacy },
+    { id: 'policies', label: 'Politiques', comp: SettingsPolicies },
+    { id: 'metafields', label: 'Métadonnées', comp: SettingsMetafields },
+  ]},
+  { group: 'Extensions & support', items: [
+    { id: 'apps', label: 'Applications', comp: SettingsApps },
+    { id: 'support', label: 'Support & aide', comp: Support },
+    { id: 'chat', label: 'Chat clients', comp: Chat },
+  ]},
+];
+
+export default function Settings() {
+  const { loading } = useCurrentStore();
+  const [active, setActive] = useState('general');
+
+  const ActiveComp = (() => {
+    for (const g of SECTIONS) {
+      const item = g.items.find((i) => i.id === active);
+      if (item) return item.comp;
+    }
+    return SettingsGeneral;
+  })();
+
+  const activeLabel = (() => {
+    for (const g of SECTIONS) {
+      const item = g.items.find((i) => i.id === active);
+      if (item) return item.label;
+    }
+    return 'Général';
+  })();
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  return (
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <div className="flex items-center gap-2 mb-6">
+        <SettingsIcon className="w-5 h-5 text-[#6D7175]" />
+        <h1 className="text-xl font-bold text-[#202223]">Paramètres</h1>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar */}
+        <aside className="lg:w-64 shrink-0">
+          <div className="bg-white rounded-xl border border-[#E1E1E1] p-2 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+            {SECTIONS.map((g) => (
+              <div key={g.group} className="mb-1">
+                <p className="px-3 pt-2.5 pb-1 text-[10px] font-bold text-[#6D7175] uppercase tracking-wide">{g.group}</p>
+                {g.items.map((item) => (
+                  <button key={item.id} onClick={() => setActive(item.id)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${active === item.id ? 'bg-[#008060] text-white font-semibold' : 'text-[#202223] hover:bg-black/5'}`}>
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <ActiveComp />
+        </div>
+      </div>
+    </div>
+  );
+}

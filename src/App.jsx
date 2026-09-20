@@ -1,1 +1,150 @@
-aW1wb3J0IHsgVG9hc3RlciB9IGZyb20gIkAvY29tcG9uZW50cy91aS90b2FzdGVyIgppbXBvcnQgeyBRdWVyeUNsaWVudFByb3ZpZGVyIH0gZnJvbSAnQHRhbnN0YWNrL3JlYWN0LXF1ZXJ5JwppbXBvcnQgeyBxdWVyeUNsaWVudEluc3RhbmNlIH0gZnJvbSAnQC9saWIvcXVlcnktY2xpZW50JwppbXBvcnQgeyBCcm93c2VyUm91dGVyIGFzIFJvdXRlciwgUm91dGUsIFJvdXRlcywgTmF2aWdhdGUgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IFBhZ2VOb3RGb3VuZCBmcm9tICcuL2xpYi9QYWdlTm90Rm91bmQnOwppbXBvcnQgeyBBdXRoUHJvdmlkZXIsIHVzZUF1dGggfSBmcm9tICdAL2xpYi9BdXRoQ29udGV4dCc7CmltcG9ydCBVc2VyTm90UmVnaXN0ZXJlZEVycm9yIGZyb20gJ0AvY29tcG9uZW50cy9Vc2VyTm90UmVnaXN0ZXJlZEVycm9yJzsKaW1wb3J0IFByb3RlY3RlZFJvdXRlIGZyb20gJ0AvY29tcG9uZW50cy9Qcm90ZWN0ZWRSb3V0ZSc7CmltcG9ydCBTY3JvbGxUb1RvcCBmcm9tICcuL2NvbXBvbmVudHMvU2Nyb2xsVG9Ub3AnOwovLyBBZGQgcGFnZSBpbXBvcnRzIGhlcmUKaW1wb3J0IExhbmRpbmcgZnJvbSAnQC9wYWdlcy9MYW5kaW5nJzsKaW1wb3J0IFN0b3JlZnJvbnQgZnJvbSAnQC9wYWdlcy9TdG9yZWZyb250JzsKaW1wb3J0IExvZ2luIGZyb20gJ0AvcGFnZXMvTG9naW4nOwppbXBvcnQgUmVnaXN0ZXIgZnJvbSAnQC9wYWdlcy9SZWdpc3Rlcic7CmltcG9ydCBGb3Jnb3RQYXNzd29yZCBmcm9tICdAL3BhZ2VzL0ZvcmdvdFBhc3N3b3JkJzsKaW1wb3J0IFJlc2V0UGFzc3dvcmQgZnJvbSAnQC9wYWdlcy9SZXNldFBhc3N3b3JkJzsKaW1wb3J0IEFkbWluTGF5b3V0IGZyb20gJ0AvY29tcG9uZW50cy9hZG1pbi9BZG1pbkxheW91dCc7CmltcG9ydCBEYXNoYm9hcmQgZnJvbSAnQC9wYWdlcy9EYXNoYm9hcmQnOwppbXBvcnQgVGhlbWVFZGl0b3IgZnJvbSAnQC9wYWdlcy9UaGVtZUVkaXRvcic7CmltcG9ydCBBbmFseXRpY3MgZnJvbSAnQC9wYWdlcy9BbmFseXRpY3MnOwppbXBvcnQgVGhlbWVHYWxsZXJ5IGZyb20gJ0AvcGFnZXMvVGhlbWVHYWxsZXJ5JzsKaW1wb3J0IFN0b3JlU2V0dXAgZnJvbSAnQC9wYWdlcy9TdG9yZVNldHVwJzsKaW1wb3J0IFByb2R1Y3RzIGZyb20gJ0AvcGFnZXMvUHJvZHVjdHMnOwppbXBvcnQgT3JkZXJzIGZyb20gJ0AvcGFnZXMvT3JkZXJzJzsKaW1wb3J0IEN1c3RvbWVycyBmcm9tICdAL3BhZ2VzL0N1c3RvbWVycyc7CmltcG9ydCBDb2xsZWN0aW9ucyBmcm9tICdAL3BhZ2VzL0NvbGxlY3Rpb25zJzsKaW1wb3J0IERpc2NvdW50cyBmcm9tICdAL3BhZ2VzL0Rpc2NvdW50cyc7CmltcG9ydCBHcm93dGggZnJvbSAnQC9wYWdlcy9Hcm93dGgnOwppbXBvcnQgQ29udGVudCBmcm9tICdAL3BhZ2VzL0NvbnRlbnQnOwppbXBvcnQgTWFya2V0aW5nIGZyb20gJ0AvcGFnZXMvTWFya2V0aW5nJzsKaW1wb3J0IEFzc2lzdGFudElBIGZyb20gJ0AvcGFnZXMvQXNzaXN0YW50SUEnOwppbXBvcnQgQXV0b21hdGlvbnMgZnJvbSAnQC9wYWdlcy9BdXRvbWF0aW9ucyc7CmltcG9ydCBBY2NvdW50aW5nIGZyb20gJ0AvcGFnZXMvQWNjb3VudGluZyc7CmltcG9ydCBNYXJrZXRzIGZyb20gJ0AvcGFnZXMvTWFya2V0cyc7CmltcG9ydCBDaGF0IGZyb20gJ0AvcGFnZXMvQ2hhdCc7CmltcG9ydCBBcHBzIGZyb20gJ0AvcGFnZXMvQXBwcyc7CmltcG9ydCBBcnRpY2xlRGV0YWlsIGZyb20gJ0AvcGFnZXMvQXJ0aWNsZURldGFpbCc7CmltcG9ydCBUZWFtIGZyb20gJ0AvcGFnZXMvVGVhbSc7CmltcG9ydCBSZXBvcnRzIGZyb20gJ0AvcGFnZXMvUmVwb3J0cyc7CmltcG9ydCBTZXR0aW5ncyBmcm9tICdAL3BhZ2VzL1NldHRpbmdzJzsKaW1wb3J0IEJpbGxpbmcgZnJvbSAnQC9wYWdlcy9CaWxsaW5nJzsKaW1wb3J0IEludmVudG9yeSBmcm9tICdAL3BhZ2VzL0ludmVudG9yeSc7CmltcG9ydCBTaGlwcGluZ1NldHRpbmdzIGZyb20gJ0AvcGFnZXMvU2hpcHBpbmdTZXR0aW5ncyc7CmltcG9ydCBSZXZpZXdzIGZyb20gJ0AvcGFnZXMvUmV2aWV3cyc7CmltcG9ydCBEb21haW5zIGZyb20gJ0AvcGFnZXMvRG9tYWlucyc7CmltcG9ydCBTdGFmZk1hbmFnZW1lbnQgZnJvbSAnQC9wYWdlcy9TdGFmZk1hbmFnZW1lbnQnOwppbXBvcnQgU3RvcmVTZXR0aW5ncyBmcm9tICdAL3BhZ2VzL1N0b3JlU2V0dGluZ3MnOwppbXBvcnQgU3VwcG9ydCBmcm9tICdAL3BhZ2VzL1N1cHBvcnQnOwppbXBvcnQgQmxvZyBmcm9tICdAL3BhZ2VzL0Jsb2cnOwppbXBvcnQgUHJvZHVjdEFuYWx5dGljcyBmcm9tICdAL3BhZ2VzL1Byb2R1Y3RBbmFseXRpY3MnOwppbXBvcnQgTWVkaWFMaWJyYXJ5IGZyb20gJ0AvcGFnZXMvTWVkaWFMaWJyYXJ5JzsKaW1wb3J0IEFiYW5kb25lZENoZWNrb3V0cyBmcm9tICdAL3BhZ2VzL0FiYW5kb25lZENoZWNrb3V0cyc7Cgpjb25zdCBBdXRoZW50aWNhdGVkQXBwID0gKCkgPT4gewogIGNvbnN0IHsgaXNMb2FkaW5nQXV0aCwgaXNMb2FkaW5nUHVibGljU2V0dGluZ3MsIGF1dGhFcnJvciwgbmF2aWdhdGVUb0xvZ2luIH0gPSB1c2VBdXRoKCk7CgogIC8vIFNob3cgbG9hZGluZyBzcGlubmVyIHdoaWxlIGNoZWNraW5nIGFwcCBwdWJsaWMgc2V0dGluZ3Mgb3IgYXV0aAogIGlmIChpc0xvYWRpbmdQdWJsaWNTZXR0aW5ncyB8fCBpc0xvYWRpbmdBdXRoKSB7CiAgICByZXR1cm4gKAogICAgICA8ZGl2IGNsYXNzTmFtZT0iZml4ZWQgaW5zZXQtMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InctOCBoLTggYm9yZGVyLTQgYm9yZGVyLXNsYXRlLTIwMCBib3JkZXItdC1zbGF0ZS04MDAgcm91bmRlZC1mdWxsIGFuaW1hdGUtc3BpbiI+PC9kaXY+CiAgICAgIDwvZGl2PgogICAgKTsKICB9CgogIC8vIEhhbmRsZSBhdXRoZW50aWNhdGlvbiBlcnJvcnMKICBpZiAoYXV0aEVycm9yKSB7CiAgICBpZiAoYXV0aEVycm9yLnR5cGUgPT09ICd1c2VyX25vdF9yZWdpc3RlcmVkJykgewogICAgICByZXR1cm4gPFVzZXJOb3RSZWdpc3RlcmVkRXJyb3IgLz47CiAgICB9IGVsc2UgaWYgKGF1dGhFcnJvci50eXBlID09PSAnYXV0aF9yZXF1aXJlZCcpIHsKICAgICAgLy8gUmVkaXJlY3QgdG8gbG9naW4gYXV0b21hdGljYWxseQogICAgICBuYXZpZ2F0ZVRvTG9naW4oKTsKICAgICAgcmV0dXJuIG51bGw7CiAgICB9CiAgfQoKICAvLyBSZW5kZXIgdGhlIG1haW4gYXBwCiAgcmV0dXJuICgKICAgIDxSb3V0ZXM+CiAgICAgIHsvKiBQdWJsaWMgcm91dGVzICovfQogICAgICA8Um91dGUgcGF0aD0iLyIgZWxlbWVudD17PExhbmRpbmcgLz59IC8+CiAgICAgIDxSb3V0ZSBwYXRoPSIvc3RvcmUvOnNsdWciIGVsZW1lbnQ9ezxTdG9yZWZyb250IC8+fSAvPgogICAgICA8Um91dGUgcGF0aD0iL3N0b3JlLzpzbHVnL2Jsb2cvOmhhbmRsZSIgZWxlbWVudD17PEFydGljbGVEZXRhaWwgLz59IC8+CiAgICAgIDxSb3V0ZSBwYXRoPSIvbG9naW4iIGVsZW1lbnQ9ezxMb2dpbiAvPn0gLz4KICAgICAgPFJvdXRlIHBhdGg9Ii9yZWdpc3RlciIgZWxlbWVudD17PFJlZ2lzdGVyIC8+fSAvPgogICAgICA8Um91dGUgcGF0aD0iL2ZvcmdvdC1wYXNzd29yZCIgZWxlbWVudD17PEZvcmdvdFBhc3N3b3JkIC8+fSAvPgogICAgICA8Um91dGUgcGF0aD0iL3Jlc2V0LXBhc3N3b3JkIiBlbGVtZW50PXs8UmVzZXRQYXNzd29yZCAvPn0gLz4KCiAgICAgIHsvKiBBdXRoZW50aWNhdGVkIGFkbWluIHJvdXRlcyAqL30KICAgICAgPFJvdXRlIGVsZW1lbnQ9ezxQcm90ZWN0ZWRSb3V0ZSB1bmF1dGhlbnRpY2F0ZWRFbGVtZW50PXs8TmF2aWdhdGUgdG89Ii9sb2dpbiIgcmVwbGFjZSAvPn0gLz59PgogICAgICAgIDxSb3V0ZSBlbGVtZW50PXs8QWRtaW5MYXlvdXQgLz59PgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9kYXNoYm9hcmQiIGVsZW1lbnQ9ezxEYXNoYm9hcmQgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3RoZW1lLWVkaXRvciIgZWxlbWVudD17PFRoZW1lRWRpdG9yIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9hbmFseXRpY3MiIGVsZW1lbnQ9ezxBbmFseXRpY3MgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3RoZW1lLWdhbGxlcnkiIGVsZW1lbnQ9ezxUaGVtZUdhbGxlcnkgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3N0b3JlLXNldHVwIiBlbGVtZW50PXs8U3RvcmVTZXR1cCAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvcHJvZHVjdHMiIGVsZW1lbnQ9ezxQcm9kdWN0cyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvb3JkZXJzIiBlbGVtZW50PXs8T3JkZXJzIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9jdXN0b21lcnMiIGVsZW1lbnQ9ezxDdXN0b21lcnMgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL2NvbGxlY3Rpb25zIiBlbGVtZW50PXs8Q29sbGVjdGlvbnMgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL2Rpc2NvdW50cyIgZWxlbWVudD17PERpc2NvdW50cyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvZ3Jvd3RoIiBlbGVtZW50PXs8R3Jvd3RoIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9jb250ZW50IiBlbGVtZW50PXs8Q29udGVudCAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvbWFya2V0aW5nIiBlbGVtZW50PXs8TWFya2V0aW5nIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9hc3Npc3RhbnQtaWEiIGVsZW1lbnQ9ezxBc3Npc3RhbnRJQSAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvYXV0b21hdGlvbnMiIGVsZW1lbnQ9ezxBdXRvbWF0aW9ucyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvYWNjb3VudGluZyIgZWxlbWVudD17PEFjY291bnRpbmcgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL21hcmtldHMiIGVsZW1lbnQ9ezxNYXJrZXRzIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9jaGF0IiBlbGVtZW50PXs8Q2hhdCAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvYXBwcyIgZWxlbWVudD17PEFwcHMgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3RlYW0iIGVsZW1lbnQ9ezxUZWFtIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9yZXBvcnRzIiBlbGVtZW50PXs8UmVwb3J0cyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvc2V0dGluZ3MiIGVsZW1lbnQ9ezxTZXR0aW5ncyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvYmlsbGluZyIgZWxlbWVudD17PEJpbGxpbmcgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL2ludmVudG9yeSIgZWxlbWVudD17PEludmVudG9yeSAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvc2hpcHBpbmctc2V0dGluZ3MiIGVsZW1lbnQ9ezxTaGlwcGluZ1NldHRpbmdzIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9yZXZpZXdzIiBlbGVtZW50PXs8UmV2aWV3cyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvZG9tYWlucyIgZWxlbWVudD17PERvbWFpbnMgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3N0YWZmLW1hbmFnZW1lbnQiIGVsZW1lbnQ9ezxTdGFmZk1hbmFnZW1lbnQgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL3N0b3JlLXNldHRpbmdzIiBlbGVtZW50PXs8U3RvcmVTZXR0aW5ncyAvPn0gLz4KICAgICAgICAgIDxSb3V0ZSBwYXRoPSIvc3VwcG9ydCIgZWxlbWVudD17PFN1cHBvcnQgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL2Jsb2ciIGVsZW1lbnQ9ezxCbG9nIC8+fSAvPgogICAgICAgICAgPFJvdXRlIHBhdGg9Ii9wcm9kdWN0LWFuYWx5dGljcyIgZWxlbWVudD17PFByb2R1Y3RBbmFseXRpY3MgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL21lZGlhLWxpYnJhcnkiIGVsZW1lbnQ9ezxNZWRpYUxpYnJhcnkgLz59IC8+CiAgICAgICAgICA8Um91dGUgcGF0aD0iL2FiYW5kb25lZC1jaGVja291dHMiIGVsZW1lbnQ9ezxBYmFuZG9uZWRDaGVja291dHMgLz59IC8+CiAgICAgICAgPC9Sb3V0ZT4KICAgICAgPC9Sb3V0ZT4KCiAgICAgIDxSb3V0ZSBwYXRoPSIqIiBlbGVtZW50PXs8UGFnZU5vdEZvdW5kIC8+fSAvPgogICAgPC9Sb3V0ZXM+CiAgKTsKfTsKCgpmdW5jdGlvbiBBcHAoKSB7CgogIHJldHVybiAoCiAgICA8QXV0aFByb3ZpZGVyPgogICAgICA8UXVlcnlDbGllbnRQcm92aWRlciBjbGllbnQ9e3F1ZXJ5Q2xpZW50SW5zdGFuY2V9PgogICAgICAgIDxSb3V0ZXI+CiAgICAgICAgICA8U2Nyb2xsVG9Ub3AgLz4KICAgICAgICAgIDxBdXRoZW50aWNhdGVkQXBwIC8+CiAgICAgICAgPC9Sb3V0ZXI+CiAgICAgICAgPFRvYXN0ZXIgLz4KICAgICAgPC9RdWVyeUNsaWVudFByb3ZpZGVyPgogICAgPC9BdXRoUHJvdmlkZXI+CiAgKQp9CgpleHBvcnQgZGVmYXVsdCBBcHA=
+import { Toaster } from "@/components/ui/toaster"
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClientInstance } from '@/lib/query-client'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import PageNotFound from './lib/PageNotFound';
+import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
+// Add page imports here
+import Landing from '@/pages/Landing';
+import Storefront from '@/pages/Storefront';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
+import AdminLayout from '@/components/admin/AdminLayout';
+import Dashboard from '@/pages/Dashboard';
+import ThemeEditor from '@/pages/ThemeEditor';
+import Analytics from '@/pages/Analytics';
+import ThemeGallery from '@/pages/ThemeGallery';
+import StoreSetup from '@/pages/StoreSetup';
+import Products from '@/pages/Products';
+import Orders from '@/pages/Orders';
+import Customers from '@/pages/Customers';
+import Collections from '@/pages/Collections';
+import Discounts from '@/pages/Discounts';
+import Growth from '@/pages/Growth';
+import Content from '@/pages/Content';
+import Marketing from '@/pages/Marketing';
+import AssistantIA from '@/pages/AssistantIA';
+import Automations from '@/pages/Automations';
+import Accounting from '@/pages/Accounting';
+import Markets from '@/pages/Markets';
+import Chat from '@/pages/Chat';
+import Apps from '@/pages/Apps';
+import ArticleDetail from '@/pages/ArticleDetail';
+import Team from '@/pages/Team';
+import Reports from '@/pages/Reports';
+import Settings from '@/pages/Settings';
+import Billing from '@/pages/Billing';
+import Inventory from '@/pages/Inventory';
+import ShippingSettings from '@/pages/ShippingSettings';
+import Reviews from '@/pages/Reviews';
+import Domains from '@/pages/Domains';
+import StaffManagement from '@/pages/StaffManagement';
+import StoreSettings from '@/pages/StoreSettings';
+import Support from '@/pages/Support';
+import Blog from '@/pages/Blog';
+import ProductAnalytics from '@/pages/ProductAnalytics';
+import MediaLibrary from '@/pages/MediaLibrary';
+import AbandonedCheckouts from '@/pages/AbandonedCheckouts';
+
+const AuthenticatedApp = () => {
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+
+  // Show loading spinner while checking app public settings or auth
+  if (isLoadingPublicSettings || isLoadingAuth) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Handle authentication errors
+  if (authError) {
+    if (authError.type === 'user_not_registered') {
+      return <UserNotRegisteredError />;
+    } else if (authError.type === 'auth_required') {
+      // Redirect to login automatically
+      navigateToLogin();
+      return null;
+    }
+  }
+
+  // Render the main app
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/store/:slug" element={<Storefront />} />
+      <Route path="/store/:slug/blog/:handle" element={<ArticleDetail />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+
+      {/* Authenticated admin routes */}
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/theme-editor" element={<ThemeEditor />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/theme-gallery" element={<ThemeGallery />} />
+          <Route path="/store-setup" element={<StoreSetup />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/collections" element={<Collections />} />
+          <Route path="/discounts" element={<Discounts />} />
+          <Route path="/growth" element={<Growth />} />
+          <Route path="/content" element={<Content />} />
+          <Route path="/marketing" element={<Marketing />} />
+          <Route path="/assistant-ia" element={<AssistantIA />} />
+          <Route path="/automations" element={<Automations />} />
+          <Route path="/accounting" element={<Accounting />} />
+          <Route path="/markets" element={<Markets />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/apps" element={<Apps />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/shipping-settings" element={<ShippingSettings />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/domains" element={<Domains />} />
+          <Route path="/staff-management" element={<StaffManagement />} />
+          <Route path="/store-settings" element={<StoreSettings />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/product-analytics" element={<ProductAnalytics />} />
+          <Route path="/media-library" element={<MediaLibrary />} />
+          <Route path="/abandoned-checkouts" element={<AbandonedCheckouts />} />
+        </Route>
+      </Route>
+
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
+  );
+};
+
+
+function App() {
+
+  return (
+    <AuthProvider>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router>
+          <ScrollToTop />
+          <AuthenticatedApp />
+        </Router>
+        <Toaster />
+      </QueryClientProvider>
+    </AuthProvider>
+  )
+}
+
+export default App

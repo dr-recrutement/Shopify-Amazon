@@ -1,1 +1,122 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsKICBEaWFsb2csIERpYWxvZ0NvbnRlbnQsIERpYWxvZ0hlYWRlciwgRGlhbG9nVGl0bGUsIERpYWxvZ0Zvb3RlciwKfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvZGlhbG9nJzsKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7CmltcG9ydCB7IExvYWRlcjIsIFJlZnJlc2hDdyB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7Cgpjb25zdCBUWVBFUyA9IFsKICB7IHZhbHVlOiAncGVyY2VudGFnZScsIGxhYmVsOiAnUG91cmNlbnRhZ2UnIH0sCiAgeyB2YWx1ZTogJ2ZpeGVkX2Ftb3VudCcsIGxhYmVsOiAnTW9udGFudCBmaXhlJyB9LAogIHsgdmFsdWU6ICdmcmVlX3NoaXBwaW5nJywgbGFiZWw6ICdMaXZyYWlzb24gZ3JhdHVpdGUnIH0sCl07Cgpjb25zdCBpbnB1dENscyA9ICd3LWZ1bGwgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbWQgdGV4dC1zbSBiZy13aGl0ZSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctWyMwMDgwNjBdLzMwJzsKCmZ1bmN0aW9uIEZpZWxkKHsgbGFiZWwsIGNoaWxkcmVuLCBoaW50IH0pIHsKICByZXR1cm4gKAogICAgPGRpdj4KICAgICAgPGxhYmVsIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyMyMDIyMjNdIG1iLTEuNSI+e2xhYmVsfTwvbGFiZWw+CiAgICAgIHtjaGlsZHJlbn0KICAgICAge2hpbnQgJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMXB4XSB0ZXh0LVsjNkQ3MTc1XSBtdC0xIj57aGludH08L3A+fQogICAgPC9kaXY+CiAgKTsKfQoKZnVuY3Rpb24gZ2VuQ29kZSgpIHsKICByZXR1cm4gJ1NFTExJQS0nICsgTWF0aC5yYW5kb20oKS50b1N0cmluZygzNikuc2xpY2UoMiwgNykudG9VcHBlckNhc2UoKTsKfQoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gRGlzY291bnRGb3JtKHsgb3Blbiwgb25PcGVuQ2hhbmdlLCBzdG9yZSwgZGlzY291bnQsIG9uU2F2ZWQgfSkgewogIGNvbnN0IFtmb3JtLCBzZXRGb3JtXSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtzYXZpbmcsIHNldFNhdmluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoIW9wZW4pIHJldHVybjsKICAgIGNvbnN0IGJhc2UgPSBkaXNjb3VudCB8fCB7CiAgICAgIGNvZGU6IGdlbkNvZGUoKSwgdHlwZTogJ3BlcmNlbnRhZ2UnLCB2YWx1ZTogMTAsIG1pbl9vcmRlcl9hbW91bnQ6IDAsCiAgICAgIHVzYWdlX2xpbWl0OiAwLCB1c2VkX2NvdW50OiAwLCBzdGF0dXM6ICdhY3RpdmUnLCBhcHBsaWVzX3RvOiAnYWxsJywgc3RhcnRzX2F0OiAnJywgZW5kc19hdDogJycsCiAgICB9OwogICAgc2V0Rm9ybSh7IC4uLmJhc2UgfSk7CiAgfSwgW29wZW4sIGRpc2NvdW50XSk7CgogIGlmICghZm9ybSkgcmV0dXJuIG51bGw7CiAgY29uc3Qgc2V0ID0gKHBhdGNoKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgLi4ucGF0Y2ggfSk7CiAgY29uc3QgaXNOZXcgPSAhZm9ybS5pZDsKCiAgY29uc3Qgc2F2ZSA9IGFzeW5jICgpID0+IHsKICAgIGlmICghZm9ybS5jb2RlIHx8IChmb3JtLnR5cGUgIT09ICdmcmVlX3NoaXBwaW5nJyAmJiAoZm9ybS52YWx1ZSA9PT0gJycgfHwgZm9ybS52YWx1ZSA9PSBudWxsKSkpIHJldHVybjsKICAgIHNldFNhdmluZyh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHBheWxvYWQgPSB7CiAgICAgICAgc3RvcmVfaWQ6IHN0b3JlLmlkLAogICAgICAgIGNvZGU6IGZvcm0uY29kZS50b1VwcGVyQ2FzZSgpLAogICAgICAgIHR5cGU6IGZvcm0udHlwZSwKICAgICAgICB2YWx1ZTogTnVtYmVyKGZvcm0udmFsdWUpIHx8IDAsCiAgICAgICAgbWluX29yZGVyX2Ftb3VudDogTnVtYmVyKGZvcm0ubWluX29yZGVyX2Ftb3VudCkgfHwgMCwKICAgICAgICB1c2FnZV9saW1pdDogTnVtYmVyKGZvcm0udXNhZ2VfbGltaXQpIHx8IDAsCiAgICAgICAgdXNlZF9jb3VudDogZm9ybS51c2VkX2NvdW50IHx8IDAsCiAgICAgICAgc3RhcnRzX2F0OiBmb3JtLnN0YXJ0c19hdCA/IG5ldyBEYXRlKGZvcm0uc3RhcnRzX2F0KS50b0lTT1N0cmluZygpIDogdW5kZWZpbmVkLAogICAgICAgIGVuZHNfYXQ6IGZvcm0uZW5kc19hdCA/IG5ldyBEYXRlKGZvcm0uZW5kc19hdCkudG9JU09TdHJpbmcoKSA6IHVuZGVmaW5lZCwKICAgICAgICBzdGF0dXM6IGZvcm0uc3RhdHVzIHx8ICdhY3RpdmUnLAogICAgICAgIGFwcGxpZXNfdG86IGZvcm0uYXBwbGllc190byB8fCAnYWxsJywKICAgICAgfTsKICAgICAgaWYgKGlzTmV3KSBhd2FpdCBiYXNlNDQuZW50aXRpZXMuRGlzY291bnQuY3JlYXRlKHBheWxvYWQpOwogICAgICBlbHNlIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5EaXNjb3VudC51cGRhdGUoZm9ybS5pZCwgcGF5bG9hZCk7CiAgICAgIG9uU2F2ZWQoKTsKICAgICAgb25PcGVuQ2hhbmdlKGZhbHNlKTsKICAgIH0gZmluYWxseSB7IHNldFNhdmluZyhmYWxzZSk7IH0KICB9OwoKICByZXR1cm4gKAogICAgPERpYWxvZyBvcGVuPXtvcGVufSBvbk9wZW5DaGFuZ2U9e29uT3BlbkNoYW5nZX0+CiAgICAgIDxEaWFsb2dDb250ZW50IGNsYXNzTmFtZT0ibWF4LXctbGciPgogICAgICAgIDxEaWFsb2dIZWFkZXI+CiAgICAgICAgICA8RGlhbG9nVGl0bGU+e2lzTmV3ID8gJ05vdXZlbGxlIHLDqWR1Y3Rpb24nIDogJ01vZGlmaWVyIGxhIHLDqWR1Y3Rpb24nfTwvRGlhbG9nVGl0bGU+CiAgICAgICAgPC9EaWFsb2dIZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktNCI+CiAgICAgICAgICA8RmllbGQgbGFiZWw9IkNvZGUgcHJvbW8gKiI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGdhcC0yIj4KICAgICAgICAgICAgICA8aW5wdXQgdmFsdWU9e2Zvcm0uY29kZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyBjb2RlOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtgJHtpbnB1dENsc30gZm9udC1tb25vIHVwcGVyY2FzZWB9IC8+CiAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uQ2xpY2s9eygpID0+IHNldCh7IGNvZGU6IGdlbkNvZGUoKSB9KX0gY2xhc3NOYW1lPSJweC0zIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbWQgdGV4dC1bIzZENzE3NV0gaG92ZXI6YmctYmxhY2svNSBzaHJpbmstMCI+PFJlZnJlc2hDdyBjbGFzc05hbWU9InctNCBoLTQiIC8+PC9idXR0b24+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9GaWVsZD4KICAgICAgICAgIDxGaWVsZCBsYWJlbD0iVHlwZSI+CiAgICAgICAgICAgIDxzZWxlY3QgdmFsdWU9e2Zvcm0udHlwZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyB0eXBlOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30+CiAgICAgICAgICAgICAge1RZUEVTLm1hcCgodCkgPT4gPG9wdGlvbiBrZXk9e3QudmFsdWV9IHZhbHVlPXt0LnZhbHVlfT57dC5sYWJlbH08L29wdGlvbj4pfQogICAgICAgICAgICA8L3NlbGVjdD4KICAgICAgICAgIDwvRmllbGQ+CiAgICAgICAgICB7Zm9ybS50eXBlICE9PSAnZnJlZV9zaGlwcGluZycgJiYgKAogICAgICAgICAgICA8RmllbGQgbGFiZWw9e2Zvcm0udHlwZSA9PT0gJ3BlcmNlbnRhZ2UnID8gJ1ZhbGV1ciAoJSknIDogJ01vbnRhbnQnfSBoaW50PXtmb3JtLnR5cGUgPT09ICdwZXJjZW50YWdlJyA/ICdFeCA6IDEwIHBvdXIgMTAlJyA6IGBEYW5zIGxhIGRldmlzZSBkZSBsYSBib3V0aXF1ZSAoJHtzdG9yZS5jdXJyZW5jeX0pYH0+CiAgICAgICAgICAgICAgPGlucHV0IHR5cGU9Im51bWJlciIgbWluPSIwIiBzdGVwPXtmb3JtLnR5cGUgPT09ICdwZXJjZW50YWdlJyA/ICcxJyA6ICcwLjAxJ30gdmFsdWU9e2Zvcm0udmFsdWV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgdmFsdWU6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPgogICAgICAgICAgICA8L0ZpZWxkPgogICAgICAgICAgKX0KICAgICAgICAgIDxGaWVsZCBsYWJlbD0iTW9udGFudCBtaW5pbXVtIiBoaW50PSIwID0gcGFzIGRlIG1pbmltdW0iPgogICAgICAgICAgICA8aW5wdXQgdHlwZT0ibnVtYmVyIiBtaW49IjAiIHN0ZXA9IjAuMDEiIHZhbHVlPXtmb3JtLm1pbl9vcmRlcl9hbW91bnR9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgbWluX29yZGVyX2Ftb3VudDogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IC8+CiAgICAgICAgICA8L0ZpZWxkPgogICAgICAgICAgPEZpZWxkIGxhYmVsPSJMaW1pdGUgZCd1dGlsaXNhdGlvbiIgaGludD0iMCA9IGlsbGltaXTDqSI+CiAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJudW1iZXIiIG1pbj0iMCIgdmFsdWU9e2Zvcm0udXNhZ2VfbGltaXR9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgdXNhZ2VfbGltaXQ6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPgogICAgICAgICAgPC9GaWVsZD4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0yIGdhcC0zIj4KICAgICAgICAgICAgPEZpZWxkIGxhYmVsPSJEw6lidXQiPjxpbnB1dCB0eXBlPSJkYXRlIiB2YWx1ZT17Zm9ybS5zdGFydHNfYXQgPyBmb3JtLnN0YXJ0c19hdC5zbGljZSgwLCAxMCkgOiAnJ30gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyBzdGFydHNfYXQ6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPjwvRmllbGQ+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iRmluIj48aW5wdXQgdHlwZT0iZGF0ZSIgdmFsdWU9e2Zvcm0uZW5kc19hdCA/IGZvcm0uZW5kc19hdC5zbGljZSgwLCAxMCkgOiAnJ30gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyBlbmRzX2F0OiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30gLz48L0ZpZWxkPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8RmllbGQgbGFiZWw9IlN0YXR1dCI+CiAgICAgICAgICAgIDxzZWxlY3QgdmFsdWU9e2Zvcm0uc3RhdHVzfSBvbkNoYW5nZT17KGUpID0+IHNldCh7IHN0YXR1czogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9PgogICAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9ImFjdGl2ZSI+QWN0aXZlPC9vcHRpb24+CiAgICAgICAgICAgICAgPG9wdGlvbiB2YWx1ZT0ic2NoZWR1bGVkIj5Qcm9ncmFtbcOpZTwvb3B0aW9uPgogICAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9ImRpc2FibGVkIj5Ew6lzYWN0aXbDqWU8L29wdGlvbj4KICAgICAgICAgICAgPC9zZWxlY3Q+CiAgICAgICAgICA8L0ZpZWxkPgogICAgICAgIDwvZGl2PgogICAgICAgIDxEaWFsb2dGb290ZXIgY2xhc3NOYW1lPSJwdC0yIj4KICAgICAgICAgIDxCdXR0b24gdmFyaWFudD0ib3V0bGluZSIgb25DbGljaz17KCkgPT4gb25PcGVuQ2hhbmdlKGZhbHNlKX0+QW5udWxlcjwvQnV0dG9uPgogICAgICAgICAgPEJ1dHRvbiBvbkNsaWNrPXtzYXZlfSBkaXNhYmxlZD17c2F2aW5nfSBjbGFzc05hbWU9ImJnLVsjMDA4MDYwXSBob3ZlcjpiZy1bIzAwNjk0ZF0iPgogICAgICAgICAgICB7c2F2aW5nID8gPExvYWRlcjIgY2xhc3NOYW1lPSJ3LTQgaC00IGFuaW1hdGUtc3BpbiIgLz4gOiBudWxsfSB7aXNOZXcgPyAnQ3LDqWVyJyA6ICdFbnJlZ2lzdHJlcid9CiAgICAgICAgICA8L0J1dHRvbj4KICAgICAgICA8L0RpYWxvZ0Zvb3Rlcj4KICAgICAgPC9EaWFsb2dDb250ZW50PgogICAgPC9EaWFsb2c+CiAgKTsKfQ==
+import { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Loader2, RefreshCw } from 'lucide-react';
+
+const TYPES = [
+  { value: 'percentage', label: 'Pourcentage' },
+  { value: 'fixed_amount', label: 'Montant fixe' },
+  { value: 'free_shipping', label: 'Livraison gratuite' },
+];
+
+const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+
+function Field({ label, children, hint }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-[#202223] mb-1.5">{label}</label>
+      {children}
+      {hint && <p className="text-[11px] text-[#6D7175] mt-1">{hint}</p>}
+    </div>
+  );
+}
+
+function genCode() {
+  return 'SELLIA-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+}
+
+export default function DiscountForm({ open, onOpenChange, store, discount, onSaved }) {
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const base = discount || {
+      code: genCode(), type: 'percentage', value: 10, min_order_amount: 0,
+      usage_limit: 0, used_count: 0, status: 'active', applies_to: 'all', starts_at: '', ends_at: '',
+    };
+    setForm({ ...base });
+  }, [open, discount]);
+
+  if (!form) return null;
+  const set = (patch) => setForm({ ...form, ...patch });
+  const isNew = !form.id;
+
+  const save = async () => {
+    if (!form.code || (form.type !== 'free_shipping' && (form.value === '' || form.value == null))) return;
+    setSaving(true);
+    try {
+      const payload = {
+        store_id: store.id,
+        code: form.code.toUpperCase(),
+        type: form.type,
+        value: Number(form.value) || 0,
+        min_order_amount: Number(form.min_order_amount) || 0,
+        usage_limit: Number(form.usage_limit) || 0,
+        used_count: form.used_count || 0,
+        starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : undefined,
+        ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : undefined,
+        status: form.status || 'active',
+        applies_to: form.applies_to || 'all',
+      };
+      if (isNew) await base44.entities.Discount.create(payload);
+      else await base44.entities.Discount.update(form.id, payload);
+      onSaved();
+      onOpenChange(false);
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{isNew ? 'Nouvelle réduction' : 'Modifier la réduction'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Field label="Code promo *">
+            <div className="flex gap-2">
+              <input value={form.code} onChange={(e) => set({ code: e.target.value })} className={`${inputCls} font-mono uppercase`} />
+              <button type="button" onClick={() => set({ code: genCode() })} className="px-3 border border-[#E1E1E1] rounded-md text-[#6D7175] hover:bg-black/5 shrink-0"><RefreshCw className="w-4 h-4" /></button>
+            </div>
+          </Field>
+          <Field label="Type">
+            <select value={form.type} onChange={(e) => set({ type: e.target.value })} className={inputCls}>
+              {TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </Field>
+          {form.type !== 'free_shipping' && (
+            <Field label={form.type === 'percentage' ? 'Valeur (%)' : 'Montant'} hint={form.type === 'percentage' ? 'Ex : 10 pour 10%' : `Dans la devise de la boutique (${store.currency})`}>
+              <input type="number" min="0" step={form.type === 'percentage' ? '1' : '0.01'} value={form.value} onChange={(e) => set({ value: e.target.value })} className={inputCls} />
+            </Field>
+          )}
+          <Field label="Montant minimum" hint="0 = pas de minimum">
+            <input type="number" min="0" step="0.01" value={form.min_order_amount} onChange={(e) => set({ min_order_amount: e.target.value })} className={inputCls} />
+          </Field>
+          <Field label="Limite d'utilisation" hint="0 = illimité">
+            <input type="number" min="0" value={form.usage_limit} onChange={(e) => set({ usage_limit: e.target.value })} className={inputCls} />
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Début"><input type="date" value={form.starts_at ? form.starts_at.slice(0, 10) : ''} onChange={(e) => set({ starts_at: e.target.value })} className={inputCls} /></Field>
+            <Field label="Fin"><input type="date" value={form.ends_at ? form.ends_at.slice(0, 10) : ''} onChange={(e) => set({ ends_at: e.target.value })} className={inputCls} /></Field>
+          </div>
+          <Field label="Statut">
+            <select value={form.status} onChange={(e) => set({ status: e.target.value })} className={inputCls}>
+              <option value="active">Active</option>
+              <option value="scheduled">Programmée</option>
+              <option value="disabled">Désactivée</option>
+            </select>
+          </Field>
+        </div>
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Annuler</Button>
+          <Button onClick={save} disabled={saving} className="bg-[#008060] hover:bg-[#00694d]">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} {isNew ? 'Créer' : 'Enregistrer'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

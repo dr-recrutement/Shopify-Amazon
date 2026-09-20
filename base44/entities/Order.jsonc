@@ -1,1 +1,240 @@
-ewogICJuYW1lIjogIk9yZGVyIiwKICAidHlwZSI6ICJvYmplY3QiLAogICJwcm9wZXJ0aWVzIjogewogICAgInN0b3JlX2lkIjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgIm9yZGVyX251bWJlciI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIk51bVx1MDBlOXJvIGFmZmljaFx1MDBlOSAoZXg6ICMxMDAxKSIKICAgIH0sCiAgICAiY3VzdG9tZXJfaWQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJOdWxsIHBvdXIgY29tbWFuZGUgaW52aXRcdTAwZTkiCiAgICB9LAogICAgImN1c3RvbWVyX2VtYWlsIjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgIml0ZW1zIjogewogICAgICAidHlwZSI6ICJhcnJheSIsCiAgICAgICJpdGVtcyI6IHsKICAgICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICAgInByb2R1Y3RfaWQiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgIH0sCiAgICAgICAgICAidmFyaWFudF9pZCI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgfSwKICAgICAgICAgICJ0aXRsZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgfSwKICAgICAgICAgICJ2YXJpYW50X3RpdGxlIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICB9LAogICAgICAgICAgImltYWdlIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICB9LAogICAgICAgICAgInByaWNlIjogewogICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICB9LAogICAgICAgICAgInF1YW50aXR5IjogewogICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICB9LAogICAgICAgICAgInRvdGFsIjogewogICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICB9CiAgICAgICAgfSwKICAgICAgICAicmVxdWlyZWQiOiBbCiAgICAgICAgICAicHJvZHVjdF9pZCIsCiAgICAgICAgICAicHJpY2UiLAogICAgICAgICAgInF1YW50aXR5IiwKICAgICAgICAgICJ0b3RhbCIKICAgICAgICBdCiAgICAgIH0KICAgIH0sCiAgICAic3VidG90YWwiOiB7CiAgICAgICJ0eXBlIjogIm51bWJlciIsCiAgICAgICJkZWZhdWx0IjogMAogICAgfSwKICAgICJkaXNjb3VudF90b3RhbCI6IHsKICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgImRlZmF1bHQiOiAwCiAgICB9LAogICAgInNoaXBwaW5nX3RvdGFsIjogewogICAgICAidHlwZSI6ICJudW1iZXIiLAogICAgICAiZGVmYXVsdCI6IDAKICAgIH0sCiAgICAidGF4X3RvdGFsIjogewogICAgICAidHlwZSI6ICJudW1iZXIiLAogICAgICAiZGVmYXVsdCI6IDAKICAgIH0sCiAgICAidG90YWwiOiB7CiAgICAgICJ0eXBlIjogIm51bWJlciIsCiAgICAgICJkZWZhdWx0IjogMAogICAgfSwKICAgICJjdXJyZW5jeSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJzdGF0dXMiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJwZW5kaW5nIiwKICAgICAgICAicGFpZCIsCiAgICAgICAgInByb2Nlc3NpbmciLAogICAgICAgICJmdWxmaWxsZWQiLAogICAgICAgICJzaGlwcGVkIiwKICAgICAgICAiZGVsaXZlcmVkIiwKICAgICAgICAiY2FuY2VsbGVkIiwKICAgICAgICAicmVmdW5kZWQiLAogICAgICAgICJwYXJ0aWFsbHlfcmVmdW5kZWQiCiAgICAgIF0sCiAgICAgICJkZWZhdWx0IjogInBlbmRpbmciCiAgICB9LAogICAgInBheW1lbnRfc3RhdHVzIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZW51bSI6IFsKICAgICAgICAicGVuZGluZyIsCiAgICAgICAgInBhaWQiLAogICAgICAgICJwYXJ0aWFsbHlfcGFpZCIsCiAgICAgICAgInJlZnVuZGVkIiwKICAgICAgICAidm9pZGVkIgogICAgICBdLAogICAgICAiZGVmYXVsdCI6ICJwZW5kaW5nIgogICAgfSwKICAgICJmdWxmaWxsbWVudF9zdGF0dXMiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJ1bmZ1bGZpbGxlZCIsCiAgICAgICAgInBhcnRpYWwiLAogICAgICAgICJmdWxmaWxsZWQiCiAgICAgIF0sCiAgICAgICJkZWZhdWx0IjogInVuZnVsZmlsbGVkIgogICAgfSwKICAgICJzaGlwcGluZ19hZGRyZXNzIjogewogICAgICAidHlwZSI6ICJvYmplY3QiLAogICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAiY291bnRyeSI6IHsKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgICJyZWdpb24iOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAiY2l0eSI6IHsKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgICJhZGRyZXNzIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgInBvc3RhbF9jb2RlIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgInBob25lIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0KICAgICAgfQogICAgfSwKICAgICJiaWxsaW5nX2FkZHJlc3MiOiB7CiAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICJjb3VudHJ5IjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgInJlZ2lvbiI6IHsKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgICJjaXR5IjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgImFkZHJlc3MiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAicG9zdGFsX2NvZGUiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAicGhvbmUiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfQogICAgICB9CiAgICB9LAogICAgInNoaXBwaW5nX21ldGhvZCI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJwYXltZW50X21ldGhvZCI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJwYXltZW50X2lkIjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgIm5vdGUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAidGltZWxpbmUiOiB7CiAgICAgICJ0eXBlIjogImFycmF5IiwKICAgICAgIml0ZW1zIjogewogICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAiZXZlbnQiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgIH0sCiAgICAgICAgICAibm90ZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgfSwKICAgICAgICAgICJhdCI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgICAgICAgImZvcm1hdCI6ICJkYXRlLXRpbWUiCiAgICAgICAgICB9CiAgICAgICAgfSwKICAgICAgICAicmVxdWlyZWQiOiBbCiAgICAgICAgICAiZXZlbnQiCiAgICAgICAgXQogICAgICB9CiAgICB9CiAgfSwKICAicmVxdWlyZWQiOiBbCiAgICAic3RvcmVfaWQiLAogICAgInRvdGFsIgogIF0sCiAgInJscyI6IHsKICAgICJyZWFkIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0sCiAgICAiY3JlYXRlIjogewogICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgIH0sCiAgICAidXBkYXRlIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0sCiAgICAiZGVsZXRlIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0KICB9Cn0=
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "order_number": {
+      "type": "string",
+      "description": "Num\u00e9ro affich\u00e9 (ex: #1001)"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Null pour commande invit\u00e9"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "variant_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "variant_title": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "product_id",
+          "price",
+          "quantity",
+          "total"
+        ]
+      }
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_total": {
+      "type": "number",
+      "default": 0
+    },
+    "shipping_total": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_total": {
+      "type": "number",
+      "default": 0
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "processing",
+        "fulfilled",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+        "partially_refunded"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "partially_paid",
+        "refunded",
+        "voided"
+      ],
+      "default": "pending"
+    },
+    "fulfillment_status": {
+      "type": "string",
+      "enum": [
+        "unfulfilled",
+        "partial",
+        "fulfilled"
+      ],
+      "default": "unfulfilled"
+    },
+    "shipping_address": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "billing_address": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "shipping_method": {
+      "type": "string"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "payment_id": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      }
+    }
+  },
+  "required": [
+    "store_id",
+    "total"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,1 +1,70 @@
-aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IHVzZU5hdmlnYXRlIH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7CmltcG9ydCB7IEFycm93TGVmdCwgQ2hlY2ssIFNwYXJrbGVzIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgVEhFTUVTIH0gZnJvbSAnQC9saWIvdGhlbWVzJzsKaW1wb3J0IFRoZW1lUHJldmlldyBmcm9tICdAL2NvbXBvbmVudHMvdGhlbWUvVGhlbWVQcmV2aWV3JzsKCmNvbnN0IENBVEVHT1JJRVMgPSBbJ1RvdXMnLCAnRS1jb21tZXJjZScsICdNYXJrZXRwbGFjZScsICdCdXNpbmVzcycsICdCbG9nJywgJ1BvcnRmb2xpbycsICdSZXN0YXVyYW50J107CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBUaGVtZUdhbGxlcnkoKSB7CiAgY29uc3QgbmF2aWdhdGUgPSB1c2VOYXZpZ2F0ZSgpOwogIGNvbnN0IFthY3RpdmUsIHNldEFjdGl2ZV0gPSB1c2VTdGF0ZSgnVG91cycpOwogIGNvbnN0IFthcHBsaWVkLCBzZXRBcHBsaWVkXSA9IHVzZVN0YXRlKCgpID0+IGxvY2FsU3RvcmFnZS5nZXRJdGVtKCdzZWxsaWFfdGhlbWUnKSB8fCAnYXVyb3JhJyk7CgogIGNvbnN0IGxpc3QgPSBhY3RpdmUgPT09ICdUb3VzJyA/IFRIRU1FUyA6IFRIRU1FUy5maWx0ZXIoKHQpID0+IHQuY2F0ZWdvcnkgPT09IGFjdGl2ZSk7CgogIGNvbnN0IGFwcGx5ID0gKGlkKSA9PiB7CiAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgnc2VsbGlhX3RoZW1lJywgaWQpOwogICAgbG9jYWxTdG9yYWdlLnJlbW92ZUl0ZW0oJ3NlbGxpYV90aGVtZV9jdXN0b20nKTsKICAgIHNldEFwcGxpZWQoaWQpOwogICAgc2V0VGltZW91dCgoKSA9PiBuYXZpZ2F0ZSgnL3RoZW1lLWVkaXRvcicpLCAzNTApOwogIH07CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLWgtZnVsbCBiZy1bI0Y0RjRGNF0iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0ic3RpY2t5IHRvcC0wIHotMTAgYmctd2hpdGUgYm9yZGVyLWIgYm9yZGVyLVsjRTFFMUUxXSBweC00IHNtOnB4LTYgcHktMy41IGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0zIj4KICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gbmF2aWdhdGUoJy9kYXNoYm9hcmQnKX0gY2xhc3NOYW1lPSJ0ZXh0LVsjNkQ3MTc1XSBob3Zlcjp0ZXh0LVsjMjAyMjIzXSI+PEFycm93TGVmdCBjbGFzc05hbWU9InctNSBoLTUiIC8+PC9idXR0b24+CiAgICAgICAgICA8ZGl2PgogICAgICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LWJhc2UgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj48U3BhcmtsZXMgY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtWyMwMDgwNjBdIiAvPiBCaWJsaW90aMOocXVlIGRlIHRow6htZXM8L2gxPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0iPkNob2lzaXNzZXogdW4gcG9pbnQgZGUgZMOpcGFydCBwcmVtaXVtLCBwdWlzIHBlcnNvbm5hbGlzZXotbGUgZGFucyBsJ8OpZGl0ZXVyLjwvcD4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJweC00IHNtOnB4LTYgcHQtNSI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZ2FwLTIgb3ZlcmZsb3cteC1hdXRvIHBiLTEgc206ZmxleC13cmFwIHNtOm92ZXJmbG93LXZpc2libGUgWyY6Oi13ZWJraXQtc2Nyb2xsYmFyXTpoaWRkZW4iIHN0eWxlPXt7IHNjcm9sbGJhcldpZHRoOiAnbm9uZScgfX0+CiAgICAgICAgICB7Q0FURUdPUklFUy5tYXAoKGNhdCkgPT4gKAogICAgICAgICAgICA8YnV0dG9uIGtleT17Y2F0fSBvbkNsaWNrPXsoKSA9PiBzZXRBY3RpdmUoY2F0KX0gY2xhc3NOYW1lPXtgc2hyaW5rLTAgd2hpdGVzcGFjZS1ub3dyYXAgcHgtMy41IHB5LTEuNSByb3VuZGVkLWZ1bGwgdGV4dC14cyBmb250LXNlbWlib2xkIHRyYW5zaXRpb24gJHthY3RpdmUgPT09IGNhdCA/ICdiZy1bIzIwMjIyM10gdGV4dC13aGl0ZScgOiAnYmctd2hpdGUgdGV4dC1bIzIwMjIyM10gYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gaG92ZXI6YmctYmxhY2svNSd9YH0+e2NhdH08L2J1dHRvbj4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJweC00IHNtOnB4LTYgcHktNiBncmlkIGdyaWQtY29scy0xIGxnOmdyaWQtY29scy0yIGdhcC02Ij4KICAgICAgICB7bGlzdC5tYXAoKHQpID0+IHsKICAgICAgICAgIGNvbnN0IGlzQXBwbGllZCA9IGFwcGxpZWQgPT09IHQuaWQ7CiAgICAgICAgICByZXR1cm4gKAogICAgICAgICAgICA8ZGl2IGtleT17dC5pZH0gY2xhc3NOYW1lPSJiZy13aGl0ZSByb3VuZGVkLXhsIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIG92ZXJmbG93LWhpZGRlbiBzaGFkb3ctc20gaG92ZXI6c2hhZG93LWxnIHRyYW5zaXRpb24gaG92ZXI6LXRyYW5zbGF0ZS15LTAuNSBmbGV4IGZsZXgtY29sIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYm9yZGVyLWIgYm9yZGVyLVsjRTFFMUUxXSBiZy1bI0Y0RjRGNF0iPgogICAgICAgICAgICAgICAgPFRoZW1lUHJldmlldyB0aGVtZT17dH0gLz4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icC00IGZsZXggaXRlbXMtc3RhcnQganVzdGlmeS1iZXR3ZWVuIGdhcC0zIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4tdy0wIj4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj4KICAgICAgICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+e3QubmFtZX08L2gzPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gZm9udC1zZW1pYm9sZCBiZy1bIzAwODA2MF0vMTAgdGV4dC1bIzAwODA2MF0gcHgtMiBweS0wLjUgcm91bmRlZC1mdWxsIj57dC5jYXRlZ29yeX08L3NwYW4+CiAgICAgICAgICAgICAgICAgICAge2lzQXBwbGllZCAmJiA8c3BhbiBjbGFzc05hbWU9InRleHQtWzEwcHhdIGZvbnQtc2VtaWJvbGQgYmctWyMyMDIyMjNdIHRleHQtd2hpdGUgcHgtMiBweS0wLjUgcm91bmRlZC1mdWxsIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xIj48Q2hlY2sgY2xhc3NOYW1lPSJ3LTMgaC0zIiAvPiBBY3RpZjwvc3Bhbj59CiAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gbXQtMSI+e3QuZGVzY3JpcHRpb259PC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGFwcGx5KHQuaWQpfSBjbGFzc05hbWU9e2BzaHJpbmstMCB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgcHgtNCBweS0yIHJvdW5kZWQtbWQgd2hpdGVzcGFjZS1ub3dyYXAgJHtpc0FwcGxpZWQgPyAnYmctWyNFMUUxRTFdIHRleHQtWyM2RDcxNzVdIGN1cnNvci1kZWZhdWx0JyA6ICdiZy1bIzAwODA2MF0gdGV4dC13aGl0ZSBob3ZlcjpiZy1bIzAwNjk0ZF0nfWB9PgogICAgICAgICAgICAgICAgICB7aXNBcHBsaWVkID8gJ1V0aWxpc8OpJyA6ICdVdGlsaXNlciBjZSB0aMOobWUnfQogICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKTsKICAgICAgICB9KX0KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Check, Sparkles } from 'lucide-react';
+import { THEMES } from '@/lib/themes';
+import ThemePreview from '@/components/theme/ThemePreview';
+
+const CATEGORIES = ['Tous', 'E-commerce', 'Marketplace', 'Business', 'Blog', 'Portfolio', 'Restaurant'];
+
+export default function ThemeGallery() {
+  const navigate = useNavigate();
+  const [active, setActive] = useState('Tous');
+  const [applied, setApplied] = useState(() => localStorage.getItem('sellia_theme') || 'aurora');
+
+  const list = active === 'Tous' ? THEMES : THEMES.filter((t) => t.category === active);
+
+  const apply = (id) => {
+    localStorage.setItem('sellia_theme', id);
+    localStorage.removeItem('sellia_theme_custom');
+    setApplied(id);
+    setTimeout(() => navigate('/theme-editor'), 350);
+  };
+
+  return (
+    <div className="min-h-full bg-[#F4F4F4]">
+      <div className="sticky top-0 z-10 bg-white border-b border-[#E1E1E1] px-4 sm:px-6 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate('/dashboard')} className="text-[#6D7175] hover:text-[#202223]"><ArrowLeft className="w-5 h-5" /></button>
+          <div>
+            <h1 className="text-base font-bold text-[#202223] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#008060]" /> Bibliothèque de thèmes</h1>
+            <p className="text-xs text-[#6D7175]">Choisissez un point de départ premium, puis personnalisez-le dans l'éditeur.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 sm:px-6 pt-5">
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+          {CATEGORIES.map((cat) => (
+            <button key={cat} onClick={() => setActive(cat)} className={`shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition ${active === cat ? 'bg-[#202223] text-white' : 'bg-white text-[#202223] border border-[#E1E1E1] hover:bg-black/5'}`}>{cat}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {list.map((t) => {
+          const isApplied = applied === t.id;
+          return (
+            <div key={t.id} className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden shadow-sm hover:shadow-lg transition hover:-translate-y-0.5 flex flex-col">
+              <div className="border-b border-[#E1E1E1] bg-[#F4F4F4]">
+                <ThemePreview theme={t} />
+              </div>
+              <div className="p-4 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#202223]">{t.name}</h3>
+                    <span className="text-[10px] font-semibold bg-[#008060]/10 text-[#008060] px-2 py-0.5 rounded-full">{t.category}</span>
+                    {isApplied && <span className="text-[10px] font-semibold bg-[#202223] text-white px-2 py-0.5 rounded-full flex items-center gap-1"><Check className="w-3 h-3" /> Actif</span>}
+                  </div>
+                  <p className="text-xs text-[#6D7175] mt-1">{t.description}</p>
+                </div>
+                <button onClick={() => apply(t.id)} className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-md whitespace-nowrap ${isApplied ? 'bg-[#E1E1E1] text-[#6D7175] cursor-default' : 'bg-[#008060] text-white hover:bg-[#00694d]'}`}>
+                  {isApplied ? 'Utilisé' : 'Utiliser ce thème'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

@@ -1,1 +1,52 @@
-Y29uc3QgUFNQUyA9IFsKICB7IG5hbWU6ICdQYXlzdGFjaycsIGNvbG9yOiAnIzAxMUIzRicsIHRleHQ6ICcjMDBDM0Y3JywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdGbHV0dGVyd2F2ZScsIGNvbG9yOiAnI0YyNkIxRCcsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdNLVBlc2EnLCBjb2xvcjogJyM0MUI1NDknLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0FmcmlxdWUnIH0sCiAgeyBuYW1lOiAnTVROIE1vTW8nLCBjb2xvcjogJyNGRkNDMDAnLCB0ZXh0OiAnIzAwMDAwMCcsIHJlZ2lvbjogJ0FmcmlxdWUnIH0sCiAgeyBuYW1lOiAnQWlydGVsIE1vbmV5JywgY29sb3I6ICcjRTQwMDJCJywgdGV4dDogJyNGRkZGRkYnLCByZWdpb246ICdBZnJpcXVlJyB9LAogIHsgbmFtZTogJ09yYW5nZSBNb25leScsIGNvbG9yOiAnI0ZGNzkwMCcsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdXYXZlJywgY29sb3I6ICcjMURDOEZGJywgdGV4dDogJyNGRkZGRkYnLCByZWdpb246ICdBZnJpcXVlJyB9LAogIHsgbmFtZTogJ1Blc2FQYWwnLCBjb2xvcjogJyMwMEE1NTEnLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0FmcmlxdWUnIH0sCiAgeyBuYW1lOiAnWW9jbycsIGNvbG9yOiAnIzIxMjczNicsIHRleHQ6ICcjMjhDODQ1JywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdQYXlGYXN0JywgY29sb3I6ICcjMjAyNzMxJywgdGV4dDogJyM2Q0MyNEEnLCByZWdpb246ICdBZnJpcXVlJyB9LAogIHsgbmFtZTogJ0NlbGx1bGFudCcsIGNvbG9yOiAnI0UxMTkzNycsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdBWmlwYXknLCBjb2xvcjogJyMwMDk0RDknLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0FmcmlxdWUnIH0sCiAgeyBuYW1lOiAnSGlwcG9QYXknLCBjb2xvcjogJyM2QzJCRDknLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0FmcmlxdWUnIH0sCiAgeyBuYW1lOiAnVG91Y2ggUGF5JywgY29sb3I6ICcjMUI0OTY1JywgdGV4dDogJyM2MkI2Q0InLCByZWdpb246ICdBZnJpcXVlJyB9LAogIHsgbmFtZTogJ0dlbGR0ZWNoIFBheScsIGNvbG9yOiAnIzBENzM3NycsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnQWZyaXF1ZScgfSwKICB7IG5hbWU6ICdTdHJpcGUnLCBjb2xvcjogJyM2MzVCRkYnLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0V1cm9wZS9VU0EnIH0sCiAgeyBuYW1lOiAnQWR5ZW4nLCBjb2xvcjogJyMwQUJGNTMnLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0V1cm9wZScgfSwKICB7IG5hbWU6ICdLbGFybmEnLCBjb2xvcjogJyNGRkE4Q0QnLCB0ZXh0OiAnIzE3MTIwRicsIHJlZ2lvbjogJ0V1cm9wZScgfSwKICB7IG5hbWU6ICdBbGlwYXknLCBjb2xvcjogJyMxNjc3RkYnLCB0ZXh0OiAnI0ZGRkZGRicsIHJlZ2lvbjogJ0FzaWUnIH0sCiAgeyBuYW1lOiAnV2VDaGF0IFBheScsIGNvbG9yOiAnIzA3QzE2MCcsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnQXNpZScgfSwKICB7IG5hbWU6ICdHcmFiUGF5JywgY29sb3I6ICcjMDBCMTRGJywgdGV4dDogJyNGRkZGRkYnLCByZWdpb246ICdBc2llJyB9LAogIHsgbmFtZTogJ1Jhem9ycGF5JywgY29sb3I6ICcjNUIyMUI2JywgdGV4dDogJyNGRkZGRkYnLCByZWdpb246ICdBc2llJyB9LAogIHsgbmFtZTogJ1BheVBhbCcsIGNvbG9yOiAnIzAwMzA4NycsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnVVNBJyB9LAogIHsgbmFtZTogJ1NxdWFyZScsIGNvbG9yOiAnIzNFNDM0OCcsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnVVNBJyB9LAogIHsgbmFtZTogJ0JyYWludHJlZScsIGNvbG9yOiAnIzFBMUY3MScsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnVVNBJyB9LAogIHsgbmFtZTogJ01lcmNhZG8gUGFnbycsIGNvbG9yOiAnIzAwQjFFQScsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnTGF0aW5vJyB9LAogIHsgbmFtZTogJ1BhZ1NlZ3VybycsIGNvbG9yOiAnI0ZGNUMwMCcsIHRleHQ6ICcjRkZGRkZGJywgcmVnaW9uOiAnTGF0aW5vJyB9LAogIHsgbmFtZTogJ0VCQU5YJywgY29sb3I6ICcjMEQxQjJBJywgdGV4dDogJyMwMEQ5QTMnLCByZWdpb246ICdMYXRpbm8nIH0sCl07CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBMYW5kaW5nUFNQcygpIHsKICBjb25zdCBsaXN0ID0gWy4uLlBTUFMsIC4uLlBTUFNdOwogIHJldHVybiAoCiAgICA8c2VjdGlvbiBjbGFzc05hbWU9InB5LTEyIGJnLXdoaXRlIGJvcmRlci15IGJvcmRlci1bI0UxRTFFMV0iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctN3hsIG14LWF1dG8gcHgtNCBzbTpweC02IHRleHQtY2VudGVyIG1iLTYiPgogICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10gdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUiPjI1KyBwcmVzdGF0YWlyZXMgZGUgcGFpZW1lbnQgbW9uZGlhdXg8L3A+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIG10LTEiPkFjY2VwdGV6IGxlcyBwYWllbWVudHMgcGFydG91dCBkYW5zIGxlIG1vbmRlIOKAlCBzYW5zIHJlZGlyZWN0aW9uPC9wPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzc05hbWU9InJlbGF0aXZlIG92ZXJmbG93LWhpZGRlbiI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZ2FwLTMgdy1tYXggYW5pbWF0ZS1zY3JvbGwteCI+CiAgICAgICAgICB7bGlzdC5tYXAoKHAsIGkpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e2l9IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgc2hyaW5rLTAgcHgtNSBweS0zIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gYmctd2hpdGUgc2hhZG93LXNtIG1pbi13LVsxNjBweF0iPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgcm91bmRlZC1sZyBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBmb250LWJvbGQgdGV4dC1zbSIgc3R5bGU9e3sgYmFja2dyb3VuZDogcC5jb2xvciwgY29sb3I6IHAudGV4dCB9fT57cC5uYW1lLmNoYXJBdCgwKX08L2Rpdj4KICAgICAgICAgICAgICA8ZGl2PjxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10gbGVhZGluZy10aWdodCI+e3AubmFtZX08L3A+PHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSB0ZXh0LVsjNkQ3MTc1XSI+e3AucmVnaW9ufTwvcD48L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApKX0KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L3NlY3Rpb24+CiAgKTsKfQ==
+const PSPS = [
+  { name: 'Paystack', color: '#011B3F', text: '#00C3F7', region: 'Afrique' },
+  { name: 'Flutterwave', color: '#F26B1D', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'M-Pesa', color: '#41B549', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'MTN MoMo', color: '#FFCC00', text: '#000000', region: 'Afrique' },
+  { name: 'Airtel Money', color: '#E4002B', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'Orange Money', color: '#FF7900', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'Wave', color: '#1DC8FF', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'PesaPal', color: '#00A551', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'Yoco', color: '#212736', text: '#28C845', region: 'Afrique' },
+  { name: 'PayFast', color: '#202731', text: '#6CC24A', region: 'Afrique' },
+  { name: 'Cellulant', color: '#E11937', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'AZipay', color: '#0094D9', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'HippoPay', color: '#6C2BD9', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'Touch Pay', color: '#1B4965', text: '#62B6CB', region: 'Afrique' },
+  { name: 'Geldtech Pay', color: '#0D7377', text: '#FFFFFF', region: 'Afrique' },
+  { name: 'Stripe', color: '#635BFF', text: '#FFFFFF', region: 'Europe/USA' },
+  { name: 'Adyen', color: '#0ABF53', text: '#FFFFFF', region: 'Europe' },
+  { name: 'Klarna', color: '#FFA8CD', text: '#17120F', region: 'Europe' },
+  { name: 'Alipay', color: '#1677FF', text: '#FFFFFF', region: 'Asie' },
+  { name: 'WeChat Pay', color: '#07C160', text: '#FFFFFF', region: 'Asie' },
+  { name: 'GrabPay', color: '#00B14F', text: '#FFFFFF', region: 'Asie' },
+  { name: 'Razorpay', color: '#5B21B6', text: '#FFFFFF', region: 'Asie' },
+  { name: 'PayPal', color: '#003087', text: '#FFFFFF', region: 'USA' },
+  { name: 'Square', color: '#3E4348', text: '#FFFFFF', region: 'USA' },
+  { name: 'Braintree', color: '#1A1F71', text: '#FFFFFF', region: 'USA' },
+  { name: 'Mercado Pago', color: '#00B1EA', text: '#FFFFFF', region: 'Latino' },
+  { name: 'PagSeguro', color: '#FF5C00', text: '#FFFFFF', region: 'Latino' },
+  { name: 'EBANX', color: '#0D1B2A', text: '#00D9A3', region: 'Latino' },
+];
+
+export default function LandingPSPs() {
+  const list = [...PSPS, ...PSPS];
+  return (
+    <section className="py-12 bg-white border-y border-[#E1E1E1]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center mb-6">
+        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">25+ prestataires de paiement mondiaux</p>
+        <p className="text-xs text-[#6D7175] mt-1">Acceptez les paiements partout dans le monde — sans redirection</p>
+      </div>
+      <div className="relative overflow-hidden">
+        <div className="flex gap-3 w-max animate-scroll-x">
+          {list.map((p, i) => (
+            <div key={i} className="flex items-center gap-2 shrink-0 px-5 py-3 rounded-xl border border-[#E1E1E1] bg-white shadow-sm min-w-[160px]">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm" style={{ background: p.color, color: p.text }}>{p.name.charAt(0)}</div>
+              <div><p className="text-sm font-bold text-[#202223] leading-tight">{p.name}</p><p className="text-[10px] text-[#6D7175]">{p.region}</p></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,1 +1,107 @@
-LyoqIEB0eXBlIHtpbXBvcnQoJ3RhaWx3aW5kY3NzJykuQ29uZmlnfSAqLwptb2R1bGUuZXhwb3J0cyA9IHsKICAgIGRhcmtNb2RlOiBbImNsYXNzIl0sCiAgICBjb250ZW50OiBbIi4vaW5kZXguaHRtbCIsICIuL3NyYy8qKi8qLnt0cyx0c3gsanMsanN4fSJdLAogICAgc2FmZWxpc3Q6IFsnc206Z3JpZC1jb2xzLTInLCAnc206Z3JpZC1jb2xzLTMnLCAnc206Z3JpZC1jb2xzLTQnXSwKICB0aGVtZTogewogIAlleHRlbmQ6IHsKICAJCW9wYWNpdHk6IE9iamVjdC5mcm9tRW50cmllcyhBcnJheS5mcm9tKHsgbGVuZ3RoOiAxMDEgfSwgKF8sIGkpID0+IFtpLCBgJHtpIC8gMTAwfWBdKSksCiAgCQlib3JkZXJSYWRpdXM6IHsKICAJCQlsZzogJ3ZhcigtLXJhZGl1cyknLAogIAkJCW1kOiAnY2FsYyh2YXIoLS1yYWRpdXMpIC0gMnB4KScsCiAgCQkJc206ICdjYWxjKHZhcigtLXJhZGl1cykgLSA0cHgpJwogIAkJfSwKICAJCWNvbG9yczogewogIAkJCWJhY2tncm91bmQ6ICdoc2wodmFyKC0tYmFja2dyb3VuZCkpJywKICAJCQlmb3JlZ3JvdW5kOiAnaHNsKHZhcigtLWZvcmVncm91bmQpKScsCiAgCQkJY2FyZDogewogIAkJCQlERUZBVUxUOiAnaHNsKHZhcigtLWNhcmQpKScsCiAgCQkJCWZvcmVncm91bmQ6ICdoc2wodmFyKC0tY2FyZC1mb3JlZ3JvdW5kKSknCiAgCQkJfSwKICAJCQlwb3BvdmVyOiB7CiAgCQkJCURFRkFVTFQ6ICdoc2wodmFyKC0tcG9wb3ZlcikpJywKICAJCQkJZm9yZWdyb3VuZDogJ2hzbCh2YXIoLS1wb3BvdmVyLWZvcmVncm91bmQpKScKICAJCQl9LAogIAkJCXByaW1hcnk6IHsKICAJCQkJREVGQVVMVDogJ2hzbCh2YXIoLS1wcmltYXJ5KSknLAogIAkJCQlmb3JlZ3JvdW5kOiAnaHNsKHZhcigtLXByaW1hcnktZm9yZWdyb3VuZCkpJwogIAkJCX0sCiAgCQkJc2Vjb25kYXJ5OiB7CiAgCQkJCURFRkFVTFQ6ICdoc2wodmFyKC0tc2Vjb25kYXJ5KSknLAogIAkJCQlmb3JlZ3JvdW5kOiAnaHNsKHZhcigtLXNlY29uZGFyeS1mb3JlZ3JvdW5kKSknCiAgCQkJfSwKICAJCQltdXRlZDogewogIAkJCQlERUZBVUxUOiAnaHNsKHZhcigtLW11dGVkKSknLAogIAkJCQlmb3JlZ3JvdW5kOiAnaHNsKHZhcigtLW11dGVkLWZvcmVncm91bmQpKScKICAJCQl9LAogIAkJCWFjY2VudDogewogIAkJCQlERUZBVUxUOiAnaHNsKHZhcigtLWFjY2VudCkpJywKICAJCQkJZm9yZWdyb3VuZDogJ2hzbCh2YXIoLS1hY2NlbnQtZm9yZWdyb3VuZCkpJwogIAkJCX0sCiAgCQkJZGVzdHJ1Y3RpdmU6IHsKICAJCQkJREVGQVVMVDogJ2hzbCh2YXIoLS1kZXN0cnVjdGl2ZSkpJywKICAJCQkJZm9yZWdyb3VuZDogJ2hzbCh2YXIoLS1kZXN0cnVjdGl2ZS1mb3JlZ3JvdW5kKSknCiAgCQkJfSwKICAJCQlib3JkZXI6ICdoc2wodmFyKC0tYm9yZGVyKSknLAogIAkJCWlucHV0OiAnaHNsKHZhcigtLWlucHV0KSknLAogIAkJCXJpbmc6ICdoc2wodmFyKC0tcmluZykpJywKICAJCQljaGFydDogewogIAkJCQknMSc6ICdoc2wodmFyKC0tY2hhcnQtMSkpJywKICAJCQkJJzInOiAnaHNsKHZhcigtLWNoYXJ0LTIpKScsCiAgCQkJCSczJzogJ2hzbCh2YXIoLS1jaGFydC0zKSknLAogIAkJCQknNCc6ICdoc2wodmFyKC0tY2hhcnQtNCkpJywKICAJCQkJJzUnOiAnaHNsKHZhcigtLWNoYXJ0LTUpKScKICAJCQl9LAogIAkJCXNpZGViYXI6IHsKICAJCQkJREVGQVVMVDogJ2hzbCh2YXIoLS1zaWRlYmFyLWJhY2tncm91bmQpKScsCiAgCQkJCWZvcmVncm91bmQ6ICdoc2wodmFyKC0tc2lkZWJhci1mb3JlZ3JvdW5kKSknLAogIAkJCQlwcmltYXJ5OiAnaHNsKHZhcigtLXNpZGViYXItcHJpbWFyeSkpJywKICAJCQkJJ3ByaW1hcnktZm9yZWdyb3VuZCc6ICdoc2wodmFyKC0tc2lkZWJhci1wcmltYXJ5LWZvcmVncm91bmQpKScsCiAgCQkJCWFjY2VudDogJ2hzbCh2YXIoLS1zaWRlYmFyLWFjY2VudCkpJywKICAJCQkJJ2FjY2VudC1mb3JlZ3JvdW5kJzogJ2hzbCh2YXIoLS1zaWRlYmFyLWFjY2VudC1mb3JlZ3JvdW5kKSknLAogIAkJCQlib3JkZXI6ICdoc2wodmFyKC0tc2lkZWJhci1ib3JkZXIpKScsCiAgCQkJCXJpbmc6ICdoc2wodmFyKC0tc2lkZWJhci1yaW5nKSknCiAgCQkJfSwKICAJCQlicmFuZDogewogIAkJCQlERUZBVUxUOiAnaHNsKHZhcigtLWJyYW5kKSknLAogIAkJCQlmb3JlZ3JvdW5kOiAnaHNsKHZhcigtLWJyYW5kLWZvcmVncm91bmQpKScsCiAgCQkJCW11dGVkOiAnaHNsKHZhcigtLWJyYW5kLW11dGVkKSknCiAgCQkJfSwKICAJCQlnb2xkOiB7CiAgCQkJCURFRkFVTFQ6ICdoc2wodmFyKC0tZ29sZCkpJywKICAJCQkJZm9yZWdyb3VuZDogJ2hzbCh2YXIoLS1nb2xkLWZvcmVncm91bmQpKScKICAJCQl9LAogIAkJCXN1cmZhY2U6ICdoc2wodmFyKC0tc3VyZmFjZSkpJwogIAkJfSwKICAJCWZvbnRGYW1pbHk6IHsKICAJCQloZWFkaW5nOiBbJ3ZhcigtLWZvbnQtaGVhZGluZyknXSwKICAJCQlib2R5OiBbJ3ZhcigtLWZvbnQtYm9keSknXSwKICAJCQlkaXNwbGF5OiBbJ3ZhcigtLWZvbnQtZGlzcGxheSknXSwKICAJCQltb25vOiBbJ3ZhcigtLWZvbnQtbW9ubyknXQogIAkJfSwKICAJCWtleWZyYW1lczogewogIAkJCSdhY2NvcmRpb24tZG93bic6IHsKICAJCQkJZnJvbTogewogIAkJCQkJaGVpZ2h0OiAnMCcKICAJCQkJfSwKICAJCQkJdG86IHsKICAJCQkJCWhlaWdodDogJ3ZhcigtLXJhZGl4LWFjY29yZGlvbi1jb250ZW50LWhlaWdodCknCiAgCQkJCX0KICAJCQl9LAogIAkJCSdhY2NvcmRpb24tdXAnOiB7CiAgCQkJCWZyb206IHsKICAJCQkJCWhlaWdodDogJ3ZhcigtLXJhZGl4LWFjY29yZGlvbi1jb250ZW50LWhlaWdodCknCiAgCQkJCX0sCiAgCQkJCXRvOiB7CiAgCQkJCQloZWlnaHQ6ICcwJwogIAkJCQl9CiAgCQkJfQogIAkJfSwKICAJCWFuaW1hdGlvbjogewogIAkJCSdhY2NvcmRpb24tZG93bic6ICdhY2NvcmRpb24tZG93biAwLjJzIGVhc2Utb3V0JywKICAJCQknYWNjb3JkaW9uLXVwJzogJ2FjY29yZGlvbi11cCAwLjJzIGVhc2Utb3V0JwogIAkJfQogIAl9CiAgfSwKICBwbHVnaW5zOiBbcmVxdWlyZSgidGFpbHdpbmRjc3MtYW5pbWF0ZSIpXSwKfQo=
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    darkMode: ["class"],
+    content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+    safelist: ['sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4'],
+  theme: {
+  	extend: {
+  		opacity: Object.fromEntries(Array.from({ length: 101 }, (_, i) => [i, `${i / 100}`])),
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		colors: {
+  			background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
+  			card: {
+  				DEFAULT: 'hsl(var(--card))',
+  				foreground: 'hsl(var(--card-foreground))'
+  			},
+  			popover: {
+  				DEFAULT: 'hsl(var(--popover))',
+  				foreground: 'hsl(var(--popover-foreground))'
+  			},
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary))',
+  				foreground: 'hsl(var(--secondary-foreground))'
+  			},
+  			muted: {
+  				DEFAULT: 'hsl(var(--muted))',
+  				foreground: 'hsl(var(--muted-foreground))'
+  			},
+  			accent: {
+  				DEFAULT: 'hsl(var(--accent))',
+  				foreground: 'hsl(var(--accent-foreground))'
+  			},
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive))',
+  				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			},
+  			brand: {
+  				DEFAULT: 'hsl(var(--brand))',
+  				foreground: 'hsl(var(--brand-foreground))',
+  				muted: 'hsl(var(--brand-muted))'
+  			},
+  			gold: {
+  				DEFAULT: 'hsl(var(--gold))',
+  				foreground: 'hsl(var(--gold-foreground))'
+  			},
+  			surface: 'hsl(var(--surface))'
+  		},
+  		fontFamily: {
+  			heading: ['var(--font-heading)'],
+  			body: ['var(--font-body)'],
+  			display: ['var(--font-display)'],
+  			mono: ['var(--font-mono)']
+  		},
+  		keyframes: {
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		}
+  	}
+  },
+  plugins: [require("tailwindcss-animate")],
+}

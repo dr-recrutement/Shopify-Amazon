@@ -1,1 +1,31 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IGJhc2U0NCB9IGZyb20gJ0AvYXBpL2Jhc2U0NENsaWVudCc7CmltcG9ydCB7IGdldFBsYW4gfSBmcm9tICdAL2xpYi9wbGFucyc7CgpleHBvcnQgZnVuY3Rpb24gdXNlU3Vic2NyaXB0aW9uKCkgewogIGNvbnN0IFtzdG9yZSwgc2V0U3RvcmVdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW2xvYWRpbmcsIHNldExvYWRpbmddID0gdXNlU3RhdGUodHJ1ZSk7CgogIGNvbnN0IGxvYWQgPSB1c2VDYWxsYmFjayhhc3luYyAoKSA9PiB7CiAgICBzZXRMb2FkaW5nKHRydWUpOwogICAgdHJ5IHsKICAgICAgY29uc3QgdXNlciA9IGF3YWl0IGJhc2U0NC5hdXRoLm1lKCk7CiAgICAgIGNvbnN0IGxpc3QgPSBhd2FpdCBiYXNlNDQuZW50aXRpZXMuU3RvcmUuZmlsdGVyKHsgY3JlYXRlZF9ieV9pZDogdXNlci5pZCB9KTsKICAgICAgc2V0U3RvcmUobGlzdFswXSB8fCBudWxsKTsKICAgIH0gY2F0Y2ggewogICAgICBzZXRTdG9yZShudWxsKTsKICAgIH0gZmluYWxseSB7CiAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgfQogIH0sIFtdKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsgbG9hZCgpOyB9LCBbbG9hZF0pOwoKICBjb25zdCBwbGFuSWQgPSBzdG9yZT8ucGxhbiB8fCAnZ3Jvd3RoJzsKICBjb25zdCBwbGFuID0gZ2V0UGxhbihwbGFuSWQpOwogIGNvbnN0IHBsYW5TdGF0dXMgPSBzdG9yZT8ucGxhbl9zdGF0dXMgfHwgJ3RyaWFsJzsKCiAgcmV0dXJuIHsgc3RvcmUsIHBsYW5JZCwgcGxhbiwgcGxhblN0YXR1cywgbG9hZGluZywgcmVsb2FkOiBsb2FkIH07Cn0KCmV4cG9ydCBkZWZhdWx0IHVzZVN1YnNjcmlwdGlvbjs=
+import { useState, useEffect, useCallback } from 'react';
+import { base44 } from '@/api/base44Client';
+import { getPlan } from '@/lib/plans';
+
+export function useSubscription() {
+  const [store, setStore] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const user = await base44.auth.me();
+      const list = await base44.entities.Store.filter({ created_by_id: user.id });
+      setStore(list[0] || null);
+    } catch {
+      setStore(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const planId = store?.plan || 'growth';
+  const plan = getPlan(planId);
+  const planStatus = store?.plan_status || 'trial';
+
+  return { store, planId, plan, planStatus, loading, reload: load };
+}
+
+export default useSubscription;

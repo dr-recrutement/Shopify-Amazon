@@ -1,1 +1,105 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFVzZXJzUm91bmQsIFBsdXMsIFRyYXNoMiwgTG9hZGVyMiwgTWFpbCwgU2hpZWxkLCBDcm93biwgVXNlciB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IGJhc2U0NCB9IGZyb20gJ0AvYXBpL2Jhc2U0NENsaWVudCc7CmltcG9ydCB7IHVzZUN1cnJlbnRTdG9yZSB9IGZyb20gJ0AvaG9va3MvdXNlQ3VycmVudFN0b3JlJzsKCmNvbnN0IFBFUk1JU1NJT05TID0gWwogIHsga2V5OiAncHJvZHVjdHMnLCBsYWJlbDogJ1Byb2R1aXRzJyB9LAogIHsga2V5OiAnb3JkZXJzJywgbGFiZWw6ICdDb21tYW5kZXMnIH0sCiAgeyBrZXk6ICdjdXN0b21lcnMnLCBsYWJlbDogJ0NsaWVudHMnIH0sCiAgeyBrZXk6ICdtYXJrZXRpbmcnLCBsYWJlbDogJ01hcmtldGluZycgfSwKICB7IGtleTogJ2FuYWx5dGljcycsIGxhYmVsOiAnQW5hbHlzZXMnIH0sCiAgeyBrZXk6ICdjb250ZW50JywgbGFiZWw6ICdDb250ZW51JyB9LAogIHsga2V5OiAnc2V0dGluZ3MnLCBsYWJlbDogJ1BhcmFtw6h0cmVzJyB9LApdOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gU3RhZmZNYW5hZ2VtZW50KCkgewogIGNvbnN0IHsgc3RvcmUsIGxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFtzdGFmZiwgc2V0U3RhZmZdID0gdXNlU3RhdGUoW10pOwogIGNvbnN0IFtzaG93SW52aXRlLCBzZXRTaG93SW52aXRlXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbZW1haWwsIHNldEVtYWlsXSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbcm9sZSwgc2V0Um9sZV0gPSB1c2VTdGF0ZSgndXNlcicpOwogIGNvbnN0IFtwZXJtaXNzaW9ucywgc2V0UGVybWlzc2lvbnNdID0gdXNlU3RhdGUoWydwcm9kdWN0cycsICdvcmRlcnMnXSk7CiAgY29uc3QgW2J1c3ksIHNldEJ1c3ldID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtlcnJvciwgc2V0RXJyb3JdID0gdXNlU3RhdGUoJycpOwoKICBjb25zdCBsb2FkID0gdXNlQ2FsbGJhY2soYXN5bmMgKCkgPT4gewogICAgdHJ5IHsKICAgICAgY29uc3QgdXNlcnMgPSBhd2FpdCBiYXNlNDQuZW50aXRpZXMuVXNlci5saXN0KCk7CiAgICAgIHNldFN0YWZmKHVzZXJzKTsKICAgIH0gY2F0Y2ggeyBzZXRTdGFmZihbXSk7IH0KICB9LCBbXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW2xvYWRdKTsKCiAgY29uc3QgaW52aXRlID0gYXN5bmMgKCkgPT4gewogICAgc2V0QnVzeSh0cnVlKTsgc2V0RXJyb3IoJycpOwogICAgdHJ5IHsKICAgICAgYXdhaXQgYmFzZTQ0LnVzZXJzLmludml0ZVVzZXIoZW1haWwudHJpbSgpLCByb2xlKTsKICAgICAgYXdhaXQgbG9hZCgpOwogICAgICBzZXRTaG93SW52aXRlKGZhbHNlKTsKICAgICAgc2V0RW1haWwoJycpOwogICAgICBzZXRQZXJtaXNzaW9ucyhbJ3Byb2R1Y3RzJywgJ29yZGVycyddKTsKICAgIH0gY2F0Y2ggKGUpIHsgc2V0RXJyb3IoZS5tZXNzYWdlIHx8ICdFcnJldXIgbG9ycyBkZSBsXCdpbnZpdGF0aW9uJyk7IH0KICAgIGZpbmFsbHkgeyBzZXRCdXN5KGZhbHNlKTsgfQogIH07CgogIGNvbnN0IHJlbW92ZVN0YWZmID0gYXN5bmMgKGlkKSA9PiB7CiAgICBpZiAoIWNvbmZpcm0oJ1JldGlyZXIgY2V0IGVtcGxvecOpIGRlIGxhIGJvdXRpcXVlID8nKSkgcmV0dXJuOwogICAgdHJ5IHsgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLlVzZXIuZGVsZXRlKGlkKTsgYXdhaXQgbG9hZCgpOyB9IGNhdGNoIHt9CiAgfTsKCiAgY29uc3QgdG9nZ2xlUGVybSA9IChrKSA9PiBzZXRQZXJtaXNzaW9ucygocCkgPT4gcC5pbmNsdWRlcyhrKSA/IHAuZmlsdGVyKCh4KSA9PiB4ICE9PSBrKSA6IFsuLi5wLCBrXSk7CgogIGlmIChsb2FkaW5nKSByZXR1cm4gPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTMyIj48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtWyMwMDgwNjBdIiAvPjwvZGl2PjsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJwLTQgc206cC02IG1heC13LTR4bCBteC1hdXRvIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBtYi02IGZsZXgtd3JhcCBnYXAtMyI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj48VXNlcnNSb3VuZCBjbGFzc05hbWU9InctNSBoLTUgdGV4dC1bIzZENzE3NV0iIC8+PGgxIGNsYXNzTmFtZT0idGV4dC14bCBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkdlc3Rpb24gZHUgcGVyc29ubmVsPC9oMT48L2Rpdj4KICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldFNob3dJbnZpdGUodHJ1ZSl9IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBiZy1bIzAwODA2MF0gdGV4dC13aGl0ZSB0ZXh0LXNtIGZvbnQtbWVkaXVtIHB4LTQgcHktMiByb3VuZGVkLWZ1bGwgaG92ZXI6YmctWyMwMDY5NGRdIj48UGx1cyBjbGFzc05hbWU9InctNCBoLTQiIC8+IEludml0ZXIgdW4gZW1wbG95w6k8L2J1dHRvbj4KICAgICAgPC9kaXY+CgogICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1bIzZENzE3NV0gbWItNCI+SW52aXRleiBkZXMgZW1wbG95w6lzIGV0IGTDqWZpbmlzc2V6IGxldXJzIHBlcm1pc3Npb25zIGQnYWNjw6hzIMOgIHZvdHJlIGJvdXRpcXVlLjwvcD4KCiAgICAgIHtzaG93SW52aXRlICYmICgKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZml4ZWQgaW5zZXQtMCB6LTUwIGJnLWJsYWNrLzQwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHAtNCIgb25DbGljaz17KCkgPT4gc2V0U2hvd0ludml0ZShmYWxzZSl9PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImJnLXdoaXRlIHJvdW5kZWQtMnhsIG1heC13LW1kIHctZnVsbCBwLTYiIG9uQ2xpY2s9eyhlKSA9PiBlLnN0b3BQcm9wYWdhdGlvbigpfT4KICAgICAgICAgICAgPGgyIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10gbWItNCI+SW52aXRlciB1biBlbXBsb3nDqTwvaDI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTMiPgogICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5BZHJlc3NlIGUtbWFpbDwvbGFiZWw+PGlucHV0IHZhbHVlPXtlbWFpbH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRFbWFpbChlLnRhcmdldC52YWx1ZSl9IHBsYWNlaG9sZGVyPSJlbXBsb3llQGJvdXRpcXVlLmNvbSIgY2xhc3NOYW1lPSJ3LWZ1bGwgbXQtMSBweC0zIHB5LTIgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZC1sZyB0ZXh0LXNtIiAvPjwvZGl2PgogICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5Sw7RsZTwvbGFiZWw+PGRpdiBjbGFzc05hbWU9ImZsZXggZ2FwLTIgbXQtMSI+PGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBzZXRSb2xlKCdhZG1pbicpfSBjbGFzc05hbWU9e2BmbGV4LTEgdGV4dC14cyBmb250LXNlbWlib2xkIHB5LTIgcm91bmRlZC1mdWxsIGJvcmRlciAke3JvbGUgPT09ICdhZG1pbicgPyAnYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgYm9yZGVyLVsjMDA4MDYwXScgOiAnYm9yZGVyLVsjRTFFMUUxXSB0ZXh0LVsjNkQ3MTc1XSd9YH0+QWRtaW5pc3RyYXRldXI8L2J1dHRvbj48YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldFJvbGUoJ3VzZXInKX0gY2xhc3NOYW1lPXtgZmxleC0xIHRleHQteHMgZm9udC1zZW1pYm9sZCBweS0yIHJvdW5kZWQtZnVsbCBib3JkZXIgJHtyb2xlID09PSAndXNlcicgPyAnYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgYm9yZGVyLVsjMDA4MDYwXScgOiAnYm9yZGVyLVsjRTFFMUUxXSB0ZXh0LVsjNkQ3MTc1XSd9YH0+RW1wbG95w6k8L2J1dHRvbj48L2Rpdj48L2Rpdj4KICAgICAgICAgICAgICB7cm9sZSA9PT0gJ3VzZXInICYmICgKICAgICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5QZXJtaXNzaW9ucyBkJ2FjY8OoczwvbGFiZWw+PGRpdiBjbGFzc05hbWU9Im10LTEgZ3JpZCBncmlkLWNvbHMtMiBnYXAtMS41Ij57UEVSTUlTU0lPTlMubWFwKChwKSA9PiA8bGFiZWwga2V5PXtwLmtleX0gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHRleHQteHMgY3Vyc29yLXBvaW50ZXIgaG92ZXI6YmctYmxhY2svNSByb3VuZGVkIHB4LTIgcHktMS41Ij48aW5wdXQgdHlwZT0iY2hlY2tib3giIGNoZWNrZWQ9e3Blcm1pc3Npb25zLmluY2x1ZGVzKHAua2V5KX0gb25DaGFuZ2U9eygpID0+IHRvZ2dsZVBlcm0ocC5rZXkpfSBjbGFzc05hbWU9ImFjY2VudC1bIzAwODA2MF0iIC8+IHtwLmxhYmVsfTwvbGFiZWw+KX08L2Rpdj48L2Rpdj4KICAgICAgICAgICAgICApfQogICAgICAgICAgICAgIHtlcnJvciAmJiA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1yZWQtNjAwIj57ZXJyb3J9PC9wPn0KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17aW52aXRlfSBkaXNhYmxlZD17YnVzeSB8fCAhZW1haWx9IGNsYXNzTmFtZT0idy1mdWxsIG10LTUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweS0yLjUgcm91bmRlZC1mdWxsIGhvdmVyOmJnLVsjMDA2OTRkXSBkaXNhYmxlZDpvcGFjaXR5LTQwIj57YnVzeSA/ICdFbnZvaeKApicgOiAnRW52b3llciBsXCdpbnZpdGF0aW9uJ308L2J1dHRvbj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICApfQoKICAgICAgPGRpdiBjbGFzc05hbWU9ImJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICA8dGFibGUgY2xhc3NOYW1lPSJ3LWZ1bGwgdGV4dC1zbSI+CiAgICAgICAgICA8dGhlYWQgY2xhc3NOYW1lPSJiZy1bI0Y0RjRGNF0gdGV4dC1sZWZ0IHRleHQteHMgdGV4dC1bIzZENzE3NV0iPjx0cj48dGggY2xhc3NOYW1lPSJweC00IHB5LTMgZm9udC1zZW1pYm9sZCI+TWVtYnJlPC90aD48dGggY2xhc3NOYW1lPSJweC00IHB5LTMgZm9udC1zZW1pYm9sZCI+UsO0bGU8L3RoPjx0aCBjbGFzc05hbWU9InB4LTQgcHktMyBmb250LXNlbWlib2xkIj5TdGF0dXQ8L3RoPjx0aCBjbGFzc05hbWU9InB4LTQgcHktMyI+PC90aD48L3RyPjwvdGhlYWQ+CiAgICAgICAgICA8dGJvZHk+CiAgICAgICAgICAgIHtzdGFmZi5tYXAoKHMpID0+ICgKICAgICAgICAgICAgICA8dHIga2V5PXtzLmlkfSBjbGFzc05hbWU9ImJvcmRlci10IGJvcmRlci1bI0UxRTFFMV0iPgogICAgICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT0icHgtNCBweS0zIj4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yLjUiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPXtgdy04IGgtOCByb3VuZGVkLWZ1bGwgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC14cyBmb250LWJvbGQgdGV4dC13aGl0ZSAke3Mucm9sZSA9PT0gJ2FkbWluJyA/ICdiZy1bIzAwODA2MF0nIDogJ2JnLVsjNkQ3MTc1XSd9YH0+eyhzLmZ1bGxfbmFtZSB8fCBzLmVtYWlsIHx8ICc/JykuY2hhckF0KDApLnRvVXBwZXJDYXNlKCl9PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdj48cCBjbGFzc05hbWU9ImZvbnQtbWVkaXVtIHRleHQtWyMyMDIyMjNdIj57cy5mdWxsX25hbWUgfHwgcy5lbWFpbH08L3A+e3MuZnVsbF9uYW1lICYmIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSI+e3MuZW1haWx9PC9wPn08L2Rpdj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L3RkPgogICAgICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT0icHgtNCBweS0zIj57cy5yb2xlID09PSAnYWRtaW4nID8gPHNwYW4gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzAwODA2MF0iPjxDcm93biBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPiBQcm9wcmnDqXRhaXJlPC9zcGFuPiA6IDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEgdGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSI+PFVzZXIgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4gRW1wbG95w6k8L3NwYW4+fTwvdGQ+CiAgICAgICAgICAgICAgICA8dGQgY2xhc3NOYW1lPSJweC00IHB5LTMiPjxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gZm9udC1ib2xkIHB4LTIgcHktMC41IHJvdW5kZWQtZnVsbCBiZy1bIzAwODA2MF0vMTAgdGV4dC1bIzAwODA2MF0iPkFjdGlmPC9zcGFuPjwvdGQ+CiAgICAgICAgICAgICAgICA8dGQgY2xhc3NOYW1lPSJweC00IHB5LTMgdGV4dC1yaWdodCI+e3Mucm9sZSAhPT0gJ2FkbWluJyAmJiA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHJlbW92ZVN0YWZmKHMuaWQpfSBjbGFzc05hbWU9InRleHQtWyM2RDcxNzVdIGhvdmVyOnRleHQtcmVkLTYwMCI+PFRyYXNoMiBjbGFzc05hbWU9InctNCBoLTQiIC8+PC9idXR0b24+fTwvdGQ+CiAgICAgICAgICAgICAgPC90cj4KICAgICAgICAgICAgKSl9CiAgICAgICAgICAgIHtzdGFmZi5sZW5ndGggPT09IDAgJiYgPHRyPjx0ZCBjb2xTcGFuPXs0fSBjbGFzc05hbWU9InB4LTQgcHktOCB0ZXh0LWNlbnRlciB0ZXh0LXNtIHRleHQtWyM2RDcxNzVdIj5BdWN1biBtZW1icmUgcG91ciBsZSBtb21lbnQuPC90ZD48L3RyPn0KICAgICAgICAgIDwvdGJvZHk+CiAgICAgICAgPC90YWJsZT4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState, useEffect, useCallback } from 'react';
+import { UsersRound, Plus, Trash2, Loader2, Mail, Shield, Crown, User } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+
+const PERMISSIONS = [
+  { key: 'products', label: 'Produits' },
+  { key: 'orders', label: 'Commandes' },
+  { key: 'customers', label: 'Clients' },
+  { key: 'marketing', label: 'Marketing' },
+  { key: 'analytics', label: 'Analyses' },
+  { key: 'content', label: 'Contenu' },
+  { key: 'settings', label: 'Paramètres' },
+];
+
+export default function StaffManagement() {
+  const { store, loading } = useCurrentStore();
+  const [staff, setStaff] = useState([]);
+  const [showInvite, setShowInvite] = useState(false);
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('user');
+  const [permissions, setPermissions] = useState(['products', 'orders']);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  const load = useCallback(async () => {
+    try {
+      const users = await base44.entities.User.list();
+      setStaff(users);
+    } catch { setStaff([]); }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const invite = async () => {
+    setBusy(true); setError('');
+    try {
+      await base44.users.inviteUser(email.trim(), role);
+      await load();
+      setShowInvite(false);
+      setEmail('');
+      setPermissions(['products', 'orders']);
+    } catch (e) { setError(e.message || 'Erreur lors de l\'invitation'); }
+    finally { setBusy(false); }
+  };
+
+  const removeStaff = async (id) => {
+    if (!confirm('Retirer cet employé de la boutique ?')) return;
+    try { await base44.entities.User.delete(id); await load(); } catch {}
+  };
+
+  const togglePerm = (k) => setPermissions((p) => p.includes(k) ? p.filter((x) => x !== k) : [...p, k]);
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  return (
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex items-center gap-2"><UsersRound className="w-5 h-5 text-[#6D7175]" /><h1 className="text-xl font-bold text-[#202223]">Gestion du personnel</h1></div>
+        <button onClick={() => setShowInvite(true)} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Inviter un employé</button>
+      </div>
+
+      <p className="text-sm text-[#6D7175] mb-4">Invitez des employés et définissez leurs permissions d'accès à votre boutique.</p>
+
+      {showInvite && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowInvite(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-lg font-bold text-[#202223] mb-4">Inviter un employé</h2>
+            <div className="space-y-3">
+              <div><label className="text-xs font-semibold text-[#6D7175]">Adresse e-mail</label><input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="employe@boutique.com" className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" /></div>
+              <div><label className="text-xs font-semibold text-[#6D7175]">Rôle</label><div className="flex gap-2 mt-1"><button onClick={() => setRole('admin')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'admin' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Administrateur</button><button onClick={() => setRole('user')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'user' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Employé</button></div></div>
+              {role === 'user' && (
+                <div><label className="text-xs font-semibold text-[#6D7175]">Permissions d'accès</label><div className="mt-1 grid grid-cols-2 gap-1.5">{PERMISSIONS.map((p) => <label key={p.key} className="flex items-center gap-1.5 text-xs cursor-pointer hover:bg-black/5 rounded px-2 py-1.5"><input type="checkbox" checked={permissions.includes(p.key)} onChange={() => togglePerm(p.key)} className="accent-[#008060]" /> {p.label}</label>)}</div></div>
+              )}
+              {error && <p className="text-xs text-red-600">{error}</p>}
+            </div>
+            <button onClick={invite} disabled={busy || !email} className="w-full mt-5 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{busy ? 'Envoi…' : 'Envoyer l\'invitation'}</button>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]"><tr><th className="px-4 py-3 font-semibold">Membre</th><th className="px-4 py-3 font-semibold">Rôle</th><th className="px-4 py-3 font-semibold">Statut</th><th className="px-4 py-3"></th></tr></thead>
+          <tbody>
+            {staff.map((s) => (
+              <tr key={s.id} className="border-t border-[#E1E1E1]">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white ${s.role === 'admin' ? 'bg-[#008060]' : 'bg-[#6D7175]'}`}>{(s.full_name || s.email || '?').charAt(0).toUpperCase()}</div>
+                    <div><p className="font-medium text-[#202223]">{s.full_name || s.email}</p>{s.full_name && <p className="text-xs text-[#6D7175]">{s.email}</p>}</div>
+                  </div>
+                </td>
+                <td className="px-4 py-3">{s.role === 'admin' ? <span className="flex items-center gap-1 text-xs font-semibold text-[#008060]"><Crown className="w-3.5 h-3.5" /> Propriétaire</span> : <span className="flex items-center gap-1 text-xs text-[#6D7175]"><User className="w-3.5 h-3.5" /> Employé</span>}</td>
+                <td className="px-4 py-3"><span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#008060]/10 text-[#008060]">Actif</span></td>
+                <td className="px-4 py-3 text-right">{s.role !== 'admin' && <button onClick={() => removeStaff(s.id)} className="text-[#6D7175] hover:text-red-600"><Trash2 className="w-4 h-4" /></button>}</td>
+              </tr>
+            ))}
+            {staff.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-sm text-[#6D7175]">Aucun membre pour le moment.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

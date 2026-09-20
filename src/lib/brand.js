@@ -1,1 +1,11 @@
-Ly8gQ2VudHJhbGl6ZWQgU2VsbGlhIGJyYW5kIGlkZW50aXR5LgovLyBTRUxMSUEg4oCUIERldmVsb3BlZCBieSBMaWFmcmlrICh3d3cubGlhZnJpay5jb20pCmV4cG9ydCBjb25zdCBCUkFORCA9IHsKICBuYW1lOiAnU2VsbGlhJywKICBkZXZlbG9wZXI6ICdMaWFmcmlrJywKICBzaXRlOiAnaHR0cHM6Ly93d3cubGlhZnJpay5jb20nLAogIHRhZ2xpbmU6ICdEZXZlbG9wZWQgYnkgTGlhZnJpaycsCiAgbG9nbzogJ2h0dHBzOi8vbWVkaWEuYmFzZTQ0LmNvbS9pbWFnZXMvcHVibGljLzZhYWY4ZTAwMzgyZDEyY2EyZWRhYWNjYS9kM2QyYTEzMmNfU2VsbGlhLnBuZycsCn07CgpleHBvcnQgZGVmYXVsdCBCUkFORDs=
+// Centralized Sellia brand identity.
+// SELLIA — Developed by Liafrik (www.liafrik.com)
+export const BRAND = {
+  name: 'Sellia',
+  developer: 'Liafrik',
+  site: 'https://www.liafrik.com',
+  tagline: 'Developed by Liafrik',
+  logo: 'https://media.base44.com/images/public/6aaf8e00382d12ca2edaacca/d3d2a132c_Sellia.png',
+};
+
+export default BRAND;

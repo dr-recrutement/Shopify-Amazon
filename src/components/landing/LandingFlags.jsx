@@ -1,1 +1,31 @@
-Y29uc3QgRkxBR1MgPSBbCiAgJ3VzJywnZnInLCdnYicsJ2RlJywnZXMnLCdwdCcsJ2l0JywnbmwnLCdiZScsJ3J1Jywnc2UnLCdubycsJ2ZpJywnZGsnLCdwbCcsJ2NoJywnYXQnLCdpZScsJ2dyJywnY3onLAogICdjbicsJ2pwJywna3InLCdpbicsJ2lkJywndGgnLCd2bicsJ215JywncGgnLCdzZycsJ2hrJywndHcnLCdzYScsJ2FlJywncWEnLCdrdycsJ29tJywnam8nLCdsYicsJ2lsJywKICAndHInLCdpcicsJ2lxJywncGsnLCdiZCcsJ2xrJywna3onLCd1eicsJ21uJywna2gnLCdtbScsJ2FmJywnbnAnLCdheicsJ2FtJywnZ2UnLAogICdzbicsJ25nJywnY2knLCdnaCcsJ2NtJywnZWcnLCd6YScsJ2tlJywnbWEnLCd0eicsJ3VnJywnZXQnLCdkeicsJ3RuJywnbHknLCdtbCcsJ2JmJywnbmUnLCd0ZycsJ2JqJywKICAnY2QnLCdjZycsJ2dhJywnbWcnLCdydycsJ211Jywnc2MnLCdjdicsJ3N0JywnZ3EnLCd0ZCcsJ2xyJywnc2wnLCdtcicsJ2VyJywnZGonLCdzbycsJ3N6JywnbHMnLCdidycsCiAgJ25hJywnem0nLCd6dycsJ216JywnYW8nLCdnaCcsJ25nJywnc24nLAogICdicicsJ214JywnYXInLCdjbycsJ2NsJywncGUnLCd2ZScsJ2VjJywnYm8nLCdweScsJ3V5JywnY3InLCdwYScsJ2RvJywnZ3QnLCdobicsJ3N2JywnbmknLCdjdScsJ3ByJywKICAndXMnLCdjYScsJ2F1JywnbnonLApdOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gTGFuZGluZ0ZsYWdzKCkgewogIGNvbnN0IGxpc3QgPSBbLi4uRkxBR1Muc2xpY2UoMCwgODApLCAuLi5GTEFHUy5zbGljZSgwLCA4MCldOwogIHJldHVybiAoCiAgICA8c2VjdGlvbiBjbGFzc05hbWU9InB5LTEwIGJnLVsjRjhGOUZBXSI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYgdGV4dC1jZW50ZXIgbWItNSI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZSI+RGlzcG9uaWJsZSBkYW5zIGxlIG1vbmRlIGVudGllcjwvcD4KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gbXQtMSI+VmVuZGV6IHBhcnRvdXQg4oCUIFNlbGxpYSBlc3QgdW5lIHBsYXRlZm9ybWUgZ2xvYmFsZTwvcD4KICAgICAgPC9kaXY+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJyZWxhdGl2ZSBvdmVyZmxvdy1oaWRkZW4iPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGdhcC0yIHctbWF4IGFuaW1hdGUtc2Nyb2xsLXgtc2xvdyI+CiAgICAgICAgICB7bGlzdC5tYXAoKGNvZGUsIGkpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e2l9IGNsYXNzTmFtZT0ic2hyaW5rLTAgdy0xMCBoLTEwIHJvdW5kZWQtZnVsbCBvdmVyZmxvdy1oaWRkZW4gcmluZy0yIHJpbmctd2hpdGUgc2hhZG93LXNtIGhvdmVyOnNjYWxlLTExMCB0cmFuc2l0aW9uLXRyYW5zZm9ybSBkdXJhdGlvbi0zMDAiPgogICAgICAgICAgICAgIDxpbWcgc3JjPXtgaHR0cHM6Ly9mbGFnY2RuLmNvbS93ODAvJHtjb2RlfS5wbmdgfSBhbHQ9e2NvZGV9IGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIGxvYWRpbmc9ImxhenkiIC8+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICk7Cn0=
+const FLAGS = [
+  'us','fr','gb','de','es','pt','it','nl','be','ru','se','no','fi','dk','pl','ch','at','ie','gr','cz',
+  'cn','jp','kr','in','id','th','vn','my','ph','sg','hk','tw','sa','ae','qa','kw','om','jo','lb','il',
+  'tr','ir','iq','pk','bd','lk','kz','uz','mn','kh','mm','af','np','az','am','ge',
+  'sn','ng','ci','gh','cm','eg','za','ke','ma','tz','ug','et','dz','tn','ly','ml','bf','ne','tg','bj',
+  'cd','cg','ga','mg','rw','mu','sc','cv','st','gq','td','lr','sl','mr','er','dj','so','sz','ls','bw',
+  'na','zm','zw','mz','ao','gh','ng','sn',
+  'br','mx','ar','co','cl','pe','ve','ec','bo','py','uy','cr','pa','do','gt','hn','sv','ni','cu','pr',
+  'us','ca','au','nz',
+];
+
+export default function LandingFlags() {
+  const list = [...FLAGS.slice(0, 80), ...FLAGS.slice(0, 80)];
+  return (
+    <section className="py-10 bg-[#F8F9FA]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center mb-5">
+        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">Disponible dans le monde entier</p>
+        <p className="text-xs text-[#6D7175] mt-1">Vendez partout — Sellia est une plateforme globale</p>
+      </div>
+      <div className="relative overflow-hidden">
+        <div className="flex gap-2 w-max animate-scroll-x-slow">
+          {list.map((code, i) => (
+            <div key={i} className="shrink-0 w-10 h-10 rounded-full overflow-hidden ring-2 ring-white shadow-sm hover:scale-110 transition-transform duration-300">
+              <img src={`https://flagcdn.com/w80/${code}.png`} alt={code} className="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

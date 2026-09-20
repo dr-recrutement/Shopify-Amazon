@@ -1,1 +1,80 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFN0b3JlLCBMb2FkZXIyLCBTYXZlLCBDaGVjaywgRmlsZVRleHQsIE1hcFBpbiwgUGhvbmUgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgeyBiYXNlNDQgfSBmcm9tICdAL2FwaS9iYXNlNDRDbGllbnQnOwppbXBvcnQgeyB1c2VDdXJyZW50U3RvcmUgfSBmcm9tICdAL2hvb2tzL3VzZUN1cnJlbnRTdG9yZSc7CmltcG9ydCB7IENPVU5UUklFUyB9IGZyb20gJ0AvbGliL3dvcmxkL2NvdW50cmllcyc7CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBTdG9yZVNldHRpbmdzKCkgewogIGNvbnN0IHsgc3RvcmUsIGxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFtmb3JtLCBzZXRGb3JtXSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtzYXZpbmcsIHNldFNhdmluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW3NhdmVkLCBzZXRTYXZlZF0gPSB1c2VTdGF0ZShmYWxzZSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoc3RvcmUpIHNldEZvcm0oewogICAgICBuYW1lOiBzdG9yZS5uYW1lIHx8ICcnLCBidXNpbmVzc19uYW1lOiBzdG9yZS5idXNpbmVzc19uYW1lIHx8ICcnLCBidXNpbmVzc190eXBlOiBzdG9yZS5idXNpbmVzc190eXBlIHx8ICcnLAogICAgICBkZXNjcmlwdGlvbjogc3RvcmUuZGVzY3JpcHRpb24gfHwgJycsIGVtYWlsOiBzdG9yZS5lbWFpbCB8fCAnJywgcGhvbmU6IHN0b3JlLnBob25lIHx8ICcnLAogICAgICBhZGRyZXNzOiBzdG9yZS5hZGRyZXNzIHx8ICcnLCBjb3VudHJ5OiBzdG9yZS5jb3VudHJ5IHx8ICcnLCBjdXJyZW5jeTogc3RvcmUuY3VycmVuY3kgfHwgJ1VTRCcsCiAgICAgIGRvbWFpbjogc3RvcmUuZG9tYWluIHx8ICcnLAogICAgfSk7CiAgfSwgW3N0b3JlXSk7CgogIGNvbnN0IHNhdmUgPSBhc3luYyAoKSA9PiB7CiAgICBzZXRTYXZpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBhd2FpdCBiYXNlNDQuZW50aXRpZXMuU3RvcmUudXBkYXRlKHN0b3JlLmlkLCBmb3JtKTsKICAgICAgc2V0U2F2ZWQodHJ1ZSk7CiAgICAgIHNldFRpbWVvdXQoKCkgPT4gc2V0U2F2ZWQoZmFsc2UpLCAyMDAwKTsKICAgIH0gZmluYWxseSB7IHNldFNhdmluZyhmYWxzZSk7IH0KICB9OwoKICBpZiAobG9hZGluZyB8fCAhZm9ybSkgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CgogIGNvbnN0IGZsZCA9ICd3LWZ1bGwgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbGcgdGV4dC1zbSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctWyMwMDgwNjBdLzMwJzsKICBjb25zdCBsYmwgPSAndGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIG1iLTEgYmxvY2snOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InAtNCBzbTpwLTYgbWF4LXctM3hsIG14LWF1dG8iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIG1iLTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+PFN0b3JlIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LVsjNkQ3MTc1XSIgLz48aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+Q29uZmlndXJhdGlvbiBkZSBsYSBib3V0aXF1ZTwvaDE+PC9kaXY+CiAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXtzYXZlfSBkaXNhYmxlZD17c2F2aW5nfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIgcm91bmRlZC1mdWxsIGhvdmVyOmJnLVsjMDA2OTRkXSBkaXNhYmxlZDpvcGFjaXR5LTQwIj57c2F2ZWQgPyA8PjxDaGVjayBjbGFzc05hbWU9InctNCBoLTQiIC8+IEVucmVnaXN0csOpPC8+IDogc2F2aW5nID8gJ0VucmVnaXN0cmVtZW504oCmJyA6IDw+PFNhdmUgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPiBFbnJlZ2lzdHJlcjwvPn08L2J1dHRvbj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS01Ij4KICAgICAgICA8c2VjdGlvbiBjbGFzc05hbWU9ImJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcC01Ij4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi00Ij48U3RvcmUgY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtWyMwMDgwNjBdIiAvPjxoMiBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5JbmZvcm1hdGlvbnMgZ8OpbsOpcmFsZXM8L2gyPjwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTEgc206Z3JpZC1jb2xzLTIgZ2FwLTQiPgogICAgICAgICAgICA8ZGl2PjxsYWJlbCBjbGFzc05hbWU9e2xibH0+Tm9tIGRlIGxhIGJvdXRpcXVlPC9sYWJlbD48aW5wdXQgdmFsdWU9e2Zvcm0ubmFtZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgbmFtZTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICA8ZGl2PjxsYWJlbCBjbGFzc05hbWU9e2xibH0+VHlwZSBkJ2FjdGl2aXTDqTwvbGFiZWw+PGlucHV0IHZhbHVlPXtmb3JtLmJ1c2luZXNzX3R5cGV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIGJ1c2luZXNzX3R5cGU6IGUudGFyZ2V0LnZhbHVlIH0pfSBwbGFjZWhvbGRlcj0iTW9kZSwgYmVhdXTDqSwgw6lsZWN0cm9uaXF1ZeKApiIgY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzbTpjb2wtc3Bhbi0yIj48bGFiZWwgY2xhc3NOYW1lPXtsYmx9PkRlc2NyaXB0aW9uPC9sYWJlbD48dGV4dGFyZWEgdmFsdWU9e2Zvcm0uZGVzY3JpcHRpb259IG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIGRlc2NyaXB0aW9uOiBlLnRhcmdldC52YWx1ZSB9KX0gcm93cz17Mn0gY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTUiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIG1iLTQiPjxGaWxlVGV4dCBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1bIzAwODA2MF0iIC8+PGgyIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkTDqXRhaWxzIGzDqWdhdXg8L2gyPjwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTEgc206Z3JpZC1jb2xzLTIgZ2FwLTQiPgogICAgICAgICAgICA8ZGl2PjxsYWJlbCBjbGFzc05hbWU9e2xibH0+UmFpc29uIHNvY2lhbGU8L2xhYmVsPjxpbnB1dCB2YWx1ZT17Zm9ybS5idXNpbmVzc19uYW1lfSBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBidXNpbmVzc19uYW1lOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT17bGJsfT5Eb21haW5lIHBlcnNvbm5hbGlzw6k8L2xhYmVsPjxpbnB1dCB2YWx1ZT17Zm9ybS5kb21haW59IG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIGRvbWFpbjogZS50YXJnZXQudmFsdWUgfSl9IHBsYWNlaG9sZGVyPSJtYWJvdXRpcXVlLmNvbSIgY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTUiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIG1iLTQiPjxNYXBQaW4gY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtWyMwMDgwNjBdIiAvPjxoMiBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5BZHJlc3NlIGQnZXhww6lkaXRpb248L2gyPjwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTEgc206Z3JpZC1jb2xzLTIgZ2FwLTQiPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic206Y29sLXNwYW4tMiI+PGxhYmVsIGNsYXNzTmFtZT17bGJsfT5BZHJlc3NlPC9sYWJlbD48aW5wdXQgdmFsdWU9e2Zvcm0uYWRkcmVzc30gb25DaGFuZ2U9eyhlKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgYWRkcmVzczogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICA8ZGl2PjxsYWJlbCBjbGFzc05hbWU9e2xibH0+UGF5czwvbGFiZWw+PHNlbGVjdCB2YWx1ZT17Zm9ybS5jb3VudHJ5fSBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBjb3VudHJ5OiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtmbGR9PntDT1VOVFJJRVMubWFwKChjKSA9PiA8b3B0aW9uIGtleT17Yy5jb2RlfSB2YWx1ZT17Yy5jb2RlfT57Yy5uYW1lfTwvb3B0aW9uPil9PC9zZWxlY3Q+PC9kaXY+CiAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT17bGJsfT5EZXZpc2U8L2xhYmVsPjxzZWxlY3QgdmFsdWU9e2Zvcm0uY3VycmVuY3l9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIGN1cnJlbmN5OiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtmbGR9PjxvcHRpb24gdmFsdWU9IlVTRCI+VVNEICgkKTwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IkVVUiI+RVVSICjigqwpPC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iWE9GIj5YT0YgKEZDRkEpPC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iTkdOIj5OR04gKOKCpik8L29wdGlvbj48b3B0aW9uIHZhbHVlPSJHQlAiPkdCUCAowqMpPC9vcHRpb24+PC9zZWxlY3Q+PC9kaXY+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTUiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIG1iLTQiPjxQaG9uZSBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1bIzAwODA2MF0iIC8+PGgyIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkNvb3Jkb25uw6llcyBkZSBjb250YWN0PC9oMj48L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0xIHNtOmdyaWQtY29scy0yIGdhcC00Ij4KICAgICAgICAgICAgPGRpdj48bGFiZWwgY2xhc3NOYW1lPXtsYmx9PkUtbWFpbDwvbGFiZWw+PGlucHV0IHZhbHVlPXtmb3JtLmVtYWlsfSBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBlbWFpbDogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICA8ZGl2PjxsYWJlbCBjbGFzc05hbWU9e2xibH0+VMOpbMOpcGhvbmU8L2xhYmVsPjxpbnB1dCB2YWx1ZT17Zm9ybS5waG9uZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgcGhvbmU6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2ZsZH0gLz48L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvc2VjdGlvbj4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState, useEffect, useCallback } from 'react';
+import { Store, Loader2, Save, Check, FileText, MapPin, Phone } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { COUNTRIES } from '@/lib/world/countries';
+
+export default function StoreSettings() {
+  const { store, loading } = useCurrentStore();
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (store) setForm({
+      name: store.name || '', business_name: store.business_name || '', business_type: store.business_type || '',
+      description: store.description || '', email: store.email || '', phone: store.phone || '',
+      address: store.address || '', country: store.country || '', currency: store.currency || 'USD',
+      domain: store.domain || '',
+    });
+  }, [store]);
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      await base44.entities.Store.update(store.id, form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally { setSaving(false); }
+  };
+
+  if (loading || !form) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  const fld = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+  const lbl = 'text-xs font-semibold text-[#6D7175] mb-1 block';
+
+  return (
+    <div className="p-4 sm:p-6 max-w-3xl mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2"><Store className="w-5 h-5 text-[#6D7175]" /><h1 className="text-xl font-bold text-[#202223]">Configuration de la boutique</h1></div>
+        <button onClick={save} disabled={saving} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{saved ? <><Check className="w-4 h-4" /> Enregistré</> : saving ? 'Enregistrement…' : <><Save className="w-4 h-4" /> Enregistrer</>}</button>
+      </div>
+
+      <div className="space-y-5">
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center gap-2 mb-4"><Store className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Informations générales</h2></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label className={lbl}>Nom de la boutique</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={fld} /></div>
+            <div><label className={lbl}>Type d'activité</label><input value={form.business_type} onChange={(e) => setForm({ ...form, business_type: e.target.value })} placeholder="Mode, beauté, électronique…" className={fld} /></div>
+            <div className="sm:col-span-2"><label className={lbl}>Description</label><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className={fld} /></div>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center gap-2 mb-4"><FileText className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Détails légaux</h2></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label className={lbl}>Raison sociale</label><input value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} className={fld} /></div>
+            <div><label className={lbl}>Domaine personnalisé</label><input value={form.domain} onChange={(e) => setForm({ ...form, domain: e.target.value })} placeholder="maboutique.com" className={fld} /></div>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center gap-2 mb-4"><MapPin className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Adresse d'expédition</h2></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2"><label className={lbl}>Adresse</label><input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={fld} /></div>
+            <div><label className={lbl}>Pays</label><select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+            <div><label className={lbl}>Devise</label><select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })} className={fld}><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="XOF">XOF (FCFA)</option><option value="NGN">NGN (₦)</option><option value="GBP">GBP (£)</option></select></div>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center gap-2 mb-4"><Phone className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Coordonnées de contact</h2></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label className={lbl}>E-mail</label><input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={fld} /></div>
+            <div><label className={lbl}>Téléphone</label><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fld} /></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

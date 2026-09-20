@@ -1,1 +1,136 @@
-ewogICJuYW1lIjogIlN0b3JlIiwKICAidHlwZSI6ICJvYmplY3QiLAogICJwcm9wZXJ0aWVzIjogewogICAgIm5hbWUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJOb20gZGUgbGEgYm91dGlxdWUiCiAgICB9LAogICAgInNsdWciOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJJZGVudGlmaWFudCBVUkwgdW5pcXVlIGRlIGxhIGJvdXRpcXVlIgogICAgfSwKICAgICJkZXNjcmlwdGlvbiI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJsb2dvIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZGVzY3JpcHRpb24iOiAiVVJMIGR1IGxvZ28gZGUgbGEgYm91dGlxdWUiCiAgICB9LAogICAgImJ1c2luZXNzX25hbWUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAiYnVzaW5lc3NfdHlwZSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIlR5cGUgZCdhY3Rpdml0XHUwMGU5IChtb2RlLCBiZWF1dFx1MDBlOSwgXHUwMGU5bGVjdHJvbmlxdWUuLi4pIgogICAgfSwKICAgICJjb3VudHJ5IjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZGVzY3JpcHRpb24iOiAiQ29kZSBwYXlzIElTTyAoZXg6IFNOLCBORywgQ0kpIgogICAgfSwKICAgICJjdXJyZW5jeSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkNvZGUgZGV2aXNlIElTTyAoZXg6IFhPRiwgTkdOLCBVU0QpIgogICAgfSwKICAgICJwaG9uZSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJlbWFpbCI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJhZGRyZXNzIjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgImRvbWFpbiI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkRvbWFpbmUgcGVyc29ubmFsaXNcdTAwZTkgb3Ugc291cy1kb21haW5lIFNlbGxpYSIKICAgIH0sCiAgICAidGhlbWVfaWQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJUaFx1MDBlOG1lIGFwcGxpcXVcdTAwZTkgXHUwMGUwIGxhIGJvdXRpcXVlIgogICAgfSwKICAgICJzdGF0dXMiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJhY3RpdmUiLAogICAgICAgICJwZW5kaW5nIiwKICAgICAgICAic3VzcGVuZGVkIiwKICAgICAgICAiZHJhZnQiCiAgICAgIF0sCiAgICAgICJkZWZhdWx0IjogImRyYWZ0IgogICAgfSwKICAgICJpc19tYXJrZXRwbGFjZV9zZWxsZXIiOiB7CiAgICAgICJ0eXBlIjogImJvb2xlYW4iLAogICAgICAiZGVmYXVsdCI6IGZhbHNlCiAgICB9LAogICAgInBsYW4iOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJzdGFydGVyIiwKICAgICAgICAiZ3Jvd3RoIiwKICAgICAgICAicHJvIiwKICAgICAgICAiZW50ZXJwcmlzZSIKICAgICAgXSwKICAgICAgImRlZmF1bHQiOiAiZ3Jvd3RoIiwKICAgICAgImRlc2NyaXB0aW9uIjogIlBsYW4gZCdhYm9ubmVtZW50IFNlbGxpYSIKICAgIH0sCiAgICAicGxhbl9zdGF0dXMiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJ0cmlhbCIsCiAgICAgICAgImFjdGl2ZSIsCiAgICAgICAgInBhc3RfZHVlIiwKICAgICAgICAiY2FuY2VsZWQiCiAgICAgIF0sCiAgICAgICJkZWZhdWx0IjogInRyaWFsIgogICAgfSwKICAgICJ0cmlhbF9lbmRzX2F0IjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZm9ybWF0IjogImRhdGUtdGltZSIKICAgIH0KICB9LAogICJyZXF1aXJlZCI6IFsKICAgICJuYW1lIgogIF0sCiAgInJscyI6IHsKICAgICJyZWFkIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0sCiAgICAiY3JlYXRlIjogewogICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgIH0sCiAgICAidXBkYXRlIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0sCiAgICAiZGVsZXRlIjogewogICAgICAiJG9yIjogWwogICAgICAgIHsKICAgICAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInVzZXJfY29uZGl0aW9uIjogewogICAgICAgICAgICAicm9sZSI6ICJhZG1pbiIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIF0KICAgIH0KICB9Cn0=
+{
+  "name": "Store",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de la boutique"
+    },
+    "slug": {
+      "type": "string",
+      "description": "Identifiant URL unique de la boutique"
+    },
+    "description": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string",
+      "description": "URL du logo de la boutique"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "business_type": {
+      "type": "string",
+      "description": "Type d'activit\u00e9 (mode, beaut\u00e9, \u00e9lectronique...)"
+    },
+    "country": {
+      "type": "string",
+      "description": "Code pays ISO (ex: SN, NG, CI)"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Code devise ISO (ex: XOF, NGN, USD)"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domaine personnalis\u00e9 ou sous-domaine Sellia"
+    },
+    "theme_id": {
+      "type": "string",
+      "description": "Th\u00e8me appliqu\u00e9 \u00e0 la boutique"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "suspended",
+        "draft"
+      ],
+      "default": "draft"
+    },
+    "is_marketplace_seller": {
+      "type": "boolean",
+      "default": false
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "pro",
+        "enterprise"
+      ],
+      "default": "growth",
+      "description": "Plan d'abonnement Sellia"
+    },
+    "plan_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "past_due",
+        "canceled"
+      ],
+      "default": "trial"
+    },
+    "trial_ends_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

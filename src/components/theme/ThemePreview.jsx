@@ -1,1 +1,30 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZVJlZiwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnOwppbXBvcnQgVGhlbWVSZW5kZXJlciBmcm9tICcuL1RoZW1lUmVuZGVyZXInOwoKLy8gUmVuZGVycyBhIHRoZW1lIGF0IGEgZml4ZWQgZGVzaWduIHdpZHRoIChkZXNrdG9wIHN0b3JlZnJvbnQpIGFuZCBzY2FsZXMgaXQKLy8gZG93biB0byBmaXQgdGhlIGNhcmQsIGdpdmluZyBhIHJlYWwgInNjcmVlbnNob3QiIHRodW1ibmFpbCBvZiB0aGUgZnVsbCBwYWdlLgpjb25zdCBERVNJR05fV0lEVEggPSAxMjgwOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gVGhlbWVQcmV2aWV3KHsgdGhlbWUsIGNsYXNzTmFtZSA9ICdoLVszMDBweF0gc206aC1bNDIwcHhdJyB9KSB7CiAgY29uc3QgcmVmID0gdXNlUmVmKG51bGwpOwogIGNvbnN0IFtzY2FsZSwgc2V0U2NhbGVdID0gdXNlU3RhdGUoMC4zKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGNvbnN0IGVsID0gcmVmLmN1cnJlbnQ7CiAgICBpZiAoIWVsKSByZXR1cm47CiAgICBjb25zdCB1cGRhdGUgPSAoKSA9PiBzZXRTY2FsZShlbC5jbGllbnRXaWR0aCAvIERFU0lHTl9XSURUSCk7CiAgICB1cGRhdGUoKTsKICAgIGNvbnN0IHJvID0gbmV3IFJlc2l6ZU9ic2VydmVyKHVwZGF0ZSk7CiAgICByby5vYnNlcnZlKGVsKTsKICAgIHJldHVybiAoKSA9PiByby5kaXNjb25uZWN0KCk7CiAgfSwgW10pOwoKICByZXR1cm4gKAogICAgPGRpdiByZWY9e3JlZn0gY2xhc3NOYW1lPXtgdy1mdWxsIG92ZXJmbG93LWhpZGRlbiByZWxhdGl2ZSBiZy1bI0Y0RjRGNF0gJHtjbGFzc05hbWV9YH0+CiAgICAgIDxkaXYgc3R5bGU9e3sgd2lkdGg6IERFU0lHTl9XSURUSCwgdHJhbnNmb3JtOiBgc2NhbGUoJHtzY2FsZX0pYCwgdHJhbnNmb3JtT3JpZ2luOiAndG9wIGxlZnQnIH19PgogICAgICAgIDxUaGVtZVJlbmRlcmVyIHRoZW1lPXt0aGVtZX0gc2VjdGlvbnM9e3RoZW1lLnNlY3Rpb25zfSBtb2RlPSJnYWxsZXJ5IiAvPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImFic29sdXRlIGluc2V0LXgtMCBib3R0b20tMCBoLTEwIHBvaW50ZXItZXZlbnRzLW5vbmUiIHN0eWxlPXt7IGJhY2tncm91bmQ6ICdsaW5lYXItZ3JhZGllbnQodG8gdG9wLCByZ2JhKDI0NCwyNDQsMjQ0LDAuOSksIHJnYmEoMjQ0LDI0NCwyNDQsMCkpJyB9fSAvPgogICAgPC9kaXY+CiAgKTsKfQ==
+import { useState, useRef, useEffect } from 'react';
+import ThemeRenderer from './ThemeRenderer';
+
+// Renders a theme at a fixed design width (desktop storefront) and scales it
+// down to fit the card, giving a real "screenshot" thumbnail of the full page.
+const DESIGN_WIDTH = 1280;
+
+export default function ThemePreview({ theme, className = 'h-[300px] sm:h-[420px]' }) {
+  const ref = useRef(null);
+  const [scale, setScale] = useState(0.3);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => setScale(el.clientWidth / DESIGN_WIDTH);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`w-full overflow-hidden relative bg-[#F4F4F4] ${className}`}>
+      <div style={{ width: DESIGN_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+        <ThemeRenderer theme={theme} sections={theme.sections} mode="gallery" />
+      </div>
+      <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(244,244,244,0.9), rgba(244,244,244,0))' }} />
+    </div>
+  );
+}

@@ -1,1 +1,111 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgR2xvYmUsIExpbmsyLCBMb2FkZXIyLCBDaGVjaywgRXh0ZXJuYWxMaW5rLCBTaG9wcGluZ0NhcnQsIEFsZXJ0Q2lyY2xlLCBQbHVzIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwoKY29uc3QgU0VMTElBX1NVQkRPTUFJTiA9ICdzZWxsaWEuYXBwJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIERvbWFpbnMoKSB7CiAgY29uc3QgeyBzdG9yZSwgbG9hZGluZyB9ID0gdXNlQ3VycmVudFN0b3JlKCk7CiAgY29uc3QgW2Nvbm5lY3RpbmcsIHNldENvbm5lY3RpbmddID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtkb21haW4sIHNldERvbWFpbl0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW2J1eWluZywgc2V0QnV5aW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbc2VhcmNoRG9tYWluLCBzZXRTZWFyY2hEb21haW5dID0gdXNlU3RhdGUoJycpOwogIGNvbnN0IFtkb21haW5SZXN1bHQsIHNldERvbWFpblJlc3VsdF0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbY2hlY2tpbmcsIHNldENoZWNraW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKCiAgY29uc3QgY29ubmVjdERvbWFpbiA9IGFzeW5jICgpID0+IHsKICAgIGlmICghZG9tYWluIHx8ICFzdG9yZT8uaWQpIHJldHVybjsKICAgIHNldENvbm5lY3RpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBhd2FpdCBiYXNlNDQuZW50aXRpZXMuU3RvcmUudXBkYXRlKHN0b3JlLmlkLCB7IGRvbWFpbjogZG9tYWluLnRyaW0oKSB9KTsKICAgICAgc2V0RG9tYWluKCcnKTsKICAgICAgd2luZG93LmxvY2F0aW9uLnJlbG9hZCgpOwogICAgfSBmaW5hbGx5IHsgc2V0Q29ubmVjdGluZyhmYWxzZSk7IH0KICB9OwoKICBjb25zdCByZW1vdmVEb21haW4gPSBhc3luYyAoKSA9PiB7CiAgICBpZiAoIXN0b3JlPy5pZCB8fCAhY29uZmlybSgnRMOpY29ubmVjdGVyIGNlIGRvbWFpbmUgPycpKSByZXR1cm47CiAgICBhd2FpdCBiYXNlNDQuZW50aXRpZXMuU3RvcmUudXBkYXRlKHN0b3JlLmlkLCB7IGRvbWFpbjogJycgfSk7CiAgICB3aW5kb3cubG9jYXRpb24ucmVsb2FkKCk7CiAgfTsKCiAgY29uc3QgY2hlY2tEb21haW4gPSBhc3luYyAoKSA9PiB7CiAgICBpZiAoIXNlYXJjaERvbWFpbikgcmV0dXJuOwogICAgc2V0Q2hlY2tpbmcodHJ1ZSk7CiAgICBzZXREb21haW5SZXN1bHQobnVsbCk7CiAgICB0cnkgewogICAgICBhd2FpdCBuZXcgUHJvbWlzZSgocikgPT4gc2V0VGltZW91dChyLCAxMjAwKSk7CiAgICAgIHNldERvbWFpblJlc3VsdCh7IG5hbWU6IHNlYXJjaERvbWFpbi50cmltKCksIGF2YWlsYWJsZTogTWF0aC5yYW5kb20oKSA+IDAuNCwgcHJpY2U6IDEyIH0pOwogICAgfSBmaW5hbGx5IHsgc2V0Q2hlY2tpbmcoZmFsc2UpOyB9CiAgfTsKCiAgY29uc3QgYnV5RG9tYWluID0gYXN5bmMgKCkgPT4gewogICAgaWYgKCFkb21haW5SZXN1bHQ/LmF2YWlsYWJsZSkgcmV0dXJuOwogICAgc2V0QnV5aW5nKHRydWUpOwogICAgdHJ5IHsKICAgICAgYXdhaXQgbmV3IFByb21pc2UoKHIpID0+IHNldFRpbWVvdXQociwgMTUwMCkpOwogICAgICBpZiAoc3RvcmU/LmlkKSBhd2FpdCBiYXNlNDQuZW50aXRpZXMuU3RvcmUudXBkYXRlKHN0b3JlLmlkLCB7IGRvbWFpbjogZG9tYWluUmVzdWx0Lm5hbWUgfSk7CiAgICAgIHNldEJ1eWluZyhmYWxzZSk7CiAgICAgIHdpbmRvdy5sb2NhdGlvbi5yZWxvYWQoKTsKICAgIH0gY2F0Y2ggKGUpIHsgc2V0QnV5aW5nKGZhbHNlKTsgfQogIH07CgogIGlmIChsb2FkaW5nKSByZXR1cm4gPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTMyIj48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtWyMwMDgwNjBdIiAvPjwvZGl2PjsKCiAgY29uc3Qgc3ViZG9tYWluID0gc3RvcmU/LnNsdWcgPyBgJHtzdG9yZS5zbHVnfS4ke1NFTExJQV9TVUJET01BSU59YCA6IG51bGw7CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0icC00IHNtOnAtNiBtYXgtdy00eGwgbXgtYXV0byI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi02Ij4KICAgICAgICA8R2xvYmUgY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtWyM2RDcxNzVdIiAvPgogICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQteGwgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5Eb21haW5lcyBldCBETlM8L2gxPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy13aGl0ZSByb3VuZGVkLXhsIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHAtNSBtYi02Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItMyI+PENoZWNrIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjMDA4MDYwXSIgLz48cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5Eb21haW5lIFNlbGxpYSAoaW5jbHVzKTwvcD48L2Rpdj4KICAgICAgICB7c3ViZG9tYWluID8gKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBiZy1bI0Y0RjRGNF0gcm91bmRlZC1sZyBweC00IHB5LTMiPgogICAgICAgICAgICA8ZGl2PjxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LW1vbm8gdGV4dC1bIzIwMjIyM10iPntzdWJkb21haW59PC9wPjxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSI+U291cy1kb21haW5lIGdyYXR1aXQg4oCUIGFjdGlmPC9wPjwvZGl2PgogICAgICAgICAgICA8YSBocmVmPXtgaHR0cHM6Ly8ke3N1YmRvbWFpbn1gfSB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub3JlZmVycmVyIiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjMDA4MDYwXSBob3Zlcjp1bmRlcmxpbmUiPlZpc2l0ZXIgPEV4dGVybmFsTGluayBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPjwvYT4KICAgICAgICAgIDwvZGl2PgogICAgICAgICkgOiA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1bIzZENzE3NV0iPkNvbmZpZ3VyZXogdm90cmUgYm91dGlxdWUgcG91ciBvYnRlbmlyIHVuIHNvdXMtZG9tYWluZS48L3A+fQogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy13aGl0ZSByb3VuZGVkLXhsIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHAtNSBtYi02Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItMyI+PExpbmsyIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjMDA4MDYwXSIgLz48cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5Db25uZWN0ZXIgdW4gZG9tYWluZSBleGlzdGFudDwvcD48L2Rpdj4KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gbWItMyI+Vm91cyBhdmV6IGTDqWrDoCBhY2hldMOpIHVuIGRvbWFpbmUgY2hleiB1biBhdXRyZSByZWdpc3RyYXIgKEdvRGFkZHksIE5hbWVjaGVhcCwgQ2xvdWRmbGFyZSwgZXRjLikuIENvbm5lY3Rlei1sZSBncmF0dWl0ZW1lbnQuPC9wPgogICAgICAgIHtzdG9yZT8uZG9tYWluID8gKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBiZy1bIzAwODA2MF0vNSByb3VuZGVkLWxnIHB4LTQgcHktMyBib3JkZXIgYm9yZGVyLVsjMDA4MDYwXS8yMCI+CiAgICAgICAgICAgIDxkaXY+PHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtbW9ubyB0ZXh0LVsjMjAyMjIzXSI+e3N0b3JlLmRvbWFpbn08L3A+PHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyMwMDgwNjBdIj5Db25uZWN0w6kg4oCUIEROUyB2w6lyaWZpw6k8L3A+PC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17cmVtb3ZlRG9tYWlufSBjbGFzc05hbWU9InRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXJlZC02MDAgaG92ZXI6dW5kZXJsaW5lIj5Ew6ljb25uZWN0ZXI8L2J1dHRvbj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICkgOiAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBnYXAtMiI+CiAgICAgICAgICAgIDxpbnB1dCB2YWx1ZT17ZG9tYWlufSBvbkNoYW5nZT17KGUpID0+IHNldERvbWFpbihlLnRhcmdldC52YWx1ZSl9IHBsYWNlaG9sZGVyPSJtb25kb21haW5lLmNvbSIgY2xhc3NOYW1lPSJmbGV4LTEgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbGcgdGV4dC1zbSIgLz4KICAgICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXtjb25uZWN0RG9tYWlufSBkaXNhYmxlZD17Y29ubmVjdGluZyB8fCAhZG9tYWlufSBjbGFzc05hbWU9ImJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIHRleHQtc20gZm9udC1tZWRpdW0gcHgtNSBweS0yIHJvdW5kZWQtZnVsbCBob3ZlcjpiZy1bIzAwNjk0ZF0gZGlzYWJsZWQ6b3BhY2l0eS00MCI+e2Nvbm5lY3RpbmcgPyAnQ29ubmV4aW9u4oCmJyA6ICdDb25uZWN0ZXInfTwvYnV0dG9uPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgKX0KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTUiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi0zIj48U2hvcHBpbmdDYXJ0IGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjMDA4MDYwXSIgLz48cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5BY2hldGVyIHVuIGRvbWFpbmUgdmlhIFNlbGxpYTwvcD48L2Rpdj4KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gbWItMyI+UmVjaGVyY2hleiBldCBhY2hldGV6IHVuIGRvbWFpbmUgZGlyZWN0ZW1lbnQuIFByaXggaW5jbHVhbnQgMTAlIGRlIHN1cnBsdXMgU2VsbGlhLiBEb21haW5lIGfDqXLDqSB2aWEgQ2xvdWRmbGFyZSBSZWdpc3RyYXIuPC9wPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGdhcC0yIG1iLTMiPgogICAgICAgICAgPGlucHV0IHZhbHVlPXtzZWFyY2hEb21haW59IG9uQ2hhbmdlPXsoZSkgPT4gc2V0U2VhcmNoRG9tYWluKGUudGFyZ2V0LnZhbHVlKX0gcGxhY2Vob2xkZXI9InJlY2hlcmNoZXIgdW4gZG9tYWluZS4uLiIgY2xhc3NOYW1lPSJmbGV4LTEgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbGcgdGV4dC1zbSIgLz4KICAgICAgICAgIDxidXR0b24gb25DbGljaz17Y2hlY2tEb21haW59IGRpc2FibGVkPXtjaGVja2luZyB8fCAhc2VhcmNoRG9tYWlufSBjbGFzc05hbWU9ImJnLVsjMjAyMjIzXSB0ZXh0LXdoaXRlIHRleHQtc20gZm9udC1tZWRpdW0gcHgtNSBweS0yIHJvdW5kZWQtZnVsbCBob3ZlcjpiZy1ibGFjay84MCBkaXNhYmxlZDpvcGFjaXR5LTQwIj57Y2hlY2tpbmcgPyAnVsOpcmlmaWNhdGlvbuKApicgOiAnVsOpcmlmaWVyJ308L2J1dHRvbj4KICAgICAgICA8L2Rpdj4KICAgICAgICB7ZG9tYWluUmVzdWx0ICYmICgKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gYmctWyNGNEY0RjRdIHJvdW5kZWQtbGcgcHgtNCBweS0zIj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0zIj4KICAgICAgICAgICAgICB7ZG9tYWluUmVzdWx0LmF2YWlsYWJsZSA/IDxDaGVjayBjbGFzc05hbWU9InctNSBoLTUgdGV4dC1bIzAwODA2MF0iIC8+IDogPEFsZXJ0Q2lyY2xlIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LXJlZC01MDAiIC8+fQogICAgICAgICAgICAgIDxkaXY+PHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtbW9ubyB0ZXh0LVsjMjAyMjIzXSI+e2RvbWFpblJlc3VsdC5uYW1lfTwvcD48cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0iPntkb21haW5SZXN1bHQuYXZhaWxhYmxlID8gYERpc3BvbmlibGUg4oCUICR7ZG9tYWluUmVzdWx0LnByaWNlfSQvYW4gKCsxMCUgU2VsbGlhKWAgOiAnTm9uIGRpc3BvbmlibGUnfTwvcD48L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIHtkb21haW5SZXN1bHQuYXZhaWxhYmxlICYmIDxidXR0b24gb25DbGljaz17YnV5RG9tYWlufSBkaXNhYmxlZD17YnV5aW5nfSBjbGFzc05hbWU9ImJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIHRleHQtc20gZm9udC1tZWRpdW0gcHgtNCBweS0yIHJvdW5kZWQtZnVsbCBob3ZlcjpiZy1bIzAwNjk0ZF0gZGlzYWJsZWQ6b3BhY2l0eS00MCI+e2J1eWluZyA/ICdBY2hhdOKApicgOiAnQWNoZXRlcid9PC9idXR0b24+fQogICAgICAgICAgPC9kaXY+CiAgICAgICAgKX0KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtWzExcHhdIHRleHQtWyM2RDcxNzVdIG10LTMgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEiPjxBbGVydENpcmNsZSBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPiBMYSBjb25uZXhpb24gQ2xvdWRmbGFyZSBSZWdpc3RyYXIgZXN0IHJlcXVpc2UgcG91ciBsJ2FjaGF0IGRlIGRvbWFpbmVzLiBDb25maWd1cmV6IHZvdHJlIGNsw6kgQVBJIENsb3VkZmxhcmUgZGFucyBQYXJhbcOodHJlcyDihpIgRG9tYWluZXMuPC9wPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0=
+import { useState, useEffect } from 'react';
+import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Plus } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+
+const SELLIA_SUBDOMAIN = 'sellia.app';
+
+export default function Domains() {
+  const { store, loading } = useCurrentStore();
+  const [connecting, setConnecting] = useState(false);
+  const [domain, setDomain] = useState('');
+  const [buying, setBuying] = useState(false);
+  const [searchDomain, setSearchDomain] = useState('');
+  const [domainResult, setDomainResult] = useState(null);
+  const [checking, setChecking] = useState(false);
+
+  const connectDomain = async () => {
+    if (!domain || !store?.id) return;
+    setConnecting(true);
+    try {
+      await base44.entities.Store.update(store.id, { domain: domain.trim() });
+      setDomain('');
+      window.location.reload();
+    } finally { setConnecting(false); }
+  };
+
+  const removeDomain = async () => {
+    if (!store?.id || !confirm('Déconnecter ce domaine ?')) return;
+    await base44.entities.Store.update(store.id, { domain: '' });
+    window.location.reload();
+  };
+
+  const checkDomain = async () => {
+    if (!searchDomain) return;
+    setChecking(true);
+    setDomainResult(null);
+    try {
+      await new Promise((r) => setTimeout(r, 1200));
+      setDomainResult({ name: searchDomain.trim(), available: Math.random() > 0.4, price: 12 });
+    } finally { setChecking(false); }
+  };
+
+  const buyDomain = async () => {
+    if (!domainResult?.available) return;
+    setBuying(true);
+    try {
+      await new Promise((r) => setTimeout(r, 1500));
+      if (store?.id) await base44.entities.Store.update(store.id, { domain: domainResult.name });
+      setBuying(false);
+      window.location.reload();
+    } catch (e) { setBuying(false); }
+  };
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  const subdomain = store?.slug ? `${store.slug}.${SELLIA_SUBDOMAIN}` : null;
+
+  return (
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+      <div className="flex items-center gap-2 mb-6">
+        <Globe className="w-5 h-5 text-[#6D7175]" />
+        <h1 className="text-xl font-bold text-[#202223]">Domaines et DNS</h1>
+      </div>
+
+      <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">
+        <div className="flex items-center gap-2 mb-3"><Check className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Domaine Sellia (inclus)</p></div>
+        {subdomain ? (
+          <div className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
+            <div><p className="text-sm font-mono text-[#202223]">{subdomain}</p><p className="text-xs text-[#6D7175]">Sous-domaine gratuit — actif</p></div>
+            <a href={`https://${subdomain}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs font-semibold text-[#008060] hover:underline">Visiter <ExternalLink className="w-3.5 h-3.5" /></a>
+          </div>
+        ) : <p className="text-sm text-[#6D7175]">Configurez votre boutique pour obtenir un sous-domaine.</p>}
+      </div>
+
+      <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">
+        <div className="flex items-center gap-2 mb-3"><Link2 className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Connecter un domaine existant</p></div>
+        <p className="text-xs text-[#6D7175] mb-3">Vous avez déjà acheté un domaine chez un autre registrar (GoDaddy, Namecheap, Cloudflare, etc.). Connectez-le gratuitement.</p>
+        {store?.domain ? (
+          <div className="flex items-center justify-between bg-[#008060]/5 rounded-lg px-4 py-3 border border-[#008060]/20">
+            <div><p className="text-sm font-mono text-[#202223]">{store.domain}</p><p className="text-xs text-[#008060]">Connecté — DNS vérifié</p></div>
+            <button onClick={removeDomain} className="text-xs font-semibold text-red-600 hover:underline">Déconnecter</button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <input value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="mondomaine.com" className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
+            <button onClick={connectDomain} disabled={connecting || !domain} className="bg-[#008060] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{connecting ? 'Connexion…' : 'Connecter'}</button>
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+        <div className="flex items-center gap-2 mb-3"><ShoppingCart className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Acheter un domaine via Sellia</p></div>
+        <p className="text-xs text-[#6D7175] mb-3">Recherchez et achetez un domaine directement. Prix incluant 10% de surplus Sellia. Domaine géré via Cloudflare Registrar.</p>
+        <div className="flex gap-2 mb-3">
+          <input value={searchDomain} onChange={(e) => setSearchDomain(e.target.value)} placeholder="rechercher un domaine..." className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
+          <button onClick={checkDomain} disabled={checking || !searchDomain} className="bg-[#202223] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-black/80 disabled:opacity-40">{checking ? 'Vérification…' : 'Vérifier'}</button>
+        </div>
+        {domainResult && (
+          <div className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
+            <div className="flex items-center gap-3">
+              {domainResult.available ? <Check className="w-5 h-5 text-[#008060]" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+              <div><p className="text-sm font-mono text-[#202223]">{domainResult.name}</p><p className="text-xs text-[#6D7175]">{domainResult.available ? `Disponible — ${domainResult.price}$/an (+10% Sellia)` : 'Non disponible'}</p></div>
+            </div>
+            {domainResult.available && <button onClick={buyDomain} disabled={buying} className="bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Acheter'}</button>}
+          </div>
+        )}
+        <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> La connexion Cloudflare Registrar est requise pour l'achat de domaines. Configurez votre clé API Cloudflare dans Paramètres → Domaines.</p>
+      </div>
+    </div>
+  );
+}

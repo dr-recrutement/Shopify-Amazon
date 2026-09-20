@@ -1,1 +1,127 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IENyZWRpdENhcmQsIENoZWNrLCBMb2FkZXIyLCBEb3dubG9hZCwgQ2FsZW5kYXIsIFRyZW5kaW5nVXAsIEFsZXJ0Q2lyY2xlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwppbXBvcnQgeyBQTEFOUywgUExBTl9PUkRFUiwgZ2V0UGxhbiB9IGZyb20gJ0AvbGliL3BsYW5zJzsKaW1wb3J0IHsgZm9ybWF0TW9uZXkgfSBmcm9tICdAL2xpYi93b3JsZC9jdXJyZW5jaWVzJzsKCmNvbnN0IHBsYW5GZWF0dXJlcyA9IChwbGFuKSA9PiB7CiAgY29uc3QgbCA9IHBsYW4ubGltaXRzOwogIGNvbnN0IGZlYXRzID0gW107CiAgZmVhdHMucHVzaChsLnByb2R1Y3RzID09PSBJbmZpbml0eSA/ICdQcm9kdWl0cyBpbGxpbWl0w6lzJyA6IGAke2wucHJvZHVjdHN9IHByb2R1aXRzYCk7CiAgZmVhdHMucHVzaChsLnN0b3JlcyA9PT0gSW5maW5pdHkgPyAnQm91dGlxdWVzIGlsbGltaXTDqWVzJyA6IGAke2wuc3RvcmVzfSBib3V0aXF1ZShzKWApOwogIGZlYXRzLnB1c2gobC51c2VycyA9PT0gSW5maW5pdHkgPyAnVXRpbGlzYXRldXJzIGlsbGltaXTDqXMnIDogYCR7bC51c2Vyc30gdXRpbGlzYXRldXJzYCk7CiAgaWYgKGwuZWRpdG9yKSBmZWF0cy5wdXNoKCfDiWRpdGV1ciB2aXN1ZWwnKTsKICBpZiAobC5wYXltZW50cyA9PT0gJ2ludGVncmF0ZWQnKSBmZWF0cy5wdXNoKCdQYWllbWVudHMgaW50w6lncsOpcycpOwogIGlmIChsLm11bHRpX2N1cnJlbmN5KSBmZWF0cy5wdXNoKCdNdWx0aS1kZXZpc2VzJyk7CiAgaWYgKGwuYWlfYXNzaXN0YW50KSBmZWF0cy5wdXNoKCdBc3Npc3RhbnQgSUEnKTsKICBpZiAobC5jdXN0b21fZG9tYWluKSBmZWF0cy5wdXNoKCdEb21haW5lIHBlcnNvbm5hbGlzw6knKTsKICBpZiAobC5kaXNjb3VudHMpIGZlYXRzLnB1c2goJ1LDqWR1Y3Rpb25zJyk7CiAgaWYgKGwubWFya2V0cGxhY2UpIGZlYXRzLnB1c2goJ01hcmtldHBsYWNlJyk7CiAgaWYgKGwuYXBpKSBmZWF0cy5wdXNoKCdBY2PDqHMgQVBJJyk7CiAgcmV0dXJuIGZlYXRzLnNsaWNlKDAsIDYpOwp9OwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gQmlsbGluZygpIHsKICBjb25zdCB7IHN0b3JlLCBsb2FkaW5nIH0gPSB1c2VDdXJyZW50U3RvcmUoKTsKICBjb25zdCBbcGF5bWVudHMsIHNldFBheW1lbnRzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbYnVzeSwgc2V0QnVzeV0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW2NoYW5naW5nLCBzZXRDaGFuZ2luZ10gPSB1c2VTdGF0ZShudWxsKTsKCiAgY29uc3QgbG9hZCA9IHVzZUNhbGxiYWNrKGFzeW5jICgpID0+IHsKICAgIGlmICghc3RvcmU/LmlkKSByZXR1cm47CiAgICBjb25zdCBwcyA9IGF3YWl0IGJhc2U0NC5lbnRpdGllcy5QYXltZW50LmZpbHRlcih7IHN0b3JlX2lkOiBzdG9yZS5pZCB9LCAnLWNyZWF0ZWRfZGF0ZScsIDUwKTsKICAgIHNldFBheW1lbnRzKHBzKTsKICB9LCBbc3RvcmU/LmlkXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW2xvYWRdKTsKCiAgY29uc3QgY2hhbmdlUGxhbiA9IGFzeW5jIChwbGFuSWQpID0+IHsKICAgIGlmICghc3RvcmU/LmlkKSByZXR1cm47CiAgICBzZXRDaGFuZ2luZyhwbGFuSWQpOwogICAgdHJ5IHsKICAgICAgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLlN0b3JlLnVwZGF0ZShzdG9yZS5pZCwgeyBwbGFuOiBwbGFuSWQsIHBsYW5fc3RhdHVzOiAndHJpYWwnLCB0cmlhbF9lbmRzX2F0OiBuZXcgRGF0ZShEYXRlLm5vdygpICsgMTQgKiA4NjQwMDAwMCkudG9JU09TdHJpbmcoKSB9KTsKICAgICAgd2luZG93LmxvY2F0aW9uLnJlbG9hZCgpOwogICAgfSBmaW5hbGx5IHsgc2V0Q2hhbmdpbmcobnVsbCk7IH0KICB9OwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CiAgaWYgKCFzdG9yZSkgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy1tZCBteC1hdXRvIG10LTIwIHRleHQtY2VudGVyIj48QWxlcnRDaXJjbGUgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgdGV4dC1bIzAwODA2MF0gbXgtYXV0byBtYi0zIiAvPjxwIGNsYXNzTmFtZT0idGV4dC1zbSB0ZXh0LVsjNkQ3MTc1XSI+Q29uZmlndXJleiB2b3RyZSBib3V0aXF1ZSBwb3VyIGfDqXJlciBsJ2Fib25uZW1lbnQuPC9wPjwvZGl2PjsKCiAgY29uc3QgY3VycmVudFBsYW4gPSBnZXRQbGFuKHN0b3JlLnBsYW4pOwogIGNvbnN0IFBMQU5TX0xJU1QgPSBQTEFOX09SREVSLm1hcCgoaWQpID0+IFBMQU5TW2lkXSk7CiAgY29uc3QgdHJpYWxFbmQgPSBzdG9yZS50cmlhbF9lbmRzX2F0ID8gbmV3IERhdGUoc3RvcmUudHJpYWxfZW5kc19hdCkgOiBudWxsOwogIGNvbnN0IGRheXNMZWZ0ID0gdHJpYWxFbmQgPyBNYXRoLm1heCgwLCBNYXRoLmNlaWwoKHRyaWFsRW5kIC0gRGF0ZS5ub3coKSkgLyA4NjQwMDAwMCkpIDogMDsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJwLTQgc206cC02IG1heC13LTV4bCBteC1hdXRvIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIG1iLTYiPgogICAgICAgIDxDcmVkaXRDYXJkIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LVsjNkQ3MTc1XSIgLz4KICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+QWJvbm5lbWVudCBldCBmYWN0dXJhdGlvbjwvaDE+CiAgICAgIDwvZGl2PgoKICAgICAgPGRpdiBjbGFzc05hbWU9ImJnLWdyYWRpZW50LXRvLXIgZnJvbS1bIzAwODA2MF0gdG8tWyMwMEE4NzhdIHJvdW5kZWQtMnhsIHAtNiB0ZXh0LXdoaXRlIG1iLTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLXN0YXJ0IGp1c3RpZnktYmV0d2VlbiBmbGV4LXdyYXAgZ2FwLTQiPgogICAgICAgICAgPGRpdj4KICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHVwcGVyY2FzZSB0cmFja2luZy13aWRlIG9wYWNpdHktODAiPlBsYW4gYWN0dWVsPC9wPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtMnhsIGZvbnQtYm9sZCBtdC0xIj57Y3VycmVudFBsYW4ubmFtZX08L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBvcGFjaXR5LTkwIG10LTEiPntjdXJyZW50UGxhbi5wcmljZX0ge2N1cnJlbnRQbGFuLnBlcmlvZH08L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ0ZXh0LXJpZ2h0Ij4KICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHVwcGVyY2FzZSB0cmFja2luZy13aWRlIG9wYWNpdHktODAiPkVzc2FpIGdyYXR1aXQ8L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC0yeGwgZm9udC1ib2xkIG10LTEiPntkYXlzTGVmdH0gam91cnMgcmVzdGFudHM8L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBvcGFjaXR5LTkwIG10LTEiPntzdG9yZS5wbGFuX3N0YXR1cyA9PT0gJ3RyaWFsJyA/ICdBdWN1bmUgY2FydGUgcmVxdWlzZScgOiAnQWN0aWYnfTwvcD4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDxoMiBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIG1iLTMiPkNoYW5nZXIgZGUgcGFsaWVyIHRhcmlmYWlyZSDigJQgMTQgam91cnMgZCdlc3NhaSBncmF0dWl0PC9oMj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTEgc206Z3JpZC1jb2xzLTIgbGc6Z3JpZC1jb2xzLTQgZ2FwLTQgbWItOCI+CiAgICAgICAge1BMQU5TX0xJU1QubWFwKChwbGFuKSA9PiB7CiAgICAgICAgICBjb25zdCBhY3RpdmUgPSBzdG9yZS5wbGFuID09PSBwbGFuLmlkOwogICAgICAgICAgcmV0dXJuICgKICAgICAgICAgICAgPGRpdiBrZXk9e3BsYW4uaWR9IGNsYXNzTmFtZT17YHJvdW5kZWQteGwgYm9yZGVyLTIgcC01ICR7YWN0aXZlID8gJ2JvcmRlci1bIzAwODA2MF0gYmctWyMwMDgwNjBdLzUnIDogJ2JvcmRlci1bI0UxRTFFMV0gYmctd2hpdGUnfWB9PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gbWItMiI+CiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj57cGxhbi5uYW1lfTwvcD4KICAgICAgICAgICAgICAgIHthY3RpdmUgJiYgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSBmb250LWJvbGQgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgcHgtMiBweS0wLjUgcm91bmRlZC1mdWxsIj5BQ1RVRUw8L3NwYW4+fQogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC0yeGwgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj57cGxhbi5wcmljZX08c3BhbiBjbGFzc05hbWU9InRleHQteHMgZm9udC1ub3JtYWwgdGV4dC1bIzZENzE3NV0iPiB7cGxhbi5wZXJpb2R9PC9zcGFuPjwvcD4KICAgICAgICAgICAgICA8dWwgY2xhc3NOYW1lPSJtdC0zIHNwYWNlLXktMS41Ij4KICAgICAgICAgICAgICAgIHtwbGFuRmVhdHVyZXMocGxhbikubWFwKChmLCBpKSA9PiAoCiAgICAgICAgICAgICAgICAgIDxsaSBrZXk9e2l9IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1zdGFydCBnYXAtMS41IHRleHQteHMgdGV4dC1bIzZENzE3NV0iPjxDaGVjayBjbGFzc05hbWU9InctMy41IGgtMy41IHRleHQtWyMwMDgwNjBdIHNocmluay0wIG10LTAuNSIgLz4ge2Z9PC9saT4KICAgICAgICAgICAgICAgICkpfQogICAgICAgICAgICAgIDwvdWw+CiAgICAgICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBjaGFuZ2VQbGFuKHBsYW4uaWQpfSBkaXNhYmxlZD17YWN0aXZlIHx8IGNoYW5naW5nID09PSBwbGFuLmlkfSBjbGFzc05hbWU9InctZnVsbCBtdC00IHRleHQteHMgZm9udC1zZW1pYm9sZCBweS0yLjUgcm91bmRlZC1mdWxsIHRyYW5zaXRpb24gZGlzYWJsZWQ6b3BhY2l0eS00MCBiZy1bIzAwODA2MF0gdGV4dC13aGl0ZSBob3ZlcjpiZy1bIzAwNjk0ZF0iPgogICAgICAgICAgICAgICAge2NoYW5naW5nID09PSBwbGFuLmlkID8gJ0NoYW5nZW1lbnTigKYnIDogYWN0aXZlID8gJ1BsYW4gYWN0dWVsJyA6ICdDaG9pc2lyIGNlIHBsYW4nfQogICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICk7CiAgICAgICAgfSl9CiAgICAgIDwvZGl2PgoKICAgICAgPGgyIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10gbWItMyBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+PENhbGVuZGFyIGNsYXNzTmFtZT0idy00IGgtNCIgLz4gSGlzdG9yaXF1ZSBkZXMgcGFpZW1lbnRzPC9oMj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICB7cGF5bWVudHMubGVuZ3RoID09PSAwID8gKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtOCB0ZXh0LWNlbnRlciB0ZXh0LXNtIHRleHQtWyM2RDcxNzVdIj5BdWN1biBwYWllbWVudCBlbnJlZ2lzdHLDqS4gVm90cmUgZXNzYWkgZ3JhdHVpdCBkZSAxNCBqb3VycyBlc3QgYWN0aWYuPC9kaXY+CiAgICAgICAgKSA6ICgKICAgICAgICAgIDx0YWJsZSBjbGFzc05hbWU9InctZnVsbCB0ZXh0LXNtIj4KICAgICAgICAgICAgPHRoZWFkIGNsYXNzTmFtZT0iYmctWyNGNEY0RjRdIHRleHQtbGVmdCB0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIj4KICAgICAgICAgICAgICA8dHI+PHRoIGNsYXNzTmFtZT0icHgtNCBweS0zIGZvbnQtc2VtaWJvbGQiPkRhdGU8L3RoPjx0aCBjbGFzc05hbWU9InB4LTQgcHktMyBmb250LXNlbWlib2xkIj5EZXNjcmlwdGlvbjwvdGg+PHRoIGNsYXNzTmFtZT0icHgtNCBweS0zIGZvbnQtc2VtaWJvbGQiPk1vbnRhbnQ8L3RoPjx0aCBjbGFzc05hbWU9InB4LTQgcHktMyBmb250LXNlbWlib2xkIj5TdGF0dXQ8L3RoPjx0aCBjbGFzc05hbWU9InB4LTQgcHktMyBmb250LXNlbWlib2xkIj48L3RoPjwvdHI+CiAgICAgICAgICAgIDwvdGhlYWQ+CiAgICAgICAgICAgIDx0Ym9keT4KICAgICAgICAgICAgICB7cGF5bWVudHMubWFwKChwKSA9PiAoCiAgICAgICAgICAgICAgICA8dHIga2V5PXtwLmlkfSBjbGFzc05hbWU9ImJvcmRlci10IGJvcmRlci1bI0UxRTFFMV0iPgogICAgICAgICAgICAgICAgICA8dGQgY2xhc3NOYW1lPSJweC00IHB5LTMgdGV4dC1bIzZENzE3NV0iPntuZXcgRGF0ZShwLmNyZWF0ZWRfZGF0ZSkudG9Mb2NhbGVEYXRlU3RyaW5nKCdmci1GUicpfTwvdGQ+CiAgICAgICAgICAgICAgICAgIDx0ZCBjbGFzc05hbWU9InB4LTQgcHktMyB0ZXh0LVsjMjAyMjIzXSI+QWJvbm5lbWVudCB7Y3VycmVudFBsYW4ubmFtZX08L3RkPgogICAgICAgICAgICAgICAgICA8dGQgY2xhc3NOYW1lPSJweC00IHB5LTMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjMjAyMjIzXSI+e2Zvcm1hdE1vbmV5KHAuYW1vdW50LCBwLmN1cnJlbmN5KX08L3RkPgogICAgICAgICAgICAgICAgICA8dGQgY2xhc3NOYW1lPSJweC00IHB5LTMiPjxzcGFuIGNsYXNzTmFtZT17YHRleHQtWzEwcHhdIGZvbnQtYm9sZCBweC0yIHB5LTEgcm91bmRlZC1mdWxsICR7cC5zdGF0dXMgPT09ICdzdWNjZWVkZWQnID8gJ2JnLVsjMDA4MDYwXS8xMCB0ZXh0LVsjMDA4MDYwXScgOiAnYmctYW1iZXItMTAwIHRleHQtYW1iZXItNzAwJ31gfT57cC5zdGF0dXN9PC9zcGFuPjwvdGQ+CiAgICAgICAgICAgICAgICAgIDx0ZCBjbGFzc05hbWU9InB4LTQgcHktMyI+PERvd25sb2FkIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjNkQ3MTc1XSBjdXJzb3ItcG9pbnRlciBob3Zlcjp0ZXh0LVsjMDA4MDYwXSIgLz48L3RkPgogICAgICAgICAgICAgICAgPC90cj4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgPC90Ym9keT4KICAgICAgICAgIDwvdGFibGU+CiAgICAgICAgKX0KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState, useEffect, useCallback } from 'react';
+import { CreditCard, Check, Loader2, Download, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { PLANS, PLAN_ORDER, getPlan } from '@/lib/plans';
+import { formatMoney } from '@/lib/world/currencies';
+
+const planFeatures = (plan) => {
+  const l = plan.limits;
+  const feats = [];
+  feats.push(l.products === Infinity ? 'Produits illimités' : `${l.products} produits`);
+  feats.push(l.stores === Infinity ? 'Boutiques illimitées' : `${l.stores} boutique(s)`);
+  feats.push(l.users === Infinity ? 'Utilisateurs illimités' : `${l.users} utilisateurs`);
+  if (l.editor) feats.push('Éditeur visuel');
+  if (l.payments === 'integrated') feats.push('Paiements intégrés');
+  if (l.multi_currency) feats.push('Multi-devises');
+  if (l.ai_assistant) feats.push('Assistant IA');
+  if (l.custom_domain) feats.push('Domaine personnalisé');
+  if (l.discounts) feats.push('Réductions');
+  if (l.marketplace) feats.push('Marketplace');
+  if (l.api) feats.push('Accès API');
+  return feats.slice(0, 6);
+};
+
+export default function Billing() {
+  const { store, loading } = useCurrentStore();
+  const [payments, setPayments] = useState([]);
+  const [busy, setBusy] = useState(false);
+  const [changing, setChanging] = useState(null);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    const ps = await base44.entities.Payment.filter({ store_id: store.id }, '-created_date', 50);
+    setPayments(ps);
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const changePlan = async (planId) => {
+    if (!store?.id) return;
+    setChanging(planId);
+    try {
+      await base44.entities.Store.update(store.id, { plan: planId, plan_status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() });
+      window.location.reload();
+    } finally { setChanging(null); }
+  };
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+  if (!store) return <div className="max-w-md mx-auto mt-20 text-center"><AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Configurez votre boutique pour gérer l'abonnement.</p></div>;
+
+  const currentPlan = getPlan(store.plan);
+  const PLANS_LIST = PLAN_ORDER.map((id) => PLANS[id]);
+  const trialEnd = store.trial_ends_at ? new Date(store.trial_ends_at) : null;
+  const daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000)) : 0;
+
+  return (
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <div className="flex items-center gap-2 mb-6">
+        <CreditCard className="w-5 h-5 text-[#6D7175]" />
+        <h1 className="text-xl font-bold text-[#202223]">Abonnement et facturation</h1>
+      </div>
+
+      <div className="bg-gradient-to-r from-[#008060] to-[#00A878] rounded-2xl p-6 text-white mb-6">
+        <div className="flex items-start justify-between flex-wrap gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide opacity-80">Plan actuel</p>
+            <p className="text-2xl font-bold mt-1">{currentPlan.name}</p>
+            <p className="text-sm opacity-90 mt-1">{currentPlan.price} {currentPlan.period}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs uppercase tracking-wide opacity-80">Essai gratuit</p>
+            <p className="text-2xl font-bold mt-1">{daysLeft} jours restants</p>
+            <p className="text-sm opacity-90 mt-1">{store.plan_status === 'trial' ? 'Aucune carte requise' : 'Actif'}</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 className="text-sm font-bold text-[#202223] mb-3">Changer de palier tarifaire — 14 jours d'essai gratuit</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {PLANS_LIST.map((plan) => {
+          const active = store.plan === plan.id;
+          return (
+            <div key={plan.id} className={`rounded-xl border-2 p-5 ${active ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] bg-white'}`}>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-bold text-[#202223]">{plan.name}</p>
+                {active && <span className="text-[10px] font-bold bg-[#008060] text-white px-2 py-0.5 rounded-full">ACTUEL</span>}
+              </div>
+              <p className="text-2xl font-bold text-[#202223]">{plan.price}<span className="text-xs font-normal text-[#6D7175]"> {plan.period}</span></p>
+              <ul className="mt-3 space-y-1.5">
+                {planFeatures(plan).map((f, i) => (
+                  <li key={i} className="flex items-start gap-1.5 text-xs text-[#6D7175]"><Check className="w-3.5 h-3.5 text-[#008060] shrink-0 mt-0.5" /> {f}</li>
+                ))}
+              </ul>
+              <button onClick={() => changePlan(plan.id)} disabled={active || changing === plan.id} className="w-full mt-4 text-xs font-semibold py-2.5 rounded-full transition disabled:opacity-40 bg-[#008060] text-white hover:bg-[#00694d]">
+                {changing === plan.id ? 'Changement…' : active ? 'Plan actuel' : 'Choisir ce plan'}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <h2 className="text-sm font-bold text-[#202223] mb-3 flex items-center gap-2"><Calendar className="w-4 h-4" /> Historique des paiements</h2>
+      <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+        {payments.length === 0 ? (
+          <div className="p-8 text-center text-sm text-[#6D7175]">Aucun paiement enregistré. Votre essai gratuit de 14 jours est actif.</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]">
+              <tr><th className="px-4 py-3 font-semibold">Date</th><th className="px-4 py-3 font-semibold">Description</th><th className="px-4 py-3 font-semibold">Montant</th><th className="px-4 py-3 font-semibold">Statut</th><th className="px-4 py-3 font-semibold"></th></tr>
+            </thead>
+            <tbody>
+              {payments.map((p) => (
+                <tr key={p.id} className="border-t border-[#E1E1E1]">
+                  <td className="px-4 py-3 text-[#6D7175]">{new Date(p.created_date).toLocaleDateString('fr-FR')}</td>
+                  <td className="px-4 py-3 text-[#202223]">Abonnement {currentPlan.name}</td>
+                  <td className="px-4 py-3 font-semibold text-[#202223]">{formatMoney(p.amount, p.currency)}</td>
+                  <td className="px-4 py-3"><span className={`text-[10px] font-bold px-2 py-1 rounded-full ${p.status === 'succeeded' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-amber-100 text-amber-700'}`}>{p.status}</span></td>
+                  <td className="px-4 py-3"><Download className="w-4 h-4 text-[#6D7175] cursor-pointer hover:text-[#008060]" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}

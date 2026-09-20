@@ -1,1 +1,88 @@
-ewogICJuYW1lIjogIk1lc3NhZ2UiLAogICJ0eXBlIjogIm9iamVjdCIsCiAgInByb3BlcnRpZXMiOiB7CiAgICAic3RvcmVfaWQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJCb3V0aXF1ZSBwcm9wcmlcdTAwZTl0YWlyZSIKICAgIH0sCiAgICAiY3VzdG9tZXJfbmFtZSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJjdXN0b21lcl9lbWFpbCI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgfSwKICAgICJzdWJqZWN0IjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgImJvZHkiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJDb250ZW51IGR1IG1lc3NhZ2UiCiAgICB9LAogICAgInN0YXR1cyI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImVudW0iOiBbCiAgICAgICAgInVucmVhZCIsCiAgICAgICAgInJlYWQiLAogICAgICAgICJyZXBsaWVkIiwKICAgICAgICAiYXJjaGl2ZWQiCiAgICAgIF0sCiAgICAgICJkZWZhdWx0IjogInVucmVhZCIKICAgIH0sCiAgICAicmVwbHkiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJSXHUwMGU5cG9uc2UgZHUgbWFyY2hhbmQiCiAgICB9LAogICAgInJlcGxpZWRfYXQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJmb3JtYXQiOiAiZGF0ZS10aW1lIgogICAgfQogIH0sCiAgInJlcXVpcmVkIjogWwogICAgInN0b3JlX2lkIiwKICAgICJjdXN0b21lcl9uYW1lIiwKICAgICJjdXN0b21lcl9lbWFpbCIsCiAgICAiYm9keSIKICBdLAogICJybHMiOiB7CiAgICAicmVhZCI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImNyZWF0ZSI6IHsKICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICB9LAogICAgInVwZGF0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImRlbGV0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9CiAgfQp9
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "description": "Contenu du message"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "unread",
+        "read",
+        "replied",
+        "archived"
+      ],
+      "default": "unread"
+    },
+    "reply": {
+      "type": "string",
+      "description": "R\u00e9ponse du marchand"
+    },
+    "replied_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "store_id",
+    "customer_name",
+    "customer_email",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

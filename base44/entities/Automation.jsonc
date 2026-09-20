@@ -1,1 +1,119 @@
-ewogICJuYW1lIjogIkF1dG9tYXRpb24iLAogICJ0eXBlIjogIm9iamVjdCIsCiAgInByb3BlcnRpZXMiOiB7CiAgICAic3RvcmVfaWQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJCb3V0aXF1ZSBwcm9wcmlcdTAwZTl0YWlyZSIKICAgIH0sCiAgICAibmFtZSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIk5vbSBkZSBsJ2F1dG9tYXRpc2F0aW9uIgogICAgfSwKICAgICJ0cmlnZ2VyIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZW51bSI6IFsKICAgICAgICAiY2FydF9hYmFuZG9uZWQiLAogICAgICAgICJvcmRlcl9jcmVhdGVkIiwKICAgICAgICAiY3VzdG9tZXJfc2lnbnVwIiwKICAgICAgICAib3JkZXJfZGVsaXZlcmVkIiwKICAgICAgICAibG93X3N0b2NrIiwKICAgICAgICAibWFudWFsIgogICAgICBdLAogICAgICAiZGVzY3JpcHRpb24iOiAiXHUwMGM5dlx1MDBlOW5lbWVudCBkXHUwMGU5Y2xlbmNoZXVyIgogICAgfSwKICAgICJhY3Rpb24iOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJzZW5kX2VtYWlsIiwKICAgICAgICAiYWRkX3RhZyIsCiAgICAgICAgImNyZWF0ZV9kaXNjb3VudCIsCiAgICAgICAgIm5vdGlmeSIsCiAgICAgICAgInVwZGF0ZV9zdGF0dXMiCiAgICAgIF0sCiAgICAgICJkZXNjcmlwdGlvbiI6ICJBY3Rpb24gXHUwMGUwIGV4XHUwMGU5Y3V0ZXIiCiAgICB9LAogICAgImNvbmZpZyI6IHsKICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgImRlbGF5X2hvdXJzIjogewogICAgICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgICAgICJkZWZhdWx0IjogMCwKICAgICAgICAgICJkZXNjcmlwdGlvbiI6ICJEXHUwMGU5bGFpIGF2YW50IGV4XHUwMGU5Y3V0aW9uIChoZXVyZXMpIgogICAgICAgIH0sCiAgICAgICAgImVtYWlsX3RlbXBsYXRlIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgImVtYWlsX3N1YmplY3QiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAidGFnIjogewogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgImRpc2NvdW50X3R5cGUiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfSwKICAgICAgICAiZGlzY291bnRfdmFsdWUiOiB7CiAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgfQogICAgICB9LAogICAgICAiZGVzY3JpcHRpb24iOiAiQ29uZmlndXJhdGlvbiBkZSBsJ2FjdGlvbiIKICAgIH0sCiAgICAiZW5hYmxlZCI6IHsKICAgICAgInR5cGUiOiAiYm9vbGVhbiIsCiAgICAgICJkZWZhdWx0IjogdHJ1ZQogICAgfSwKICAgICJydW5zX2NvdW50IjogewogICAgICAidHlwZSI6ICJudW1iZXIiLAogICAgICAiZGVmYXVsdCI6IDAsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJOb21icmUgZCdleFx1MDBlOWN1dGlvbnMiCiAgICB9CiAgfSwKICAicmVxdWlyZWQiOiBbCiAgICAic3RvcmVfaWQiLAogICAgIm5hbWUiLAogICAgInRyaWdnZXIiLAogICAgImFjdGlvbiIKICBdLAogICJybHMiOiB7CiAgICAicmVhZCI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImNyZWF0ZSI6IHsKICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICB9LAogICAgInVwZGF0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImRlbGV0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9CiAgfQp9
+{
+  "name": "Automation",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom de l'automatisation"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "cart_abandoned",
+        "order_created",
+        "customer_signup",
+        "order_delivered",
+        "low_stock",
+        "manual"
+      ],
+      "description": "\u00c9v\u00e9nement d\u00e9clencheur"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "send_email",
+        "add_tag",
+        "create_discount",
+        "notify",
+        "update_status"
+      ],
+      "description": "Action \u00e0 ex\u00e9cuter"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "delay_hours": {
+          "type": "number",
+          "default": 0,
+          "description": "D\u00e9lai avant ex\u00e9cution (heures)"
+        },
+        "email_template": {
+          "type": "string"
+        },
+        "email_subject": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "discount_type": {
+          "type": "string"
+        },
+        "discount_value": {
+          "type": "number"
+        }
+      },
+      "description": "Configuration de l'action"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "runs_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'ex\u00e9cutions"
+    }
+  },
+  "required": [
+    "store_id",
+    "name",
+    "trigger",
+    "action"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

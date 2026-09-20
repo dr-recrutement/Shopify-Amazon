@@ -1,1 +1,99 @@
-aW1wb3J0IHsgY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QgfSBmcm9tICducG06QGJhc2U0NC9zZGtAMC44LjQ4JzsKCmNvbnN0IEVOVElUSUVTID0gWwogICdTdG9yZScsICdQcm9kdWN0JywgJ09yZGVyJywgJ0N1c3RvbWVyJywgJ0NvbGxlY3Rpb24nLCAnQ2FydCcsICdEaXNjb3VudCcsCiAgJ1BheW1lbnQnLCAnQXJ0aWNsZScsICdSZXZpZXcnLCAnTWVzc2FnZScsICdBdXRvbWF0aW9uJywgJ1NoaXBwaW5nWm9uZScsICdNZWRpYUZpbGUnLApdOwpjb25zdCBCVUlMVElOUyA9IFsnaWQnLCAnY3JlYXRlZF9kYXRlJywgJ3VwZGF0ZWRfZGF0ZScsICdjcmVhdGVkX2J5X2lkJ107CmNvbnN0IEJBVENIID0gNTAwOwoKZnVuY3Rpb24gaW5mZXJUeXBlKHZhbDogYW55KTogc3RyaW5nIHsKICBpZiAodmFsID09PSBudWxsIHx8IHZhbCA9PT0gdW5kZWZpbmVkKSByZXR1cm4gJ3RleHQnOwogIGlmIChBcnJheS5pc0FycmF5KHZhbCkgfHwgdHlwZW9mIHZhbCA9PT0gJ29iamVjdCcpIHJldHVybiAnanNvbmInOwogIGlmICh0eXBlb2YgdmFsID09PSAnYm9vbGVhbicpIHJldHVybiAnYm9vbGVhbic7CiAgaWYgKHR5cGVvZiB2YWwgPT09ICdudW1iZXInKSByZXR1cm4gJ251bWVyaWMnOwogIHJldHVybiAndGV4dCc7Cn0KCmV4cG9ydCBkZWZhdWx0IGFzeW5jIGZ1bmN0aW9uKHJlcTogUmVxdWVzdCk6IFByb21pc2U8UmVzcG9uc2U+IHsKICB0cnkgewogICAgY29uc3QgYmFzZTQ0ID0gY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QocmVxKTsKICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBiYXNlNDQuYXV0aC5tZSgpOwogICAgaWYgKCF1c2VyKSByZXR1cm4gUmVzcG9uc2UuanNvbih7IGVycm9yOiAnVW5hdXRob3JpemVkJyB9LCB7IHN0YXR1czogNDAxIH0pOwogICAgaWYgKHVzZXIucm9sZSAhPT0gJ2FkbWluJykgcmV0dXJuIFJlc3BvbnNlLmpzb24oeyBlcnJvcjogJ0FkbWluIG9ubHknIH0sIHsgc3RhdHVzOiA0MDMgfSk7CgogICAgY29uc3Qgc3JFbnRpdGllcyA9IGJhc2U0NC5hc1NlcnZpY2VSb2xlLmVudGl0aWVzIGFzIGFueTsKICAgIGNvbnN0IHsgYWNjZXNzVG9rZW4gfSA9IGF3YWl0IGJhc2U0NC5hc1NlcnZpY2VSb2xlLmNvbm5lY3RvcnMuZ2V0Q29ubmVjdGlvbignc3VwYWJhc2UnKTsKCiAgICBjb25zdCBwcm9qUmVzID0gYXdhaXQgZmV0Y2goJ2h0dHBzOi8vYXBpLnN1cGFiYXNlLmNvbS92MS9wcm9qZWN0cycsIHsgaGVhZGVyczogeyBBdXRob3JpemF0aW9uOiBgQmVhcmVyICR7YWNjZXNzVG9rZW59YCB9IH0pOwogICAgY29uc3QgcHJvamVjdHMgPSBhd2FpdCBwcm9qUmVzLmpzb24oKTsKICAgIGlmICghQXJyYXkuaXNBcnJheShwcm9qZWN0cykgfHwgIXByb2plY3RzLmxlbmd0aCkgcmV0dXJuIFJlc3BvbnNlLmpzb24oeyBlcnJvcjogJ05vIFN1cGFiYXNlIHByb2plY3RzIGZvdW5kJyB9LCB7IHN0YXR1czogNDAwIH0pOwogICAgY29uc3QgcmVmID0gcHJvamVjdHNbMF0ucmVmOwoKICAgIGNvbnN0IGtleXNSZXMgPSBhd2FpdCBmZXRjaChgaHR0cHM6Ly9hcGkuc3VwYWJhc2UuY29tL3YxL3Byb2plY3RzLyR7cmVmfS9hcGkta2V5c2AsIHsgaGVhZGVyczogeyBBdXRob3JpemF0aW9uOiBgQmVhcmVyICR7YWNjZXNzVG9rZW59YCB9IH0pOwogICAgY29uc3Qga2V5cyA9IGF3YWl0IGtleXNSZXMuanNvbigpOwogICAgY29uc3Qgc2VydmljZUtleSA9IChBcnJheS5pc0FycmF5KGtleXMpID8ga2V5cy5maW5kKChrOiBhbnkpID0+IGsubmFtZSA9PT0gJ3NlcnZpY2Vfcm9sZScpIDogbnVsbCk/LmFwaV9rZXk7CiAgICBpZiAoIXNlcnZpY2VLZXkpIHJldHVybiBSZXNwb25zZS5qc29uKHsgZXJyb3I6ICdzZXJ2aWNlX3JvbGUga2V5IG5vdCBmb3VuZCcgfSwgeyBzdGF0dXM6IDQwMCB9KTsKCiAgICBjb25zdCByZXN0QmFzZSA9IGBodHRwczovLyR7cmVmfS5zdXBhYmFzZS5jby9yZXN0L3YxYDsKICAgIGNvbnN0IHJlc3RIZWFkZXJzOiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmc+ID0geyBhcGlrZXk6IHNlcnZpY2VLZXksIEF1dGhvcml6YXRpb246IGBCZWFyZXIgJHtzZXJ2aWNlS2V5fWAsICdDb250ZW50LVR5cGUnOiAnYXBwbGljYXRpb24vanNvbicgfTsKICAgIGNvbnN0IG1nbXRIZWFkZXJzOiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmc+ID0geyBBdXRob3JpemF0aW9uOiBgQmVhcmVyICR7YWNjZXNzVG9rZW59YCwgJ0NvbnRlbnQtVHlwZSc6ICdhcHBsaWNhdGlvbi9qc29uJyB9OwogICAgY29uc3Qgc2xlZXAgPSAobXM6IG51bWJlcikgPT4gbmV3IFByb21pc2UoKHIpID0+IHNldFRpbWVvdXQociwgbXMpKTsKCiAgICAvLyBQaGFzZSAxOiBjcmVhdGUgdGFibGVzIChkcm9wK3JlcGxhY2UpIGFuZCBjb2xsZWN0IHJvd3MKICAgIGNvbnN0IHByZXBhcmVkOiBhbnlbXSA9IFtdOwogICAgZm9yIChjb25zdCBuYW1lIG9mIEVOVElUSUVTKSB7CiAgICAgIGNvbnN0IHRhYmxlID0gYHNlbGxpYV8ke25hbWUudG9Mb3dlckNhc2UoKX1gOwogICAgICB0cnkgewogICAgICAgIGNvbnN0IHJlY29yZHMgPSBhd2FpdCBzckVudGl0aWVzW25hbWVdLmxpc3QoJy1jcmVhdGVkX2RhdGUnLCAxMDAwMDApOwogICAgICAgIGNvbnN0IHJvd3MgPSByZWNvcmRzIHx8IFtdOwogICAgICAgIGNvbnN0IGNvbFR5cGVzOiBSZWNvcmQ8c3RyaW5nLCBzdHJpbmc+ID0ge307CiAgICAgICAgZm9yIChjb25zdCByIG9mIHJvd3MpIHsKICAgICAgICAgIGZvciAoY29uc3QgW2ssIHZdIG9mIE9iamVjdC5lbnRyaWVzKHIpKSB7CiAgICAgICAgICAgIGlmIChCVUlMVElOUy5pbmNsdWRlcyhrKSkgY29udGludWU7CiAgICAgICAgICAgIGNvbnN0IHQgPSBpbmZlclR5cGUodik7CiAgICAgICAgICAgIGlmICghY29sVHlwZXNba10gfHwgKGNvbFR5cGVzW2tdID09PSAndGV4dCcgJiYgdCAhPT0gJ3RleHQnKSkgY29sVHlwZXNba10gPSB0OwogICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBjb25zdCBjb2xzID0gWyciaWQiIHRleHQgcHJpbWFyeSBrZXknLCAnImNyZWF0ZWRfZGF0ZSIgdGV4dCcsICcidXBkYXRlZF9kYXRlIiB0ZXh0JywgJyJjcmVhdGVkX2J5X2lkIiB0ZXh0J107CiAgICAgICAgZm9yIChjb25zdCBbaywgdF0gb2YgT2JqZWN0LmVudHJpZXMoY29sVHlwZXMpKSBjb2xzLnB1c2goYCIke2t9IiAke3R9YCk7CiAgICAgICAgY29uc3QgZGRsID0gYERST1AgVEFCTEUgSUYgRVhJU1RTICIke3RhYmxlfSIgQ0FTQ0FERTsgQ1JFQVRFIFRBQkxFICIke3RhYmxlfSIgKCR7Y29scy5qb2luKCcsICcpfSk7YDsKICAgICAgICBjb25zdCBkZGxSZXMgPSBhd2FpdCBmZXRjaChgaHR0cHM6Ly9hcGkuc3VwYWJhc2UuY29tL3YxL3Byb2plY3RzLyR7cmVmfS9kYXRhYmFzZS9xdWVyeWAsIHsgbWV0aG9kOiAnUE9TVCcsIGhlYWRlcnM6IG1nbXRIZWFkZXJzLCBib2R5OiBKU09OLnN0cmluZ2lmeSh7IHF1ZXJ5OiBkZGwgfSkgfSk7CiAgICAgICAgaWYgKCFkZGxSZXMub2spIHsgcHJlcGFyZWQucHVzaCh7IG5hbWUsIHRhYmxlLCBlcnJvcjogYERETDogJHthd2FpdCBkZGxSZXMudGV4dCgpfWAgfSk7IGNvbnRpbnVlOyB9CiAgICAgICAgY29uc3QgZGF0YUtleXMgPSBPYmplY3Qua2V5cyhjb2xUeXBlcyk7CiAgICAgICAgY29uc3QgaW5zZXJ0Um93cyA9IHJvd3MubWFwKChyOiBhbnkpID0+IHsKICAgICAgICAgIGNvbnN0IHJvdzogYW55ID0geyBpZDogci5pZCwgY3JlYXRlZF9kYXRlOiByLmNyZWF0ZWRfZGF0ZSwgdXBkYXRlZF9kYXRlOiByLnVwZGF0ZWRfZGF0ZSwgY3JlYXRlZF9ieV9pZDogci5jcmVhdGVkX2J5X2lkIH07CiAgICAgICAgICBmb3IgKGNvbnN0IGsgb2YgZGF0YUtleXMpIHJvd1trXSA9IHJba10gIT09IHVuZGVmaW5lZCA/IHJba10gOiBudWxsOwogICAgICAgICAgcmV0dXJuIHJvdzsKICAgICAgICB9KTsKICAgICAgICBwcmVwYXJlZC5wdXNoKHsgbmFtZSwgdGFibGUsIGluc2VydFJvd3MgfSk7CiAgICAgIH0gY2F0Y2ggKGU6IGFueSkgewogICAgICAgIHByZXBhcmVkLnB1c2goeyBuYW1lLCBlcnJvcjogZS5tZXNzYWdlIH0pOwogICAgICB9CiAgICB9CgogICAgLy8gUGhhc2UgMjogcmVmcmVzaCBQb3N0Z1JFU1Qgc2NoZW1hIGNhY2hlLCB0aGVuIGluc2VydAogICAgYXdhaXQgZmV0Y2goYGh0dHBzOi8vYXBpLnN1cGFiYXNlLmNvbS92MS9wcm9qZWN0cy8ke3JlZn0vZGF0YWJhc2UvcXVlcnlgLCB7IG1ldGhvZDogJ1BPU1QnLCBoZWFkZXJzOiBtZ210SGVhZGVycywgYm9keTogSlNPTi5zdHJpbmdpZnkoeyBxdWVyeTogYE5PVElGWSBwZ3JzdCwgJ3JlbG9hZCBzY2hlbWEnO2AgfSkgfSk7CiAgICBhd2FpdCBzbGVlcCgzMDAwKTsKCiAgICBjb25zdCByZXBvcnQ6IGFueVtdID0gW107CiAgICBmb3IgKGNvbnN0IHAgb2YgcHJlcGFyZWQpIHsKICAgICAgaWYgKHAuZXJyb3IpIHsgcmVwb3J0LnB1c2goeyBlbnRpdHk6IHAubmFtZSwgZXJyb3I6IHAuZXJyb3IgfSk7IGNvbnRpbnVlOyB9CiAgICAgIGNvbnN0IHJvd3MgPSBwLmluc2VydFJvd3MgfHwgW107CiAgICAgIGxldCBpbnNlcnRlZCA9IDA7CiAgICAgIGxldCBmYWlsZWQgPSBmYWxzZTsKICAgICAgZm9yIChsZXQgaSA9IDA7IGkgPCByb3dzLmxlbmd0aDsgaSArPSBCQVRDSCkgewogICAgICAgIGNvbnN0IGNodW5rID0gcm93cy5zbGljZShpLCBpICsgQkFUQ0gpOwogICAgICAgIGNvbnN0IGluc1JlcyA9IGF3YWl0IGZldGNoKGAke3Jlc3RCYXNlfS8ke3AudGFibGV9YCwgeyBtZXRob2Q6ICdQT1NUJywgaGVhZGVyczogeyAuLi5yZXN0SGVhZGVycywgUHJlZmVyOiAncmV0dXJuPXJlcHJlc2VudGF0aW9uJyB9LCBib2R5OiBKU09OLnN0cmluZ2lmeShjaHVuaykgfSk7CiAgICAgICAgaWYgKCFpbnNSZXMub2spIHsgcmVwb3J0LnB1c2goeyBlbnRpdHk6IHAubmFtZSwgdGFibGU6IHAudGFibGUsIGVycm9yOiBgSU5TRVJUOiAke2F3YWl0IGluc1Jlcy50ZXh0KCl9YCwgc3luY2VkOiBpbnNlcnRlZCB9KTsgZmFpbGVkID0gdHJ1ZTsgYnJlYWs7IH0KICAgICAgICBpbnNlcnRlZCArPSBjaHVuay5sZW5ndGg7CiAgICAgIH0KICAgICAgaWYgKCFmYWlsZWQpIHJlcG9ydC5wdXNoKHsgZW50aXR5OiBwLm5hbWUsIHRhYmxlOiBwLnRhYmxlLCBzeW5jZWQ6IGluc2VydGVkIH0pOwogICAgfQoKICAgIGNvbnN0IHRvdGFsU3luY2VkID0gcmVwb3J0LnJlZHVjZSgocywgcikgPT4gcyArICh0eXBlb2Ygci5zeW5jZWQgPT09ICdudW1iZXInID8gci5zeW5jZWQgOiAwKSwgMCk7CiAgICByZXR1cm4gUmVzcG9uc2UuanNvbih7IG9rOiB0cnVlLCBwcm9qZWN0OiByZWYsIHRvdGFsU3luY2VkLCByZXBvcnQgfSk7CiAgfSBjYXRjaCAoZXJyb3I6IGFueSkgewogICAgcmV0dXJuIFJlc3BvbnNlLmpzb24oeyBlcnJvcjogZXJyb3IubWVzc2FnZSB9LCB7IHN0YXR1czogNTAwIH0pOwogIH0KfQ==
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.48';
+
+const ENTITIES = [
+  'Store', 'Product', 'Order', 'Customer', 'Collection', 'Cart', 'Discount',
+  'Payment', 'Article', 'Review', 'Message', 'Automation', 'ShippingZone', 'MediaFile',
+];
+const BUILTINS = ['id', 'created_date', 'updated_date', 'created_by_id'];
+const BATCH = 500;
+
+function inferType(val: any): string {
+  if (val === null || val === undefined) return 'text';
+  if (Array.isArray(val) || typeof val === 'object') return 'jsonb';
+  if (typeof val === 'boolean') return 'boolean';
+  if (typeof val === 'number') return 'numeric';
+  return 'text';
+}
+
+export default async function(req: Request): Promise<Response> {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (user.role !== 'admin') return Response.json({ error: 'Admin only' }, { status: 403 });
+
+    const srEntities = base44.asServiceRole.entities as any;
+    const { accessToken } = await base44.asServiceRole.connectors.getConnection('supabase');
+
+    const projRes = await fetch('https://api.supabase.com/v1/projects', { headers: { Authorization: `Bearer ${accessToken}` } });
+    const projects = await projRes.json();
+    if (!Array.isArray(projects) || !projects.length) return Response.json({ error: 'No Supabase projects found' }, { status: 400 });
+    const ref = projects[0].ref;
+
+    const keysRes = await fetch(`https://api.supabase.com/v1/projects/${ref}/api-keys`, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const keys = await keysRes.json();
+    const serviceKey = (Array.isArray(keys) ? keys.find((k: any) => k.name === 'service_role') : null)?.api_key;
+    if (!serviceKey) return Response.json({ error: 'service_role key not found' }, { status: 400 });
+
+    const restBase = `https://${ref}.supabase.co/rest/v1`;
+    const restHeaders: Record<string, string> = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json' };
+    const mgmtHeaders: Record<string, string> = { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' };
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    // Phase 1: create tables (drop+replace) and collect rows
+    const prepared: any[] = [];
+    for (const name of ENTITIES) {
+      const table = `sellia_${name.toLowerCase()}`;
+      try {
+        const records = await srEntities[name].list('-created_date', 100000);
+        const rows = records || [];
+        const colTypes: Record<string, string> = {};
+        for (const r of rows) {
+          for (const [k, v] of Object.entries(r)) {
+            if (BUILTINS.includes(k)) continue;
+            const t = inferType(v);
+            if (!colTypes[k] || (colTypes[k] === 'text' && t !== 'text')) colTypes[k] = t;
+          }
+        }
+        const cols = ['"id" text primary key', '"created_date" text', '"updated_date" text', '"created_by_id" text'];
+        for (const [k, t] of Object.entries(colTypes)) cols.push(`"${k}" ${t}`);
+        const ddl = `DROP TABLE IF EXISTS "${table}" CASCADE; CREATE TABLE "${table}" (${cols.join(', ')});`;
+        const ddlRes = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, { method: 'POST', headers: mgmtHeaders, body: JSON.stringify({ query: ddl }) });
+        if (!ddlRes.ok) { prepared.push({ name, table, error: `DDL: ${await ddlRes.text()}` }); continue; }
+        const dataKeys = Object.keys(colTypes);
+        const insertRows = rows.map((r: any) => {
+          const row: any = { id: r.id, created_date: r.created_date, updated_date: r.updated_date, created_by_id: r.created_by_id };
+          for (const k of dataKeys) row[k] = r[k] !== undefined ? r[k] : null;
+          return row;
+        });
+        prepared.push({ name, table, insertRows });
+      } catch (e: any) {
+        prepared.push({ name, error: e.message });
+      }
+    }
+
+    // Phase 2: refresh PostgREST schema cache, then insert
+    await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, { method: 'POST', headers: mgmtHeaders, body: JSON.stringify({ query: `NOTIFY pgrst, 'reload schema';` }) });
+    await sleep(3000);
+
+    const report: any[] = [];
+    for (const p of prepared) {
+      if (p.error) { report.push({ entity: p.name, error: p.error }); continue; }
+      const rows = p.insertRows || [];
+      let inserted = 0;
+      let failed = false;
+      for (let i = 0; i < rows.length; i += BATCH) {
+        const chunk = rows.slice(i, i + BATCH);
+        const insRes = await fetch(`${restBase}/${p.table}`, { method: 'POST', headers: { ...restHeaders, Prefer: 'return=representation' }, body: JSON.stringify(chunk) });
+        if (!insRes.ok) { report.push({ entity: p.name, table: p.table, error: `INSERT: ${await insRes.text()}`, synced: inserted }); failed = true; break; }
+        inserted += chunk.length;
+      }
+      if (!failed) report.push({ entity: p.name, table: p.table, synced: inserted });
+    }
+
+    const totalSynced = report.reduce((s, r) => s + (typeof r.synced === 'number' ? r.synced : 0), 0);
+    return Response.json({ ok: true, project: ref, totalSynced, report });
+  } catch (error: any) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

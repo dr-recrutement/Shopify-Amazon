@@ -1,1 +1,90 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IEZpbGVUZXh0LCBQbHVzLCBMb2FkZXIyLCBUcmFzaDIsIEV5ZSwgRWRpdDMsIFgsIFNhdmUsIEdsb2JlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwoKY29uc3QgU1RBVFVTX1NUWUxFUyA9IHsgZHJhZnQ6ICdiZy1ncmF5LTEwMCB0ZXh0LWdyYXktNjAwJywgcHVibGlzaGVkOiAnYmctWyMwMDgwNjBdLzEwIHRleHQtWyMwMDgwNjBdJyB9OwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gQmxvZygpIHsKICBjb25zdCB7IHN0b3JlLCBsb2FkaW5nIH0gPSB1c2VDdXJyZW50U3RvcmUoKTsKICBjb25zdCBbYXJ0aWNsZXMsIHNldEFydGljbGVzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbZWRpdGluZywgc2V0RWRpdGluZ10gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbYnVzeSwgc2V0QnVzeV0gPSB1c2VTdGF0ZShmYWxzZSk7CgogIGNvbnN0IGxvYWQgPSB1c2VDYWxsYmFjayhhc3luYyAoKSA9PiB7CiAgICBpZiAoIXN0b3JlPy5pZCkgcmV0dXJuOwogICAgc2V0QXJ0aWNsZXMoYXdhaXQgYmFzZTQ0LmVudGl0aWVzLkFydGljbGUuZmlsdGVyKHsgc3RvcmVfaWQ6IHN0b3JlLmlkIH0sICctY3JlYXRlZF9kYXRlJywgMTAwKSk7CiAgfSwgW3N0b3JlPy5pZF0pOwoKICB1c2VFZmZlY3QoKCkgPT4geyBsb2FkKCk7IH0sIFtsb2FkXSk7CgogIGNvbnN0IHN0YXJ0TmV3ID0gKCkgPT4gc2V0RWRpdGluZyh7IHRpdGxlOiAnJywgZXhjZXJwdDogJycsIGNvbnRlbnQ6ICcnLCBmZWF0dXJlZF9pbWFnZTogJycsIHRhZ3M6IFtdLCBzdGF0dXM6ICdkcmFmdCcsIGF1dGhvcjogJycsIGhhbmRsZTogJycgfSk7CiAgY29uc3Qgc3RhcnRFZGl0ID0gKGEpID0+IHNldEVkaXRpbmcoeyAuLi5hIH0pOwoKICBjb25zdCBzYXZlID0gYXN5bmMgKCkgPT4gewogICAgc2V0QnVzeSh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IGhhbmRsZSA9IGVkaXRpbmcuaGFuZGxlIHx8IGVkaXRpbmcudGl0bGUudG9Mb3dlckNhc2UoKS5ub3JtYWxpemUoJ05GRCcpLnJlcGxhY2UoL1tcdTAzMDAtXHUwMzZmXS9nLCAnJykucmVwbGFjZSgvW15hLXowLTldKy9nLCAnLScpLnJlcGxhY2UoL14tfC0kL2csICcnKTsKICAgICAgY29uc3QgcGF5bG9hZCA9IHsgLi4uZWRpdGluZywgc3RvcmVfaWQ6IHN0b3JlLmlkLCBoYW5kbGUsIHB1Ymxpc2hlZF9hdDogZWRpdGluZy5zdGF0dXMgPT09ICdwdWJsaXNoZWQnID8gbmV3IERhdGUoKS50b0lTT1N0cmluZygpIDogbnVsbCB9OwogICAgICBpZiAoZWRpdGluZy5pZCkgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLkFydGljbGUudXBkYXRlKGVkaXRpbmcuaWQsIHBheWxvYWQpOwogICAgICBlbHNlIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5BcnRpY2xlLmNyZWF0ZShwYXlsb2FkKTsKICAgICAgc2V0RWRpdGluZyhudWxsKTsKICAgICAgYXdhaXQgbG9hZCgpOwogICAgfSBmaW5hbGx5IHsgc2V0QnVzeShmYWxzZSk7IH0KICB9OwoKICBjb25zdCByZW1vdmUgPSBhc3luYyAoaWQpID0+IHsgaWYgKGNvbmZpcm0oJ1N1cHByaW1lciBjZXQgYXJ0aWNsZSA/JykpIHsgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLkFydGljbGUuZGVsZXRlKGlkKTsgYXdhaXQgbG9hZCgpOyB9IH07CgogIGlmIChsb2FkaW5nKSByZXR1cm4gPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTMyIj48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtWyMwMDgwNjBdIiAvPjwvZGl2PjsKCiAgY29uc3QgZmxkID0gJ3ctZnVsbCBweC0zIHB5LTIgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZC1sZyB0ZXh0LXNtJzsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJwLTQgc206cC02IG1heC13LTV4bCBteC1hdXRvIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBtYi02IGZsZXgtd3JhcCBnYXAtMyI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj48RmlsZVRleHQgY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtWyM2RDcxNzVdIiAvPjxoMSBjbGFzc05hbWU9InRleHQteGwgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj5CbG9nPC9oMT48L2Rpdj4KICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9e3N0YXJ0TmV3fSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIgcm91bmRlZC1mdWxsIGhvdmVyOmJnLVsjMDA2OTRkXSI+PFBsdXMgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPiBOb3V2ZWwgYXJ0aWNsZTwvYnV0dG9uPgogICAgICA8L2Rpdj4KCiAgICAgIHtlZGl0aW5nICYmICgKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZml4ZWQgaW5zZXQtMCB6LTUwIGJnLWJsYWNrLzQwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHAtNCIgb25DbGljaz17KCkgPT4gc2V0RWRpdGluZyhudWxsKX0+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC0yeGwgbWF4LXctMnhsIHctZnVsbCBtYXgtaC1bODh2aF0gb3ZlcmZsb3cteS1hdXRvIHAtNiIgb25DbGljaz17KGUpID0+IGUuc3RvcFByb3BhZ2F0aW9uKCl9PgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIG1iLTQiPjxoMiBjbGFzc05hbWU9InRleHQtbGcgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIj57ZWRpdGluZy5pZCA/ICdNb2RpZmllciBsXCdhcnRpY2xlJyA6ICdOb3V2ZWwgYXJ0aWNsZSd9PC9oMj48YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldEVkaXRpbmcobnVsbCl9IGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0iPjxYIGNsYXNzTmFtZT0idy01IGgtNSIgLz48L2J1dHRvbj48L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktMyI+CiAgICAgICAgICAgICAgPGRpdj48bGFiZWwgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0iPlRpdHJlPC9sYWJlbD48aW5wdXQgdmFsdWU9e2VkaXRpbmcudGl0bGV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0RWRpdGluZyh7IC4uLmVkaXRpbmcsIHRpdGxlOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICAgICAgPGRpdj48bGFiZWwgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0iPkF1dGV1cjwvbGFiZWw+PGlucHV0IHZhbHVlPXtlZGl0aW5nLmF1dGhvcn0gb25DaGFuZ2U9eyhlKSA9PiBzZXRFZGl0aW5nKHsgLi4uZWRpdGluZywgYXV0aG9yOiBlLnRhcmdldC52YWx1ZSB9KX0gcGxhY2Vob2xkZXI9Ik5vbSBkZSBsJ2F1dGV1ciIgY2xhc3NOYW1lPXtmbGR9IC8+PC9kaXY+CiAgICAgICAgICAgICAgPGRpdj48bGFiZWwgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0iPkltYWdlIGRlIGNvdXZlcnR1cmUgKFVSTCk8L2xhYmVsPjxpbnB1dCB2YWx1ZT17ZWRpdGluZy5mZWF0dXJlZF9pbWFnZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXRFZGl0aW5nKHsgLi4uZWRpdGluZywgZmVhdHVyZWRfaW1hZ2U6IGUudGFyZ2V0LnZhbHVlIH0pfSBwbGFjZWhvbGRlcj0iaHR0cHM6Ly/igKYiIGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5FeHRyYWl0PC9sYWJlbD48dGV4dGFyZWEgdmFsdWU9e2VkaXRpbmcuZXhjZXJwdH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRFZGl0aW5nKHsgLi4uZWRpdGluZywgZXhjZXJwdDogZS50YXJnZXQudmFsdWUgfSl9IHJvd3M9ezJ9IGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5Db250ZW51IChIVE1MKTwvbGFiZWw+PHRleHRhcmVhIHZhbHVlPXtlZGl0aW5nLmNvbnRlbnR9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0RWRpdGluZyh7IC4uLmVkaXRpbmcsIGNvbnRlbnQ6IGUudGFyZ2V0LnZhbHVlIH0pfSByb3dzPXs4fSBjbGFzc05hbWU9e2Ake2ZsZH0gZm9udC1tb25vIHRleHQteHNgfSAvPjwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0yIGdhcC0zIj4KICAgICAgICAgICAgICAgIDxkaXY+PGxhYmVsIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIj5TdGF0dXQ8L2xhYmVsPjxzZWxlY3QgdmFsdWU9e2VkaXRpbmcuc3RhdHVzfSBvbkNoYW5nZT17KGUpID0+IHNldEVkaXRpbmcoeyAuLi5lZGl0aW5nLCBzdGF0dXM6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2ZsZH0+PG9wdGlvbiB2YWx1ZT0iZHJhZnQiPkJyb3VpbGxvbjwvb3B0aW9uPjxvcHRpb24gdmFsdWU9InB1Ymxpc2hlZCI+UHVibGnDqTwvb3B0aW9uPjwvc2VsZWN0PjwvZGl2PgogICAgICAgICAgICAgICAgPGRpdj48bGFiZWwgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0iPlRhZ3MgKHPDqXBhcsOpcyBwYXIgdmlyZ3VsZSk8L2xhYmVsPjxpbnB1dCB2YWx1ZT17KGVkaXRpbmcudGFncyB8fCBbXSkuam9pbignLCAnKX0gb25DaGFuZ2U9eyhlKSA9PiBzZXRFZGl0aW5nKHsgLi4uZWRpdGluZywgdGFnczogZS50YXJnZXQudmFsdWUuc3BsaXQoJywnKS5tYXAoKHQpID0+IHQudHJpbSgpKS5maWx0ZXIoQm9vbGVhbikgfSl9IGNsYXNzTmFtZT17ZmxkfSAvPjwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXtzYXZlfSBkaXNhYmxlZD17YnVzeSB8fCAhZWRpdGluZy50aXRsZX0gY2xhc3NOYW1lPSJ3LWZ1bGwgbXQtNSBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBnYXAtMS41IGJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIHRleHQtc20gZm9udC1tZWRpdW0gcHktMi41IHJvdW5kZWQtZnVsbCBob3ZlcjpiZy1bIzAwNjk0ZF0gZGlzYWJsZWQ6b3BhY2l0eS00MCI+PFNhdmUgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPiB7YnVzeSA/ICdFbnJlZ2lzdHJlbWVudOKApicgOiAnRW5yZWdpc3RyZXInfTwvYnV0dG9uPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgICl9CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMSBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtMyBnYXAtNCI+CiAgICAgICAge2FydGljbGVzLmxlbmd0aCA9PT0gMCA/ICgKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzbTpjb2wtc3Bhbi0zIGJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcC0xMCB0ZXh0LWNlbnRlciI+PEZpbGVUZXh0IGNsYXNzTmFtZT0idy0xMCBoLTEwIHRleHQtWyNDOUM5QzldIG14LWF1dG8gbWItMyIgLz48cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1bIzZENzE3NV0iPkF1Y3VuIGFydGljbGUuIENyw6lleiB2b3RyZSBwcmVtaWVyIGFydGljbGUgZGUgYmxvZy48L3A+PC9kaXY+CiAgICAgICAgKSA6IGFydGljbGVzLm1hcCgoYSkgPT4gKAogICAgICAgICAgPGRpdiBrZXk9e2EuaWR9IGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBvdmVyZmxvdy1oaWRkZW4iPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYXNwZWN0LXZpZGVvIGJnLVsjRjRGNEY0XSBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBvdmVyZmxvdy1oaWRkZW4iPnthLmZlYXR1cmVkX2ltYWdlID8gPGltZyBzcmM9e2EuZmVhdHVyZWRfaW1hZ2V9IGFsdD0iIiBjbGFzc05hbWU9InctZnVsbCBoLWZ1bGwgb2JqZWN0LWNvdmVyIiAvPiA6IDxGaWxlVGV4dCBjbGFzc05hbWU9InctOCBoLTggdGV4dC1bI0M5QzlDOV0iIC8+fTwvZGl2PgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icC00Ij4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItMiI+PHNwYW4gY2xhc3NOYW1lPXtgdGV4dC1bMTBweF0gZm9udC1ib2xkIHB4LTIgcHktMC41IHJvdW5kZWQtZnVsbCAke1NUQVRVU19TVFlMRVNbYS5zdGF0dXNdfWB9PnthLnN0YXR1c308L3NwYW4+e2EucHVibGlzaGVkX2F0ICYmIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gdGV4dC1bIzZENzE3NV0iPntuZXcgRGF0ZShhLnB1Ymxpc2hlZF9hdCkudG9Mb2NhbGVEYXRlU3RyaW5nKCdmci1GUicpfTwvc3Bhbj59PC9kaXY+CiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSBsaW5lLWNsYW1wLTIiPnthLnRpdGxlfTwvcD4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0gbXQtMSBsaW5lLWNsYW1wLTIiPnthLmV4Y2VycHR9PC9wPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtdC0zIj4KICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gc3RhcnRFZGl0KGEpfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjMDA4MDYwXSBob3Zlcjp1bmRlcmxpbmUiPjxFZGl0MyBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPiBNb2RpZmllcjwvYnV0dG9uPgogICAgICAgICAgICAgICAge2Euc3RhdHVzID09PSAncHVibGlzaGVkJyAmJiBzdG9yZT8uc2x1ZyAmJiA8YSBocmVmPXtgL3N0b3JlLyR7c3RvcmUuc2x1Z30vYmxvZy8ke2EuaGFuZGxlfWB9IHRhcmdldD0iX2JsYW5rIiByZWw9Im5vcmVmZXJyZXIiIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIGhvdmVyOnRleHQtWyMwMDgwNjBdIj48R2xvYmUgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4gVm9pcjwvYT59CiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHJlbW92ZShhLmlkKX0gY2xhc3NOYW1lPSJtbC1hdXRvIHRleHQtWyM2RDcxNzVdIGhvdmVyOnRleHQtcmVkLTYwMCI+PFRyYXNoMiBjbGFzc05hbWU9InctNCBoLTQiIC8+PC9idXR0b24+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgKSl9CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQ==
+import { useState, useEffect, useCallback } from 'react';
+import { FileText, Plus, Loader2, Trash2, Eye, Edit3, X, Save, Globe } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+
+const STATUS_STYLES = { draft: 'bg-gray-100 text-gray-600', published: 'bg-[#008060]/10 text-[#008060]' };
+
+export default function Blog() {
+  const { store, loading } = useCurrentStore();
+  const [articles, setArticles] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    setArticles(await base44.entities.Article.filter({ store_id: store.id }, '-created_date', 100));
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const startNew = () => setEditing({ title: '', excerpt: '', content: '', featured_image: '', tags: [], status: 'draft', author: '', handle: '' });
+  const startEdit = (a) => setEditing({ ...a });
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      const handle = editing.handle || editing.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const payload = { ...editing, store_id: store.id, handle, published_at: editing.status === 'published' ? new Date().toISOString() : null };
+      if (editing.id) await base44.entities.Article.update(editing.id, payload);
+      else await base44.entities.Article.create(payload);
+      setEditing(null);
+      await load();
+    } finally { setBusy(false); }
+  };
+
+  const remove = async (id) => { if (confirm('Supprimer cet article ?')) { await base44.entities.Article.delete(id); await load(); } };
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  const fld = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm';
+
+  return (
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex items-center gap-2"><FileText className="w-5 h-5 text-[#6D7175]" /><h1 className="text-xl font-bold text-[#202223]">Blog</h1></div>
+        <button onClick={startNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Nouvel article</button>
+      </div>
+
+      {editing && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setEditing(null)}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[88vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-bold text-[#202223]">{editing.id ? 'Modifier l\'article' : 'Nouvel article'}</h2><button onClick={() => setEditing(null)} className="text-[#6D7175]"><X className="w-5 h-5" /></button></div>
+            <div className="space-y-3">
+              <div><label className="text-xs font-semibold text-[#6D7175]">Titre</label><input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} className={fld} /></div>
+              <div><label className="text-xs font-semibold text-[#6D7175]">Auteur</label><input value={editing.author} onChange={(e) => setEditing({ ...editing, author: e.target.value })} placeholder="Nom de l'auteur" className={fld} /></div>
+              <div><label className="text-xs font-semibold text-[#6D7175]">Image de couverture (URL)</label><input value={editing.featured_image} onChange={(e) => setEditing({ ...editing, featured_image: e.target.value })} placeholder="https://…" className={fld} /></div>
+              <div><label className="text-xs font-semibold text-[#6D7175]">Extrait</label><textarea value={editing.excerpt} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} rows={2} className={fld} /></div>
+              <div><label className="text-xs font-semibold text-[#6D7175]">Contenu (HTML)</label><textarea value={editing.content} onChange={(e) => setEditing({ ...editing, content: e.target.value })} rows={8} className={`${fld} font-mono text-xs`} /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-xs font-semibold text-[#6D7175]">Statut</label><select value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value })} className={fld}><option value="draft">Brouillon</option><option value="published">Publié</option></select></div>
+                <div><label className="text-xs font-semibold text-[#6D7175]">Tags (séparés par virgule)</label><input value={(editing.tags || []).join(', ')} onChange={(e) => setEditing({ ...editing, tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean) })} className={fld} /></div>
+              </div>
+            </div>
+            <button onClick={save} disabled={busy || !editing.title} className="w-full mt-5 flex items-center justify-center gap-1.5 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40"><Save className="w-4 h-4" /> {busy ? 'Enregistrement…' : 'Enregistrer'}</button>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {articles.length === 0 ? (
+          <div className="sm:col-span-3 bg-white rounded-xl border border-[#E1E1E1] p-10 text-center"><FileText className="w-10 h-10 text-[#C9C9C9] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Aucun article. Créez votre premier article de blog.</p></div>
+        ) : articles.map((a) => (
+          <div key={a.id} className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+            <div className="aspect-video bg-[#F4F4F4] flex items-center justify-center overflow-hidden">{a.featured_image ? <img src={a.featured_image} alt="" className="w-full h-full object-cover" /> : <FileText className="w-8 h-8 text-[#C9C9C9]" />}</div>
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-2"><span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${STATUS_STYLES[a.status]}`}>{a.status}</span>{a.published_at && <span className="text-[10px] text-[#6D7175]">{new Date(a.published_at).toLocaleDateString('fr-FR')}</span>}</div>
+              <p className="text-sm font-bold text-[#202223] line-clamp-2">{a.title}</p>
+              <p className="text-xs text-[#6D7175] mt-1 line-clamp-2">{a.excerpt}</p>
+              <div className="flex items-center gap-2 mt-3">
+                <button onClick={() => startEdit(a)} className="flex items-center gap-1 text-xs font-semibold text-[#008060] hover:underline"><Edit3 className="w-3.5 h-3.5" /> Modifier</button>
+                {a.status === 'published' && store?.slug && <a href={`/store/${store.slug}/blog/${a.handle}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs font-semibold text-[#6D7175] hover:text-[#008060]"><Globe className="w-3.5 h-3.5" /> Voir</a>}
+                <button onClick={() => remove(a.id)} className="ml-auto text-[#6D7175] hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -1,1 +1,139 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsgVXNlcnMgYXMgVXNlcnNJY29uLCBVc2VyUGx1cywgTG9hZGVyMiwgQWxlcnRDaXJjbGUsIFRyYXNoMiwgTWFpbCwgU2hpZWxkLCBDcm93biwgQ2hlY2sgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgeyBiYXNlNDQgfSBmcm9tICdAL2FwaS9iYXNlNDRDbGllbnQnOwppbXBvcnQgeyB1c2VDdXJyZW50U3RvcmUgfSBmcm9tICdAL2hvb2tzL3VzZUN1cnJlbnRTdG9yZSc7CmltcG9ydCB7IGhhc0ZlYXR1cmUsIGdldEZlYXR1cmVWYWx1ZSB9IGZyb20gJ0AvbGliL3BsYW5zJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFRlYW0oKSB7CiAgY29uc3QgeyBzdG9yZSwgbG9hZGluZzogc3RvcmVMb2FkaW5nIH0gPSB1c2VDdXJyZW50U3RvcmUoKTsKICBjb25zdCBbdXNlcnMsIHNldFVzZXJzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW2ludml0ZUVtYWlsLCBzZXRJbnZpdGVFbWFpbF0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW2ludml0ZVJvbGUsIHNldEludml0ZVJvbGVdID0gdXNlU3RhdGUoJ3VzZXInKTsKICBjb25zdCBbaW52aXRpbmcsIHNldEludml0aW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbdG9hc3QsIHNldFRvYXN0XSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtlcnJvciwgc2V0RXJyb3JdID0gdXNlU3RhdGUobnVsbCk7CgogIGNvbnN0IG1heFVzZXJzID0gZ2V0RmVhdHVyZVZhbHVlKHN0b3JlPy5wbGFuIHx8ICdncm93dGgnLCAndXNlcnMnKTsKICBjb25zdCBjYW5JbnZpdGUgPSBoYXNGZWF0dXJlKHN0b3JlPy5wbGFuIHx8ICdncm93dGgnLCAndXNlcnMnKSA/IHVzZXJzLmxlbmd0aCA8IG1heFVzZXJzIDogdHJ1ZTsKCiAgY29uc3QgbG9hZCA9IHVzZUNhbGxiYWNrKGFzeW5jICgpID0+IHsKICAgIHNldExvYWRpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBzZXRVc2Vycyhhd2FpdCBiYXNlNDQuZW50aXRpZXMuVXNlci5saXN0KCkpOwogICAgfSBjYXRjaCAoZSkgewogICAgICBzZXRVc2VycyhbXSk7CiAgICB9IGZpbmFsbHkgeyBzZXRMb2FkaW5nKGZhbHNlKTsgfQogIH0sIFtdKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsgbG9hZCgpOyB9LCBbbG9hZF0pOwoKICBjb25zdCBpbnZpdGUgPSBhc3luYyAoZSkgPT4gewogICAgZS5wcmV2ZW50RGVmYXVsdCgpOwogICAgaWYgKCFpbnZpdGVFbWFpbCkgcmV0dXJuOwogICAgc2V0SW52aXRpbmcodHJ1ZSk7CiAgICBzZXRFcnJvcihudWxsKTsKICAgIHRyeSB7CiAgICAgIGF3YWl0IGJhc2U0NC51c2Vycy5pbnZpdGVVc2VyKGludml0ZUVtYWlsLCBpbnZpdGVSb2xlKTsKICAgICAgc2V0VG9hc3QoYEludml0YXRpb24gZW52b3nDqWUgw6AgJHtpbnZpdGVFbWFpbH1gKTsKICAgICAgc2V0SW52aXRlRW1haWwoJycpOwogICAgICBzZXRUaW1lb3V0KCgpID0+IHNldFRvYXN0KG51bGwpLCAzMDAwKTsKICAgICAgYXdhaXQgbG9hZCgpOwogICAgfSBjYXRjaCAoZSkgewogICAgICBzZXRFcnJvcihlLm1lc3NhZ2UgfHwgJ0ltcG9zc2libGUgZOKAmWludml0ZXIgY2V0IHV0aWxpc2F0ZXVyJyk7CiAgICB9IGZpbmFsbHkgewogICAgICBzZXRJbnZpdGluZyhmYWxzZSk7CiAgICB9CiAgfTsKCiAgaWYgKHN0b3JlTG9hZGluZyB8fCBsb2FkaW5nKSByZXR1cm4gPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTMyIj48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtYnJhbmQiIC8+PC9kaXY+OwogIGlmICghc3RvcmUpIHsKICAgIHJldHVybiAoCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy1tZCBteC1hdXRvIG10LTIwIHRleHQtY2VudGVyIj4KICAgICAgICA8QWxlcnRDaXJjbGUgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgdGV4dC1icmFuZCBteC1hdXRvIG1iLTMiIC8+CiAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1mb3JlZ3JvdW5kIj5Db25maWd1cmV6IHZvdHJlIGJvdXRpcXVlPC9oMT4KICAgICAgICA8TGluayB0bz0iL3N0b3JlLXNldHVwIiBjbGFzc05hbWU9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IGJnLWJyYW5kIHRleHQtYnJhbmQtZm9yZWdyb3VuZCB0ZXh0LXNtIGZvbnQtbWVkaXVtIHB4LTQgcHktMiByb3VuZGVkLWZ1bGwgaG92ZXI6YmctYnJhbmQvOTAgbXQtMyI+Q29uZmlndXJlcjwvTGluaz4KICAgICAgPC9kaXY+CiAgICApOwogIH0KCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJwLTQgc206cC02IG1heC13LTR4bCBteC1hdXRvIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIG1iLTYiPgogICAgICAgIDxVc2Vyc0ljb24gY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCIgLz4KICAgICAgICA8ZGl2PgogICAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC14bCBmb250LWJvbGQgdGV4dC1mb3JlZ3JvdW5kIj7DiXF1aXBlPC9oMT4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LW11dGVkLWZvcmVncm91bmQiPnt1c2Vycy5sZW5ndGh9IG1lbWJyZXt1c2Vycy5sZW5ndGggPiAxID8gJ3MnIDogJyd9IHttYXhVc2VycyA9PT0gSW5maW5pdHkgPyAnJyA6IGDCtyAke01hdGgubWF4KDAsIG1heFVzZXJzIC0gdXNlcnMubGVuZ3RoKX0gcGxhY2Uke21heFVzZXJzIC0gdXNlcnMubGVuZ3RoID4gMSA/ICdzJyA6ICcnfSByZXN0YW50ZSR7bWF4VXNlcnMgLSB1c2Vycy5sZW5ndGggPiAxID8gJ3MnIDogJyd9YH0uPC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIHt0b2FzdCAmJiAoCiAgICAgICAgPGRpdiBjbGFzc05hbWU9Im1iLTQgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLWJyYW5kLzMwIGJnLWJyYW5kLW11dGVkIHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtYnJhbmQgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPgogICAgICAgICAgPENoZWNrIGNsYXNzTmFtZT0idy00IGgtNCIgLz4ge3RvYXN0fQogICAgICAgIDwvZGl2PgogICAgICApfQogICAgICB7ZXJyb3IgJiYgKAogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYi00IHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1kZXN0cnVjdGl2ZS8zMCBiZy1kZXN0cnVjdGl2ZS81IHB4LTQgcHktMyB0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtZGVzdHJ1Y3RpdmUgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPgogICAgICAgICAgPEFsZXJ0Q2lyY2xlIGNsYXNzTmFtZT0idy00IGgtNCIgLz4ge2Vycm9yfQogICAgICAgIDwvZGl2PgogICAgICApfQoKICAgICAgey8qIEludml0ZSBmb3JtICovfQogICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctd2hpdGUgcC02IG1iLTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi00Ij4KICAgICAgICAgIDxVc2VyUGx1cyBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1icmFuZCIgLz4KICAgICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtaGVhZGluZyBmb250LWJvbGQgdGV4dC1iYXNlIHRleHQtZm9yZWdyb3VuZCI+SW52aXRlciB1biBtZW1icmU8L2gyPgogICAgICAgIDwvZGl2PgogICAgICAgIHttYXhVc2VycyAhPT0gSW5maW5pdHkgJiYgdXNlcnMubGVuZ3RoID49IG1heFVzZXJzID8gKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQteGwgYmctc3VyZmFjZSBib3JkZXIgYm9yZGVyLWJvcmRlciBwLTQgdGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQiPgogICAgICAgICAgICA8U2hpZWxkIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LW11dGVkLWZvcmVncm91bmQgaW5saW5lIG1yLTEuNSIgLz4KICAgICAgICAgICAgVm91cyBhdmV6IGF0dGVpbnQgbGEgbGltaXRlIGRlIHttYXhVc2Vyc30gbWVtYnJle21heFVzZXJzID4gMSA/ICdzJyA6ICcnfSBkZSB2b3RyZSBwbGFuLiA8TGluayB0bz0iL3NldHRpbmdzIiBjbGFzc05hbWU9InRleHQtYnJhbmQgZm9udC1zZW1pYm9sZCI+TWV0dHJlIMOgIG5pdmVhdTwvTGluaz4gcG91ciBpbnZpdGVyIHBsdXMgZGUgbWVtYnJlcy4KICAgICAgICAgIDwvZGl2PgogICAgICAgICkgOiAoCiAgICAgICAgICA8Zm9ybSBvblN1Ym1pdD17aW52aXRlfSBjbGFzc05hbWU9ImZsZXggZmxleC1jb2wgc206ZmxleC1yb3cgZ2FwLTMiPgogICAgICAgICAgICA8aW5wdXQKICAgICAgICAgICAgICB0eXBlPSJlbWFpbCIKICAgICAgICAgICAgICB2YWx1ZT17aW52aXRlRW1haWx9CiAgICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBzZXRJbnZpdGVFbWFpbChlLnRhcmdldC52YWx1ZSl9CiAgICAgICAgICAgICAgcGxhY2Vob2xkZXI9ImVtYWlsQGV4ZW1wbGUuY29tIgogICAgICAgICAgICAgIGNsYXNzTmFtZT0iZmxleC0xIHB4LTQgcHktMi41IGJvcmRlciBib3JkZXItYm9yZGVyIHJvdW5kZWQtZnVsbCB0ZXh0LXNtIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1icmFuZC8zMCBmb2N1czpib3JkZXItYnJhbmQiCiAgICAgICAgICAgICAgcmVxdWlyZWQKICAgICAgICAgICAgLz4KICAgICAgICAgICAgPHNlbGVjdCB2YWx1ZT17aW52aXRlUm9sZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXRJbnZpdGVSb2xlKGUudGFyZ2V0LnZhbHVlKX0gY2xhc3NOYW1lPSJweC00IHB5LTIuNSBib3JkZXIgYm9yZGVyLWJvcmRlciByb3VuZGVkLWZ1bGwgdGV4dC1zbSBiZy13aGl0ZSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctYnJhbmQvMzAiPgogICAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9InVzZXIiPk1lbWJyZTwvb3B0aW9uPgogICAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9ImFkbWluIj5BZG1pbjwvb3B0aW9uPgogICAgICAgICAgICA8L3NlbGVjdD4KICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiIGRpc2FibGVkPXtpbnZpdGluZ30gY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgZ2FwLTEuNSBiZy1icmFuZCB0ZXh0LWJyYW5kLWZvcmVncm91bmQgZm9udC1zZW1pYm9sZCBweC02IHB5LTIuNSByb3VuZGVkLWZ1bGwgdGV4dC1zbSBob3ZlcjpiZy1icmFuZC85MCB0cmFuc2l0aW9uLWNvbG9ycyBkaXNhYmxlZDpvcGFjaXR5LTUwIj4KICAgICAgICAgICAgICB7aW52aXRpbmcgPyA8TG9hZGVyMiBjbGFzc05hbWU9InctNCBoLTQgYW5pbWF0ZS1zcGluIiAvPiA6IDxNYWlsIGNsYXNzTmFtZT0idy00IGgtNCIgLz59CiAgICAgICAgICAgICAgSW52aXRlcgogICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgIDwvZm9ybT4KICAgICAgICApfQogICAgICA8L2Rpdj4KCiAgICAgIHsvKiBNZW1iZXJzIGxpc3QgKi99CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy13aGl0ZSBwLTYiPgogICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtaGVhZGluZyBmb250LWJvbGQgdGV4dC1iYXNlIHRleHQtZm9yZWdyb3VuZCBtYi00Ij5NZW1icmVzPC9oMj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS0yIj4KICAgICAgICAgIHt1c2Vycy5tYXAoKHUpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e3UuaWR9IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgcC0zIHJvdW5kZWQteGwgaG92ZXI6Ymctc3VyZmFjZSB0cmFuc2l0aW9uLWNvbG9ycyI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InctMTAgaC0xMCByb3VuZGVkLWZ1bGwgYmctYnJhbmQgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC13aGl0ZSB0ZXh0LXNtIGZvbnQtYm9sZCBzaHJpbmstMCI+CiAgICAgICAgICAgICAgICB7KHUuZnVsbF9uYW1lIHx8IHUuZW1haWwgfHwgJz8nKS5jaGFyQXQoMCkudG9VcHBlckNhc2UoKX0KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLXctMCBmbGV4LTEiPgogICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1mb3JlZ3JvdW5kIHRydW5jYXRlIj57dS5mdWxsX25hbWUgfHwgdS5lbWFpbH08L3A+CiAgICAgICAgICAgICAgICB7dS5mdWxsX25hbWUgJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCB0cnVuY2F0ZSI+e3UuZW1haWx9PC9wPn0KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICB7dS5yb2xlID09PSAnYWRtaW4nICYmICgKICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHRleHQtWzExcHhdIGZvbnQtc2VtaWJvbGQgYmctZm9yZWdyb3VuZCB0ZXh0LWJhY2tncm91bmQgcHgtMi41IHB5LTEgcm91bmRlZC1mdWxsIHNocmluay0wIj4KICAgICAgICAgICAgICAgICAgPENyb3duIGNsYXNzTmFtZT0idy0zIGgtMyIgLz4gQWRtaW4KICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICApfQogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0=
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Users as UsersIcon, UserPlus, Loader2, AlertCircle, Trash2, Mail, Shield, Crown, Check } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { hasFeature, getFeatureValue } from '@/lib/plans';
+
+export default function Team() {
+  const { store, loading: storeLoading } = useCurrentStore();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('user');
+  const [inviting, setInviting] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [error, setError] = useState(null);
+
+  const maxUsers = getFeatureValue(store?.plan || 'growth', 'users');
+  const canInvite = hasFeature(store?.plan || 'growth', 'users') ? users.length < maxUsers : true;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      setUsers(await base44.entities.User.list());
+    } catch (e) {
+      setUsers([]);
+    } finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const invite = async (e) => {
+    e.preventDefault();
+    if (!inviteEmail) return;
+    setInviting(true);
+    setError(null);
+    try {
+      await base44.users.inviteUser(inviteEmail, inviteRole);
+      setToast(`Invitation envoyée à ${inviteEmail}`);
+      setInviteEmail('');
+      setTimeout(() => setToast(null), 3000);
+      await load();
+    } catch (e) {
+      setError(e.message || 'Impossible d’inviter cet utilisateur');
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  if (storeLoading || loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-brand" /></div>;
+  if (!store) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-brand mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-foreground">Configurez votre boutique</h1>
+        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-3">Configurer</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+      <div className="flex items-center gap-2 mb-6">
+        <UsersIcon className="w-5 h-5 text-muted-foreground" />
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Équipe</h1>
+          <p className="text-xs text-muted-foreground">{users.length} membre{users.length > 1 ? 's' : ''} {maxUsers === Infinity ? '' : `· ${Math.max(0, maxUsers - users.length)} place${maxUsers - users.length > 1 ? 's' : ''} restante${maxUsers - users.length > 1 ? 's' : ''}`}.</p>
+        </div>
+      </div>
+
+      {toast && (
+        <div className="mb-4 rounded-xl border border-brand/30 bg-brand-muted px-4 py-3 text-sm font-medium text-brand flex items-center gap-2">
+          <Check className="w-4 h-4" /> {toast}
+        </div>
+      )}
+      {error && (
+        <div className="mb-4 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive flex items-center gap-2">
+          <AlertCircle className="w-4 h-4" /> {error}
+        </div>
+      )}
+
+      {/* Invite form */}
+      <div className="rounded-2xl border border-border bg-white p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <UserPlus className="w-4 h-4 text-brand" />
+          <h2 className="font-heading font-bold text-base text-foreground">Inviter un membre</h2>
+        </div>
+        {maxUsers !== Infinity && users.length >= maxUsers ? (
+          <div className="rounded-xl bg-surface border border-border p-4 text-sm text-muted-foreground">
+            <Shield className="w-4 h-4 text-muted-foreground inline mr-1.5" />
+            Vous avez atteint la limite de {maxUsers} membre{maxUsers > 1 ? 's' : ''} de votre plan. <Link to="/settings" className="text-brand font-semibold">Mettre à niveau</Link> pour inviter plus de membres.
+          </div>
+        ) : (
+          <form onSubmit={invite} className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="email@exemple.com"
+              className="flex-1 px-4 py-2.5 border border-border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+              required
+            />
+            <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="px-4 py-2.5 border border-border rounded-full text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand/30">
+              <option value="user">Membre</option>
+              <option value="admin">Admin</option>
+            </select>
+            <button type="submit" disabled={inviting} className="inline-flex items-center justify-center gap-1.5 bg-brand text-brand-foreground font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-brand/90 transition-colors disabled:opacity-50">
+              {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+              Inviter
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* Members list */}
+      <div className="rounded-2xl border border-border bg-white p-6">
+        <h2 className="font-heading font-bold text-base text-foreground mb-4">Membres</h2>
+        <div className="space-y-2">
+          {users.map((u) => (
+            <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-colors">
+              <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white text-sm font-bold shrink-0">
+                {(u.full_name || u.email || '?').charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground truncate">{u.full_name || u.email}</p>
+                {u.full_name && <p className="text-xs text-muted-foreground truncate">{u.email}</p>}
+              </div>
+              {u.role === 'admin' && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-foreground text-background px-2.5 py-1 rounded-full shrink-0">
+                  <Crown className="w-3 h-3" /> Admin
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

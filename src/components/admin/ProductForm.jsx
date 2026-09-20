@@ -1,1 +1,278 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlTWVtbyB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsKICBEaWFsb2csIERpYWxvZ0NvbnRlbnQsIERpYWxvZ0hlYWRlciwgRGlhbG9nVGl0bGUsIERpYWxvZ0Zvb3RlciwKfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvZGlhbG9nJzsKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7CmltcG9ydCB7IFVwbG9hZCwgWCwgTG9hZGVyMiwgUGx1cywgVHJhc2gyLCBDaGV2cm9uRG93biwgQ2hldnJvblJpZ2h0LCBQYWNrYWdlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgZm9ybWF0TW9uZXkgfSBmcm9tICdAL2xpYi93b3JsZC9jdXJyZW5jaWVzJzsKCmNvbnN0IFNUQVRVU0VTID0gWwogIHsgdmFsdWU6ICdhY3RpdmUnLCBsYWJlbDogJ0FjdGlmJyB9LAogIHsgdmFsdWU6ICdkcmFmdCcsIGxhYmVsOiAnQnJvdWlsbG9uJyB9LAogIHsgdmFsdWU6ICdhcmNoaXZlZCcsIGxhYmVsOiAnQXJjaGl2w6knIH0sCl07Cgpjb25zdCBpbnB1dENscyA9ICd3LWZ1bGwgcHgtMyBweS0yIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbWQgdGV4dC1zbSBiZy13aGl0ZSBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctWyMwMDgwNjBdLzMwJzsKCmZ1bmN0aW9uIEZpZWxkKHsgbGFiZWwsIGNoaWxkcmVuIH0pIHsKICByZXR1cm4gKAogICAgPGRpdj4KICAgICAgPGxhYmVsIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyMyMDIyMjNdIG1iLTEuNSI+e2xhYmVsfTwvbGFiZWw+CiAgICAgIHtjaGlsZHJlbn0KICAgIDwvZGl2PgogICk7Cn0KCmZ1bmN0aW9uIEltYWdlc0VkaXRvcih7IGltYWdlcywgb25TZXQgfSkgewogIGNvbnN0IFtidXN5LCBzZXRCdXN5XSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCB1cGxvYWQgPSBhc3luYyAoZmlsZXMpID0+IHsKICAgIHNldEJ1c3kodHJ1ZSk7CiAgICB0cnkgewogICAgICBjb25zdCB1cmxzID0gW107CiAgICAgIGZvciAoY29uc3QgZiBvZiBBcnJheS5mcm9tKGZpbGVzKSkgewogICAgICAgIGNvbnN0IHsgZmlsZV91cmwgfSA9IGF3YWl0IGJhc2U0NC5pbnRlZ3JhdGlvbnMuQ29yZS5VcGxvYWRQdWJsaWNGaWxlKHsgZmlsZTogZiB9KTsKICAgICAgICB1cmxzLnB1c2goZmlsZV91cmwpOwogICAgICB9CiAgICAgIG9uU2V0KFsuLi4oaW1hZ2VzIHx8IFtdKSwgLi4udXJsc10pOwogICAgfSBmaW5hbGx5IHsgc2V0QnVzeShmYWxzZSk7IH0KICB9OwogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LXdyYXAgZ2FwLTIgbWItMiI+CiAgICAgICAgeyhpbWFnZXMgfHwgW10pLm1hcCgoc3JjLCBpKSA9PiAoCiAgICAgICAgICA8ZGl2IGtleT17aX0gY2xhc3NOYW1lPSJyZWxhdGl2ZSB3LTIwIGgtMjAgcm91bmRlZC1tZCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBvdmVyZmxvdy1oaWRkZW4gZ3JvdXAiPgogICAgICAgICAgICA8aW1nIHNyYz17c3JjfSBhbHQ9IiIgY2xhc3NOYW1lPSJ3LWZ1bGwgaC1mdWxsIG9iamVjdC1jb3ZlciIgLz4KICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uQ2xpY2s9eygpID0+IG9uU2V0KGltYWdlcy5maWx0ZXIoKF8sIGopID0+IGogIT09IGkpKX0gY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMC41IHJpZ2h0LTAuNSB3LTUgaC01IHJvdW5kZWQgYmctYmxhY2svNjAgdGV4dC13aGl0ZSBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBvcGFjaXR5LTAgZ3JvdXAtaG92ZXI6b3BhY2l0eS0xMDAiPgogICAgICAgICAgICAgIDxYIGNsYXNzTmFtZT0idy0zIGgtMyIgLz4KICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApKX0KICAgICAgICA8bGFiZWwgY2xhc3NOYW1lPSJ3LTIwIGgtMjAgcm91bmRlZC1tZCBib3JkZXItMiBib3JkZXItZGFzaGVkIGJvcmRlci1bI0UxRTFFMV0gaG92ZXI6Ym9yZGVyLVsjMDA4MDYwXS81MCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBjdXJzb3ItcG9pbnRlciB0ZXh0LVsjQzlDOUM5XSBob3Zlcjp0ZXh0LVsjMDA4MDYwXSI+CiAgICAgICAgICB7YnVzeSA/IDxMb2FkZXIyIGNsYXNzTmFtZT0idy01IGgtNSBhbmltYXRlLXNwaW4iIC8+IDogPFBsdXMgY2xhc3NOYW1lPSJ3LTUgaC01IiAvPn0KICAgICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBhY2NlcHQ9ImltYWdlLyoiIG11bHRpcGxlIGNsYXNzTmFtZT0iaGlkZGVuIiBvbkNoYW5nZT17KGUpID0+IHsgY29uc3QgZnMgPSBlLnRhcmdldC5maWxlczsgaWYgKGZzPy5sZW5ndGgpIHVwbG9hZChmcyk7IH19IC8+CiAgICAgICAgPC9sYWJlbD4KICAgICAgPC9kaXY+CiAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1bMTFweF0gdGV4dC1bIzZENzE3NV0iPlBORyDCtyBKUEcgwrcgV0VCUCDigJQgbXVsdGlwbGU8L3A+CiAgICA8L2Rpdj4KICApOwp9CgovLyBHZW5lcmF0ZSB2YXJpYW50IGNvbWJpbmF0aW9ucyBmcm9tIG9wdGlvbnMKZnVuY3Rpb24gZ2VuZXJhdGVWYXJpYW50cyhvcHRpb25zLCBiYXNlUHJpY2UpIHsKICBjb25zdCB2YWxpZCA9IChvcHRpb25zIHx8IFtdKS5maWx0ZXIoKG8pID0+IG8ubmFtZSAmJiAoby52YWx1ZXMgfHwgW10pLmZpbHRlcihCb29sZWFuKS5sZW5ndGggPiAwKTsKICBpZiAodmFsaWQubGVuZ3RoID09PSAwKSByZXR1cm4gW107CiAgY29uc3QgY29tYm9zID0gdmFsaWQucmVkdWNlKChhY2MsIG9wdCkgPT4gewogICAgY29uc3QgdmFscyA9IG9wdC52YWx1ZXMuZmlsdGVyKEJvb2xlYW4pOwogICAgaWYgKGFjYy5sZW5ndGggPT09IDApIHJldHVybiB2YWxzLm1hcCgodikgPT4gW3ZdKTsKICAgIHJldHVybiBhY2MuZmxhdE1hcCgoYykgPT4gdmFscy5tYXAoKHYpID0+IFsuLi5jLCB2XSkpOwogIH0sIFtdKTsKICByZXR1cm4gY29tYm9zLm1hcCgoYykgPT4gKHsKICAgIHRpdGxlOiBjLmpvaW4oJyAvICcpLAogICAgc2t1OiAnJywKICAgIHByaWNlOiBiYXNlUHJpY2UgfHwgMCwKICAgIGNvbXBhcmVfYXRfcHJpY2U6IDAsCiAgICBzdG9jazogMCwKICAgIG9wdGlvbjE6IGNbMF0gfHwgJycsCiAgICBvcHRpb24yOiBjWzFdIHx8ICcnLAogICAgb3B0aW9uMzogY1syXSB8fCAnJywKICAgIHN0YXR1czogJ2FjdGl2ZScsCiAgfSkpOwp9CgpmdW5jdGlvbiBWYXJpYW50c0VkaXRvcih7IG9wdGlvbnMsIHZhcmlhbnRzLCBiYXNlUHJpY2UsIG9uU2V0T3B0aW9ucywgb25TZXRWYXJpYW50cywgY3VycmVuY3kgfSkgewogIGNvbnN0IFtvcGVuLCBzZXRPcGVuXSA9IHVzZVN0YXRlKHRydWUpOwoKICBjb25zdCBhZGRPcHRpb24gPSAoKSA9PiBvblNldE9wdGlvbnMoWy4uLihvcHRpb25zIHx8IFtdKSwgeyBuYW1lOiAnJywgdmFsdWVzOiBbJyddIH1dKTsKICBjb25zdCBzZXRPcHRpb24gPSAoaSwgcGF0Y2gpID0+IG9uU2V0T3B0aW9ucyhvcHRpb25zLm1hcCgobywgaikgPT4gKGogPT09IGkgPyB7IC4uLm8sIC4uLnBhdGNoIH0gOiBvKSkpOwogIGNvbnN0IHJlbW92ZU9wdGlvbiA9IChpKSA9PiBvblNldE9wdGlvbnMob3B0aW9ucy5maWx0ZXIoKF8sIGopID0+IGogIT09IGkpKTsKICBjb25zdCBhZGRWYWx1ZSA9IChpKSA9PiBzZXRPcHRpb24oaSwgeyB2YWx1ZXM6IFsuLi4ob3B0aW9uc1tpXS52YWx1ZXMgfHwgW10pLCAnJ10gfSk7CiAgY29uc3Qgc2V0VmFsdWUgPSAoaSwgdmksIHYpID0+IHNldE9wdGlvbihpLCB7IHZhbHVlczogb3B0aW9uc1tpXS52YWx1ZXMubWFwKCh4LCBqKSA9PiAoaiA9PT0gdmkgPyB2IDogeCkpIH0pOwogIGNvbnN0IHJlbW92ZVZhbHVlID0gKGksIHZpKSA9PiBzZXRPcHRpb24oaSwgeyB2YWx1ZXM6IG9wdGlvbnNbaV0udmFsdWVzLmZpbHRlcigoXywgaikgPT4gaiAhPT0gdmkpIH0pOwoKICBjb25zdCByZWdlbiA9ICgpID0+IG9uU2V0VmFyaWFudHMoZ2VuZXJhdGVWYXJpYW50cyhvcHRpb25zLCBiYXNlUHJpY2UpKTsKCiAgY29uc3Qgc2V0VmFyID0gKGksIHBhdGNoKSA9PiBvblNldFZhcmlhbnRzKHZhcmlhbnRzLm1hcCgodiwgaikgPT4gKGogPT09IGkgPyB7IC4uLnYsIC4uLnBhdGNoIH0gOiB2KSkpOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtbGcgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0iPgogICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgb25DbGljaz17KCkgPT4gc2V0T3Blbighb3Blbil9IGNsYXNzTmFtZT0idy1mdWxsIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBweC00IHB5LTMgYmctWyNGNEY0RjRdIHJvdW5kZWQtdC1sZyI+CiAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiB0ZXh0LXhzIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+PFBhY2thZ2UgY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtWyMwMDgwNjBdIiAvPiBWYXJpYW50ZXMgJiBvcHRpb25zPC9zcGFuPgogICAgICAgIHtvcGVuID8gPENoZXZyb25Eb3duIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjNkQ3MTc1XSIgLz4gOiA8Q2hldnJvblJpZ2h0IGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjNkQ3MTc1XSIgLz59CiAgICAgIDwvYnV0dG9uPgogICAgICB7b3BlbiAmJiAoCiAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtNCBzcGFjZS15LTQiPgogICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMXB4XSB0ZXh0LVsjNkQ3MTc1XSI+QWpvdXRleiBkZXMgb3B0aW9ucyAoQ291bGV1ciwgVGFpbGxl4oCmKSBldCBsZXVycyB2YWxldXJzLiBMZXMgdmFyaWFudGVzIHNvbnQgZ8OpbsOpcsOpZXMgYXV0b21hdGlxdWVtZW50LjwvcD4KCiAgICAgICAgICB7LyogT3B0aW9ucyAqL30KICAgICAgICAgIHsob3B0aW9ucyB8fCBbXSkubWFwKChvcHQsIGkpID0+ICgKICAgICAgICAgICAgPGRpdiBrZXk9e2l9IGNsYXNzTmFtZT0icm91bmRlZC1tZCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTMgYmctWyNGQUZBRkFdIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItMiI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdmFsdWU9e29wdC5uYW1lfSBvbkNoYW5nZT17KGUpID0+IHNldE9wdGlvbihpLCB7IG5hbWU6IGUudGFyZ2V0LnZhbHVlIH0pfSBwbGFjZWhvbGRlcj0iTm9tIChleDogQ291bGV1cikiIGNsYXNzTmFtZT0iZmxleC0xIHB4LTIgcHktMS41IGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQgdGV4dC14cyIgLz4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0iYnV0dG9uIiBvbkNsaWNrPXsoKSA9PiByZW1vdmVPcHRpb24oaSl9IGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0gaG92ZXI6dGV4dC1yZWQtNTAwIj48VHJhc2gyIGNsYXNzTmFtZT0idy00IGgtNCIgLz48L2J1dHRvbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LXdyYXAgZ2FwLTEuNSI+CiAgICAgICAgICAgICAgICB7KG9wdC52YWx1ZXMgfHwgW10pLm1hcCgodiwgdmkpID0+ICgKICAgICAgICAgICAgICAgICAgPGRpdiBrZXk9e3ZpfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xIGJnLXdoaXRlIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQtbWQgcGwtMiBwci0xIHB5LTEiPgogICAgICAgICAgICAgICAgICAgIDxpbnB1dCB2YWx1ZT17dn0gb25DaGFuZ2U9eyhlKSA9PiBzZXRWYWx1ZShpLCB2aSwgZS50YXJnZXQudmFsdWUpfSBwbGFjZWhvbGRlcj0iVmFsZXVyIiBjbGFzc05hbWU9InctMjAgdGV4dC14cyBvdXRsaW5lLW5vbmUiIC8+CiAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uQ2xpY2s9eygpID0+IHJlbW92ZVZhbHVlKGksIHZpKX0gY2xhc3NOYW1lPSJ0ZXh0LVsjQzlDOUM5XSBob3Zlcjp0ZXh0LXJlZC01MDAiPjxYIGNsYXNzTmFtZT0idy0zIGgtMyIgLz48L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0iYnV0dG9uIiBvbkNsaWNrPXsoKSA9PiBhZGRWYWx1ZShpKX0gY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzAwODA2MF0gYm9yZGVyIGJvcmRlci1kYXNoZWQgYm9yZGVyLVsjMDA4MDYwXS80MCByb3VuZGVkLW1kIHB4LTIgcHktMSBob3ZlcjpiZy1bIzAwODA2MF0vNSI+KyBWYWxldXI8L2J1dHRvbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApKX0KICAgICAgICAgIDxidXR0b24gdHlwZT0iYnV0dG9uIiBvbkNsaWNrPXthZGRPcHRpb259IGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyMwMDgwNjBdIGlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IGJvcmRlciBib3JkZXItZGFzaGVkIGJvcmRlci1bIzAwODA2MF0vNDAgcm91bmRlZC1tZCBweC0zIHB5LTEuNSBob3ZlcjpiZy1bIzAwODA2MF0vNSI+PFBsdXMgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4gQWpvdXRlciB1bmUgb3B0aW9uPC9idXR0b24+CgogICAgICAgICAgey8qIFZhcmlhbnRzIHRhYmxlICovfQogICAgICAgICAge3ZhcmlhbnRzICYmIHZhcmlhbnRzLmxlbmd0aCA+IDAgJiYgKAogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMiI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBtYi0yIj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyMyMDIyMjNdIj57dmFyaWFudHMubGVuZ3RofSB2YXJpYW50ZShzKTwvcD4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0iYnV0dG9uIiBvbkNsaWNrPXtyZWdlbn0gY2xhc3NOYW1lPSJ0ZXh0LVsxMXB4XSBmb250LXNlbWlib2xkIHRleHQtWyMwMDgwNjBdIGhvdmVyOnVuZGVybGluZSI+UsOpZ8OpbsOpcmVyPC9idXR0b24+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9Im92ZXJmbG93LXgtYXV0byBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSByb3VuZGVkLW1kIj4KICAgICAgICAgICAgICAgIDx0YWJsZSBjbGFzc05hbWU9InctZnVsbCB0ZXh0LXhzIj4KICAgICAgICAgICAgICAgICAgPHRoZWFkIGNsYXNzTmFtZT0iYmctWyNGNEY0RjRdIHRleHQtWyM2RDcxNzVdIj4KICAgICAgICAgICAgICAgICAgICA8dHI+CiAgICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3NOYW1lPSJ0ZXh0LWxlZnQgcHgtMyBweS0yIGZvbnQtc2VtaWJvbGQiPlZhcmlhbnRlPC90aD4KICAgICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzc05hbWU9InRleHQtbGVmdCBweC0yIHB5LTIgZm9udC1zZW1pYm9sZCI+UHJpeDwvdGg+CiAgICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3NOYW1lPSJ0ZXh0LWxlZnQgcHgtMiBweS0yIGZvbnQtc2VtaWJvbGQiPlNLVTwvdGg+CiAgICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3NOYW1lPSJ0ZXh0LWxlZnQgcHgtMiBweS0yIGZvbnQtc2VtaWJvbGQiPlN0b2NrPC90aD4KICAgICAgICAgICAgICAgICAgICA8L3RyPgogICAgICAgICAgICAgICAgICA8L3RoZWFkPgogICAgICAgICAgICAgICAgICA8dGJvZHk+CiAgICAgICAgICAgICAgICAgICAge3ZhcmlhbnRzLm1hcCgodiwgaSkgPT4gKAogICAgICAgICAgICAgICAgICAgICAgPHRyIGtleT17aX0gY2xhc3NOYW1lPSJib3JkZXItdCBib3JkZXItWyNFMUUxRTFdIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT0icHgtMyBweS0xLjUgZm9udC1tZWRpdW0gdGV4dC1bIzIwMjIyM10iPnt2LnRpdGxlfTwvdGQ+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0ZCBjbGFzc05hbWU9InB4LTIgcHktMS41Ij48aW5wdXQgdHlwZT0ibnVtYmVyIiBtaW49IjAiIHN0ZXA9IjAuMDEiIHZhbHVlPXt2LnByaWNlfSBvbkNoYW5nZT17KGUpID0+IHNldFZhcihpLCB7IHByaWNlOiBOdW1iZXIoZS50YXJnZXQudmFsdWUpIH0pfSBjbGFzc05hbWU9InctMjAgcHgtMS41IHB5LTEgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZCB0ZXh0LXhzIiAvPjwvdGQ+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0ZCBjbGFzc05hbWU9InB4LTIgcHktMS41Ij48aW5wdXQgdmFsdWU9e3Yuc2t1IHx8ICcnfSBvbkNoYW5nZT17KGUpID0+IHNldFZhcihpLCB7IHNrdTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT0idy0yNCBweC0xLjUgcHktMSBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSByb3VuZGVkIHRleHQteHMiIC8+PC90ZD4KICAgICAgICAgICAgICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT0icHgtMiBweS0xLjUiPjxpbnB1dCB0eXBlPSJudW1iZXIiIG1pbj0iMCIgdmFsdWU9e3Yuc3RvY2t9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0VmFyKGksIHsgc3RvY2s6IE51bWJlcihlLnRhcmdldC52YWx1ZSkgfSl9IGNsYXNzTmFtZT0idy0xNiBweC0xLjUgcHktMSBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSByb3VuZGVkIHRleHQteHMiIC8+PC90ZD4KICAgICAgICAgICAgICAgICAgICAgIDwvdHI+CiAgICAgICAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgICAgICAgIDwvdGJvZHk+CiAgICAgICAgICAgICAgICA8L3RhYmxlPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICl9CiAgICAgICAgPC9kaXY+CiAgICAgICl9CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBQcm9kdWN0Rm9ybSh7IG9wZW4sIG9uT3BlbkNoYW5nZSwgc3RvcmUsIHByb2R1Y3QsIG9uU2F2ZWQgfSkgewogIGNvbnN0IFtmb3JtLCBzZXRGb3JtXSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtzYXZpbmcsIHNldFNhdmluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW3RhZ3NUZXh0LCBzZXRUYWdzVGV4dF0gPSB1c2VTdGF0ZSgnJyk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoIW9wZW4pIHJldHVybjsKICAgIGNvbnN0IGJhc2UgPSBwcm9kdWN0IHx8IHsKICAgICAgdGl0bGU6ICcnLCBkZXNjcmlwdGlvbjogJycsIHN0YXR1czogJ2RyYWZ0JywgdmVuZG9yOiAnJywgcHJvZHVjdF90eXBlOiAnJywKICAgICAgcHJpY2U6IDAsIGNvbXBhcmVfYXRfcHJpY2U6IDAsIHNrdTogJycsIGltYWdlczogW10sIHRhZ3M6IFtdLAogICAgICBvcHRpb25zOiBbXSwgdmFyaWFudHM6IFtdLCB0cmFja19pbnZlbnRvcnk6IHRydWUsIHdlaWdodDogMCwgYmFyY29kZTogJycsIHN0b2NrOiAwLAogICAgfTsKICAgIHNldEZvcm0oeyAuLi5iYXNlIH0pOwogICAgc2V0VGFnc1RleHQoKGJhc2UudGFncyB8fCBbXSkuam9pbignLCAnKSk7CiAgfSwgW29wZW4sIHByb2R1Y3RdKTsKCiAgaWYgKCFmb3JtKSByZXR1cm4gbnVsbDsKICBjb25zdCBzZXQgPSAocGF0Y2gpID0+IHNldEZvcm0oeyAuLi5mb3JtLCAuLi5wYXRjaCB9KTsKICBjb25zdCBpc05ldyA9ICFmb3JtLmlkOwoKICBjb25zdCBzYXZlID0gYXN5bmMgKCkgPT4gewogICAgaWYgKCFmb3JtLnRpdGxlKSByZXR1cm47CiAgICBzZXRTYXZpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBjb25zdCBwYXlsb2FkID0gewogICAgICAgIHN0b3JlX2lkOiBzdG9yZS5pZCwKICAgICAgICB0aXRsZTogZm9ybS50aXRsZSwKICAgICAgICBoYW5kbGU6IChmb3JtLnRpdGxlIHx8ICcnKS50b0xvd2VyQ2FzZSgpLnRyaW0oKS5ub3JtYWxpemUoJ05GRCcpLnJlcGxhY2UoL1tcdTAzMDAtXHUwMzZmXS9nLCAnJykucmVwbGFjZSgvW15hLXowLTldKy9nLCAnLScpLnJlcGxhY2UoL14tfC0kL2csICcnKSwKICAgICAgICBkZXNjcmlwdGlvbjogZm9ybS5kZXNjcmlwdGlvbiB8fCAnJywKICAgICAgICBzdGF0dXM6IGZvcm0uc3RhdHVzIHx8ICdkcmFmdCcsCiAgICAgICAgdmVuZG9yOiBmb3JtLnZlbmRvciB8fCAnJywKICAgICAgICBwcm9kdWN0X3R5cGU6IGZvcm0ucHJvZHVjdF90eXBlIHx8ICcnLAogICAgICAgIHByaWNlOiBOdW1iZXIoZm9ybS5wcmljZSkgfHwgMCwKICAgICAgICBjb21wYXJlX2F0X3ByaWNlOiBOdW1iZXIoZm9ybS5jb21wYXJlX2F0X3ByaWNlKSB8fCAwLAogICAgICAgIGN1cnJlbmN5OiBzdG9yZS5jdXJyZW5jeSwKICAgICAgICBza3U6IGZvcm0uc2t1IHx8ICcnLAogICAgICAgIGJhcmNvZGU6IGZvcm0uYmFyY29kZSB8fCAnJywKICAgICAgICB3ZWlnaHQ6IE51bWJlcihmb3JtLndlaWdodCkgfHwgMCwKICAgICAgICB0cmFja19pbnZlbnRvcnk6IGZvcm0udHJhY2tfaW52ZW50b3J5ICE9PSBmYWxzZSwKICAgICAgICBzdG9jazogKGZvcm0udmFyaWFudHMgfHwgW10pLmxlbmd0aCA9PT0gMCA/IE51bWJlcihmb3JtLnN0b2NrKSB8fCAwIDogMCwKICAgICAgICBpbWFnZXM6IGZvcm0uaW1hZ2VzIHx8IFtdLAogICAgICAgIHRhZ3M6IHRhZ3NUZXh0LnNwbGl0KCcsJykubWFwKCh0KSA9PiB0LnRyaW0oKSkuZmlsdGVyKEJvb2xlYW4pLAogICAgICAgIG9wdGlvbnM6IChmb3JtLm9wdGlvbnMgfHwgW10pLmZpbHRlcigobykgPT4gby5uYW1lICYmIChvLnZhbHVlcyB8fCBbXSkuZmlsdGVyKEJvb2xlYW4pLmxlbmd0aCksCiAgICAgICAgdmFyaWFudHM6IGZvcm0udmFyaWFudHMgfHwgW10sCiAgICAgIH07CiAgICAgIGlmIChpc05ldykgewogICAgICAgIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5Qcm9kdWN0LmNyZWF0ZShwYXlsb2FkKTsKICAgICAgfSBlbHNlIHsKICAgICAgICBhd2FpdCBiYXNlNDQuZW50aXRpZXMuUHJvZHVjdC51cGRhdGUoZm9ybS5pZCwgcGF5bG9hZCk7CiAgICAgIH0KICAgICAgb25TYXZlZCgpOwogICAgICBvbk9wZW5DaGFuZ2UoZmFsc2UpOwogICAgfSBmaW5hbGx5IHsgc2V0U2F2aW5nKGZhbHNlKTsgfQogIH07CgogIHJldHVybiAoCiAgICA8RGlhbG9nIG9wZW49e29wZW59IG9uT3BlbkNoYW5nZT17b25PcGVuQ2hhbmdlfT4KICAgICAgPERpYWxvZ0NvbnRlbnQgY2xhc3NOYW1lPSJtYXgtdy0yeGwgbWF4LWgtWzkwdmhdIG92ZXJmbG93LXktYXV0byI+CiAgICAgICAgPERpYWxvZ0hlYWRlcj4KICAgICAgICAgIDxEaWFsb2dUaXRsZT57aXNOZXcgPyAnTm91dmVhdSBwcm9kdWl0JyA6ICdNb2RpZmllciBsZSBwcm9kdWl0J308L0RpYWxvZ1RpdGxlPgogICAgICAgIDwvRGlhbG9nSGVhZGVyPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTQiPgogICAgICAgICAgPEZpZWxkIGxhYmVsPSJUaXRyZSAqIj48aW5wdXQgdmFsdWU9e2Zvcm0udGl0bGV9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgdGl0bGU6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSBwbGFjZWhvbGRlcj0iRXggOiBCb3Vib3Ugd2F4IHByZW1pdW0iIC8+PC9GaWVsZD4KICAgICAgICAgIDxGaWVsZCBsYWJlbD0iSW1hZ2VzIj48SW1hZ2VzRWRpdG9yIGltYWdlcz17Zm9ybS5pbWFnZXMgfHwgW119IG9uU2V0PXsoaW1ncykgPT4gc2V0KHsgaW1hZ2VzOiBpbWdzIH0pfSAvPjwvRmllbGQ+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD17YFByaXggKCR7c3RvcmUuY3VycmVuY3l9KWB9PjxpbnB1dCB0eXBlPSJudW1iZXIiIG1pbj0iMCIgc3RlcD0iMC4wMSIgdmFsdWU9e2Zvcm0ucHJpY2V9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgcHJpY2U6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPjwvRmllbGQ+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iUHJpeCBiYXJyw6kiPjxpbnB1dCB0eXBlPSJudW1iZXIiIG1pbj0iMCIgc3RlcD0iMC4wMSIgdmFsdWU9e2Zvcm0uY29tcGFyZV9hdF9wcmljZX0gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyBjb21wYXJlX2F0X3ByaWNlOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30gLz48L0ZpZWxkPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICB7KGZvcm0udmFyaWFudHMgfHwgW10pLmxlbmd0aCA9PT0gMCAmJiAoCiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iU3RvY2sgKHF1YW50aXTDqSkg4oCUIHByb2R1aXQgc2ltcGxlIj4KICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0ibnVtYmVyIiBtaW49IjAiIHZhbHVlPXtmb3JtLnN0b2NrIHx8IDB9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgc3RvY2s6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSBwbGFjZWhvbGRlcj0iMCIgLz4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtWzExcHhdIHRleHQtWyM2RDcxNzVdIG10LTEiPlBvdXIgbGVzIHByb2R1aXRzIGF2ZWMgdmFyaWFudGVzLCBsZSBzdG9jayBlc3QgZ8OpcsOpIHBhciB2YXJpYW50ZSBjaS1kZXNzb3VzLjwvcD4KICAgICAgICAgICAgPC9GaWVsZD4KICAgICAgICAgICl9CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iU0tVIj48aW5wdXQgdmFsdWU9e2Zvcm0uc2t1fSBvbkNoYW5nZT17KGUpID0+IHNldCh7IHNrdTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IC8+PC9GaWVsZD4KICAgICAgICAgICAgPEZpZWxkIGxhYmVsPSJDb2RlLWJhcnJlcyI+PGlucHV0IHZhbHVlPXtmb3JtLmJhcmNvZGUgfHwgJyd9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgYmFyY29kZTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IC8+PC9GaWVsZD4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTIgZ2FwLTMiPgogICAgICAgICAgICA8RmllbGQgbGFiZWw9IlN0YXR1dCI+CiAgICAgICAgICAgICAgPHNlbGVjdCB2YWx1ZT17Zm9ybS5zdGF0dXN9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgc3RhdHVzOiBlLnRhcmdldC52YWx1ZSB9KX0gY2xhc3NOYW1lPXtpbnB1dENsc30+CiAgICAgICAgICAgICAgICB7U1RBVFVTRVMubWFwKChzKSA9PiA8b3B0aW9uIGtleT17cy52YWx1ZX0gdmFsdWU9e3MudmFsdWV9PntzLmxhYmVsfTwvb3B0aW9uPil9CiAgICAgICAgICAgICAgPC9zZWxlY3Q+CiAgICAgICAgICAgIDwvRmllbGQ+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iUG9pZHMgKGtnKSI+PGlucHV0IHR5cGU9Im51bWJlciIgbWluPSIwIiBzdGVwPSIwLjAxIiB2YWx1ZT17Zm9ybS53ZWlnaHQgfHwgMH0gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyB3ZWlnaHQ6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPjwvRmllbGQ+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0yIGdhcC0zIj4KICAgICAgICAgICAgPEZpZWxkIGxhYmVsPSJNYXJxdWUgLyBGb3Vybmlzc2V1ciI+PGlucHV0IHZhbHVlPXtmb3JtLnZlbmRvcn0gb25DaGFuZ2U9eyhlKSA9PiBzZXQoeyB2ZW5kb3I6IGUudGFyZ2V0LnZhbHVlIH0pfSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPjwvRmllbGQ+CiAgICAgICAgICAgIDxGaWVsZCBsYWJlbD0iVHlwZSBkZSBwcm9kdWl0Ij48aW5wdXQgdmFsdWU9e2Zvcm0ucHJvZHVjdF90eXBlfSBvbkNoYW5nZT17KGUpID0+IHNldCh7IHByb2R1Y3RfdHlwZTogZS50YXJnZXQudmFsdWUgfSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9IHBsYWNlaG9sZGVyPSJWw6p0ZW1lbnQsIEFjY2Vzc29pcmXigKYiIC8+PC9GaWVsZD4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPEZpZWxkIGxhYmVsPSJUYWdzIj48aW5wdXQgdmFsdWU9e3RhZ3NUZXh0fSBvbkNoYW5nZT17KGUpID0+IHNldFRhZ3NUZXh0KGUudGFyZ2V0LnZhbHVlKX0gY2xhc3NOYW1lPXtpbnB1dENsc30gcGxhY2Vob2xkZXI9Im5vdXZlYXV0w6ksIHdheCwgaG9tbWUgKHPDqXBhcsOpcyBwYXIgdmlyZ3VsZXMpIiAvPjwvRmllbGQ+CiAgICAgICAgICA8RmllbGQgbGFiZWw9IkRlc2NyaXB0aW9uIj48dGV4dGFyZWEgdmFsdWU9e2Zvcm0uZGVzY3JpcHRpb259IG9uQ2hhbmdlPXsoZSkgPT4gc2V0KHsgZGVzY3JpcHRpb246IGUudGFyZ2V0LnZhbHVlIH0pfSByb3dzPXs0fSBjbGFzc05hbWU9e2lucHV0Q2xzfSAvPjwvRmllbGQ+CgogICAgICAgICAgey8qIFZhcmlhbnRzICovfQogICAgICAgICAgPFZhcmlhbnRzRWRpdG9yCiAgICAgICAgICAgIG9wdGlvbnM9e2Zvcm0ub3B0aW9ucyB8fCBbXX0KICAgICAgICAgICAgdmFyaWFudHM9e2Zvcm0udmFyaWFudHMgfHwgW119CiAgICAgICAgICAgIGJhc2VQcmljZT17TnVtYmVyKGZvcm0ucHJpY2UpIHx8IDB9CiAgICAgICAgICAgIG9uU2V0T3B0aW9ucz17KG9wdHMpID0+IHNldCh7IG9wdGlvbnM6IG9wdHMgfSl9CiAgICAgICAgICAgIG9uU2V0VmFyaWFudHM9eyh2YXJzKSA9PiBzZXQoeyB2YXJpYW50czogdmFycyB9KX0KICAgICAgICAgICAgY3VycmVuY3k9e3N0b3JlLmN1cnJlbmN5fQogICAgICAgICAgLz4KICAgICAgICA8L2Rpdj4KICAgICAgICA8RGlhbG9nRm9vdGVyIGNsYXNzTmFtZT0icHQtMiI+CiAgICAgICAgICA8QnV0dG9uIHZhcmlhbnQ9Im91dGxpbmUiIG9uQ2xpY2s9eygpID0+IG9uT3BlbkNoYW5nZShmYWxzZSl9PkFubnVsZXI8L0J1dHRvbj4KICAgICAgICAgIDxCdXR0b24gb25DbGljaz17c2F2ZX0gZGlzYWJsZWQ9e3NhdmluZyB8fCAhZm9ybS50aXRsZX0gY2xhc3NOYW1lPSJiZy1bIzAwODA2MF0gaG92ZXI6YmctWyMwMDY5NGRdIj4KICAgICAgICAgICAge3NhdmluZyA/IDxMb2FkZXIyIGNsYXNzTmFtZT0idy00IGgtNCBhbmltYXRlLXNwaW4iIC8+IDogbnVsbH0KICAgICAgICAgICAge2lzTmV3ID8gJ0Nyw6llcicgOiAnRW5yZWdpc3RyZXInfQogICAgICAgICAgPC9CdXR0b24+CiAgICAgICAgPC9EaWFsb2dGb290ZXI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMXB4XSB0ZXh0LVsjNkQ3MTc1XSAtbXQtMiI+QXBlcsOndSBwcml4IDoge2Zvcm1hdE1vbmV5KGZvcm0ucHJpY2UsIHN0b3JlLmN1cnJlbmN5KX08L3A+CiAgICAgIDwvRGlhbG9nQ29udGVudD4KICAgIDwvRGlhbG9nPgogICk7Cn0=
+import { useState, useEffect, useMemo } from 'react';
+import { base44 } from '@/api/base44Client';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Upload, X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package } from 'lucide-react';
+import { formatMoney } from '@/lib/world/currencies';
+
+const STATUSES = [
+  { value: 'active', label: 'Actif' },
+  { value: 'draft', label: 'Brouillon' },
+  { value: 'archived', label: 'Archivé' },
+];
+
+const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-[#202223] mb-1.5">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function ImagesEditor({ images, onSet }) {
+  const [busy, setBusy] = useState(false);
+  const upload = async (files) => {
+    setBusy(true);
+    try {
+      const urls = [];
+      for (const f of Array.from(files)) {
+        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: f });
+        urls.push(file_url);
+      }
+      onSet([...(images || []), ...urls]);
+    } finally { setBusy(false); }
+  };
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2 mb-2">
+        {(images || []).map((src, i) => (
+          <div key={i} className="relative w-20 h-20 rounded-md border border-[#E1E1E1] overflow-hidden group">
+            <img src={src} alt="" className="w-full h-full object-cover" />
+            <button type="button" onClick={() => onSet(images.filter((_, j) => j !== i))} className="absolute top-0.5 right-0.5 w-5 h-5 rounded bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        ))}
+        <label className="w-20 h-20 rounded-md border-2 border-dashed border-[#E1E1E1] hover:border-[#008060]/50 flex items-center justify-center cursor-pointer text-[#C9C9C9] hover:text-[#008060]">
+          {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+          <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { const fs = e.target.files; if (fs?.length) upload(fs); }} />
+        </label>
+      </div>
+      <p className="text-[11px] text-[#6D7175]">PNG · JPG · WEBP — multiple</p>
+    </div>
+  );
+}
+
+// Generate variant combinations from options
+function generateVariants(options, basePrice) {
+  const valid = (options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length > 0);
+  if (valid.length === 0) return [];
+  const combos = valid.reduce((acc, opt) => {
+    const vals = opt.values.filter(Boolean);
+    if (acc.length === 0) return vals.map((v) => [v]);
+    return acc.flatMap((c) => vals.map((v) => [...c, v]));
+  }, []);
+  return combos.map((c) => ({
+    title: c.join(' / '),
+    sku: '',
+    price: basePrice || 0,
+    compare_at_price: 0,
+    stock: 0,
+    option1: c[0] || '',
+    option2: c[1] || '',
+    option3: c[2] || '',
+    status: 'active',
+  }));
+}
+
+function VariantsEditor({ options, variants, basePrice, onSetOptions, onSetVariants, currency }) {
+  const [open, setOpen] = useState(true);
+
+  const addOption = () => onSetOptions([...(options || []), { name: '', values: [''] }]);
+  const setOption = (i, patch) => onSetOptions(options.map((o, j) => (j === i ? { ...o, ...patch } : o)));
+  const removeOption = (i) => onSetOptions(options.filter((_, j) => j !== i));
+  const addValue = (i) => setOption(i, { values: [...(options[i].values || []), ''] });
+  const setValue = (i, vi, v) => setOption(i, { values: options[i].values.map((x, j) => (j === vi ? v : x)) });
+  const removeValue = (i, vi) => setOption(i, { values: options[i].values.filter((_, j) => j !== vi) });
+
+  const regen = () => onSetVariants(generateVariants(options, basePrice));
+
+  const setVar = (i, patch) => onSetVariants(variants.map((v, j) => (j === i ? { ...v, ...patch } : v)));
+
+  return (
+    <div className="rounded-lg border border-[#E1E1E1]">
+      <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-3 bg-[#F4F4F4] rounded-t-lg">
+        <span className="flex items-center gap-2 text-xs font-bold text-[#202223]"><Package className="w-4 h-4 text-[#008060]" /> Variantes & options</span>
+        {open ? <ChevronDown className="w-4 h-4 text-[#6D7175]" /> : <ChevronRight className="w-4 h-4 text-[#6D7175]" />}
+      </button>
+      {open && (
+        <div className="p-4 space-y-4">
+          <p className="text-[11px] text-[#6D7175]">Ajoutez des options (Couleur, Taille…) et leurs valeurs. Les variantes sont générées automatiquement.</p>
+
+          {/* Options */}
+          {(options || []).map((opt, i) => (
+            <div key={i} className="rounded-md border border-[#E1E1E1] p-3 bg-[#FAFAFA]">
+              <div className="flex items-center gap-2 mb-2">
+                <input value={opt.name} onChange={(e) => setOption(i, { name: e.target.value })} placeholder="Nom (ex: Couleur)" className="flex-1 px-2 py-1.5 border border-[#E1E1E1] rounded text-xs" />
+                <button type="button" onClick={() => removeOption(i)} className="text-[#6D7175] hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {(opt.values || []).map((v, vi) => (
+                  <div key={vi} className="flex items-center gap-1 bg-white border border-[#E1E1E1] rounded-md pl-2 pr-1 py-1">
+                    <input value={v} onChange={(e) => setValue(i, vi, e.target.value)} placeholder="Valeur" className="w-20 text-xs outline-none" />
+                    <button type="button" onClick={() => removeValue(i, vi)} className="text-[#C9C9C9] hover:text-red-500"><X className="w-3 h-3" /></button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => addValue(i)} className="text-xs font-semibold text-[#008060] border border-dashed border-[#008060]/40 rounded-md px-2 py-1 hover:bg-[#008060]/5">+ Valeur</button>
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={addOption} className="text-xs font-semibold text-[#008060] inline-flex items-center gap-1.5 border border-dashed border-[#008060]/40 rounded-md px-3 py-1.5 hover:bg-[#008060]/5"><Plus className="w-3.5 h-3.5" /> Ajouter une option</button>
+
+          {/* Variants table */}
+          {variants && variants.length > 0 && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-semibold text-[#202223]">{variants.length} variante(s)</p>
+                <button type="button" onClick={regen} className="text-[11px] font-semibold text-[#008060] hover:underline">Régénérer</button>
+              </div>
+              <div className="overflow-x-auto border border-[#E1E1E1] rounded-md">
+                <table className="w-full text-xs">
+                  <thead className="bg-[#F4F4F4] text-[#6D7175]">
+                    <tr>
+                      <th className="text-left px-3 py-2 font-semibold">Variante</th>
+                      <th className="text-left px-2 py-2 font-semibold">Prix</th>
+                      <th className="text-left px-2 py-2 font-semibold">SKU</th>
+                      <th className="text-left px-2 py-2 font-semibold">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {variants.map((v, i) => (
+                      <tr key={i} className="border-t border-[#E1E1E1]">
+                        <td className="px-3 py-1.5 font-medium text-[#202223]">{v.title}</td>
+                        <td className="px-2 py-1.5"><input type="number" min="0" step="0.01" value={v.price} onChange={(e) => setVar(i, { price: Number(e.target.value) })} className="w-20 px-1.5 py-1 border border-[#E1E1E1] rounded text-xs" /></td>
+                        <td className="px-2 py-1.5"><input value={v.sku || ''} onChange={(e) => setVar(i, { sku: e.target.value })} className="w-24 px-1.5 py-1 border border-[#E1E1E1] rounded text-xs" /></td>
+                        <td className="px-2 py-1.5"><input type="number" min="0" value={v.stock} onChange={(e) => setVar(i, { stock: Number(e.target.value) })} className="w-16 px-1.5 py-1 border border-[#E1E1E1] rounded text-xs" /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function ProductForm({ open, onOpenChange, store, product, onSaved }) {
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [tagsText, setTagsText] = useState('');
+
+  useEffect(() => {
+    if (!open) return;
+    const base = product || {
+      title: '', description: '', status: 'draft', vendor: '', product_type: '',
+      price: 0, compare_at_price: 0, sku: '', images: [], tags: [],
+      options: [], variants: [], track_inventory: true, weight: 0, barcode: '', stock: 0,
+    };
+    setForm({ ...base });
+    setTagsText((base.tags || []).join(', '));
+  }, [open, product]);
+
+  if (!form) return null;
+  const set = (patch) => setForm({ ...form, ...patch });
+  const isNew = !form.id;
+
+  const save = async () => {
+    if (!form.title) return;
+    setSaving(true);
+    try {
+      const payload = {
+        store_id: store.id,
+        title: form.title,
+        handle: (form.title || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        description: form.description || '',
+        status: form.status || 'draft',
+        vendor: form.vendor || '',
+        product_type: form.product_type || '',
+        price: Number(form.price) || 0,
+        compare_at_price: Number(form.compare_at_price) || 0,
+        currency: store.currency,
+        sku: form.sku || '',
+        barcode: form.barcode || '',
+        weight: Number(form.weight) || 0,
+        track_inventory: form.track_inventory !== false,
+        stock: (form.variants || []).length === 0 ? Number(form.stock) || 0 : 0,
+        images: form.images || [],
+        tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
+        options: (form.options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length),
+        variants: form.variants || [],
+      };
+      if (isNew) {
+        await base44.entities.Product.create(payload);
+      } else {
+        await base44.entities.Product.update(form.id, payload);
+      }
+      onSaved();
+      onOpenChange(false);
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isNew ? 'Nouveau produit' : 'Modifier le produit'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Field label="Titre *"><input value={form.title} onChange={(e) => set({ title: e.target.value })} className={inputCls} placeholder="Ex : Boubou wax premium" /></Field>
+          <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={`Prix (${store.currency})`}><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set({ price: e.target.value })} className={inputCls} /></Field>
+            <Field label="Prix barré"><input type="number" min="0" step="0.01" value={form.compare_at_price} onChange={(e) => set({ compare_at_price: e.target.value })} className={inputCls} /></Field>
+          </div>
+          {(form.variants || []).length === 0 && (
+            <Field label="Stock (quantité) — produit simple">
+              <input type="number" min="0" value={form.stock || 0} onChange={(e) => set({ stock: e.target.value })} className={inputCls} placeholder="0" />
+              <p className="text-[11px] text-[#6D7175] mt-1">Pour les produits avec variantes, le stock est géré par variante ci-dessous.</p>
+            </Field>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="SKU"><input value={form.sku} onChange={(e) => set({ sku: e.target.value })} className={inputCls} /></Field>
+            <Field label="Code-barres"><input value={form.barcode || ''} onChange={(e) => set({ barcode: e.target.value })} className={inputCls} /></Field>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Statut">
+              <select value={form.status} onChange={(e) => set({ status: e.target.value })} className={inputCls}>
+                {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </Field>
+            <Field label="Poids (kg)"><input type="number" min="0" step="0.01" value={form.weight || 0} onChange={(e) => set({ weight: e.target.value })} className={inputCls} /></Field>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Marque / Fournisseur"><input value={form.vendor} onChange={(e) => set({ vendor: e.target.value })} className={inputCls} /></Field>
+            <Field label="Type de produit"><input value={form.product_type} onChange={(e) => set({ product_type: e.target.value })} className={inputCls} placeholder="Vêtement, Accessoire…" /></Field>
+          </div>
+          <Field label="Tags"><input value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} placeholder="nouveauté, wax, homme (séparés par virgules)" /></Field>
+          <Field label="Description"><textarea value={form.description} onChange={(e) => set({ description: e.target.value })} rows={4} className={inputCls} /></Field>
+
+          {/* Variants */}
+          <VariantsEditor
+            options={form.options || []}
+            variants={form.variants || []}
+            basePrice={Number(form.price) || 0}
+            onSetOptions={(opts) => set({ options: opts })}
+            onSetVariants={(vars) => set({ variants: vars })}
+            currency={store.currency}
+          />
+        </div>
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Annuler</Button>
+          <Button onClick={save} disabled={saving || !form.title} className="bg-[#008060] hover:bg-[#00694d]">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+            {isNew ? 'Créer' : 'Enregistrer'}
+          </Button>
+        </DialogFooter>
+        <p className="text-[11px] text-[#6D7175] -mt-2">Aperçu prix : {formatMoney(form.price, store.currency)}</p>
+      </DialogContent>
+    </Dialog>
+  );
+}

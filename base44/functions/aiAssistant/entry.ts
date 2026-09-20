@@ -1,1 +1,129 @@
-aW1wb3J0IHsgY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QgfSBmcm9tICducG06QGJhc2U0NC9zZGtAMC44LjQ0JzsKCmNvbnN0IFRBU0tTID0gbmV3IFNldChbCiAgJ3Byb2R1Y3RfZGVzY3JpcHRpb24nLCAnc2VvJywgJ2FkX2NvcHknLCAnZW1haWxfY2FtcGFpZ24nLAogICdzb2NpYWxfcG9zdCcsICdidXNpbmVzc19uYW1lJywgJ3Byb2R1Y3RfaWRlYXMnLCAnYWJhbmRvbmVkX2VtYWlsJywKXSk7CgpleHBvcnQgZGVmYXVsdCBhc3luYyBmdW5jdGlvbihyZXEpIHsKICB0cnkgewogICAgY29uc3QgYmFzZTQ0ID0gY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QocmVxKTsKICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBiYXNlNDQuYXV0aC5tZSgpOwogICAgaWYgKCF1c2VyKSByZXR1cm4gUmVzcG9uc2UuanNvbih7IGVycm9yOiAnTm9uIGF1dG9yaXPDqScgfSwgeyBzdGF0dXM6IDQwMSB9KTsKCiAgICBjb25zdCBib2R5ID0gYXdhaXQgcmVxLmpzb24oKTsKICAgIGNvbnN0IHRhc2sgPSBTdHJpbmcoYm9keS50YXNrIHx8ICcnKTsKICAgIGlmICghVEFTS1MuaGFzKHRhc2spKSB7CiAgICAgIHJldHVybiBSZXNwb25zZS5qc29uKHsgZXJyb3I6ICdUw6JjaGUgbm9uIHN1cHBvcnTDqWUnIH0sIHsgc3RhdHVzOiA0MDAgfSk7CiAgICB9CgogICAgY29uc3QgaW5wdXQgPSBTdHJpbmcoYm9keS5pbnB1dCB8fCAnJykuc2xpY2UoMCwgMTIwMCk7CiAgICBjb25zdCBjb250ZXh0ID0gU3RyaW5nKGJvZHkuY29udGV4dCB8fCAnJykuc2xpY2UoMCwgNjAwKTsKICAgIGNvbnN0IGxhbmcgPSBib2R5LmxhbmcgPT09ICdlbicgPyAnZW4gYW5nbGFpcycgOiAnZW4gZnJhbsOnYWlzLCBhZGFwdMOpIGF1IG1hcmNow6kgYWZyaWNhaW4nOwoKICAgIGxldCBwcm9tcHQgPSAnJzsKICAgIGxldCBzY2hlbWEgPSBudWxsOwoKICAgIHN3aXRjaCAodGFzaykgewogICAgICBjYXNlICdwcm9kdWN0X2Rlc2NyaXB0aW9uJzoKICAgICAgICBzY2hlbWEgPSB7CiAgICAgICAgICB0eXBlOiAnb2JqZWN0JywKICAgICAgICAgIHByb3BlcnRpZXM6IHsKICAgICAgICAgICAgdGl0bGU6IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgICAgZGVzY3JpcHRpb246IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgICAgc2hvcnRfZGVzY3JpcHRpb246IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgICAgdGFnczogeyB0eXBlOiAnYXJyYXknLCBpdGVtczogeyB0eXBlOiAnc3RyaW5nJyB9IH0sCiAgICAgICAgICB9LAogICAgICAgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlLAogICAgICAgIH07CiAgICAgICAgcHJvbXB0ID0gYFR1IGVzIHVuIGNvcHl3cml0ZXIgZS1jb21tZXJjZSBwcmVtaXVtLiBHw6luw6hyZSB1bmUgZmljaGUgcHJvZHVpdCBhdHRyYXlhbnRlICR7bGFuZ30uXG5Qcm9kdWl0OiAke2lucHV0fVxuQ29udGV4dGUgYm91dGlxdWU6ICR7Y29udGV4dH1cblJlbnZvaWUgdW4gSlNPTiBhdmVjIHRpdGxlLCBkZXNjcmlwdGlvbiAoMi0zIHBhcmFncmFwaGVzIEhUTUwpLCBzaG9ydF9kZXNjcmlwdGlvbiAoMSBwaHJhc2UpLCB0YWdzICg1IG1vdHMtY2zDqXMpLmA7CiAgICAgICAgYnJlYWs7CiAgICAgIGNhc2UgJ3Nlbyc6CiAgICAgICAgc2NoZW1hID0gewogICAgICAgICAgdHlwZTogJ29iamVjdCcsCiAgICAgICAgICBwcm9wZXJ0aWVzOiB7CiAgICAgICAgICAgIHNlb190aXRsZTogeyB0eXBlOiAnc3RyaW5nJyB9LAogICAgICAgICAgICBzZW9fZGVzY3JpcHRpb246IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgICAga2V5d29yZHM6IHsgdHlwZTogJ2FycmF5JywgaXRlbXM6IHsgdHlwZTogJ3N0cmluZycgfSB9LAogICAgICAgICAgfSwKICAgICAgICAgIGFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZSwKICAgICAgICB9OwogICAgICAgIHByb21wdCA9IGBUdSBlcyB1biBleHBlcnQgU0VPIGUtY29tbWVyY2UuIE9wdGltaXNlIGxlIHLDqWbDqXJlbmNlbWVudCAke2xhbmd9LlxuUGFnZS9wcm9kdWl0OiAke2lucHV0fVxuUmVudm9pZSB1biBKU09OIGF2ZWMgc2VvX3RpdGxlIChtYXggNjAgY2FyYWN0w6hyZXMpLCBzZW9fZGVzY3JpcHRpb24gKG1heCAxNjAgY2FyYWN0w6hyZXMpLCBrZXl3b3JkcyAoOCBtb3RzLWNsw6lzKS5gOwogICAgICAgIGJyZWFrOwogICAgICBjYXNlICdhZF9jb3B5JzoKICAgICAgICBzY2hlbWEgPSB7CiAgICAgICAgICB0eXBlOiAnb2JqZWN0JywKICAgICAgICAgIHByb3BlcnRpZXM6IHsKICAgICAgICAgICAgaGVhZGxpbmU6IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgICAgYm9keTogeyB0eXBlOiAnc3RyaW5nJyB9LAogICAgICAgICAgICBjdGE6IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgIH0sCiAgICAgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UsCiAgICAgICAgfTsKICAgICAgICBwcm9tcHQgPSBgVHUgZXMgdW4gZXhwZXJ0IGVuIHB1YmxpY2l0w6kgRmFjZWJvb2svSW5zdGFncmFtLiBDcsOpZSB1bmUgYW5ub25jZSBwZXJjdXRhbnRlICR7bGFuZ30uXG5Qcm9kdWl0L29mZnJlOiAke2lucHV0fVxuQ29udGV4dGU6ICR7Y29udGV4dH1cblJlbnZvaWUgdW4gSlNPTiBhdmVjIGhlYWRsaW5lIChhY2Nyb2NoZSksIGJvZHkgKHRleHRlIGRlIGwnYW5ub25jZSksIGN0YSAoYXBwZWwgw6AgbCdhY3Rpb24pLmA7CiAgICAgICAgYnJlYWs7CiAgICAgIGNhc2UgJ2VtYWlsX2NhbXBhaWduJzoKICAgICAgICBzY2hlbWEgPSB7CiAgICAgICAgICB0eXBlOiAnb2JqZWN0JywKICAgICAgICAgIHByb3BlcnRpZXM6IHsKICAgICAgICAgICAgc3ViamVjdDogeyB0eXBlOiAnc3RyaW5nJyB9LAogICAgICAgICAgICBib2R5OiB7IHR5cGU6ICdzdHJpbmcnIH0sCiAgICAgICAgICB9LAogICAgICAgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlLAogICAgICAgIH07CiAgICAgICAgcHJvbXB0ID0gYFR1IGVzIHVuIGV4cGVydCBlbiBlbWFpbCBtYXJrZXRpbmcuIFLDqWRpZ2UgdW5lIGNhbXBhZ25lIGUtbWFpbCAke2xhbmd9LlxuU3VqZXQvb2ZmcmU6ICR7aW5wdXR9XG5SZW52b2llIHVuIEpTT04gYXZlYyBzdWJqZWN0IChsaWduZSBkJ29iamV0IGFjY3JvY2hldXNlKSBldCBib2R5IChIVE1MIGR1IGNvcnBzLCBwcm9mZXNzaW9ubmVsIGV0IGNoYWxldXJldXgpLmA7CiAgICAgICAgYnJlYWs7CiAgICAgIGNhc2UgJ3NvY2lhbF9wb3N0JzoKICAgICAgICBzY2hlbWEgPSB7CiAgICAgICAgICB0eXBlOiAnb2JqZWN0JywKICAgICAgICAgIHByb3BlcnRpZXM6IHsKICAgICAgICAgICAgY2FwdGlvbjogeyB0eXBlOiAnc3RyaW5nJyB9LAogICAgICAgICAgICBoYXNodGFnczogeyB0eXBlOiAnYXJyYXknLCBpdGVtczogeyB0eXBlOiAnc3RyaW5nJyB9IH0sCiAgICAgICAgICB9LAogICAgICAgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlLAogICAgICAgIH07CiAgICAgICAgcHJvbXB0ID0gYFR1IGVzIHVuIGNvbW11bml0eSBtYW5hZ2VyLiBDcsOpZSB1biBwb3N0IHLDqXNlYXV4IHNvY2lhdXggJHtsYW5nfS5cblN1amV0OiAke2lucHV0fVxuUmVudm9pZSB1biBKU09OIGF2ZWMgY2FwdGlvbiAodGV4dGUgZW5nYWdlYW50IGF2ZWMgw6ltb2ppcykgZXQgaGFzaHRhZ3MgKDggaGFzaHRhZ3MgcGVydGluZW50cykuYDsKICAgICAgICBicmVhazsKICAgICAgY2FzZSAnYnVzaW5lc3NfbmFtZSc6CiAgICAgICAgc2NoZW1hID0gewogICAgICAgICAgdHlwZTogJ29iamVjdCcsCiAgICAgICAgICBwcm9wZXJ0aWVzOiB7CiAgICAgICAgICAgIG5hbWVzOiB7IHR5cGU6ICdhcnJheScsIGl0ZW1zOiB7IHR5cGU6ICdzdHJpbmcnIH0gfSwKICAgICAgICAgIH0sCiAgICAgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UsCiAgICAgICAgfTsKICAgICAgICBwcm9tcHQgPSBgVHUgZXMgdW4gZXhwZXJ0IGVuIGJyYW5kaW5nLiBQcm9wb3NlIDEwIG5vbXMgZGUgbWFycXVlIHByZW1pdW0gZXQgbcOpbW9yYWJsZXMgJHtsYW5nfS5cbkRlc2NyaXB0aW9uIGRlIGwnYWN0aXZpdMOpOiAke2lucHV0fVxuUmVudm9pZSB1biBKU09OIGF2ZWMgbmFtZXMgKHRhYmxlYXUgZGUgMTAgbm9tcywgbW9kZXJuZXMgZXQgdW5pcXVlcykuYDsKICAgICAgICBicmVhazsKICAgICAgY2FzZSAncHJvZHVjdF9pZGVhcyc6CiAgICAgICAgc2NoZW1hID0gewogICAgICAgICAgdHlwZTogJ29iamVjdCcsCiAgICAgICAgICBwcm9wZXJ0aWVzOiB7CiAgICAgICAgICAgIGlkZWFzOiB7IHR5cGU6ICdhcnJheScsIGl0ZW1zOiB7IHR5cGU6ICdvYmplY3QnLCBwcm9wZXJ0aWVzOiB7IG5hbWU6IHsgdHlwZTogJ3N0cmluZycgfSwgcmVhc29uOiB7IHR5cGU6ICdzdHJpbmcnIH0gfSwgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlIH0gfSwKICAgICAgICAgIH0sCiAgICAgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UsCiAgICAgICAgfTsKICAgICAgICBwcm9tcHQgPSBgVHUgZXMgdW4gY29uc3VsdGFudCBlLWNvbW1lcmNlLiBTdWdnw6hyZSA4IGlkw6llcyBkZSBwcm9kdWl0cyDDoCB2ZW5kcmUgJHtsYW5nfS5cbk5pY2hlL21hcmNow6k6ICR7aW5wdXR9XG5SZW52b2llIHVuIEpTT04gYXZlYyBpZGVhcyAodGFibGVhdSBkZSB7bmFtZSwgcmVhc29ufSDigJQgbm9tIGR1IHByb2R1aXQgKyBwb3VycXVvaSBpbCBtYXJjaGVyYWl0KS5gOwogICAgICAgIGJyZWFrOwogICAgICBjYXNlICdhYmFuZG9uZWRfZW1haWwnOgogICAgICAgIHNjaGVtYSA9IHsKICAgICAgICAgIHR5cGU6ICdvYmplY3QnLAogICAgICAgICAgcHJvcGVydGllczogewogICAgICAgICAgICBzdWJqZWN0OiB7IHR5cGU6ICdzdHJpbmcnIH0sCiAgICAgICAgICAgIGJvZHk6IHsgdHlwZTogJ3N0cmluZycgfSwKICAgICAgICAgIH0sCiAgICAgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UsCiAgICAgICAgfTsKICAgICAgICBwcm9tcHQgPSBgVHUgZXMgdW4gZXhwZXJ0IGVuIHLDqWN1cMOpcmF0aW9uIGRlIHBhbmllcnMgYWJhbmRvbm7DqXMuIFLDqWRpZ2UgdW4gZS1tYWlsIGRlIHJlbGFuY2UgJHtsYW5nfS5cbkJvdXRpcXVlOiAke2lucHV0fVxuUmVudm9pZSB1biBKU09OIGF2ZWMgc3ViamVjdCAob2JqZXQgYWNjcm9jaGV1cikgZXQgYm9keSAoSFRNTCwgdG9uIGFtaWNhbCBldCBpbmNpdGF0aWYsIGF2ZWMgdW4gQ1RBIHBvdXIgZmluYWxpc2VyIGxhIGNvbW1hbmRlKS5gOwogICAgICAgIGJyZWFrOwogICAgfQoKICAgIGNvbnN0IHJlc3VsdCA9IGF3YWl0IGJhc2U0NC5hc1NlcnZpY2VSb2xlLmludGVncmF0aW9ucy5Db3JlLkludm9rZUxMTSh7CiAgICAgIHByb21wdCwKICAgICAgcmVzcG9uc2VfanNvbl9zY2hlbWE6IHNjaGVtYSwKICAgIH0pOwoKICAgIHJldHVybiBSZXNwb25zZS5qc29uKHsgcmVzdWx0IH0pOwogIH0gY2F0Y2ggKGVycm9yKSB7CiAgICByZXR1cm4gUmVzcG9uc2UuanNvbih7IGVycm9yOiBlcnJvci5tZXNzYWdlIH0sIHsgc3RhdHVzOiA1MDAgfSk7CiAgfQp9
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+
+const TASKS = new Set([
+  'product_description', 'seo', 'ad_copy', 'email_campaign',
+  'social_post', 'business_name', 'product_ideas', 'abandoned_email',
+]);
+
+export default async function(req) {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Non autorisé' }, { status: 401 });
+
+    const body = await req.json();
+    const task = String(body.task || '');
+    if (!TASKS.has(task)) {
+      return Response.json({ error: 'Tâche non supportée' }, { status: 400 });
+    }
+
+    const input = String(body.input || '').slice(0, 1200);
+    const context = String(body.context || '').slice(0, 600);
+    const lang = body.lang === 'en' ? 'en anglais' : 'en français, adapté au marché africain';
+
+    let prompt = '';
+    let schema = null;
+
+    switch (task) {
+      case 'product_description':
+        schema = {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            description: { type: 'string' },
+            short_description: { type: 'string' },
+            tags: { type: 'array', items: { type: 'string' } },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un copywriter e-commerce premium. Génère une fiche produit attrayante ${lang}.\nProduit: ${input}\nContexte boutique: ${context}\nRenvoie un JSON avec title, description (2-3 paragraphes HTML), short_description (1 phrase), tags (5 mots-clés).`;
+        break;
+      case 'seo':
+        schema = {
+          type: 'object',
+          properties: {
+            seo_title: { type: 'string' },
+            seo_description: { type: 'string' },
+            keywords: { type: 'array', items: { type: 'string' } },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un expert SEO e-commerce. Optimise le référencement ${lang}.\nPage/produit: ${input}\nRenvoie un JSON avec seo_title (max 60 caractères), seo_description (max 160 caractères), keywords (8 mots-clés).`;
+        break;
+      case 'ad_copy':
+        schema = {
+          type: 'object',
+          properties: {
+            headline: { type: 'string' },
+            body: { type: 'string' },
+            cta: { type: 'string' },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un expert en publicité Facebook/Instagram. Crée une annonce percutante ${lang}.\nProduit/offre: ${input}\nContexte: ${context}\nRenvoie un JSON avec headline (accroche), body (texte de l'annonce), cta (appel à l'action).`;
+        break;
+      case 'email_campaign':
+        schema = {
+          type: 'object',
+          properties: {
+            subject: { type: 'string' },
+            body: { type: 'string' },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un expert en email marketing. Rédige une campagne e-mail ${lang}.\nSujet/offre: ${input}\nRenvoie un JSON avec subject (ligne d'objet accrocheuse) et body (HTML du corps, professionnel et chaleureux).`;
+        break;
+      case 'social_post':
+        schema = {
+          type: 'object',
+          properties: {
+            caption: { type: 'string' },
+            hashtags: { type: 'array', items: { type: 'string' } },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un community manager. Crée un post réseaux sociaux ${lang}.\nSujet: ${input}\nRenvoie un JSON avec caption (texte engageant avec émojis) et hashtags (8 hashtags pertinents).`;
+        break;
+      case 'business_name':
+        schema = {
+          type: 'object',
+          properties: {
+            names: { type: 'array', items: { type: 'string' } },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un expert en branding. Propose 10 noms de marque premium et mémorables ${lang}.\nDescription de l'activité: ${input}\nRenvoie un JSON avec names (tableau de 10 noms, modernes et uniques).`;
+        break;
+      case 'product_ideas':
+        schema = {
+          type: 'object',
+          properties: {
+            ideas: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, reason: { type: 'string' } }, additionalProperties: false } },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un consultant e-commerce. Suggère 8 idées de produits à vendre ${lang}.\nNiche/marché: ${input}\nRenvoie un JSON avec ideas (tableau de {name, reason} — nom du produit + pourquoi il marcherait).`;
+        break;
+      case 'abandoned_email':
+        schema = {
+          type: 'object',
+          properties: {
+            subject: { type: 'string' },
+            body: { type: 'string' },
+          },
+          additionalProperties: false,
+        };
+        prompt = `Tu es un expert en récupération de paniers abandonnés. Rédige un e-mail de relance ${lang}.\nBoutique: ${input}\nRenvoie un JSON avec subject (objet accrocheur) et body (HTML, ton amical et incitatif, avec un CTA pour finaliser la commande).`;
+        break;
+    }
+
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: schema,
+    });
+
+    return Response.json({ result });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

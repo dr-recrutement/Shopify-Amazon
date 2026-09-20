@@ -1,1 +1,96 @@
-aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IENoZWNrLCBDaGV2cm9uc1VwRG93biB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IFBvcG92ZXIsIFBvcG92ZXJDb250ZW50LCBQb3BvdmVyVHJpZ2dlciB9IGZyb20gJ0AvY29tcG9uZW50cy91aS9wb3BvdmVyJzsKaW1wb3J0IHsKICBDb21tYW5kLCBDb21tYW5kTGlzdCwgQ29tbWFuZElucHV0LCBDb21tYW5kSXRlbSwgQ29tbWFuZEVtcHR5LCBDb21tYW5kR3JvdXAsCn0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2NvbW1hbmQnOwppbXBvcnQgeyBCdXR0b24gfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvYnV0dG9uJzsKaW1wb3J0IHsgQ09VTlRSSUVTLCBnZXRDb3VudHJ5IH0gZnJvbSAnQC9saWIvd29ybGQvY291bnRyaWVzJzsKaW1wb3J0IHsgQ1VSUkVOQ0lFUywgZ2V0Q3VycmVuY3kgfSBmcm9tICdAL2xpYi93b3JsZC9jdXJyZW5jaWVzJzsKCmV4cG9ydCBmdW5jdGlvbiBDb3VudHJ5U2VsZWN0KHsgdmFsdWUsIG9uQ2hhbmdlLCBwbGFjZWhvbGRlciA9ICdDaG9pc2lyIHVuIHBheXMnLCBjbGFzc05hbWUgfSkgewogIGNvbnN0IFtvcGVuLCBzZXRPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBjdXIgPSBnZXRDb3VudHJ5KHZhbHVlKTsKICByZXR1cm4gKAogICAgPFBvcG92ZXIgb3Blbj17b3Blbn0gb25PcGVuQ2hhbmdlPXtzZXRPcGVufT4KICAgICAgPFBvcG92ZXJUcmlnZ2VyIGFzQ2hpbGQ+CiAgICAgICAgPEJ1dHRvbiB0eXBlPSJidXR0b24iIHZhcmlhbnQ9Im91dGxpbmUiIHJvbGU9ImNvbWJvYm94IiBhcmlhLWV4cGFuZGVkPXtvcGVufQogICAgICAgICAgY2xhc3NOYW1lPXtgdy1mdWxsIGp1c3RpZnktYmV0d2VlbiBmb250LW5vcm1hbCAke2NsYXNzTmFtZSB8fCAnJ31gfT4KICAgICAgICAgIHtjdXIgPyA8c3BhbiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHRydW5jYXRlIj48c3BhbiBjbGFzc05hbWU9InRleHQtYmFzZSBsZWFkaW5nLW5vbmUiPntjdXIuZmxhZ308L3NwYW4+PHNwYW4gY2xhc3NOYW1lPSJ0cnVuY2F0ZSI+e2N1ci5uYW1lfTwvc3Bhbj48L3NwYW4+IDogPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LW11dGVkLWZvcmVncm91bmQiPntwbGFjZWhvbGRlcn08L3NwYW4+fQogICAgICAgICAgPENoZXZyb25zVXBEb3duIGNsYXNzTmFtZT0idy00IGgtNCBvcGFjaXR5LTUwIHNocmluay0wIiAvPgogICAgICAgIDwvQnV0dG9uPgogICAgICA8L1BvcG92ZXJUcmlnZ2VyPgogICAgICA8UG9wb3ZlckNvbnRlbnQgY2xhc3NOYW1lPSJwLTAgdy1bdmFyKC0tcmFkaXgtcG9wb3Zlci10cmlnZ2VyLXdpZHRoKV0gbWluLXctWzI0MHB4XSIgYWxpZ249InN0YXJ0Ij4KICAgICAgICA8Q29tbWFuZD4KICAgICAgICAgIDxDb21tYW5kSW5wdXQgcGxhY2Vob2xkZXI9IlJlY2hlcmNoZXIgdW4gcGF5cy4uLiIgLz4KICAgICAgICAgIDxDb21tYW5kTGlzdD4KICAgICAgICAgICAgPENvbW1hbmRFbXB0eT5BdWN1biBwYXlzLjwvQ29tbWFuZEVtcHR5PgogICAgICAgICAgICA8Q29tbWFuZEdyb3VwPgogICAgICAgICAgICAgIHtDT1VOVFJJRVMubWFwKChjKSA9PiAoCiAgICAgICAgICAgICAgICA8Q29tbWFuZEl0ZW0ga2V5PXtjLmNvZGV9IHZhbHVlPXtgJHtjLm5hbWV9ICR7Yy5jb2RlfWB9IG9uU2VsZWN0PXsoKSA9PiB7IG9uQ2hhbmdlKGMuY29kZSwgYyk7IHNldE9wZW4oZmFsc2UpOyB9fT4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJtci0yIHRleHQtYmFzZSBsZWFkaW5nLW5vbmUiPntjLmZsYWd9PC9zcGFuPntjLm5hbWV9CiAgICAgICAgICAgICAgICAgIHt2YWx1ZSA9PT0gYy5jb2RlICYmIDxDaGVjayBjbGFzc05hbWU9Im1sLWF1dG8gdy00IGgtNCIgLz59CiAgICAgICAgICAgICAgICA8L0NvbW1hbmRJdGVtPgogICAgICAgICAgICAgICkpfQogICAgICAgICAgICA8L0NvbW1hbmRHcm91cD4KICAgICAgICAgIDwvQ29tbWFuZExpc3Q+CiAgICAgICAgPC9Db21tYW5kPgogICAgICA8L1BvcG92ZXJDb250ZW50PgogICAgPC9Qb3BvdmVyPgogICk7Cn0KCmV4cG9ydCBmdW5jdGlvbiBDdXJyZW5jeVNlbGVjdCh7IHZhbHVlLCBvbkNoYW5nZSwgcGxhY2Vob2xkZXIgPSAnQ2hvaXNpciB1bmUgZGV2aXNlJywgY2xhc3NOYW1lIH0pIHsKICBjb25zdCBbb3Blbiwgc2V0T3Blbl0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgY3VyID0gZ2V0Q3VycmVuY3kodmFsdWUpOwogIHJldHVybiAoCiAgICA8UG9wb3ZlciBvcGVuPXtvcGVufSBvbk9wZW5DaGFuZ2U9e3NldE9wZW59PgogICAgICA8UG9wb3ZlclRyaWdnZXIgYXNDaGlsZD4KICAgICAgICA8QnV0dG9uIHR5cGU9ImJ1dHRvbiIgdmFyaWFudD0ib3V0bGluZSIgcm9sZT0iY29tYm9ib3giIGFyaWEtZXhwYW5kZWQ9e29wZW59CiAgICAgICAgICBjbGFzc05hbWU9e2B3LWZ1bGwganVzdGlmeS1iZXR3ZWVuIGZvbnQtbm9ybWFsICR7Y2xhc3NOYW1lIHx8ICcnfWB9PgogICAgICAgICAge2N1ciA/IDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPjxzcGFuIGNsYXNzTmFtZT0iZm9udC1zZW1pYm9sZCB3LTEwIHRleHQtbGVmdCI+e2N1ci5jb2RlfTwvc3Bhbj48c3BhbiBjbGFzc05hbWU9InRydW5jYXRlIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+e2N1ci5uYW1lfTwvc3Bhbj48L3NwYW4+IDogPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LW11dGVkLWZvcmVncm91bmQiPntwbGFjZWhvbGRlcn08L3NwYW4+fQogICAgICAgICAgPENoZXZyb25zVXBEb3duIGNsYXNzTmFtZT0idy00IGgtNCBvcGFjaXR5LTUwIHNocmluay0wIiAvPgogICAgICAgIDwvQnV0dG9uPgogICAgICA8L1BvcG92ZXJUcmlnZ2VyPgogICAgICA8UG9wb3ZlckNvbnRlbnQgY2xhc3NOYW1lPSJwLTAgdy1bdmFyKC0tcmFkaXgtcG9wb3Zlci10cmlnZ2VyLXdpZHRoKV0gbWluLXctWzI0MHB4XSIgYWxpZ249InN0YXJ0Ij4KICAgICAgICA8Q29tbWFuZD4KICAgICAgICAgIDxDb21tYW5kSW5wdXQgcGxhY2Vob2xkZXI9IlJlY2hlcmNoZXIgdW5lIGRldmlzZS4uLiIgLz4KICAgICAgICAgIDxDb21tYW5kTGlzdD4KICAgICAgICAgICAgPENvbW1hbmRFbXB0eT5BdWN1bmUgZGV2aXNlLjwvQ29tbWFuZEVtcHR5PgogICAgICAgICAgICA8Q29tbWFuZEdyb3VwPgogICAgICAgICAgICAgIHtDVVJSRU5DSUVTLm1hcCgoYykgPT4gKAogICAgICAgICAgICAgICAgPENvbW1hbmRJdGVtIGtleT17Yy5jb2RlfSB2YWx1ZT17YCR7Yy5jb2RlfSAke2MubmFtZX1gfSBvblNlbGVjdD17KCkgPT4geyBvbkNoYW5nZShjLmNvZGUsIGMpOyBzZXRPcGVuKGZhbHNlKTsgfX0+CiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZm9udC1zZW1pYm9sZCB3LTEyIj57Yy5jb2RlfTwvc3Bhbj57Yy5uYW1lfQogICAgICAgICAgICAgICAgICB7dmFsdWUgPT09IGMuY29kZSAmJiA8Q2hlY2sgY2xhc3NOYW1lPSJtbC1hdXRvIHctNCBoLTQiIC8+fQogICAgICAgICAgICAgICAgPC9Db21tYW5kSXRlbT4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgPC9Db21tYW5kR3JvdXA+CiAgICAgICAgICA8L0NvbW1hbmRMaXN0PgogICAgICAgIDwvQ29tbWFuZD4KICAgICAgPC9Qb3BvdmVyQ29udGVudD4KICAgIDwvUG9wb3Zlcj4KICApOwp9CgovLyBDb21iaW5lZCBmaWVsZDogc2VsZWN0aW5nIGEgY291bnRyeSBhdXRvbWF0aWNhbGx5IHNldHMgaXRzIGN1cnJlbmN5ICsgY2FsbGluZyBjb2RlLgpleHBvcnQgZnVuY3Rpb24gQ291bnRyeUN1cnJlbmN5RmllbGQoeyBjb3VudHJ5LCBjdXJyZW5jeSwgY2FsbGluZ0NvZGUsIG9uQ2hhbmdlIH0pIHsKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktMyI+CiAgICAgIDxkaXY+CiAgICAgICAgPGxhYmVsIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bMTFweF0gZm9udC1zZW1pYm9sZCB0ZXh0LVsjNkQ3MTc1XSBtYi0xIj5QYXlzPC9sYWJlbD4KICAgICAgICA8Q291bnRyeVNlbGVjdCB2YWx1ZT17Y291bnRyeX0gb25DaGFuZ2U9eyhjb2RlLCBjKSA9PiBvbkNoYW5nZSh7IGNvdW50cnk6IGNvZGUsIGN1cnJlbmN5OiBjLmN1cnJlbmN5LCBjYWxsaW5nQ29kZTogYy5jYWxsaW5nX2NvZGUgfSl9IC8+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9ImJsb2NrIHRleHQtWzExcHhdIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0gbWItMSI+RGV2aXNlPC9sYWJlbD4KICAgICAgICAgIDxDdXJyZW5jeVNlbGVjdCB2YWx1ZT17Y3VycmVuY3l9IG9uQ2hhbmdlPXsoY29kZSkgPT4gb25DaGFuZ2UoeyBjdXJyZW5jeTogY29kZSB9KX0gLz4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2PgogICAgICAgICAgPGxhYmVsIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bMTFweF0gZm9udC1zZW1pYm9sZCB0ZXh0LVsjNkQ3MTc1XSBtYi0xIj5JbmRpY2F0aWY8L2xhYmVsPgogICAgICAgICAgPGlucHV0IHZhbHVlPXtjYWxsaW5nQ29kZSB8fCAnJ30gb25DaGFuZ2U9eyhlKSA9PiBvbkNoYW5nZSh7IGNhbGxpbmdDb2RlOiBlLnRhcmdldC52YWx1ZSB9KX0gcGxhY2Vob2xkZXI9IisyMjEiCiAgICAgICAgICAgIGNsYXNzTmFtZT0idy1mdWxsIHB4LTIuNSBweS0xLjUgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZC1tZCB0ZXh0LXNtIGZvbnQtbW9ubyBiZy13aGl0ZSIgLz4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9
+import { useState } from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Command, CommandList, CommandInput, CommandItem, CommandEmpty, CommandGroup,
+} from '@/components/ui/command';
+import { Button } from '@/components/ui/button';
+import { COUNTRIES, getCountry } from '@/lib/world/countries';
+import { CURRENCIES, getCurrency } from '@/lib/world/currencies';
+
+export function CountrySelect({ value, onChange, placeholder = 'Choisir un pays', className }) {
+  const [open, setOpen] = useState(false);
+  const cur = getCountry(value);
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="outline" role="combobox" aria-expanded={open}
+          className={`w-full justify-between font-normal ${className || ''}`}>
+          {cur ? <span className="flex items-center gap-2 truncate"><span className="text-base leading-none">{cur.flag}</span><span className="truncate">{cur.name}</span></span> : <span className="text-muted-foreground">{placeholder}</span>}
+          <ChevronsUpDown className="w-4 h-4 opacity-50 shrink-0" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[240px]" align="start">
+        <Command>
+          <CommandInput placeholder="Rechercher un pays..." />
+          <CommandList>
+            <CommandEmpty>Aucun pays.</CommandEmpty>
+            <CommandGroup>
+              {COUNTRIES.map((c) => (
+                <CommandItem key={c.code} value={`${c.name} ${c.code}`} onSelect={() => { onChange(c.code, c); setOpen(false); }}>
+                  <span className="mr-2 text-base leading-none">{c.flag}</span>{c.name}
+                  {value === c.code && <Check className="ml-auto w-4 h-4" />}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+export function CurrencySelect({ value, onChange, placeholder = 'Choisir une devise', className }) {
+  const [open, setOpen] = useState(false);
+  const cur = getCurrency(value);
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="outline" role="combobox" aria-expanded={open}
+          className={`w-full justify-between font-normal ${className || ''}`}>
+          {cur ? <span className="flex items-center gap-2"><span className="font-semibold w-10 text-left">{cur.code}</span><span className="truncate text-muted-foreground">{cur.name}</span></span> : <span className="text-muted-foreground">{placeholder}</span>}
+          <ChevronsUpDown className="w-4 h-4 opacity-50 shrink-0" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[240px]" align="start">
+        <Command>
+          <CommandInput placeholder="Rechercher une devise..." />
+          <CommandList>
+            <CommandEmpty>Aucune devise.</CommandEmpty>
+            <CommandGroup>
+              {CURRENCIES.map((c) => (
+                <CommandItem key={c.code} value={`${c.code} ${c.name}`} onSelect={() => { onChange(c.code, c); setOpen(false); }}>
+                  <span className="font-semibold w-12">{c.code}</span>{c.name}
+                  {value === c.code && <Check className="ml-auto w-4 h-4" />}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// Combined field: selecting a country automatically sets its currency + calling code.
+export function CountryCurrencyField({ country, currency, callingCode, onChange }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Pays</label>
+        <CountrySelect value={country} onChange={(code, c) => onChange({ country: code, currency: c.currency, callingCode: c.calling_code })} />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Devise</label>
+          <CurrencySelect value={currency} onChange={(code) => onChange({ currency: code })} />
+        </div>
+        <div>
+          <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Indicatif</label>
+          <input value={callingCode || ''} onChange={(e) => onChange({ callingCode: e.target.value })} placeholder="+221"
+            className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-sm font-mono bg-white" />
+        </div>
+      </div>
+    </div>
+  );
+}

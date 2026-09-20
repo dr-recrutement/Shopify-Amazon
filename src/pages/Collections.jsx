@@ -1,1 +1,100 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwppbXBvcnQgQ29sbGVjdGlvbkZvcm0gZnJvbSAnQC9jb21wb25lbnRzL2FkbWluL0NvbGxlY3Rpb25Gb3JtJzsKaW1wb3J0IHsKICBMYXlvdXRHcmlkLCBMb2FkZXIyLCBBcnJvd0xlZnQsIEFsZXJ0Q2lyY2xlLCBQbHVzLCBQZW5jaWwsIFRyYXNoMiwgSW1hZ2UgYXMgSW1hZ2VJY29uLAp9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBDb2xsZWN0aW9ucygpIHsKICBjb25zdCB7IHN0b3JlLCBsb2FkaW5nOiBzdG9yZUxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFtjb2xsZWN0aW9ucywgc2V0Q29sbGVjdGlvbnNdID0gdXNlU3RhdGUoW10pOwogIGNvbnN0IFtsb2FkaW5nLCBzZXRMb2FkaW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbZm9ybU9wZW4sIHNldEZvcm1PcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbZWRpdGluZywgc2V0RWRpdGluZ10gPSB1c2VTdGF0ZShudWxsKTsKCiAgY29uc3QgbG9hZCA9IHVzZUNhbGxiYWNrKGFzeW5jICgpID0+IHsKICAgIGlmICghc3RvcmU/LmlkKSByZXR1cm47CiAgICBzZXRMb2FkaW5nKHRydWUpOwogICAgdHJ5IHsKICAgICAgY29uc3QgbGlzdCA9IGF3YWl0IGJhc2U0NC5lbnRpdGllcy5Db2xsZWN0aW9uLmZpbHRlcih7IHN0b3JlX2lkOiBzdG9yZS5pZCB9LCAnLWNyZWF0ZWRfZGF0ZScsIDEwMCk7CiAgICAgIHNldENvbGxlY3Rpb25zKGxpc3QpOwogICAgfSBmaW5hbGx5IHsgc2V0TG9hZGluZyhmYWxzZSk7IH0KICB9LCBbc3RvcmU/LmlkXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW2xvYWRdKTsKCiAgY29uc3QgcmVtb3ZlID0gYXN5bmMgKGMpID0+IHsKICAgIGlmICghY29uZmlybShgU3VwcHJpbWVyIGxhIGNvbGxlY3Rpb24gwqsgJHtjLm5hbWV9IMK7ID9gKSkgcmV0dXJuOwogICAgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLkNvbGxlY3Rpb24uZGVsZXRlKGMuaWQpOwogICAgc2V0Q29sbGVjdGlvbnMoKGwpID0+IGwuZmlsdGVyKCh4KSA9PiB4LmlkICE9PSBjLmlkKSk7CiAgfTsKCiAgaWYgKHN0b3JlTG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CiAgaWYgKCFzdG9yZSkgewogICAgcmV0dXJuICgKICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LW1kIG14LWF1dG8gbXQtMjAgdGV4dC1jZW50ZXIiPgogICAgICAgIDxBbGVydENpcmNsZSBjbGFzc05hbWU9InctMTAgaC0xMCB0ZXh0LVsjMDA4MDYwXSBteC1hdXRvIG1iLTMiIC8+CiAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkNyw6lleiBkJ2Fib3JkIHZvdHJlIGJvdXRpcXVlPC9oMT4KICAgICAgICA8TGluayB0bz0iL3N0b3JlLXNldHVwIiBjbGFzc05hbWU9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IGJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIHRleHQtc20gZm9udC1tZWRpdW0gcHgtNCBweS0yIHJvdW5kZWQtbWQgaG92ZXI6YmctWyMwMDY5NGRdIG10LTMiPkNvbmZpZ3VyZXIgbWEgYm91dGlxdWU8L0xpbms+CiAgICAgIDwvZGl2PgogICAgKTsKICB9CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLWgtZnVsbCBiZy1bI0Y0RjRGNF0iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0ic3RpY2t5IHRvcC0wIHotMTAgYmctd2hpdGUgYm9yZGVyLWIgYm9yZGVyLVsjRTFFMUUxXSBweC00IHNtOnB4LTYgcHktMy41IGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBnYXAtMyI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0zIG1pbi13LTAiPgogICAgICAgICAgPExpbmsgdG89Ii9kYXNoYm9hcmQiIGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0gaG92ZXI6dGV4dC1bIzIwMjIyM10iPjxBcnJvd0xlZnQgY2xhc3NOYW1lPSJ3LTUgaC01IiAvPjwvTGluaz4KICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtYmFzZSBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10gZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPjxMYXlvdXRHcmlkIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjMDA4MDYwXSIgLz4gQ29sbGVjdGlvbnM8L2gxPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0iPntzdG9yZS5uYW1lfSDCtyB7Y29sbGVjdGlvbnMubGVuZ3RofSBjb2xsZWN0aW9uKHMpPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiB7IHNldEVkaXRpbmcobnVsbCk7IHNldEZvcm1PcGVuKHRydWUpOyB9fSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC0zIHNtOnB4LTQgcHktMiByb3VuZGVkLW1kIGhvdmVyOmJnLVsjMDA2OTRkXSBzaHJpbmstMCI+CiAgICAgICAgICA8UGx1cyBjbGFzc05hbWU9InctNCBoLTQiIC8+IDxzcGFuIGNsYXNzTmFtZT0iaGlkZGVuIHNtOmlubGluZSI+QWpvdXRlcjwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0icHgtNCBzbTpweC02IHB5LTQiPgogICAgICAgIHtsb2FkaW5nID8gKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTIwIj48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtWyMwMDgwNjBdIiAvPjwvZGl2PgogICAgICAgICkgOiBjb2xsZWN0aW9ucy5sZW5ndGggPT09IDAgPyAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHktMTYgdGV4dC1jZW50ZXIgYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSI+CiAgICAgICAgICAgIDxMYXlvdXRHcmlkIGNsYXNzTmFtZT0idy0xMCBoLTEwIHRleHQtWyNDOUM5QzldIG1iLTIiIC8+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LVsjMjAyMjIzXSI+QXVjdW5lIGNvbGxlY3Rpb248L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSBtdC0xIG1iLTQiPk9yZ2FuaXNleiB2b3MgcHJvZHVpdHMgcGFyIHRow6htZSBvdSBjYXTDqWdvcmllLjwvcD4KICAgICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiB7IHNldEVkaXRpbmcobnVsbCk7IHNldEZvcm1PcGVuKHRydWUpOyB9fSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIgcm91bmRlZC1tZCBob3ZlcjpiZy1bIzAwNjk0ZF0iPjxQbHVzIGNsYXNzTmFtZT0idy00IGgtNCIgLz4gQ3LDqWVyIHVuZSBjb2xsZWN0aW9uPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApIDogKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTIgc206Z3JpZC1jb2xzLTMgbGc6Z3JpZC1jb2xzLTQgZ2FwLTQiPgogICAgICAgICAgICB7Y29sbGVjdGlvbnMubWFwKChjKSA9PiAoCiAgICAgICAgICAgICAgPGRpdiBrZXk9e2MuaWR9IGNsYXNzTmFtZT0iYmctd2hpdGUgcm91bmRlZC14bCBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBvdmVyZmxvdy1oaWRkZW4gZ3JvdXAgaG92ZXI6c2hhZG93LW1kIHRyYW5zaXRpb24iPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImFzcGVjdC1bNC8zXSBiZy1bI0Y0RjRGNF0gb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICAgICAgICAgICAge2MuaW1hZ2UgPyA8aW1nIHNyYz17Yy5pbWFnZX0gYWx0PXtjLm5hbWV9IGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+IDogPGRpdiBjbGFzc05hbWU9InctZnVsbCBoLWZ1bGwgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIiPjxJbWFnZUljb24gY2xhc3NOYW1lPSJ3LTggaC04IHRleHQtWyNDOUM5QzldIiAvPjwvZGl2Pn0KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtMyI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gZ2FwLTIiPgogICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtWyMyMDIyMjNdIHRydW5jYXRlIj57Yy5uYW1lfTwvcD4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9e2B0ZXh0LVsxMHB4XSBmb250LXNlbWlib2xkIHB4LTEuNSBweS0wLjUgcm91bmRlZC1mdWxsIHNocmluay0wICR7Yy5zdGF0dXMgPT09ICdhY3RpdmUnID8gJ2JnLVsjMDA4MDYwXS8xMCB0ZXh0LVsjMDA4MDYwXScgOiAnYmctWyNFMUUxRTFdIHRleHQtWyM2RDcxNzVdJ31gfT4KICAgICAgICAgICAgICAgICAgICAgIHtjLnN0YXR1cyA9PT0gJ2FjdGl2ZScgPyAnQWN0aXZlJyA6ICdCcm91aWxsb24nfQogICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1bMTFweF0gdGV4dC1bIzZENzE3NV0gbXQtMC41Ij57Yy50eXBlID09PSAnc21hcnQnID8gJ0F1dG9tYXRpcXVlJyA6ICdNYW51ZWxsZSd9IMK3IHtjLnByb2R1Y3RfaWRzPy5sZW5ndGggfHwgMH0gcHJvZHVpdChzKTwvcD4KICAgICAgICAgICAgICAgICAge2MuZGVzY3JpcHRpb24gJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIG10LTEgbGluZS1jbGFtcC0yIj57Yy5kZXNjcmlwdGlvbn08L3A+fQogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBnYXAtMSBtdC0yIG9wYWNpdHktMCBncm91cC1ob3ZlcjpvcGFjaXR5LTEwMCB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHsgc2V0RWRpdGluZyhjKTsgc2V0Rm9ybU9wZW4odHJ1ZSk7IH19IGNsYXNzTmFtZT0iZmxleC0xIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdhcC0xIHRleHQtWzExcHhdIGZvbnQtbWVkaXVtIHRleHQtWyM2RDcxNzVdIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHJvdW5kZWQgcHktMSBob3ZlcjpiZy1ibGFjay81Ij48UGVuY2lsIGNsYXNzTmFtZT0idy0zIGgtMyIgLz4gw4lkaXRlcjwvYnV0dG9uPgogICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gcmVtb3ZlKGMpfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB4LTIgdGV4dC1bIzZENzE3NV0gYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZCBob3Zlcjp0ZXh0LXJlZC01MDAgaG92ZXI6YmctcmVkLTUwIj48VHJhc2gyIGNsYXNzTmFtZT0idy0zIGgtMyIgLz48L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQogICAgICA8L2Rpdj4KCiAgICAgIDxDb2xsZWN0aW9uRm9ybSBvcGVuPXtmb3JtT3Blbn0gb25PcGVuQ2hhbmdlPXtzZXRGb3JtT3Blbn0gc3RvcmU9e3N0b3JlfSBjb2xsZWN0aW9uPXtlZGl0aW5nfSBvblNhdmVkPXtsb2FkfSAvPgogICAgPC9kaXY+CiAgKTsKfQ==
+import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import CollectionForm from '@/components/admin/CollectionForm';
+import {
+  LayoutGrid, Loader2, ArrowLeft, AlertCircle, Plus, Pencil, Trash2, Image as ImageIcon,
+} from 'lucide-react';
+
+export default function Collections() {
+  const { store, loading: storeLoading } = useCurrentStore();
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    setLoading(true);
+    try {
+      const list = await base44.entities.Collection.filter({ store_id: store.id }, '-created_date', 100);
+      setCollections(list);
+    } finally { setLoading(false); }
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const remove = async (c) => {
+    if (!confirm(`Supprimer la collection « ${c.name} » ?`)) return;
+    await base44.entities.Collection.delete(c.id);
+    setCollections((l) => l.filter((x) => x.id !== c.id));
+  };
+
+  if (storeLoading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+  if (!store) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-[#202223]">Créez d'abord votre boutique</h1>
+        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d] mt-3">Configurer ma boutique</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-full bg-[#F4F4F4]">
+      <div className="sticky top-0 z-10 bg-white border-b border-[#E1E1E1] px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link to="/dashboard" className="text-[#6D7175] hover:text-[#202223]"><ArrowLeft className="w-5 h-5" /></Link>
+          <div>
+            <h1 className="text-base font-bold text-[#202223] flex items-center gap-2"><LayoutGrid className="w-4 h-4 text-[#008060]" /> Collections</h1>
+            <p className="text-xs text-[#6D7175]">{store.name} · {collections.length} collection(s)</p>
+          </div>
+        </div>
+        <button onClick={() => { setEditing(null); setFormOpen(true); }} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-[#00694d] shrink-0">
+          <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Ajouter</span>
+        </button>
+      </div>
+
+      <div className="px-4 sm:px-6 py-4">
+        {loading ? (
+          <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>
+        ) : collections.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-xl border border-[#E1E1E1]">
+            <LayoutGrid className="w-10 h-10 text-[#C9C9C9] mb-2" />
+            <p className="text-sm font-medium text-[#202223]">Aucune collection</p>
+            <p className="text-xs text-[#6D7175] mt-1 mb-4">Organisez vos produits par thème ou catégorie.</p>
+            <button onClick={() => { setEditing(null); setFormOpen(true); }} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Créer une collection</button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {collections.map((c) => (
+              <div key={c.id} className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden group hover:shadow-md transition">
+                <div className="aspect-[4/3] bg-[#F4F4F4] overflow-hidden">
+                  {c.image ? <img src={c.image} alt={c.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-8 h-8 text-[#C9C9C9]" /></div>}
+                </div>
+                <div className="p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-[#202223] truncate">{c.name}</p>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${c.status === 'active' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-[#E1E1E1] text-[#6D7175]'}`}>
+                      {c.status === 'active' ? 'Active' : 'Brouillon'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#6D7175] mt-0.5">{c.type === 'smart' ? 'Automatique' : 'Manuelle'} · {c.product_ids?.length || 0} produit(s)</p>
+                  {c.description && <p className="text-xs text-[#6D7175] mt-1 line-clamp-2">{c.description}</p>}
+                  <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition">
+                    <button onClick={() => { setEditing(c); setFormOpen(true); }} className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium text-[#6D7175] border border-[#E1E1E1] rounded py-1 hover:bg-black/5"><Pencil className="w-3 h-3" /> Éditer</button>
+                    <button onClick={() => remove(c)} className="flex items-center justify-center px-2 text-[#6D7175] border border-[#E1E1E1] rounded hover:text-red-500 hover:bg-red-50"><Trash2 className="w-3 h-3" /></button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <CollectionForm open={formOpen} onOpenChange={setFormOpen} store={store} collection={editing} onSaved={load} />
+    </div>
+  );
+}

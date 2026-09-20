@@ -1,1 +1,85 @@
-aW1wb3J0IHsgTGluayB9IGZyb20gJ3JlYWN0LXJvdXRlci1kb20nOwppbXBvcnQgeyBTbWFydHBob25lLCBNb25pdG9yLCBBcnJvd1JpZ2h0IH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKCi8vIEV4YW1wbGUgYm91dGlxdWVzIGJ1aWx0IHdpdGggU2VsbGlhIOKAlCBtYW55IGNhdGVnb3JpZXMgJiBpbmR1c3RyaWVzLgpjb25zdCBTVE9SRVMgPSBbCiAgeyBuYW1lOiAnTW9kZSBXYXggRGFrYXInLCBjYXRlZ29yeTogJ01vZGUgJiBUZXh0aWxlJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTQ4Mzk4NTk4ODM1NS03NjM3MjhlMTkzNWI/dz02MDAmcT04MCcsIGNvbG9yOiAnIzFBMUExQScgfSwKICB7IG5hbWU6ICdUZWNoWm9uZScsIGNhdGVnb3J5OiAnRWxlY3Ryb25pcXVlJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTUzMTI5NzQ4NDAwMS04MDAyMjEzMWY1YTE/dz02MDAmcT04MCcsIGNvbG9yOiAnIzBGMTcyQScgfSwKICB7IG5hbWU6ICdHbG93IEJlYXV0eScsIGNhdGVnb3J5OiAnQmVhdXRlICYgQ29zbWV0aXF1ZXMnLCBpbWFnZTogJ2h0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTk2NDYyNTAyMjc4LTI3YmZkYzQwMzM0OD93PTYwMCZxPTgwJywgY29sb3I6ICcjODMxODQzJyB9LAogIHsgbmFtZTogJ01haXNvbiBEb3JlZScsIGNhdGVnb3J5OiAnQmlqb3V4ICYgQWNjZXNzb2lyZXMnLCBpbWFnZTogJ2h0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTE1NTYyMTQxMjA3LTdhODhmYjdjZTMzOD93PTYwMCZxPTgwJywgY29sb3I6ICcjNzgzNTBGJyB9LAogIHsgbmFtZTogJ1NuZWFrZXJIdWInLCBjYXRlZ29yeTogJ0NoYXVzc3VyZXMgJiBTcG9ydCcsIGltYWdlOiAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1NDIyOTEwMjYtN2VlYzI2NGMyN2ZmP3c9NjAwJnE9ODAnLCBjb2xvcjogJyMwQzRBNkUnIH0sCiAgeyBuYW1lOiAnQ2FzYSBMaXZpbmcnLCBjYXRlZ29yeTogJ01haXNvbiAmIERlY28nLCBpbWFnZTogJ2h0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTY3NTM4MDk2NjMwLWUwYzU1YmQ2Mzc0Yz93PTYwMCZxPTgwJywgY29sb3I6ICcjM0YzRjQ2JyB9LAogIHsgbmFtZTogJ0NhZmUgZHUgTWFyY2hlJywgY2F0ZWdvcnk6ICdFcGljZXJpZSAmIEJvaXNzb25zJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTU1NDExODgxMS0xZTBkNTgyMjRmMjQ/dz02MDAmcT04MCcsIGNvbG9yOiAnIzQ1MUEwMycgfSwKICB7IG5hbWU6ICdMaWJyYWlyaWUgTHVtaWVyZScsIGNhdGVnb3J5OiAnTGl2cmVzICYgQ3VsdHVyZScsIGltYWdlOiAnaHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MjE1ODc3NjA0NzYtNmMxMmE0YjA0MGRhP3c9NjAwJnE9ODAnLCBjb2xvcjogJyMxRTI5M0InIH0sCiAgeyBuYW1lOiAnU2F2ZXVycyBkIEFmcmlxdWUnLCBjYXRlZ29yeTogJ1Jlc3RhdXJhbnQgJiBGb29kJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTUxNzI0ODEzNTQ2Ny00YzdlZGNhZDM0YzQ/dz02MDAmcT04MCcsIGNvbG9yOiAnIzdDMkQxMicgfSwKICB7IG5hbWU6ICdHcmVlbiBHYXJkZW4nLCBjYXRlZ29yeTogJ0phcmRpbmVyaWUgJiBQbGFudGVzJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTQ4NTk1NTkwMzAwNi03ODhhODkxMWFkNmM/dz02MDAmcT04MCcsIGNvbG9yOiAnIzE2NjUzNCcgfSwKICB7IG5hbWU6ICdGaXRab25lJywgY2F0ZWdvcnk6ICdTcG9ydCAmIEZpdG5lc3MnLCBpbWFnZTogJ2h0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTM0NDM4MzI3Mjc2LTE0ZTUzMDBjM2E0OD93PTYwMCZxPTgwJywgY29sb3I6ICcjMUUzQThBJyB9LAogIHsgbmFtZTogJ0JhYnlTb2Z0JywgY2F0ZWdvcnk6ICdQdWVyaWN1bHR1cmUgJiBCZWJlJywgaW1hZ2U6ICdodHRwczovL2ltYWdlcy51bnNwbGFzaC5jb20vcGhvdG8tMTUyMjc3MTkzMC05NDU4ZDAwNTgxNzk/dz02MDAmcT04MCcsIGNvbG9yOiAnIzlEMTc0RCcgfSwKXTsKCmZ1bmN0aW9uIFN0b3JlQ2FyZCh7IHN0b3JlIH0pIHsKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InNuYXAtc3RhcnQgc2hyaW5rLTAgdy00NCBzbTp3LTUyIGJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0U2RTlFRl0gc2hhZG93LXNtIG92ZXJmbG93LWhpZGRlbiBmbGV4IGZsZXgtY29sIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcHgtMyBweS0yIGJvcmRlci1iIGJvcmRlci1bI0VFRjFGNl0gYmctWyNGQkZDRkVdIj4KICAgICAgICA8c3BhbiBjbGFzc05hbWU9InctMi41IGgtMi41IHJvdW5kZWQtZnVsbCBiZy1bI0ZGNUY1N10iIC8+CiAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ3LTIuNSBoLTIuNSByb3VuZGVkLWZ1bGwgYmctWyNGRUJDMkVdIiAvPgogICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idy0yLjUgaC0yLjUgcm91bmRlZC1mdWxsIGJnLVsjMjhDODQwXSIgLz4KICAgICAgICA8c3BhbiBjbGFzc05hbWU9Im1sLTIgZmxleC0xIHRydW5jYXRlIHRleHQtWzEwcHhdIGZvbnQtbW9ubyB0ZXh0LVsjOUFBNUI1XSI+e3N0b3JlLm5hbWUudG9Mb3dlckNhc2UoKS5yZXBsYWNlKC9ccy9nLCAnLScpfS5zZWxsaWEuYXBwPC9zcGFuPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzc05hbWU9InJlbGF0aXZlIGFzcGVjdC1bNC8zXSBvdmVyZmxvdy1oaWRkZW4iPgogICAgICAgIDxpbWcgc3JjPXtzdG9yZS5pbWFnZX0gYWx0PXtzdG9yZS5uYW1lfSBjbGFzc05hbWU9InctZnVsbCBoLWZ1bGwgb2JqZWN0LWNvdmVyIiAvPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSBpbnNldC0wIGJnLWdyYWRpZW50LXRvLXQgZnJvbS1ibGFjay8zNSB2aWEtdHJhbnNwYXJlbnQgdG8tdHJhbnNwYXJlbnQiIC8+CiAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJhYnNvbHV0ZSB0b3AtMiBsZWZ0LTIgdGV4dC1bOXB4XSBmb250LWJvbGQgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGUgdGV4dC13aGl0ZSBweC0yIHB5LTAuNSByb3VuZGVkLWZ1bGwiIHN0eWxlPXt7IGJhY2tncm91bmQ6IHN0b3JlLmNvbG9yIH19PntzdG9yZS5jYXRlZ29yeX08L3NwYW4+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzTmFtZT0icHgtMyBweS0yLjUgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIGdhcC0yIj4KICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgZm9udC1ib2xkIHRleHQtWyMyMDIyMjNdIHRydW5jYXRlIj57c3RvcmUubmFtZX08L3A+CiAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVs5cHhdIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzAwODA2MF0gYmctWyMwMDgwNjBdLzEwIHB4LTEuNSBweS0wLjUgcm91bmRlZC1mdWxsIHNocmluay0wIj5TZWxsaWE8L3NwYW4+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gTGFuZGluZ0JyYW5kcygpIHsKICBjb25zdCBsb29wID0gWy4uLlNUT1JFUywgLi4uU1RPUkVTXTsKICByZXR1cm4gKAogICAgPHNlY3Rpb24gaWQ9Im1hcnF1ZXMiIGNsYXNzTmFtZT0icHktMjAgbGc6cHktMjQgYmctWyNGNUY3RkFdIG92ZXJmbG93LWhpZGRlbiI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy0yeGwgbXgtYXV0byB0ZXh0LWNlbnRlciBtYi04Ij4KICAgICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtbGFuZGluZyBmb250LXNlbWlib2xkIHRleHQtMnhsIHNtOnRleHQtWzJyZW1dIHRleHQtWyMwMDAwMDBdIHRyYWNraW5nLXRpZ2h0IGxlYWRpbmctdGlnaHQiPgogICAgICAgICAgICBEZXMgc29sdXRpb25zIGluZmluaWVzIHBvdXIgY2hhcXVlIHR5cGUgZGUgbWFycXVlLgogICAgICAgICAgPC9oMj4KICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMyB0ZXh0LVsjMkQzQTU2XSB0ZXh0LWJhc2Ugc206dGV4dC1sZyBsZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICBMYW5jZXotdm91cyByYXBpZGVtZW50IGF2ZWMgbCdlc3NlbnRpZWwsIG91IGludMOpZ3JleiwgY3LDqWV6IGV0IHBhc3NleiDDoCBsJ8OpY2hlbGxlIHN1ciBub3RyZSBwbGF0ZWZvcm1lIG91dmVydGUg4oCUIGNob2lzaWUgcGFyIGRlcyBtYXJxdWVzIGVuIEIyQyBjb21tZSBlbiBCMkIuCiAgICAgICAgICA8L3A+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBnYXAtNCBtYi02IHRleHQtWyM2RDcxNzVdIj4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgdGV4dC14cyBmb250LXNlbWlib2xkIj48TW9uaXRvciBjbGFzc05hbWU9InctNCBoLTQiIC8+IERlc2t0b3A8L3NwYW4+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InctcHggaC00IGJnLVsjRDZEQkUzXSIgLz4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgdGV4dC14cyBmb250LXNlbWlib2xkIj48U21hcnRwaG9uZSBjbGFzc05hbWU9InctNCBoLTQiIC8+IE1vYmlsZTwvc3Bhbj4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iaGlkZGVuIHNtOmlubGluZSB3LXB4IGgtNCBiZy1bI0Q2REJFM10iIC8+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImhpZGRlbiBzbTppbmxpbmUgdGV4dC14cyBmb250LW1lZGl1bSB0ZXh0LVsjNkQ3MTc1XSI+RMOpZmlsZW1lbnQgYXV0b21hdGlxdWUgwrcgMTIgY2F0w6lnb3JpZXM8L3NwYW4+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgoKICAgICAgey8qIEF1dG8tc2Nyb2xsaW5nIG1hcnF1ZWUg4oCUIHJlc3BvbnNpdmUgY2FyZCB3aWR0aHMgKi99CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJyZWxhdGl2ZSI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZ2FwLTQgc206Z2FwLTUgdy1tYXggYW5pbWF0ZS1zY3JvbGwteCBob3ZlcjpbYW5pbWF0aW9uLXBsYXktc3RhdGU6cGF1c2VkXSI+CiAgICAgICAgICB7bG9vcC5tYXAoKHMsIGkpID0+ICgKICAgICAgICAgICAgPFN0b3JlQ2FyZCBrZXk9e2l9IHN0b3JlPXtzfSAvPgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgICAgey8qIEVkZ2UgZmFkZXMgKi99CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InBvaW50ZXItZXZlbnRzLW5vbmUgYWJzb2x1dGUgaW5zZXQteS0wIGxlZnQtMCB3LTE2IGJnLWdyYWRpZW50LXRvLXIgZnJvbS1bI0Y1RjdGQV0gdG8tdHJhbnNwYXJlbnQiIC8+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InBvaW50ZXItZXZlbnRzLW5vbmUgYWJzb2x1dGUgaW5zZXQteS0wIHJpZ2h0LTAgdy0xNiBiZy1ncmFkaWVudC10by1sIGZyb20tWyNGNUY3RkFdIHRvLXRyYW5zcGFyZW50IiAvPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy03eGwgbXgtYXV0byBweC00IHNtOnB4LTYgbXQtMTAgdGV4dC1jZW50ZXIiPgogICAgICAgIDxMaW5rIHRvPSIvcmVnaXN0ZXIiIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIGJnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlIGZvbnQtc2VtaWJvbGQgcHgtNiBweS0zIHJvdW5kZWQtZnVsbCB0ZXh0LXNtIGhvdmVyOmJnLVsjMDA2OTRkXSB0cmFuc2l0aW9uIHNoYWRvdy1sZyBzaGFkb3ctWyMwMDgwNjBdLzIwIj4KICAgICAgICAgIExhbmNleiB2b3RyZSBib3V0aXF1ZSA8QXJyb3dSaWdodCBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAgPC9MaW5rPgogICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMyB0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIj5Cb3V0aXF1ZXMgMTAwJSByZXNwb25zaXZlcyDigJQgZGVza3RvcCAmIG1vYmlsZSwgcGFyYW3DqXRyYWJsZXMgaW5kw6lwZW5kYW1tZW50LjwvcD4KICAgICAgPC9kaXY+CiAgICA8L3NlY3Rpb24+CiAgKTsKfQ==
+import { Link } from 'react-router-dom';
+import { Smartphone, Monitor, ArrowRight } from 'lucide-react';
+
+// Example boutiques built with Sellia — many categories & industries.
+const STORES = [
+  { name: 'Mode Wax Dakar', category: 'Mode & Textile', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80', color: '#1A1A1A' },
+  { name: 'TechZone', category: 'Electronique', image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80', color: '#0F172A' },
+  { name: 'Glow Beauty', category: 'Beaute & Cosmetiques', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80', color: '#831843' },
+  { name: 'Maison Doree', category: 'Bijoux & Accessoires', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80', color: '#78350F' },
+  { name: 'SneakerHub', category: 'Chaussures & Sport', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80', color: '#0C4A6E' },
+  { name: 'Casa Living', category: 'Maison & Deco', image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80', color: '#3F3F46' },
+  { name: 'Cafe du Marche', category: 'Epicerie & Boissons', image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80', color: '#451A03' },
+  { name: 'Librairie Lumiere', category: 'Livres & Culture', image: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&q=80', color: '#1E293B' },
+  { name: 'Saveurs d Afrique', category: 'Restaurant & Food', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80', color: '#7C2D12' },
+  { name: 'Green Garden', category: 'Jardinerie & Plantes', image: 'https://images.unsplash.com/photo-1485955903006-788a8911ad6c?w=600&q=80', color: '#166534' },
+  { name: 'FitZone', category: 'Sport & Fitness', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80', color: '#1E3A8A' },
+  { name: 'BabySoft', category: 'Puericulture & Bebe', image: 'https://images.unsplash.com/photo-1522771930-9458d0058179?w=600&q=80', color: '#9D174D' },
+];
+
+function StoreCard({ store }) {
+  return (
+    <div className="snap-start shrink-0 w-44 sm:w-52 bg-white rounded-xl border border-[#E6E9EF] shadow-sm overflow-hidden flex flex-col">
+      <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#EEF1F6] bg-[#FBFCFE]">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+        <span className="ml-2 flex-1 truncate text-[10px] font-mono text-[#9AA5B5]">{store.name.toLowerCase().replace(/\s/g, '-')}.sellia.app</span>
+      </div>
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img src={store.image} alt={store.name} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+        <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wide text-white px-2 py-0.5 rounded-full" style={{ background: store.color }}>{store.category}</span>
+      </div>
+      <div className="px-3 py-2.5 flex items-center justify-between gap-2">
+        <p className="text-xs font-bold text-[#202223] truncate">{store.name}</p>
+        <span className="text-[9px] font-semibold text-[#008060] bg-[#008060]/10 px-1.5 py-0.5 rounded-full shrink-0">Sellia</span>
+      </div>
+    </div>
+  );
+}
+
+export default function LandingBrands() {
+  const loop = [...STORES, ...STORES];
+  return (
+    <section id="marques" className="py-20 lg:py-24 bg-[#F5F7FA] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto text-center mb-8">
+          <h2 className="font-landing font-semibold text-2xl sm:text-[2rem] text-[#000000] tracking-tight leading-tight">
+            Des solutions infinies pour chaque type de marque.
+          </h2>
+          <p className="mt-3 text-[#2D3A56] text-base sm:text-lg leading-relaxed">
+            Lancez-vous rapidement avec l'essentiel, ou intégrez, créez et passez à l'échelle sur notre plateforme ouverte — choisie par des marques en B2C comme en B2B.
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center gap-4 mb-6 text-[#6D7175]">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold"><Monitor className="w-4 h-4" /> Desktop</span>
+          <span className="w-px h-4 bg-[#D6DBE3]" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold"><Smartphone className="w-4 h-4" /> Mobile</span>
+          <span className="hidden sm:inline w-px h-4 bg-[#D6DBE3]" />
+          <span className="hidden sm:inline text-xs font-medium text-[#6D7175]">Défilement automatique · 12 catégories</span>
+        </div>
+      </div>
+
+      {/* Auto-scrolling marquee — responsive card widths */}
+      <div className="relative">
+        <div className="flex gap-4 sm:gap-5 w-max animate-scroll-x hover:[animation-play-state:paused]">
+          {loop.map((s, i) => (
+            <StoreCard key={i} store={s} />
+          ))}
+        </div>
+        {/* Edge fades */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#F5F7FA] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#F5F7FA] to-transparent" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-10 text-center">
+        <Link to="/register" className="inline-flex items-center gap-2 bg-[#008060] text-white font-semibold px-6 py-3 rounded-full text-sm hover:bg-[#00694d] transition shadow-lg shadow-[#008060]/20">
+          Lancez votre boutique <ArrowRight className="w-4 h-4" />
+        </Link>
+        <p className="mt-3 text-xs text-[#6D7175]">Boutiques 100% responsives — desktop & mobile, paramétrables indépendamment.</p>
+      </div>
+    </section>
+  );
+}

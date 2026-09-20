@@ -1,1 +1,38 @@
-aW1wb3J0IHsgVXNlclBsdXMsIFN0b3JlLCBSb2NrZXQgfSBmcm9tICdsdWNpZGUtcmVhY3QnOwoKY29uc3QgU1RFUFMgPSBbCiAgeyBpY29uOiBVc2VyUGx1cywgdGl0bGU6ICdDcsOpZXogdm90cmUgY29tcHRlJywgdGV4dDogJ0luc2NyaXZlei12b3VzIGdyYXR1aXRlbWVudCBldCBjb25maWd1cmV6IHZvdHJlIGJvdXRpcXVlIGVuIHF1ZWxxdWVzIG1pbnV0ZXMgYXZlYyBub3RyZSBhc3Npc3RhbnQgZOKAmW9uYm9hcmRpbmcuJyB9LAogIHsgaWNvbjogU3RvcmUsIHRpdGxlOiAnUGVyc29ubmFsaXNleiB2b3RyZSB2aXRyaW5lJywgdGV4dDogJ0Nob2lzaXNzZXogdW4gdGjDqG1lIHByZW1pdW0sIGFqb3V0ZXogdm9zIHByb2R1aXRzLCB2b3MgY29sbGVjdGlvbnMgZXQgdm9zIHLDqWR1Y3Rpb25zIOKAlCBzYW5zIGNvZGVyLicgfSwKICB7IGljb246IFJvY2tldCwgdGl0bGU6ICdWZW5kZXogZW4gbGlnbmUnLCB0ZXh0OiAnRW5jYWlzc2V6IHZvcyBwcmVtaWVycyBwYWllbWVudHMsIGfDqXJleiB2b3MgY29tbWFuZGVzIGV0IHN1aXZleiB2b3MgcGVyZm9ybWFuY2VzIGVuIHRlbXBzIHLDqWVsLicgfSwKXTsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIExhbmRpbmdIb3dJdFdvcmtzKCkgewogIHJldHVybiAoCiAgICA8c2VjdGlvbiBpZD0icHJvY2VzcyIgY2xhc3NOYW1lPSJweS0yMCBsZzpweS0yNCBiZy1zdXJmYWNlIj4KICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LTd4bCBteC1hdXRvIHB4LTQgc206cHgtNiI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InRleHQtY2VudGVyIG1heC13LTJ4bCBteC1hdXRvIj4KICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtZ29sZCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZSI+Q29tbWVudCDDp2EgbWFyY2hlPC9zcGFuPgogICAgICAgICAgPGgyIGNsYXNzTmFtZT0ibXQtMiBmb250LWxhbmRpbmcgZm9udC1zZW1pYm9sZCB0ZXh0LTJ4bCBzbTp0ZXh0LVsycmVtXSB0ZXh0LWZvcmVncm91bmQgdHJhY2tpbmctdGlnaHQiPlRyb2lzIMOpdGFwZXMgdmVycyB2b3RyZSBib3V0aXF1ZTwvaDI+CiAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtbGciPkRlIGzigJlpbnNjcmlwdGlvbiDDoCB2b3RyZSBwcmVtacOocmUgdmVudGUsIGVuIG1vaW5zIGRlIHRlbXBzIHF14oCZaWwgbuKAmWVuIGZhdXQgcG91ciBsZSBkaXJlLjwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMTQgZ3JpZCBncmlkLWNvbHMtMSBtZDpncmlkLWNvbHMtMyBnYXAtNiI+CiAgICAgICAgICB7U1RFUFMubWFwKChzLCBpKSA9PiAoCiAgICAgICAgICAgIDxkaXYga2V5PXtzLnRpdGxlfSBjbGFzc05hbWU9InJlbGF0aXZlIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC0yeGwgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1ib3JkZXIgcC03IGgtZnVsbCBob3ZlcjpzaGFkb3ctbGcgdHJhbnNpdGlvbi1zaGFkb3ciPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTEyIGgtMTIgcm91bmRlZC14bCBiZy1icmFuZCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICAgICAgICAgICAgPHMuaWNvbiBjbGFzc05hbWU9InctNiBoLTYgdGV4dC1icmFuZC1mb3JlZ3JvdW5kIiAvPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmb250LWxhbmRpbmcgZm9udC1leHRyYWJvbGQgdGV4dC00eGwgdGV4dC1ib3JkZXIiPntpICsgMX08L3NwYW4+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9Im10LTUgZm9udC1sYW5kaW5nIGZvbnQtYm9sZCB0ZXh0LXhsIHRleHQtZm9yZWdyb3VuZCI+e3MudGl0bGV9PC9oMz4KICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMiB0ZXh0LW11dGVkLWZvcmVncm91bmQgbGVhZGluZy1yZWxheGVkIj57cy50ZXh0fTwvcD4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICB7aSA8IFNURVBTLmxlbmd0aCAtIDEgJiYgPGRpdiBjbGFzc05hbWU9ImhpZGRlbiBtZDpibG9jayBhYnNvbHV0ZSB0b3AtMS8yIC1yaWdodC0zIHctNiBoLXB4IGJnLWJvcmRlciIgLz59CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKSl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICk7Cn0=
+import { UserPlus, Store, Rocket } from 'lucide-react';
+
+const STEPS = [
+  { icon: UserPlus, title: 'Créez votre compte', text: 'Inscrivez-vous gratuitement et configurez votre boutique en quelques minutes avec notre assistant d’onboarding.' },
+  { icon: Store, title: 'Personnalisez votre vitrine', text: 'Choisissez un thème premium, ajoutez vos produits, vos collections et vos réductions — sans coder.' },
+  { icon: Rocket, title: 'Vendez en ligne', text: 'Encaissez vos premiers paiements, gérez vos commandes et suivez vos performances en temps réel.' },
+];
+
+export default function LandingHowItWorks() {
+  return (
+    <section id="process" className="py-20 lg:py-24 bg-surface">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto">
+          <span className="text-sm font-semibold text-gold uppercase tracking-wide">Comment ça marche</span>
+          <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Trois étapes vers votre boutique</h2>
+          <p className="mt-3 text-muted-foreground text-lg">De l’inscription à votre première vente, en moins de temps qu’il n’en faut pour le dire.</p>
+        </div>
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {STEPS.map((s, i) => (
+            <div key={s.title} className="relative">
+              <div className="rounded-2xl bg-white border border-border p-7 h-full hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-brand flex items-center justify-center">
+                    <s.icon className="w-6 h-6 text-brand-foreground" />
+                  </div>
+                  <span className="font-landing font-extrabold text-4xl text-border">{i + 1}</span>
+                </div>
+                <h3 className="mt-5 font-landing font-bold text-xl text-foreground">{s.title}</h3>
+                <p className="mt-2 text-muted-foreground leading-relaxed">{s.text}</p>
+              </div>
+              {i < STEPS.length - 1 && <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-px bg-border" />}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

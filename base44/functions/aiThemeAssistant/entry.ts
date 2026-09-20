@@ -1,1 +1,90 @@
-aW1wb3J0IHsgY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QgfSBmcm9tICducG06QGJhc2U0NC9zZGtAMC44LjQ0JzsKCmNvbnN0IEFMTE9XRUQgPSBuZXcgU2V0KFsKICAnYW5ub3VuY2VtZW50JywgJ2hlYWRlcicsICdoZXJvJywgJ3Byb2R1Y3RHcmlkJywgJ2ltYWdlVGV4dCcsICdtdWx0aWNvbHVtbicsCiAgJ3Rlc3RpbW9uaWFscycsICdibG9nTGlzdCcsICdnYWxsZXJ5JywgJ2N0YScsICduZXdzbGV0dGVyJywgJ2Zvb3RlcicsCiAgJ2NvbGxlY3Rpb25MaXN0JywgJ3RydXN0YmFyJywgJ21lbnUnLCAncHJpY2luZycsCl0pOwoKZnVuY3Rpb24gaXNJbWFnZSh2KSB7CiAgcmV0dXJuIHR5cGVvZiB2ID09PSAnc3RyaW5nJyAmJiAvXmh0dHBzPzpcL1wvLitcLihwbmd8anBlP2d8d2VicHxnaWZ8YXZpZikoXD8uKik/JC9pLnRlc3Qodik7Cn0KZnVuY3Rpb24gaXNDb2xvcih2KSB7CiAgcmV0dXJuIHR5cGVvZiB2ID09PSAnc3RyaW5nJyAmJiAvXiMoWzAtOWEtZl17M318WzAtOWEtZl17Nn0pJC9pLnRlc3Qodik7Cn0KCi8vIEJ1aWxkIGEgSlNPTiBzY2hlbWEgbWlycm9yaW5nIHRoZSBzZWN0aW9uJ3MgY3VycmVudCBjb250ZW50IHNvIHRoZSBMTE0KLy8gcmV0dXJucyBleGFjdGx5IHRoZSBzYW1lIHNoYXBlIHdpdGggaW1wcm92ZWQgdGV4dCB2YWx1ZXMuCmZ1bmN0aW9uIGJ1aWxkU2NoZW1hKHYpIHsKICBpZiAoQXJyYXkuaXNBcnJheSh2KSkgewogICAgcmV0dXJuIHsgdHlwZTogJ2FycmF5JywgaXRlbXM6IHYubGVuZ3RoID8gYnVpbGRTY2hlbWEodlswXSkgOiB7IHR5cGU6ICdzdHJpbmcnIH0gfTsKICB9CiAgaWYgKHYgJiYgdHlwZW9mIHYgPT09ICdvYmplY3QnKSB7CiAgICBjb25zdCBwcm9wcyA9IHt9OwogICAgZm9yIChjb25zdCBrIG9mIE9iamVjdC5rZXlzKHYpKSBwcm9wc1trXSA9IGJ1aWxkU2NoZW1hKHZba10pOwogICAgcmV0dXJuIHsgdHlwZTogJ29iamVjdCcsIHByb3BlcnRpZXM6IHByb3BzLCBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UgfTsKICB9CiAgaWYgKHR5cGVvZiB2ID09PSAnbnVtYmVyJykgcmV0dXJuIHsgdHlwZTogJ251bWJlcicgfTsKICBpZiAodHlwZW9mIHYgPT09ICdib29sZWFuJykgcmV0dXJuIHsgdHlwZTogJ2Jvb2xlYW4nIH07CiAgcmV0dXJuIHsgdHlwZTogJ3N0cmluZycgfTsKfQoKLy8gRGVlcC1tZXJnZSBnZW5lcmF0ZWQgY29udGVudCBpbnRvIHRoZSBvcmlnaW5hbCwgcHJlc2VydmluZyBpbWFnZXMsIGNvbG9ycwovLyBhbmQgbnVtZXJpYyB2YWx1ZXMgZXhhY3RseSAodGhlIExMTSBpcyBpbnN0cnVjdGVkIHRvIGtlZXAgdGhlbSwgYnV0IHdlIGVuZm9yY2UgaXQpLgpmdW5jdGlvbiBtZXJnZShvcmlnLCBnZW4pIHsKICBpZiAob3JpZyA9PT0gdW5kZWZpbmVkIHx8IG9yaWcgPT09IG51bGwpIHJldHVybiBvcmlnOwogIGlmIChBcnJheS5pc0FycmF5KG9yaWcpKSB7CiAgICByZXR1cm4gb3JpZy5tYXAoKGl0ZW0sIGkpID0+IChBcnJheS5pc0FycmF5KGdlbikgJiYgaSA8IGdlbi5sZW5ndGggPyBtZXJnZShpdGVtLCBnZW5baV0pIDogaXRlbSkpOwogIH0KICBpZiAodHlwZW9mIG9yaWcgPT09ICdvYmplY3QnKSB7CiAgICBjb25zdCBvdXQgPSB7IC4uLm9yaWcgfTsKICAgIGlmIChnZW4gJiYgdHlwZW9mIGdlbiA9PT0gJ29iamVjdCcgJiYgIUFycmF5LmlzQXJyYXkoZ2VuKSkgewogICAgICBmb3IgKGNvbnN0IGsgb2YgT2JqZWN0LmtleXMob3JpZykpIHsKICAgICAgICBpZiAoayBpbiBnZW4pIG91dFtrXSA9IG1lcmdlKG9yaWdba10sIGdlbltrXSk7CiAgICAgIH0KICAgIH0KICAgIHJldHVybiBvdXQ7CiAgfQogIGlmIChpc0ltYWdlKG9yaWcpIHx8IGlzQ29sb3Iob3JpZykpIHJldHVybiBvcmlnOwogIGlmIChnZW4gPT09IHVuZGVmaW5lZCB8fCBnZW4gPT09IG51bGwpIHJldHVybiBvcmlnOwogIGlmICh0eXBlb2YgZ2VuID09PSAnc3RyaW5nJyAmJiBnZW4udHJpbSgpID09PSAnJykgcmV0dXJuIG9yaWc7CiAgcmV0dXJuIGdlbjsKfQoKZXhwb3J0IGRlZmF1bHQgYXN5bmMgZnVuY3Rpb24ocmVxKSB7CiAgdHJ5IHsKICAgIGNvbnN0IGJhc2U0NCA9IGNyZWF0ZUNsaWVudEZyb21SZXF1ZXN0KHJlcSk7CiAgICBjb25zdCB1c2VyID0gYXdhaXQgYmFzZTQ0LmF1dGgubWUoKTsKICAgIGlmICghdXNlcikgcmV0dXJuIFJlc3BvbnNlLmpzb24oeyBlcnJvcjogJ05vbiBhdXRvcmlzw6knIH0sIHsgc3RhdHVzOiA0MDEgfSk7CgogICAgY29uc3QgYm9keSA9IGF3YWl0IHJlcS5qc29uKCk7CiAgICBjb25zdCBzZWN0aW9uVHlwZSA9IFN0cmluZyhib2R5LnNlY3Rpb25UeXBlIHx8ICcnKTsKICAgIGlmICghQUxMT1dFRC5oYXMoc2VjdGlvblR5cGUpKSB7CiAgICAgIHJldHVybiBSZXNwb25zZS5qc29uKHsgZXJyb3I6ICdUeXBlIGRlIHNlY3Rpb24gbm9uIHN1cHBvcnTDqScgfSwgeyBzdGF0dXM6IDQwMCB9KTsKICAgIH0KICAgIGNvbnN0IGJ1c2luZXNzID0gU3RyaW5nKGJvZHkuYnVzaW5lc3MgfHwgJ3VuZSBib3V0aXF1ZSBlbiBsaWduZSBwcmVtaXVtJykuc2xpY2UoMCwgNjAwKTsKICAgIGNvbnN0IGN1cnJlbnRQcm9wcyA9IGJvZHkuY3VycmVudFByb3BzICYmIHR5cGVvZiBib2R5LmN1cnJlbnRQcm9wcyA9PT0gJ29iamVjdCcgPyBib2R5LmN1cnJlbnRQcm9wcyA6IHt9OwoKICAgIGNvbnN0IHByb21wdCA9CiAgICAgIGBUdSBlcyB1biBjb3B5d3JpdGVyIHByZW1pdW0gc3DDqWNpYWxpc8OpIGVuIGUtY29tbWVyY2UgZXQgYnJhbmRpbmcgcG91ciBsZXMgbWFyY2hhbmRzIGFmcmljYWlucy4gYCArCiAgICAgIGBBbcOpbGlvcmUgbGUgY29udGVudSBkZSBsYSBzZWN0aW9uICIke3NlY3Rpb25UeXBlfSIgZCd1biBzaXRlLiBgICsKICAgICAgYENvbnRleHRlIGJ1c2luZXNzIGR1IG1hcmNoYW5kIDogJHtidXNpbmVzc30uXG5cbmAgKwogICAgICBgQ29udGVudSBhY3R1ZWwgKEpTT04pIDpcbiR7SlNPTi5zdHJpbmdpZnkoY3VycmVudFByb3BzKX1cblxuYCArCiAgICAgIGBSZW52b2llIFVOSVFVRU1FTlQgdW4gb2JqZXQgSlNPTiB2YWxpZGUgYXZlYyBFWEFDVEVNRU5UIGxlcyBtw6ptZXMgY2zDqXMgZXQgbGEgbcOqbWUgc3RydWN0dXJlLiBgICsKICAgICAgYFLDqcOpY3JpcyBsZXMgdGV4dGVzICh0aXRyZXMsIHNvdXMtdGl0cmVzLCBkZXNjcmlwdGlvbnMsIGxpYmVsbMOpcyBkZSBib3V0b25zLCBub21zIGRlIHByb2R1aXRzLCBjaXRhdGlvbnMsIG5vbXMgZCdhdXRldXJzKSBgICsKICAgICAgYHBvdXIgbGVzIHJlbmRyZSBwcmVtaXVtLCBwZXJjdXRhbnRzLCBwcm9mZXNzaW9ubmVscyBldCBhZGFwdMOpcyBhdSBtYXJjaMOpIGFmcmljYWluLCBlbiBmcmFuw6dhaXMuIGAgKwogICAgICBgTkUgY2hhbmdlIFBBUyBsZXMgVVJMcyBkJ2ltYWdlcywgbGVzIGNvdWxldXJzIGhleCwgbGVzIHZhbGV1cnMgbnVtw6lyaXF1ZXMsIGxlcyDDqW1vamlzIG5pIGxhIGxvbmd1ZXVyIGRlcyB0YWJsZWF1eC4gYCArCiAgICAgIGBSw6lwb25kcyB1bmlxdWVtZW50IGF2ZWMgbGUgSlNPTiwgc2FucyB0ZXh0ZSBhdXRvdXIgbmkgbWFya2Rvd24uYDsKCiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBiYXNlNDQuYXNTZXJ2aWNlUm9sZS5pbnRlZ3JhdGlvbnMuQ29yZS5JbnZva2VMTE0oewogICAgICBwcm9tcHQsCiAgICAgIHJlc3BvbnNlX2pzb25fc2NoZW1hOiBidWlsZFNjaGVtYShjdXJyZW50UHJvcHMpLAogICAgfSk7CgogICAgY29uc3QgZ2VuZXJhdGVkID0gcmVzdWx0ICYmIHR5cGVvZiByZXN1bHQgPT09ICdvYmplY3QnID8gcmVzdWx0IDoge307CiAgICBjb25zdCBtZXJnZWQgPSBtZXJnZShjdXJyZW50UHJvcHMsIGdlbmVyYXRlZCk7CiAgICByZXR1cm4gUmVzcG9uc2UuanNvbih7IHByb3BzOiBtZXJnZWQgfSk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIHJldHVybiBSZXNwb25zZS5qc29uKHsgZXJyb3I6IGVycm9yLm1lc3NhZ2UgfSwgeyBzdGF0dXM6IDUwMCB9KTsKICB9Cn0=
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+
+const ALLOWED = new Set([
+  'announcement', 'header', 'hero', 'productGrid', 'imageText', 'multicolumn',
+  'testimonials', 'blogList', 'gallery', 'cta', 'newsletter', 'footer',
+  'collectionList', 'trustbar', 'menu', 'pricing',
+]);
+
+function isImage(v) {
+  return typeof v === 'string' && /^https?:\/\/.+\.(png|jpe?g|webp|gif|avif)(\?.*)?$/i.test(v);
+}
+function isColor(v) {
+  return typeof v === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
+}
+
+// Build a JSON schema mirroring the section's current content so the LLM
+// returns exactly the same shape with improved text values.
+function buildSchema(v) {
+  if (Array.isArray(v)) {
+    return { type: 'array', items: v.length ? buildSchema(v[0]) : { type: 'string' } };
+  }
+  if (v && typeof v === 'object') {
+    const props = {};
+    for (const k of Object.keys(v)) props[k] = buildSchema(v[k]);
+    return { type: 'object', properties: props, additionalProperties: false };
+  }
+  if (typeof v === 'number') return { type: 'number' };
+  if (typeof v === 'boolean') return { type: 'boolean' };
+  return { type: 'string' };
+}
+
+// Deep-merge generated content into the original, preserving images, colors
+// and numeric values exactly (the LLM is instructed to keep them, but we enforce it).
+function merge(orig, gen) {
+  if (orig === undefined || orig === null) return orig;
+  if (Array.isArray(orig)) {
+    return orig.map((item, i) => (Array.isArray(gen) && i < gen.length ? merge(item, gen[i]) : item));
+  }
+  if (typeof orig === 'object') {
+    const out = { ...orig };
+    if (gen && typeof gen === 'object' && !Array.isArray(gen)) {
+      for (const k of Object.keys(orig)) {
+        if (k in gen) out[k] = merge(orig[k], gen[k]);
+      }
+    }
+    return out;
+  }
+  if (isImage(orig) || isColor(orig)) return orig;
+  if (gen === undefined || gen === null) return orig;
+  if (typeof gen === 'string' && gen.trim() === '') return orig;
+  return gen;
+}
+
+export default async function(req) {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Non autorisé' }, { status: 401 });
+
+    const body = await req.json();
+    const sectionType = String(body.sectionType || '');
+    if (!ALLOWED.has(sectionType)) {
+      return Response.json({ error: 'Type de section non supporté' }, { status: 400 });
+    }
+    const business = String(body.business || 'une boutique en ligne premium').slice(0, 600);
+    const currentProps = body.currentProps && typeof body.currentProps === 'object' ? body.currentProps : {};
+
+    const prompt =
+      `Tu es un copywriter premium spécialisé en e-commerce et branding pour les marchands africains. ` +
+      `Améliore le contenu de la section "${sectionType}" d'un site. ` +
+      `Contexte business du marchand : ${business}.\n\n` +
+      `Contenu actuel (JSON) :\n${JSON.stringify(currentProps)}\n\n` +
+      `Renvoie UNIQUEMENT un objet JSON valide avec EXACTEMENT les mêmes clés et la même structure. ` +
+      `Réécris les textes (titres, sous-titres, descriptions, libellés de boutons, noms de produits, citations, noms d'auteurs) ` +
+      `pour les rendre premium, percutants, professionnels et adaptés au marché africain, en français. ` +
+      `NE change PAS les URLs d'images, les couleurs hex, les valeurs numériques, les émojis ni la longueur des tableaux. ` +
+      `Réponds uniquement avec le JSON, sans texte autour ni markdown.`;
+
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: buildSchema(currentProps),
+    });
+
+    const generated = result && typeof result === 'object' ? result : {};
+    const merged = merge(currentProps, generated);
+    return Response.json({ props: merged });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

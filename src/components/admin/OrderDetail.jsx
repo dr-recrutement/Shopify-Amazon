@@ -1,1 +1,164 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsKICBEaWFsb2csIERpYWxvZ0NvbnRlbnQsIERpYWxvZ0hlYWRlciwgRGlhbG9nVGl0bGUsIERpYWxvZ0Zvb3RlciwKfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvZGlhbG9nJzsKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7CmltcG9ydCB7IGZvcm1hdE1vbmV5IH0gZnJvbSAnQC9saWIvd29ybGQvY3VycmVuY2llcyc7CmltcG9ydCB7IExvYWRlcjIsIE1hcFBpbiwgQ3JlZGl0Q2FyZCwgVHJ1Y2ssIENsb2NrLCBDaGVjayB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7Cgpjb25zdCBPUkRFUl9TVEFUVVNFUyA9IFsncGVuZGluZycsICdwYWlkJywgJ3Byb2Nlc3NpbmcnLCAnZnVsZmlsbGVkJywgJ3NoaXBwZWQnLCAnZGVsaXZlcmVkJywgJ2NhbmNlbGxlZCcsICdyZWZ1bmRlZCcsICdwYXJ0aWFsbHlfcmVmdW5kZWQnXTsKY29uc3QgUEFZX1NUQVRVU0VTID0gWydwZW5kaW5nJywgJ3BhaWQnLCAncGFydGlhbGx5X3BhaWQnLCAncmVmdW5kZWQnLCAndm9pZGVkJ107CmNvbnN0IEZVTEZJTExfU1RBVFVTRVMgPSBbJ3VuZnVsZmlsbGVkJywgJ3BhcnRpYWwnLCAnZnVsZmlsbGVkJ107Cgpjb25zdCBMQUJFTFMgPSB7CiAgcGVuZGluZzogJ0VuIGF0dGVudGUnLCBwYWlkOiAnUGF5w6llJywgcHJvY2Vzc2luZzogJ0VuIHRyYWl0ZW1lbnQnLCBmdWxmaWxsZWQ6ICdQcsOpcGFyw6llJywKICBzaGlwcGVkOiAnRXhww6lkacOpZScsIGRlbGl2ZXJlZDogJ0xpdnLDqWUnLCBjYW5jZWxsZWQ6ICdBbm51bMOpZScsIHJlZnVuZGVkOiAnUmVtYm91cnPDqWUnLCBwYXJ0aWFsbHlfcmVmdW5kZWQ6ICdQYXJ0aWVsbGVtZW50IHJlbWJvdXJzw6llJywKICAncGFydGlhbGx5X3BhaWQnOiAnUGFydGllbGxlbWVudCBwYXnDqWUnLCB2b2lkZWQ6ICdBbm51bMOpZScsIHVuZnVsZmlsbGVkOiAnTm9uIHByw6lwYXLDqWUnLCBwYXJ0aWFsOiAnUGFydGllbGxlJywKfTsKCmNvbnN0IGlucHV0Q2xzID0gJ3ctZnVsbCBweC0zIHB5LTIgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZC1tZCB0ZXh0LXNtIGJnLXdoaXRlIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1bIzAwODA2MF0vMzAnOwoKZnVuY3Rpb24gUm93KHsgbGFiZWwsIHZhbHVlIH0pIHsKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImZsZXgganVzdGlmeS1iZXR3ZWVuIGdhcC0zIHB5LTEuNSB0ZXh0LXNtIGJvcmRlci1iIGJvcmRlci1bI0YwRjBGMF0gbGFzdDpib3JkZXItMCI+CiAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0iPntsYWJlbH08L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzTmFtZT0iZm9udC1tZWRpdW0gdGV4dC1bIzIwMjIyM10gdGV4dC1yaWdodCI+e3ZhbHVlIHx8ICfigJQnfTwvc3Bhbj4KICAgIDwvZGl2PgogICk7Cn0KCmZ1bmN0aW9uIEFkZHJlc3NCbG9jayh7IHRpdGxlLCBhZGRyIH0pIHsKICBpZiAoIWFkZHIgfHwgIWFkZHIuYWRkcmVzcykgcmV0dXJuIG51bGw7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLWxnIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIHAtMyI+CiAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIG1iLTEgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEiPjxNYXBQaW4gY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSIgLz4ge3RpdGxlfTwvcD4KICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtWyMyMDIyMjNdIj57YWRkci5hZGRyZXNzfTwvcD4KICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIj57W2FkZHIuY2l0eSwgYWRkci5yZWdpb24sIGFkZHIuY291bnRyeV0uZmlsdGVyKEJvb2xlYW4pLmpvaW4oJywgJyl9IHthZGRyLnBvc3RhbF9jb2RlfTwvcD4KICAgICAge2FkZHIucGhvbmUgJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIG10LTAuNSI+e2FkZHIucGhvbmV9PC9wPn0KICAgIDwvZGl2PgogICk7Cn0KCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIE9yZGVyRGV0YWlsKHsgb3Blbiwgb25PcGVuQ2hhbmdlLCBvcmRlciwgc3RvcmUsIG9uU2F2ZWQgfSkgewogIGNvbnN0IFtzYXZpbmcsIHNldFNhdmluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW3N0YXR1cywgc2V0U3RhdHVzXSA9IHVzZVN0YXRlKCdwZW5kaW5nJyk7CiAgY29uc3QgW3BheVN0YXR1cywgc2V0UGF5U3RhdHVzXSA9IHVzZVN0YXRlKCdwZW5kaW5nJyk7CiAgY29uc3QgW2Z1bGZpbGwsIHNldEZ1bGZpbGxdID0gdXNlU3RhdGUoJ3VuZnVsZmlsbGVkJyk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoIW9yZGVyKSByZXR1cm47CiAgICBzZXRTdGF0dXMob3JkZXIuc3RhdHVzIHx8ICdwZW5kaW5nJyk7CiAgICBzZXRQYXlTdGF0dXMob3JkZXIucGF5bWVudF9zdGF0dXMgfHwgJ3BlbmRpbmcnKTsKICAgIHNldEZ1bGZpbGwob3JkZXIuZnVsZmlsbG1lbnRfc3RhdHVzIHx8ICd1bmZ1bGZpbGxlZCcpOwogIH0sIFtvcmRlcl0pOwoKICBpZiAoIW9yZGVyKSByZXR1cm4gbnVsbDsKICBjb25zdCBjdXIgPSBvcmRlci5jdXJyZW5jeSB8fCBzdG9yZT8uY3VycmVuY3kgfHwgJ1VTRCc7CgogIGNvbnN0IHNhdmUgPSBhc3luYyAoKSA9PiB7CiAgICBzZXRTYXZpbmcodHJ1ZSk7CiAgICB0cnkgewogICAgICBjb25zdCB1cGRhdGVzID0geyBzdGF0dXMsIHBheW1lbnRfc3RhdHVzOiBwYXlTdGF0dXMsIGZ1bGZpbGxtZW50X3N0YXR1czogZnVsZmlsbCB9OwogICAgICBjb25zdCBjaGFuZ2VkID0gc3RhdHVzICE9PSBvcmRlci5zdGF0dXMgfHwgcGF5U3RhdHVzICE9PSBvcmRlci5wYXltZW50X3N0YXR1cyB8fCBmdWxmaWxsICE9PSBvcmRlci5mdWxmaWxsbWVudF9zdGF0dXM7CiAgICAgIGxldCB0aW1lbGluZSA9IG9yZGVyLnRpbWVsaW5lIHx8IFtdOwogICAgICBpZiAoY2hhbmdlZCkgewogICAgICAgIHRpbWVsaW5lID0gWy4uLnRpbWVsaW5lLCB7IGV2ZW50OiBgU3RhdHV0IOKGkiAke0xBQkVMU1tzdGF0dXNdfWAsIGF0OiBuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCkgfV07CiAgICAgICAgdXBkYXRlcy50aW1lbGluZSA9IHRpbWVsaW5lOwogICAgICB9CiAgICAgIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5PcmRlci51cGRhdGUob3JkZXIuaWQsIHVwZGF0ZXMpOwogICAgICBvblNhdmVkKCk7CiAgICAgIG9uT3BlbkNoYW5nZShmYWxzZSk7CiAgICB9IGZpbmFsbHkgeyBzZXRTYXZpbmcoZmFsc2UpOyB9CiAgfTsKCiAgcmV0dXJuICgKICAgIDxEaWFsb2cgb3Blbj17b3Blbn0gb25PcGVuQ2hhbmdlPXtvbk9wZW5DaGFuZ2V9PgogICAgICA8RGlhbG9nQ29udGVudCBjbGFzc05hbWU9Im1heC13LTJ4bCBtYXgtaC1bOTB2aF0gb3ZlcmZsb3cteS1hdXRvIj4KICAgICAgICA8RGlhbG9nSGVhZGVyPgogICAgICAgICAgPERpYWxvZ1RpdGxlPkNvbW1hbmRlIHtvcmRlci5vcmRlcl9udW1iZXIgfHwgJyMnICsgb3JkZXIuaWQuc2xpY2UoLTYpfTwvRGlhbG9nVGl0bGU+CiAgICAgICAgPC9EaWFsb2dIZWFkZXI+CgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTQiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTMgZ2FwLTIiPgogICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgIDxsYWJlbCBjbGFzc05hbWU9ImJsb2NrIHRleHQtWzExcHhdIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzZENzE3NV0gbWItMSI+U3RhdHV0PC9sYWJlbD4KICAgICAgICAgICAgICA8c2VsZWN0IHZhbHVlPXtzdGF0dXN9IG9uQ2hhbmdlPXsoZSkgPT4gc2V0U3RhdHVzKGUudGFyZ2V0LnZhbHVlKX0gY2xhc3NOYW1lPXtpbnB1dENsc30+CiAgICAgICAgICAgICAgICB7T1JERVJfU1RBVFVTRVMubWFwKChzKSA9PiA8b3B0aW9uIGtleT17c30gdmFsdWU9e3N9PntMQUJFTFNbc119PC9vcHRpb24+KX0KICAgICAgICAgICAgICA8L3NlbGVjdD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzTmFtZT0iYmxvY2sgdGV4dC1bMTFweF0gZm9udC1zZW1pYm9sZCB0ZXh0LVsjNkQ3MTc1XSBtYi0xIj5QYWllbWVudDwvbGFiZWw+CiAgICAgICAgICAgICAgPHNlbGVjdCB2YWx1ZT17cGF5U3RhdHVzfSBvbkNoYW5nZT17KGUpID0+IHNldFBheVN0YXR1cyhlLnRhcmdldC52YWx1ZSl9IGNsYXNzTmFtZT17aW5wdXRDbHN9PgogICAgICAgICAgICAgICAge1BBWV9TVEFUVVNFUy5tYXAoKHMpID0+IDxvcHRpb24ga2V5PXtzfSB2YWx1ZT17c30+e0xBQkVMU1tzXX08L29wdGlvbj4pfQogICAgICAgICAgICAgIDwvc2VsZWN0PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICA8bGFiZWwgY2xhc3NOYW1lPSJibG9jayB0ZXh0LVsxMXB4XSBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIG1iLTEiPlByw6lwYXJhdGlvbjwvbGFiZWw+CiAgICAgICAgICAgICAgPHNlbGVjdCB2YWx1ZT17ZnVsZmlsbH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRGdWxmaWxsKGUudGFyZ2V0LnZhbHVlKX0gY2xhc3NOYW1lPXtpbnB1dENsc30+CiAgICAgICAgICAgICAgICB7RlVMRklMTF9TVEFUVVNFUy5tYXAoKHMpID0+IDxvcHRpb24ga2V5PXtzfSB2YWx1ZT17c30+e0xBQkVMU1tzXX08L29wdGlvbj4pfQogICAgICAgICAgICAgIDwvc2VsZWN0PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIG1iLTEuNSI+QXJ0aWNsZXM8L3A+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLWxnIGJvcmRlciBib3JkZXItWyNFMUUxRTFdIGRpdmlkZS15IGRpdmlkZS1bI0YwRjBGMF0iPgogICAgICAgICAgICAgIHsob3JkZXIuaXRlbXMgfHwgW10pLm1hcCgoaXQsIGkpID0+ICgKICAgICAgICAgICAgICAgIDxkaXYga2V5PXtpfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0zIHAtMi41Ij4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InctMTAgaC0xMCByb3VuZGVkLW1kIGJnLVsjRjRGNEY0XSBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBvdmVyZmxvdy1oaWRkZW4gc2hyaW5rLTAiPgogICAgICAgICAgICAgICAgICAgIHtpdC5pbWFnZSA/IDxpbWcgc3JjPXtpdC5pbWFnZX0gYWx0PSIiIGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+IDogbnVsbH0KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgbWluLXctMCI+CiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtWyMyMDIyMjNdIHRydW5jYXRlIj57aXQudGl0bGV9PC9wPgogICAgICAgICAgICAgICAgICAgIHtpdC52YXJpYW50X3RpdGxlICYmIDxwIGNsYXNzTmFtZT0idGV4dC1bMTFweF0gdGV4dC1bIzZENzE3NV0iPntpdC52YXJpYW50X3RpdGxlfTwvcD59CiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMXB4XSB0ZXh0LVsjNkQ3MTc1XSI+e2Zvcm1hdE1vbmV5KGl0LnByaWNlLCBjdXIpfSDDlyB7aXQucXVhbnRpdHl9PC9wPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1bIzIwMjIyM10iPntmb3JtYXRNb25leShpdC50b3RhbCwgY3VyKX08L3NwYW4+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgICB7KCFvcmRlci5pdGVtcyB8fCAhb3JkZXIuaXRlbXMubGVuZ3RoKSAmJiA8cCBjbGFzc05hbWU9InAtMyB0ZXh0LXhzIHRleHQtWyM2RDcxNzVdIj5BdWN1biBhcnRpY2xlLjwvcD59CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtbGcgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcHgtMyBweS0xIj4KICAgICAgICAgICAgPFJvdyBsYWJlbD0iU291cy10b3RhbCIgdmFsdWU9e2Zvcm1hdE1vbmV5KG9yZGVyLnN1YnRvdGFsLCBjdXIpfSAvPgogICAgICAgICAgICB7b3JkZXIuZGlzY291bnRfdG90YWwgPiAwICYmIDxSb3cgbGFiZWw9IlJlbWlzZSIgdmFsdWU9eyctICcgKyBmb3JtYXRNb25leShvcmRlci5kaXNjb3VudF90b3RhbCwgY3VyKX0gLz59CiAgICAgICAgICAgIHtvcmRlci5zaGlwcGluZ190b3RhbCA+IDAgJiYgPFJvdyBsYWJlbD0iTGl2cmFpc29uIiB2YWx1ZT17Zm9ybWF0TW9uZXkob3JkZXIuc2hpcHBpbmdfdG90YWwsIGN1cil9IC8+fQogICAgICAgICAgICB7b3JkZXIudGF4X3RvdGFsID4gMCAmJiA8Um93IGxhYmVsPSJUYXhlcyIgdmFsdWU9e2Zvcm1hdE1vbmV5KG9yZGVyLnRheF90b3RhbCwgY3VyKX0gLz59CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGp1c3RpZnktYmV0d2VlbiBweS0yIj4KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+VG90YWw8L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmb250LWJvbGQgdGV4dC1bIzAwODA2MF0iPntmb3JtYXRNb25leShvcmRlci50b3RhbCwgY3VyKX08L3NwYW4+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImdyaWQgZ3JpZC1jb2xzLTEgc206Z3JpZC1jb2xzLTIgZ2FwLTIiPgogICAgICAgICAgICA8QWRkcmVzc0Jsb2NrIHRpdGxlPSJMaXZyYWlzb24iIGFkZHI9e29yZGVyLnNoaXBwaW5nX2FkZHJlc3N9IC8+CiAgICAgICAgICAgIDxBZGRyZXNzQmxvY2sgdGl0bGU9IkZhY3R1cmF0aW9uIiBhZGRyPXtvcmRlci5iaWxsaW5nX2FkZHJlc3N9IC8+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC1sZyBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSBwLTMgc3BhY2UteS0xLjUiPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LVsjNkQ3MTc1XSBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSI+PENsb2NrIGNsYXNzTmFtZT0idy0zLjUgaC0zLjUiIC8+IEhpc3RvcmlxdWU8L3A+CiAgICAgICAgICAgIHsob3JkZXIudGltZWxpbmUgfHwgW10pLmxlbmd0aCA9PT0gMCAmJiA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1bIzZENzE3NV0iPkF1Y3VuIMOpdsOpbmVtZW50LjwvcD59CiAgICAgICAgICAgIHsob3JkZXIudGltZWxpbmUgfHwgW10pLm1hcCgodCwgaSkgPT4gKAogICAgICAgICAgICAgIDxkaXYga2V5PXtpfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtc3RhcnQgZ2FwLTIgdGV4dC14cyI+CiAgICAgICAgICAgICAgICA8Q2hlY2sgY2xhc3NOYW1lPSJ3LTMgaC0zIHRleHQtWyMwMDgwNjBdIG10LTAuNSBzaHJpbmstMCIgLz4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzIwMjIyM10iPnt0LmV2ZW50fTwvc3Bhbj4KICAgICAgICAgICAgICAgIHt0LmF0ICYmIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0gbWwtYXV0byI+e25ldyBEYXRlKHQuYXQpLnRvTG9jYWxlRGF0ZVN0cmluZygnZnItRlInKX08L3NwYW4+fQogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICApKX0KICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgIHtvcmRlci5ub3RlICYmIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSI+PHNwYW4gY2xhc3NOYW1lPSJmb250LXNlbWlib2xkIj5Ob3RlIDogPC9zcGFuPntvcmRlci5ub3RlfTwvcD59CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxEaWFsb2dGb290ZXIgY2xhc3NOYW1lPSJwdC0yIj4KICAgICAgICAgIDxCdXR0b24gdmFyaWFudD0ib3V0bGluZSIgb25DbGljaz17KCkgPT4gb25PcGVuQ2hhbmdlKGZhbHNlKX0+RmVybWVyPC9CdXR0b24+CiAgICAgICAgICA8QnV0dG9uIG9uQ2xpY2s9e3NhdmV9IGRpc2FibGVkPXtzYXZpbmd9IGNsYXNzTmFtZT0iYmctWyMwMDgwNjBdIGhvdmVyOmJnLVsjMDA2OTRkXSI+CiAgICAgICAgICAgIHtzYXZpbmcgPyA8TG9hZGVyMiBjbGFzc05hbWU9InctNCBoLTQgYW5pbWF0ZS1zcGluIiAvPiA6IG51bGx9IEVucmVnaXN0cmVyCiAgICAgICAgICA8L0J1dHRvbj4KICAgICAgICA8L0RpYWxvZ0Zvb3Rlcj4KICAgICAgPC9EaWFsb2dDb250ZW50PgogICAgPC9EaWFsb2c+CiAgKTsKfQ==
+import { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { formatMoney } from '@/lib/world/currencies';
+import { Loader2, MapPin, CreditCard, Truck, Clock, Check } from 'lucide-react';
+
+const ORDER_STATUSES = ['pending', 'paid', 'processing', 'fulfilled', 'shipped', 'delivered', 'cancelled', 'refunded', 'partially_refunded'];
+const PAY_STATUSES = ['pending', 'paid', 'partially_paid', 'refunded', 'voided'];
+const FULFILL_STATUSES = ['unfulfilled', 'partial', 'fulfilled'];
+
+const LABELS = {
+  pending: 'En attente', paid: 'Payée', processing: 'En traitement', fulfilled: 'Préparée',
+  shipped: 'Expédiée', delivered: 'Livrée', cancelled: 'Annulée', refunded: 'Remboursée', partially_refunded: 'Partiellement remboursée',
+  'partially_paid': 'Partiellement payée', voided: 'Annulée', unfulfilled: 'Non préparée', partial: 'Partielle',
+};
+
+const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+
+function Row({ label, value }) {
+  return (
+    <div className="flex justify-between gap-3 py-1.5 text-sm border-b border-[#F0F0F0] last:border-0">
+      <span className="text-[#6D7175]">{label}</span>
+      <span className="font-medium text-[#202223] text-right">{value || '—'}</span>
+    </div>
+  );
+}
+
+function AddressBlock({ title, addr }) {
+  if (!addr || !addr.address) return null;
+  return (
+    <div className="rounded-lg border border-[#E1E1E1] p-3">
+      <p className="text-xs font-semibold text-[#6D7175] mb-1 flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {title}</p>
+      <p className="text-sm text-[#202223]">{addr.address}</p>
+      <p className="text-xs text-[#6D7175]">{[addr.city, addr.region, addr.country].filter(Boolean).join(', ')} {addr.postal_code}</p>
+      {addr.phone && <p className="text-xs text-[#6D7175] mt-0.5">{addr.phone}</p>}
+    </div>
+  );
+}
+
+export default function OrderDetail({ open, onOpenChange, order, store, onSaved }) {
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState('pending');
+  const [payStatus, setPayStatus] = useState('pending');
+  const [fulfill, setFulfill] = useState('unfulfilled');
+
+  useEffect(() => {
+    if (!order) return;
+    setStatus(order.status || 'pending');
+    setPayStatus(order.payment_status || 'pending');
+    setFulfill(order.fulfillment_status || 'unfulfilled');
+  }, [order]);
+
+  if (!order) return null;
+  const cur = order.currency || store?.currency || 'USD';
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const updates = { status, payment_status: payStatus, fulfillment_status: fulfill };
+      const changed = status !== order.status || payStatus !== order.payment_status || fulfill !== order.fulfillment_status;
+      let timeline = order.timeline || [];
+      if (changed) {
+        timeline = [...timeline, { event: `Statut → ${LABELS[status]}`, at: new Date().toISOString() }];
+        updates.timeline = timeline;
+      }
+      await base44.entities.Order.update(order.id, updates);
+      onSaved();
+      onOpenChange(false);
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Commande {order.order_number || '#' + order.id.slice(-6)}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Statut</label>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputCls}>
+                {ORDER_STATUSES.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Paiement</label>
+              <select value={payStatus} onChange={(e) => setPayStatus(e.target.value)} className={inputCls}>
+                {PAY_STATUSES.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-[#6D7175] mb-1">Préparation</label>
+              <select value={fulfill} onChange={(e) => setFulfill(e.target.value)} className={inputCls}>
+                {FULFILL_STATUSES.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold text-[#6D7175] mb-1.5">Articles</p>
+            <div className="rounded-lg border border-[#E1E1E1] divide-y divide-[#F0F0F0]">
+              {(order.items || []).map((it, i) => (
+                <div key={i} className="flex items-center gap-3 p-2.5">
+                  <div className="w-10 h-10 rounded-md bg-[#F4F4F4] border border-[#E1E1E1] overflow-hidden shrink-0">
+                    {it.image ? <img src={it.image} alt="" className="w-full h-full object-cover" /> : null}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[#202223] truncate">{it.title}</p>
+                    {it.variant_title && <p className="text-[11px] text-[#6D7175]">{it.variant_title}</p>}
+                    <p className="text-[11px] text-[#6D7175]">{formatMoney(it.price, cur)} × {it.quantity}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-[#202223]">{formatMoney(it.total, cur)}</span>
+                </div>
+              ))}
+              {(!order.items || !order.items.length) && <p className="p-3 text-xs text-[#6D7175]">Aucun article.</p>}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[#E1E1E1] px-3 py-1">
+            <Row label="Sous-total" value={formatMoney(order.subtotal, cur)} />
+            {order.discount_total > 0 && <Row label="Remise" value={'- ' + formatMoney(order.discount_total, cur)} />}
+            {order.shipping_total > 0 && <Row label="Livraison" value={formatMoney(order.shipping_total, cur)} />}
+            {order.tax_total > 0 && <Row label="Taxes" value={formatMoney(order.tax_total, cur)} />}
+            <div className="flex justify-between py-2">
+              <span className="font-bold text-[#202223]">Total</span>
+              <span className="font-bold text-[#008060]">{formatMoney(order.total, cur)}</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <AddressBlock title="Livraison" addr={order.shipping_address} />
+            <AddressBlock title="Facturation" addr={order.billing_address} />
+          </div>
+
+          <div className="rounded-lg border border-[#E1E1E1] p-3 space-y-1.5">
+            <p className="text-xs font-semibold text-[#6D7175] flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Historique</p>
+            {(order.timeline || []).length === 0 && <p className="text-xs text-[#6D7175]">Aucun événement.</p>}
+            {(order.timeline || []).map((t, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs">
+                <Check className="w-3 h-3 text-[#008060] mt-0.5 shrink-0" />
+                <span className="text-[#202223]">{t.event}</span>
+                {t.at && <span className="text-[#6D7175] ml-auto">{new Date(t.at).toLocaleDateString('fr-FR')}</span>}
+              </div>
+            ))}
+          </div>
+
+          {order.note && <p className="text-xs text-[#6D7175]"><span className="font-semibold">Note : </span>{order.note}</p>}
+        </div>
+
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Fermer</Button>
+          <Button onClick={save} disabled={saving} className="bg-[#008060] hover:bg-[#00694d]">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Enregistrer
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

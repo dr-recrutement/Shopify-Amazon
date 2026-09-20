@@ -1,1 +1,211 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2ssIHVzZU1lbW8gfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsgRmlsZUJhckNoYXJ0LCBMb2FkZXIyLCBBbGVydENpcmNsZSwgVHJlbmRpbmdVcCwgUGFja2FnZSwgVXNlcnMsIERvd25sb2FkIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwppbXBvcnQgeyBmb3JtYXRNb25leSB9IGZyb20gJ0AvbGliL3dvcmxkL2N1cnJlbmNpZXMnOwppbXBvcnQgeyBBcmVhQ2hhcnQsIEFyZWEsIFhBeGlzLCBZQXhpcywgVG9vbHRpcCwgUmVzcG9uc2l2ZUNvbnRhaW5lciwgQ2FydGVzaWFuR3JpZCwgQmFyQ2hhcnQsIEJhciwgTGVnZW5kIH0gZnJvbSAncmVjaGFydHMnOwoKY29uc3QgTU9OVEhfTEFCRUxTID0gWydKYW4nLCAnRsOpdicsICdNYXInLCAnQXZyJywgJ01haScsICdKdW4nLCAnSnVsJywgJ0Fvw7snLCAnU2VwJywgJ09jdCcsICdOb3YnLCAnRMOpYyddOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gUmVwb3J0cygpIHsKICBjb25zdCB7IHN0b3JlLCBsb2FkaW5nOiBzdG9yZUxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFtvcmRlcnMsIHNldE9yZGVyc10gPSB1c2VTdGF0ZShbXSk7CiAgY29uc3QgW3Byb2R1Y3RzLCBzZXRQcm9kdWN0c10gPSB1c2VTdGF0ZShbXSk7CiAgY29uc3QgW2N1c3RvbWVycywgc2V0Q3VzdG9tZXJzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZShmYWxzZSk7CgogIGNvbnN0IGxvYWQgPSB1c2VDYWxsYmFjayhhc3luYyAoKSA9PiB7CiAgICBpZiAoIXN0b3JlPy5pZCkgcmV0dXJuOwogICAgc2V0TG9hZGluZyh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IFtvLCBwLCBjXSA9IGF3YWl0IFByb21pc2UuYWxsKFsKICAgICAgICBiYXNlNDQuZW50aXRpZXMuT3JkZXIuZmlsdGVyKHsgc3RvcmVfaWQ6IHN0b3JlLmlkIH0sICctY3JlYXRlZF9kYXRlJywgNTAwKSwKICAgICAgICBiYXNlNDQuZW50aXRpZXMuUHJvZHVjdC5maWx0ZXIoeyBzdG9yZV9pZDogc3RvcmUuaWQgfSwgJy1jcmVhdGVkX2RhdGUnLCAxMDApLAogICAgICAgIGJhc2U0NC5lbnRpdGllcy5DdXN0b21lci5maWx0ZXIoeyBzdG9yZV9pZDogc3RvcmUuaWQgfSwgJy1jcmVhdGVkX2RhdGUnLCAyMDApLAogICAgICBdKTsKICAgICAgc2V0T3JkZXJzKG8pOyBzZXRQcm9kdWN0cyhwKTsgc2V0Q3VzdG9tZXJzKGMpOwogICAgfSBmaW5hbGx5IHsgc2V0TG9hZGluZyhmYWxzZSk7IH0KICB9LCBbc3RvcmU/LmlkXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW2xvYWRdKTsKCiAgY29uc3QgbW9udGhseURhdGEgPSB1c2VNZW1vKCgpID0+IHsKICAgIGNvbnN0IG5vdyA9IG5ldyBEYXRlKCk7CiAgICBjb25zdCBtYXAgPSBuZXcgTWFwKCk7CiAgICBmb3IgKGxldCBpID0gMTE7IGkgPj0gMDsgaS0tKSB7CiAgICAgIGNvbnN0IGQgPSBuZXcgRGF0ZShub3cuZ2V0RnVsbFllYXIoKSwgbm93LmdldE1vbnRoKCkgLSBpLCAxKTsKICAgICAgbWFwLnNldChgJHtkLmdldEZ1bGxZZWFyKCl9LSR7ZC5nZXRNb250aCgpfWAsIHsgcmV2ZW51ZTogMCwgb3JkZXJzOiAwIH0pOwogICAgfQogICAgb3JkZXJzLmZvckVhY2goKG8pID0+IHsKICAgICAgaWYgKCFvLmNyZWF0ZWRfZGF0ZSkgcmV0dXJuOwogICAgICBjb25zdCBkID0gbmV3IERhdGUoby5jcmVhdGVkX2RhdGUpOwogICAgICBjb25zdCBrZXkgPSBgJHtkLmdldEZ1bGxZZWFyKCl9LSR7ZC5nZXRNb250aCgpfWA7CiAgICAgIGlmIChtYXAuaGFzKGtleSkpIHsKICAgICAgICBjb25zdCBjdXIgPSBtYXAuZ2V0KGtleSk7CiAgICAgICAgY3VyLnJldmVudWUgKz0gby5wYXltZW50X3N0YXR1cyA9PT0gJ3BhaWQnID8gKG8udG90YWwgfHwgMCkgOiAwOwogICAgICAgIGN1ci5vcmRlcnMgKz0gMTsKICAgICAgfQogICAgfSk7CiAgICByZXR1cm4gQXJyYXkuZnJvbShtYXAuZW50cmllcygpKS5tYXAoKFtrLCB2XSkgPT4gewogICAgICBjb25zdCBbLCBtXSA9IGsuc3BsaXQoJy0nKTsKICAgICAgcmV0dXJuIHsgbW9pczogTU9OVEhfTEFCRUxTW051bWJlcihtKV0sIHJldmVudTogTWF0aC5yb3VuZCh2LnJldmVudWUgLyAxMDAwKSwgY29tbWFuZGVzOiB2Lm9yZGVycyB9OwogICAgfSk7CiAgfSwgW29yZGVyc10pOwoKICBjb25zdCBwcm9kdWN0UGVyZiA9IHVzZU1lbW8oKCkgPT4gewogICAgY29uc3QgYWNjID0gbmV3IE1hcCgpOwogICAgb3JkZXJzLmZvckVhY2goKG8pID0+IHsKICAgICAgKG8uaXRlbXMgfHwgW10pLmZvckVhY2goKGl0KSA9PiB7CiAgICAgICAgY29uc3Qga2V5ID0gaXQucHJvZHVjdF9pZCB8fCBpdC50aXRsZTsKICAgICAgICBpZiAoIWtleSkgcmV0dXJuOwogICAgICAgIGNvbnN0IGN1ciA9IGFjYy5nZXQoa2V5KSB8fCB7IG5vbTogaXQudGl0bGUsIHZlbnRlczogMCwgcmV2ZW51OiAwIH07CiAgICAgICAgY3VyLnZlbnRlcyArPSBpdC5xdWFudGl0eSB8fCAwOwogICAgICAgIGN1ci5yZXZlbnUgKz0gaXQudG90YWwgfHwgMDsKICAgICAgICBhY2Muc2V0KGtleSwgY3VyKTsKICAgICAgfSk7CiAgICB9KTsKICAgIHJldHVybiBBcnJheS5mcm9tKGFjYy52YWx1ZXMoKSkuc29ydCgoYSwgYikgPT4gYi5yZXZlbnUgLSBhLnJldmVudSkuc2xpY2UoMCwgMTApOwogIH0sIFtvcmRlcnNdKTsKCiAgY29uc3Qgc3RhdHVzQnJlYWtkb3duID0gdXNlTWVtbygoKSA9PiB7CiAgICBjb25zdCBtID0ge307CiAgICBvcmRlcnMuZm9yRWFjaCgobykgPT4geyBtW28uc3RhdHVzXSA9IChtW28uc3RhdHVzXSB8fCAwKSArIDE7IH0pOwogICAgcmV0dXJuIE9iamVjdC5lbnRyaWVzKG0pLm1hcCgoW2ssIHZdKSA9PiAoeyBzdGF0dXM6IGssIGNvdW50OiB2IH0pKTsKICB9LCBbb3JkZXJzXSk7CgogIGNvbnN0IHRvdGFscyA9IHVzZU1lbW8oKCkgPT4gewogICAgY29uc3QgcGFpZCA9IG9yZGVycy5maWx0ZXIoKG8pID0+IG8ucGF5bWVudF9zdGF0dXMgPT09ICdwYWlkJyk7CiAgICBjb25zdCByZXZlbnVlID0gcGFpZC5yZWR1Y2UoKHMsIG8pID0+IHMgKyAoby50b3RhbCB8fCAwKSwgMCk7CiAgICBjb25zdCBhb3YgPSBwYWlkLmxlbmd0aCA/IHJldmVudWUgLyBwYWlkLmxlbmd0aCA6IDA7CiAgICByZXR1cm4geyByZXZlbnVlLCBvcmRlcnM6IG9yZGVycy5sZW5ndGgsIGFvdiwgY3VzdG9tZXJzOiBjdXN0b21lcnMubGVuZ3RoLCBwcm9kdWN0czogcHJvZHVjdHMubGVuZ3RoIH07CiAgfSwgW29yZGVycywgY3VzdG9tZXJzLCBwcm9kdWN0c10pOwoKICBjb25zdCBleHBvcnRDU1YgPSAoKSA9PiB7CiAgICBjb25zdCByb3dzID0gW1snTW9pcycsICdSZXZlbnUnLCAnQ29tbWFuZGVzJ10sIC4uLm1vbnRobHlEYXRhLm1hcCgoZCkgPT4gW2QubW9pcywgZC5yZXZlbnUgKiAxMDAwLCBkLmNvbW1hbmRlc10pXTsKICAgIGNvbnN0IGNzdiA9IHJvd3MubWFwKChyKSA9PiByLmpvaW4oJywnKSkuam9pbignXG4nKTsKICAgIGNvbnN0IGJsb2IgPSBuZXcgQmxvYihbY3N2XSwgeyB0eXBlOiAndGV4dC9jc3YnIH0pOwogICAgY29uc3QgdXJsID0gVVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTsKICAgIGNvbnN0IGEgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdhJyk7CiAgICBhLmhyZWYgPSB1cmw7IGEuZG93bmxvYWQgPSBgcmFwcG9ydC0ke3N0b3JlLnNsdWcgfHwgJ3NlbGxpYSd9LmNzdmA7IGEuY2xpY2soKTsKICAgIFVSTC5yZXZva2VPYmplY3RVUkwodXJsKTsKICB9OwoKICBpZiAoc3RvcmVMb2FkaW5nIHx8IGxvYWRpbmcpIHJldHVybiA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHktMzIiPjxMb2FkZXIyIGNsYXNzTmFtZT0idy02IGgtNiBhbmltYXRlLXNwaW4gdGV4dC1icmFuZCIgLz48L2Rpdj47CiAgaWYgKCFzdG9yZSkgewogICAgcmV0dXJuICgKICAgICAgPGRpdiBjbGFzc05hbWU9Im1heC13LW1kIG14LWF1dG8gbXQtMjAgdGV4dC1jZW50ZXIiPgogICAgICAgIDxBbGVydENpcmNsZSBjbGFzc05hbWU9InctMTAgaC0xMCB0ZXh0LWJyYW5kIG14LWF1dG8gbWItMyIgLz4KICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LWxnIGZvbnQtYm9sZCB0ZXh0LWZvcmVncm91bmQiPkNvbmZpZ3VyZXogdm90cmUgYm91dGlxdWU8L2gxPgogICAgICAgIDxMaW5rIHRvPSIvc3RvcmUtc2V0dXAiIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctYnJhbmQgdGV4dC1icmFuZC1mb3JlZ3JvdW5kIHRleHQtc20gZm9udC1tZWRpdW0gcHgtNCBweS0yIHJvdW5kZWQtZnVsbCBob3ZlcjpiZy1icmFuZC85MCBtdC0zIj5Db25maWd1cmVyPC9MaW5rPgogICAgICA8L2Rpdj4KICAgICk7CiAgfQoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9InAtNCBzbTpwLTYgbWF4LXctNnhsIG14LWF1dG8iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIGdhcC0yIG1iLTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICA8RmlsZUJhckNoYXJ0IGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LW11dGVkLWZvcmVncm91bmQiIC8+CiAgICAgICAgICA8ZGl2PgogICAgICAgICAgICA8aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LWZvcmVncm91bmQiPlJhcHBvcnRzPC9oMT4KICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+e3N0b3JlLm5hbWV9IMK3IDEyIGRlcm5pZXJzIG1vaXM8L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9e2V4cG9ydENTVn0gY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBiZy13aGl0ZSBib3JkZXIgYm9yZGVyLWJvcmRlciB0ZXh0LWZvcmVncm91bmQgZm9udC1zZW1pYm9sZCBweC00IHB5LTIuNSByb3VuZGVkLWZ1bGwgdGV4dC1zbSBob3ZlcjpiZy1zdXJmYWNlIHRyYW5zaXRpb24tY29sb3JzIj4KICAgICAgICAgIDxEb3dubG9hZCBjbGFzc05hbWU9InctNCBoLTQiIC8+IEV4cG9ydGVyIENTVgogICAgICAgIDwvYnV0dG9uPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0yIGxnOmdyaWQtY29scy00IGdhcC00IG1iLTYiPgogICAgICAgIDxTdGF0Qm94IGljb249e1RyZW5kaW5nVXB9IGxhYmVsPSJSZXZlbnUgdG90YWwiIHZhbHVlPXtmb3JtYXRNb25leSh0b3RhbHMucmV2ZW51ZSwgc3RvcmUuY3VycmVuY3kpfSAvPgogICAgICAgIDxTdGF0Qm94IGljb249e1BhY2thZ2V9IGxhYmVsPSJDb21tYW5kZXMiIHZhbHVlPXtTdHJpbmcodG90YWxzLm9yZGVycyl9IC8+CiAgICAgICAgPFN0YXRCb3ggaWNvbj17VHJlbmRpbmdVcH0gbGFiZWw9IlBhbmllciBtb3llbiIgdmFsdWU9e2Zvcm1hdE1vbmV5KHRvdGFscy5hb3YsIHN0b3JlLmN1cnJlbmN5KX0gLz4KICAgICAgICA8U3RhdEJveCBpY29uPXtVc2Vyc30gbGFiZWw9IkNsaWVudHMiIHZhbHVlPXtTdHJpbmcodG90YWxzLmN1c3RvbWVycyl9IC8+CiAgICAgIDwvZGl2PgoKICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXdoaXRlIHAtNSBtYi02Ij4KICAgICAgICA8aDIgY2xhc3NOYW1lPSJmb250LWhlYWRpbmcgZm9udC1ib2xkIHRleHQtc20gdGV4dC1mb3JlZ3JvdW5kIG1iLTQiPsOJdm9sdXRpb24gZHUgcmV2ZW51ICgxMiBtb2lzKTwvaDI+CiAgICAgICAgPFJlc3BvbnNpdmVDb250YWluZXIgd2lkdGg9IjEwMCUiIGhlaWdodD17MjgwfT4KICAgICAgICAgIDxBcmVhQ2hhcnQgZGF0YT17bW9udGhseURhdGF9IG1hcmdpbj17eyBsZWZ0OiAtMTAsIHJpZ2h0OiA4LCB0b3A6IDQgfX0+CiAgICAgICAgICAgIDxkZWZzPgogICAgICAgICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ1JldiIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcENvbG9yPSIjMDA4MDYwIiBzdG9wT3BhY2l0eT17MC4zfSAvPgogICAgICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wQ29sb3I9IiMwMDgwNjAiIHN0b3BPcGFjaXR5PXswfSAvPgogICAgICAgICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICAgICAgICAgIDwvZGVmcz4KICAgICAgICAgICAgPENhcnRlc2lhbkdyaWQgc3Ryb2tlRGFzaGFycmF5PSIzIDMiIHN0cm9rZT0iI0UxRTFFMSIgdmVydGljYWw9e2ZhbHNlfSAvPgogICAgICAgICAgICA8WEF4aXMgZGF0YUtleT0ibW9pcyIgdGljaz17eyBmb250U2l6ZTogMTIsIGZpbGw6ICcjNkQ3MTc1JyB9fSBheGlzTGluZT17ZmFsc2V9IHRpY2tMaW5lPXtmYWxzZX0gLz4KICAgICAgICAgICAgPFlBeGlzIHRpY2s9e3sgZm9udFNpemU6IDEyLCBmaWxsOiAnIzZENzE3NScgfX0gYXhpc0xpbmU9e2ZhbHNlfSB0aWNrTGluZT17ZmFsc2V9IC8+CiAgICAgICAgICAgIDxUb29sdGlwIGNvbnRlbnRTdHlsZT17eyBmb250U2l6ZTogMTIsIGJvcmRlclJhZGl1czogOCwgYm9yZGVyOiAnMXB4IHNvbGlkICNFMUUxRTEnIH19IGZvcm1hdHRlcj17KHYsIG4pID0+IG4gPT09ICdyZXZlbnUnID8gW2Zvcm1hdE1vbmV5KE51bWJlcih2KSAqIDEwMDAsIHN0b3JlLmN1cnJlbmN5KSwgJ1JldmVudSddIDogW3YsICdDb21tYW5kZXMnXX0gLz4KICAgICAgICAgICAgPEFyZWEgdHlwZT0ibW9ub3RvbmUiIGRhdGFLZXk9InJldmVudSIgc3Ryb2tlPSIjMDA4MDYwIiBzdHJva2VXaWR0aD17Mi41fSBmaWxsPSJ1cmwoI2dSZXYpIiAvPgogICAgICAgICAgPC9BcmVhQ2hhcnQ+CiAgICAgICAgPC9SZXNwb25zaXZlQ29udGFpbmVyPgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdyaWQtY29scy0xIGxnOmdyaWQtY29scy0yIGdhcC00IG1iLTYiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy13aGl0ZSBwLTUiPgogICAgICAgICAgPGgyIGNsYXNzTmFtZT0iZm9udC1oZWFkaW5nIGZvbnQtYm9sZCB0ZXh0LXNtIHRleHQtZm9yZWdyb3VuZCBtYi00Ij5Db21tYW5kZXMgcGFyIG1vaXM8L2gyPgogICAgICAgICAgPFJlc3BvbnNpdmVDb250YWluZXIgd2lkdGg9IjEwMCUiIGhlaWdodD17MjIwfT4KICAgICAgICAgICAgPEJhckNoYXJ0IGRhdGE9e21vbnRobHlEYXRhfSBtYXJnaW49e3sgbGVmdDogLTEwLCByaWdodDogOCB9fT4KICAgICAgICAgICAgICA8Q2FydGVzaWFuR3JpZCBzdHJva2VEYXNoYXJyYXk9IjMgMyIgc3Ryb2tlPSIjRTFFMUUxIiB2ZXJ0aWNhbD17ZmFsc2V9IC8+CiAgICAgICAgICAgICAgPFhBeGlzIGRhdGFLZXk9Im1vaXMiIHRpY2s9e3sgZm9udFNpemU6IDExLCBmaWxsOiAnIzZENzE3NScgfX0gYXhpc0xpbmU9e2ZhbHNlfSB0aWNrTGluZT17ZmFsc2V9IC8+CiAgICAgICAgICAgICAgPFlBeGlzIHRpY2s9e3sgZm9udFNpemU6IDExLCBmaWxsOiAnIzZENzE3NScgfX0gYXhpc0xpbmU9e2ZhbHNlfSB0aWNrTGluZT17ZmFsc2V9IC8+CiAgICAgICAgICAgICAgPFRvb2x0aXAgY29udGVudFN0eWxlPXt7IGZvbnRTaXplOiAxMiwgYm9yZGVyUmFkaXVzOiA4LCBib3JkZXI6ICcxcHggc29saWQgI0UxRTFFMScgfX0gLz4KICAgICAgICAgICAgICA8QmFyIGRhdGFLZXk9ImNvbW1hbmRlcyIgZmlsbD0iIzAwODA2MCIgcmFkaXVzPXtbNCwgNCwgMCwgMF19IGJhclNpemU9ezIwfSAvPgogICAgICAgICAgICA8L0JhckNoYXJ0PgogICAgICAgICAgPC9SZXNwb25zaXZlQ29udGFpbmVyPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctd2hpdGUgcC01Ij4KICAgICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtaGVhZGluZyBmb250LWJvbGQgdGV4dC1zbSB0ZXh0LWZvcmVncm91bmQgbWItNCI+U3RhdHV0cyBkZXMgY29tbWFuZGVzPC9oMj4KICAgICAgICAgIHtzdGF0dXNCcmVha2Rvd24ubGVuZ3RoID09PSAwID8gKAogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHB5LTEwIHRleHQtY2VudGVyIj5BdWN1bmUgZG9ubsOpZS48L3A+CiAgICAgICAgICApIDogKAogICAgICAgICAgICA8UmVzcG9uc2l2ZUNvbnRhaW5lciB3aWR0aD0iMTAwJSIgaGVpZ2h0PXsyMjB9PgogICAgICAgICAgICAgIDxCYXJDaGFydCBkYXRhPXtzdGF0dXNCcmVha2Rvd259IGxheW91dD0idmVydGljYWwiIG1hcmdpbj17eyBsZWZ0OiAyMCwgcmlnaHQ6IDIwIH19PgogICAgICAgICAgICAgICAgPENhcnRlc2lhbkdyaWQgc3Ryb2tlRGFzaGFycmF5PSIzIDMiIHN0cm9rZT0iI0UxRTFFMSIgaG9yaXpvbnRhbD17ZmFsc2V9IC8+CiAgICAgICAgICAgICAgICA8WEF4aXMgdHlwZT0ibnVtYmVyIiB0aWNrPXt7IGZvbnRTaXplOiAxMSwgZmlsbDogJyM2RDcxNzUnIH19IGF4aXNMaW5lPXtmYWxzZX0gdGlja0xpbmU9e2ZhbHNlfSAvPgogICAgICAgICAgICAgICAgPFlBeGlzIHR5cGU9ImNhdGVnb3J5IiBkYXRhS2V5PSJzdGF0dXMiIHRpY2s9e3sgZm9udFNpemU6IDExLCBmaWxsOiAnIzZENzE3NScgfX0gYXhpc0xpbmU9e2ZhbHNlfSB0aWNrTGluZT17ZmFsc2V9IHdpZHRoPXsxMDB9IC8+CiAgICAgICAgICAgICAgICA8VG9vbHRpcCBjb250ZW50U3R5bGU9e3sgZm9udFNpemU6IDEyLCBib3JkZXJSYWRpdXM6IDgsIGJvcmRlcjogJzFweCBzb2xpZCAjRTFFMUUxJyB9fSAvPgogICAgICAgICAgICAgICAgPEJhciBkYXRhS2V5PSJjb3VudCIgZmlsbD0iIzAwODA2MCIgcmFkaXVzPXtbMCwgNCwgNCwgMF19IGJhclNpemU9ezIwfSAvPgogICAgICAgICAgICAgIDwvQmFyQ2hhcnQ+CiAgICAgICAgICAgIDwvUmVzcG9uc2l2ZUNvbnRhaW5lcj4KICAgICAgICAgICl9CiAgICAgICAgPC9kaXY+CiAgICAgIDwvZGl2PgoKICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXdoaXRlIHAtNSI+CiAgICAgICAgPGgyIGNsYXNzTmFtZT0iZm9udC1oZWFkaW5nIGZvbnQtYm9sZCB0ZXh0LXNtIHRleHQtZm9yZWdyb3VuZCBtYi00Ij5Ub3AgMTAgcHJvZHVpdHMgcGFyIHJldmVudTwvaDI+CiAgICAgICAge3Byb2R1Y3RQZXJmLmxlbmd0aCA9PT0gMCA/ICgKICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQgcHktMTAgdGV4dC1jZW50ZXIiPkF1Y3VuZSB2ZW50ZSBlbnJlZ2lzdHLDqWUuPC9wPgogICAgICAgICkgOiAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS0yIj4KICAgICAgICAgICAge3Byb2R1Y3RQZXJmLm1hcCgocCwgaSkgPT4gKAogICAgICAgICAgICAgIDxkaXYga2V5PXtwLm5vbSArIGl9IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgcC0yLjUgcm91bmRlZC1sZyBob3ZlcjpiZy1zdXJmYWNlIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC14cyBmb250LWJvbGQgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHctNiI+e2kgKyAxfTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4LTEgbWluLXctMCI+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LWZvcmVncm91bmQgdHJ1bmNhdGUiPntwLm5vbX08L3A+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LW11dGVkLWZvcmVncm91bmQiPntwLnZlbnRlc30gdmVudGV7cC52ZW50ZXMgPiAxID8gJ3MnIDogJyd9PC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQtc20gZm9udC1ib2xkIHRleHQtZm9yZWdyb3VuZCB3aGl0ZXNwYWNlLW5vd3JhcCI+e2Zvcm1hdE1vbmV5KHAucmV2ZW51LCBzdG9yZS5jdXJyZW5jeSl9PC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICApKX0KICAgICAgICAgIDwvZGl2PgogICAgICAgICl9CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgKTsKfQoKZnVuY3Rpb24gU3RhdEJveCh7IGljb246IEljb24sIGxhYmVsLCB2YWx1ZSB9KSB7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLXhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXdoaXRlIHAtNCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi0xIj4KICAgICAgICA8SWNvbiBjbGFzc05hbWU9InctNCBoLTQgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIiAvPgogICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LW11dGVkLWZvcmVncm91bmQiPntsYWJlbH08L3NwYW4+CiAgICAgIDwvZGl2PgogICAgICA8cCBjbGFzc05hbWU9ImZvbnQtaGVhZGluZyBmb250LWV4dHJhYm9sZCB0ZXh0LXhsIHRleHQtZm9yZWdyb3VuZCI+e3ZhbHVlfTwvcD4KICAgIDwvZGl2PgogICk7Cn0=
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { FileBarChart, Loader2, AlertCircle, TrendingUp, Package, Users, Download } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { formatMoney } from '@/lib/world/currencies';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar, Legend } from 'recharts';
+
+const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+export default function Reports() {
+  const { store, loading: storeLoading } = useCurrentStore();
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    setLoading(true);
+    try {
+      const [o, p, c] = await Promise.all([
+        base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500),
+        base44.entities.Product.filter({ store_id: store.id }, '-created_date', 100),
+        base44.entities.Customer.filter({ store_id: store.id }, '-created_date', 200),
+      ]);
+      setOrders(o); setProducts(p); setCustomers(c);
+    } finally { setLoading(false); }
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const monthlyData = useMemo(() => {
+    const now = new Date();
+    const map = new Map();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      map.set(`${d.getFullYear()}-${d.getMonth()}`, { revenue: 0, orders: 0 });
+    }
+    orders.forEach((o) => {
+      if (!o.created_date) return;
+      const d = new Date(o.created_date);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (map.has(key)) {
+        const cur = map.get(key);
+        cur.revenue += o.payment_status === 'paid' ? (o.total || 0) : 0;
+        cur.orders += 1;
+      }
+    });
+    return Array.from(map.entries()).map(([k, v]) => {
+      const [, m] = k.split('-');
+      return { mois: MONTH_LABELS[Number(m)], revenu: Math.round(v.revenue / 1000), commandes: v.orders };
+    });
+  }, [orders]);
+
+  const productPerf = useMemo(() => {
+    const acc = new Map();
+    orders.forEach((o) => {
+      (o.items || []).forEach((it) => {
+        const key = it.product_id || it.title;
+        if (!key) return;
+        const cur = acc.get(key) || { nom: it.title, ventes: 0, revenu: 0 };
+        cur.ventes += it.quantity || 0;
+        cur.revenu += it.total || 0;
+        acc.set(key, cur);
+      });
+    });
+    return Array.from(acc.values()).sort((a, b) => b.revenu - a.revenu).slice(0, 10);
+  }, [orders]);
+
+  const statusBreakdown = useMemo(() => {
+    const m = {};
+    orders.forEach((o) => { m[o.status] = (m[o.status] || 0) + 1; });
+    return Object.entries(m).map(([k, v]) => ({ status: k, count: v }));
+  }, [orders]);
+
+  const totals = useMemo(() => {
+    const paid = orders.filter((o) => o.payment_status === 'paid');
+    const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
+    const aov = paid.length ? revenue / paid.length : 0;
+    return { revenue, orders: orders.length, aov, customers: customers.length, products: products.length };
+  }, [orders, customers, products]);
+
+  const exportCSV = () => {
+    const rows = [['Mois', 'Revenu', 'Commandes'], ...monthlyData.map((d) => [d.mois, d.revenu * 1000, d.commandes])];
+    const csv = rows.map((r) => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `rapport-${store.slug || 'sellia'}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (storeLoading || loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-brand" /></div>;
+  if (!store) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-brand mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-foreground">Configurez votre boutique</h1>
+        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-3">Configurer</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex items-center gap-2">
+          <FileBarChart className="w-5 h-5 text-muted-foreground" />
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Rapports</h1>
+            <p className="text-xs text-muted-foreground">{store.name} · 12 derniers mois</p>
+          </div>
+        </div>
+        <button onClick={exportCSV} className="inline-flex items-center gap-1.5 bg-white border border-border text-foreground font-semibold px-4 py-2.5 rounded-full text-sm hover:bg-surface transition-colors">
+          <Download className="w-4 h-4" /> Exporter CSV
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatBox icon={TrendingUp} label="Revenu total" value={formatMoney(totals.revenue, store.currency)} />
+        <StatBox icon={Package} label="Commandes" value={String(totals.orders)} />
+        <StatBox icon={TrendingUp} label="Panier moyen" value={formatMoney(totals.aov, store.currency)} />
+        <StatBox icon={Users} label="Clients" value={String(totals.customers)} />
+      </div>
+
+      <div className="rounded-2xl border border-border bg-white p-5 mb-6">
+        <h2 className="font-heading font-bold text-sm text-foreground mb-4">Évolution du revenu (12 mois)</h2>
+        <ResponsiveContainer width="100%" height={280}>
+          <AreaChart data={monthlyData} margin={{ left: -10, right: 8, top: 4 }}>
+            <defs>
+              <linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#008060" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="#008060" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E1E1E1" vertical={false} />
+            <XAxis dataKey="mois" tick={{ fontSize: 12, fill: '#6D7175' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 12, fill: '#6D7175' }} axisLine={false} tickLine={false} />
+            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E1E1E1' }} formatter={(v, n) => n === 'revenu' ? [formatMoney(Number(v) * 1000, store.currency), 'Revenu'] : [v, 'Commandes']} />
+            <Area type="monotone" dataKey="revenu" stroke="#008060" strokeWidth={2.5} fill="url(#gRev)" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <div className="rounded-2xl border border-border bg-white p-5">
+          <h2 className="font-heading font-bold text-sm text-foreground mb-4">Commandes par mois</h2>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={monthlyData} margin={{ left: -10, right: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E1E1E1" vertical={false} />
+              <XAxis dataKey="mois" tick={{ fontSize: 11, fill: '#6D7175' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6D7175' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E1E1E1' }} />
+              <Bar dataKey="commandes" fill="#008060" radius={[4, 4, 0, 0]} barSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-white p-5">
+          <h2 className="font-heading font-bold text-sm text-foreground mb-4">Statuts des commandes</h2>
+          {statusBreakdown.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-10 text-center">Aucune donnée.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={statusBreakdown} layout="vertical" margin={{ left: 20, right: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E1E1E1" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 11, fill: '#6D7175' }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="status" tick={{ fontSize: 11, fill: '#6D7175' }} axisLine={false} tickLine={false} width={100} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E1E1E1' }} />
+                <Bar dataKey="count" fill="#008060" radius={[0, 4, 4, 0]} barSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-white p-5">
+        <h2 className="font-heading font-bold text-sm text-foreground mb-4">Top 10 produits par revenu</h2>
+        {productPerf.length === 0 ? (
+          <p className="text-sm text-muted-foreground py-10 text-center">Aucune vente enregistrée.</p>
+        ) : (
+          <div className="space-y-2">
+            {productPerf.map((p, i) => (
+              <div key={p.nom + i} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-surface">
+                <span className="text-xs font-bold text-muted-foreground w-6">{i + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{p.nom}</p>
+                  <p className="text-xs text-muted-foreground">{p.ventes} vente{p.ventes > 1 ? 's' : ''}</p>
+                </div>
+                <span className="text-sm font-bold text-foreground whitespace-nowrap">{formatMoney(p.revenu, store.currency)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StatBox({ icon: Icon, label, value }) {
+  return (
+    <div className="rounded-xl border border-border bg-white p-4">
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className="w-4 h-4 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">{label}</span>
+      </div>
+      <p className="font-heading font-extrabold text-xl text-foreground">{value}</p>
+    </div>
+  );
+}

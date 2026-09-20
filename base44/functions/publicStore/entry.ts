@@ -1,1 +1,25 @@
-aW1wb3J0IHsgY3JlYXRlQ2xpZW50RnJvbVJlcXVlc3QgfSBmcm9tICducG06QGJhc2U0NC9zZGtAMC44LjQ0JzsKCmV4cG9ydCBkZWZhdWx0IGFzeW5jIGZ1bmN0aW9uKHJlcSkgewogIHRyeSB7CiAgICBjb25zdCBiYXNlNDQgPSBjcmVhdGVDbGllbnRGcm9tUmVxdWVzdChyZXEpOwogICAgY29uc3QgYm9keSA9IGF3YWl0IHJlcS5qc29uKCkuY2F0Y2goKCkgPT4gKHt9KSk7CiAgICBjb25zdCBzbHVnID0gYm9keS5zbHVnOwogICAgaWYgKCFzbHVnKSByZXR1cm4gUmVzcG9uc2UuanNvbih7IGVycm9yOiAnU2x1ZyByZXF1aXMnIH0sIHsgc3RhdHVzOiA0MDAgfSk7CgogICAgY29uc3Qgc3RvcmVzID0gYXdhaXQgYmFzZTQ0LmFzU2VydmljZVJvbGUuZW50aXRpZXMuU3RvcmUuZmlsdGVyKHsgc2x1ZyB9KTsKICAgIGlmICghc3RvcmVzLmxlbmd0aCkgcmV0dXJuIFJlc3BvbnNlLmpzb24oeyBlcnJvcjogJ0JvdXRpcXVlIGludHJvdXZhYmxlJyB9LCB7IHN0YXR1czogNDA0IH0pOwoKICAgIGNvbnN0IHN0b3JlID0gc3RvcmVzWzBdOwogICAgY29uc3QgW3Byb2R1Y3RzLCBjb2xsZWN0aW9ucywgZGlzY291bnRzLCBhcnRpY2xlc10gPSBhd2FpdCBQcm9taXNlLmFsbChbCiAgICAgIGJhc2U0NC5hc1NlcnZpY2VSb2xlLmVudGl0aWVzLlByb2R1Y3QuZmlsdGVyKHsgc3RvcmVfaWQ6IHN0b3JlLmlkLCBzdGF0dXM6ICdhY3RpdmUnIH0sICctY3JlYXRlZF9kYXRlJywgMTAwKSwKICAgICAgYmFzZTQ0LmFzU2VydmljZVJvbGUuZW50aXRpZXMuQ29sbGVjdGlvbi5maWx0ZXIoeyBzdG9yZV9pZDogc3RvcmUuaWQsIHN0YXR1czogJ2FjdGl2ZScgfSwgJy1jcmVhdGVkX2RhdGUnLCA1MCksCiAgICAgIGJhc2U0NC5hc1NlcnZpY2VSb2xlLmVudGl0aWVzLkRpc2NvdW50LmZpbHRlcih7IHN0b3JlX2lkOiBzdG9yZS5pZCwgc3RhdHVzOiAnYWN0aXZlJyB9LCAnLWNyZWF0ZWRfZGF0ZScsIDIwKSwKICAgICAgYmFzZTQ0LmFzU2VydmljZVJvbGUuZW50aXRpZXMuQXJ0aWNsZS5maWx0ZXIoeyBzdG9yZV9pZDogc3RvcmUuaWQsIHN0YXR1czogJ3B1Ymxpc2hlZCcgfSwgJy1wdWJsaXNoZWRfYXQnLCAyMCksCiAgICBdKTsKCiAgICByZXR1cm4gUmVzcG9uc2UuanNvbih7IHN0b3JlLCBwcm9kdWN0cywgY29sbGVjdGlvbnMsIGRpc2NvdW50cywgYXJ0aWNsZXMgfSk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIHJldHVybiBSZXNwb25zZS5qc29uKHsgZXJyb3I6IGVycm9yLm1lc3NhZ2UgfSwgeyBzdGF0dXM6IDUwMCB9KTsKICB9Cn0=
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+
+export default async function(req) {
+  try {
+    const base44 = createClientFromRequest(req);
+    const body = await req.json().catch(() => ({}));
+    const slug = body.slug;
+    if (!slug) return Response.json({ error: 'Slug requis' }, { status: 400 });
+
+    const stores = await base44.asServiceRole.entities.Store.filter({ slug });
+    if (!stores.length) return Response.json({ error: 'Boutique introuvable' }, { status: 404 });
+
+    const store = stores[0];
+    const [products, collections, discounts, articles] = await Promise.all([
+      base44.asServiceRole.entities.Product.filter({ store_id: store.id, status: 'active' }, '-created_date', 100),
+      base44.asServiceRole.entities.Collection.filter({ store_id: store.id, status: 'active' }, '-created_date', 50),
+      base44.asServiceRole.entities.Discount.filter({ store_id: store.id, status: 'active' }, '-created_date', 20),
+      base44.asServiceRole.entities.Article.filter({ store_id: store.id, status: 'published' }, '-published_at', 20),
+    ]);
+
+    return Response.json({ store, products, collections, discounts, articles });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

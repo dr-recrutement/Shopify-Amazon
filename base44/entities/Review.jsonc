@@ -1,1 +1,96 @@
-ewogICJuYW1lIjogIlJldmlldyIsCiAgInR5cGUiOiAib2JqZWN0IiwKICAicHJvcGVydGllcyI6IHsKICAgICJzdG9yZV9pZCI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkJvdXRpcXVlIHByb3ByaVx1MDBlOXRhaXJlIgogICAgfSwKICAgICJwcm9kdWN0X2lkIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZGVzY3JpcHRpb24iOiAiUHJvZHVpdCBjb25jZXJuXHUwMGU5IgogICAgfSwKICAgICJwcm9kdWN0X3RpdGxlIjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgImN1c3RvbWVyX25hbWUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAiY3VzdG9tZXJfZW1haWwiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAicmF0aW5nIjogewogICAgICAidHlwZSI6ICJudW1iZXIiLAogICAgICAibWluaW11bSI6IDEsCiAgICAgICJtYXhpbXVtIjogNSwKICAgICAgImRlc2NyaXB0aW9uIjogIk5vdGUgZGUgMSBcdTAwZTAgNSIKICAgIH0sCiAgICAidGl0bGUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAiYm9keSI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkNvbnRlbnUgZGUgbCdhdmlzIgogICAgfSwKICAgICJzdGF0dXMiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJlbnVtIjogWwogICAgICAgICJwZW5kaW5nIiwKICAgICAgICAiYXBwcm92ZWQiLAogICAgICAgICJyZWplY3RlZCIKICAgICAgXSwKICAgICAgImRlZmF1bHQiOiAicGVuZGluZyIKICAgIH0sCiAgICAicmVwbHkiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJSXHUwMGU5cG9uc2UgZHUgbWFyY2hhbmQiCiAgICB9CiAgfSwKICAicmVxdWlyZWQiOiBbCiAgICAic3RvcmVfaWQiLAogICAgImN1c3RvbWVyX25hbWUiLAogICAgInJhdGluZyIsCiAgICAiYm9keSIKICBdLAogICJybHMiOiB7CiAgICAicmVhZCI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImNyZWF0ZSI6IHsKICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICB9LAogICAgInVwZGF0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgImRlbGV0ZSI6IHsKICAgICAgIiRvciI6IFsKICAgICAgICB7CiAgICAgICAgICAiY3JlYXRlZF9ieV9pZCI6ICJ7e3VzZXIuaWR9fSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJ1c2VyX2NvbmRpdGlvbiI6IHsKICAgICAgICAgICAgInJvbGUiOiAiYWRtaW4iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9CiAgfQp9
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Produit concern\u00e9"
+    },
+    "product_title": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note de 1 \u00e0 5"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "description": "Contenu de l'avis"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reply": {
+      "type": "string",
+      "description": "R\u00e9ponse du marchand"
+    }
+  },
+  "required": [
+    "store_id",
+    "customer_name",
+    "rating",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

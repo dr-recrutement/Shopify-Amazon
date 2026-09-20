@@ -1,1 +1,231 @@
-ewogICJuYW1lIjogIlByb2R1Y3QiLAogICJ0eXBlIjogIm9iamVjdCIsCiAgInByb3BlcnRpZXMiOiB7CiAgICAic3RvcmVfaWQiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJCb3V0aXF1ZSBwcm9wcmlcdTAwZTl0YWlyZSIKICAgIH0sCiAgICAidGl0bGUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAiaGFuZGxlIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZGVzY3JpcHRpb24iOiAiU2x1ZyBVUkwgZHUgcHJvZHVpdCIKICAgIH0sCiAgICAiZGVzY3JpcHRpb24iOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJEZXNjcmlwdGlvbiByaWNoZSIKICAgIH0sCiAgICAic3RhdHVzIjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZW51bSI6IFsKICAgICAgICAiYWN0aXZlIiwKICAgICAgICAiZHJhZnQiLAogICAgICAgICJhcmNoaXZlZCIKICAgICAgXSwKICAgICAgImRlZmF1bHQiOiAiZHJhZnQiCiAgICB9LAogICAgInZlbmRvciI6IHsKICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkZvdXJuaXNzZXVyIC8gbWFycXVlIgogICAgfSwKICAgICJwcm9kdWN0X3R5cGUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAidGFncyI6IHsKICAgICAgInR5cGUiOiAiYXJyYXkiLAogICAgICAiaXRlbXMiOiB7CiAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICB9CiAgICB9LAogICAgImltYWdlcyI6IHsKICAgICAgInR5cGUiOiAiYXJyYXkiLAogICAgICAiaXRlbXMiOiB7CiAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICB9LAogICAgICAiZGVzY3JpcHRpb24iOiAiVVJMcyBkZXMgaW1hZ2VzIgogICAgfSwKICAgICJwcmljZSI6IHsKICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgImRlc2NyaXB0aW9uIjogIlByaXggZGUgdmVudGUgZGFucyBsYSBkZXZpc2UgZGUgbGEgYm91dGlxdWUiCiAgICB9LAogICAgImNvbXBhcmVfYXRfcHJpY2UiOiB7CiAgICAgICJ0eXBlIjogIm51bWJlciIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJQcml4IGJhcnJcdTAwZTkgZGUgclx1MDBlOWZcdTAwZTlyZW5jZSIKICAgIH0sCiAgICAiY29zdCI6IHsKICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkNvXHUwMGZidCB1bml0YWlyZSIKICAgIH0sCiAgICAiY3VycmVuY3kiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAic2t1IjogewogICAgICAidHlwZSI6ICJzdHJpbmciCiAgICB9LAogICAgImJhcmNvZGUiOiB7CiAgICAgICJ0eXBlIjogInN0cmluZyIKICAgIH0sCiAgICAid2VpZ2h0IjogewogICAgICAidHlwZSI6ICJudW1iZXIiCiAgICB9LAogICAgIndlaWdodF91bml0IjogewogICAgICAidHlwZSI6ICJzdHJpbmciLAogICAgICAiZW51bSI6IFsKICAgICAgICAiZyIsCiAgICAgICAgImtnIiwKICAgICAgICAibGIiLAogICAgICAgICJveiIKICAgICAgXSwKICAgICAgImRlZmF1bHQiOiAia2ciCiAgICB9LAogICAgInRyYWNrX2ludmVudG9yeSI6IHsKICAgICAgInR5cGUiOiAiYm9vbGVhbiIsCiAgICAgICJkZWZhdWx0IjogdHJ1ZQogICAgfSwKICAgICJzdG9jayI6IHsKICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgImRlZmF1bHQiOiAwLAogICAgICAiZGVzY3JpcHRpb24iOiAiUXVhbnRpdFx1MDBlOSBlbiBzdG9jayBwb3VyIGxlcyBwcm9kdWl0cyBzaW1wbGVzIChzYW5zIHZhcmlhbnRlcykiCiAgICB9LAogICAgIm9wdGlvbnMiOiB7CiAgICAgICJ0eXBlIjogImFycmF5IiwKICAgICAgIml0ZW1zIjogewogICAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAibmFtZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgICAgICAgImRlc2NyaXB0aW9uIjogIkV4OiBDb3VsZXVyLCBUYWlsbGUiCiAgICAgICAgICB9LAogICAgICAgICAgInZhbHVlcyI6IHsKICAgICAgICAgICAgInR5cGUiOiAiYXJyYXkiLAogICAgICAgICAgICAiaXRlbXMiOiB7CiAgICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgICB9CiAgICAgICAgICB9CiAgICAgICAgfSwKICAgICAgICAicmVxdWlyZWQiOiBbCiAgICAgICAgICAibmFtZSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcHRpb25zIGdcdTAwZTluXHUwMGU5cmFudCBsZXMgdmFyaWFudGVzIgogICAgfSwKICAgICJ2YXJpYW50cyI6IHsKICAgICAgInR5cGUiOiAiYXJyYXkiLAogICAgICAiaXRlbXMiOiB7CiAgICAgICAgInR5cGUiOiAib2JqZWN0IiwKICAgICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAgICJ0aXRsZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgfSwKICAgICAgICAgICJza3UiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgIH0sCiAgICAgICAgICAicHJpY2UiOiB7CiAgICAgICAgICAgICJ0eXBlIjogIm51bWJlciIKICAgICAgICAgIH0sCiAgICAgICAgICAiY29tcGFyZV9hdF9wcmljZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIgogICAgICAgICAgfSwKICAgICAgICAgICJzdG9jayI6IHsKICAgICAgICAgICAgInR5cGUiOiAibnVtYmVyIiwKICAgICAgICAgICAgImRlZmF1bHQiOiAwCiAgICAgICAgICB9LAogICAgICAgICAgImJhcmNvZGUiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgIH0sCiAgICAgICAgICAid2VpZ2h0IjogewogICAgICAgICAgICAidHlwZSI6ICJudW1iZXIiCiAgICAgICAgICB9LAogICAgICAgICAgImltYWdlIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICB9LAogICAgICAgICAgIm9wdGlvbjEiOiB7CiAgICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICAgIH0sCiAgICAgICAgICAib3B0aW9uMiI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgICAgfSwKICAgICAgICAgICJvcHRpb24zIjogewogICAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgICB9LAogICAgICAgICAgInN0YXR1cyI6IHsKICAgICAgICAgICAgInR5cGUiOiAic3RyaW5nIiwKICAgICAgICAgICAgImVudW0iOiBbCiAgICAgICAgICAgICAgImFjdGl2ZSIsCiAgICAgICAgICAgICAgImFyY2hpdmVkIgogICAgICAgICAgICBdLAogICAgICAgICAgICAiZGVmYXVsdCI6ICJhY3RpdmUiCiAgICAgICAgICB9CiAgICAgICAgfSwKICAgICAgICAicmVxdWlyZWQiOiBbCiAgICAgICAgICAidGl0bGUiCiAgICAgICAgXQogICAgICB9LAogICAgICAiZGVzY3JpcHRpb24iOiAiVmFyaWFudGVzIGNvbWJpbmFudCBsZXMgb3B0aW9ucyIKICAgIH0sCiAgICAiY29sbGVjdGlvbl9pZHMiOiB7CiAgICAgICJ0eXBlIjogImFycmF5IiwKICAgICAgIml0ZW1zIjogewogICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgfQogICAgfSwKICAgICJzZW8iOiB7CiAgICAgICJ0eXBlIjogIm9iamVjdCIsCiAgICAgICJwcm9wZXJ0aWVzIjogewogICAgICAgICJ0aXRsZSI6IHsKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgICJkZXNjcmlwdGlvbiI6IHsKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9LAogICJyZXF1aXJlZCI6IFsKICAgICJzdG9yZV9pZCIsCiAgICAidGl0bGUiCiAgXSwKICAicmxzIjogewogICAgInJlYWQiOiB7CiAgICAgICIkb3IiOiBbCiAgICAgICAgewogICAgICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAidXNlcl9jb25kaXRpb24iOiB7CiAgICAgICAgICAgICJyb2xlIjogImFkbWluIgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJjcmVhdGUiOiB7CiAgICAgICJjcmVhdGVkX2J5X2lkIjogInt7dXNlci5pZH19IgogICAgfSwKICAgICJ1cGRhdGUiOiB7CiAgICAgICIkb3IiOiBbCiAgICAgICAgewogICAgICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAidXNlcl9jb25kaXRpb24iOiB7CiAgICAgICAgICAgICJyb2xlIjogImFkbWluIgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgICJkZWxldGUiOiB7CiAgICAgICIkb3IiOiBbCiAgICAgICAgewogICAgICAgICAgImNyZWF0ZWRfYnlfaWQiOiAie3t1c2VyLmlkfX0iCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAidXNlcl9jb25kaXRpb24iOiB7CiAgICAgICAgICAgICJyb2xlIjogImFkbWluIgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgXQogICAgfQogIH0KfQ==
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "title": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string",
+      "description": "Slug URL du produit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description riche"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "draft",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Fournisseur / marque"
+    },
+    "product_type": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs des images"
+    },
+    "price": {
+      "type": "number",
+      "description": "Prix de vente dans la devise de la boutique"
+    },
+    "compare_at_price": {
+      "type": "number",
+      "description": "Prix barr\u00e9 de r\u00e9f\u00e9rence"
+    },
+    "cost": {
+      "type": "number",
+      "description": "Co\u00fbt unitaire"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "barcode": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number"
+    },
+    "weight_unit": {
+      "type": "string",
+      "enum": [
+        "g",
+        "kg",
+        "lb",
+        "oz"
+      ],
+      "default": "kg"
+    },
+    "track_inventory": {
+      "type": "boolean",
+      "default": true
+    },
+    "stock": {
+      "type": "number",
+      "default": 0,
+      "description": "Quantit\u00e9 en stock pour les produits simples (sans variantes)"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Ex: Couleur, Taille"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "description": "Options g\u00e9n\u00e9rant les variantes"
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "compare_at_price": {
+            "type": "number"
+          },
+          "stock": {
+            "type": "number",
+            "default": 0
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "image": {
+            "type": "string"
+          },
+          "option1": {
+            "type": "string"
+          },
+          "option2": {
+            "type": "string"
+          },
+          "option3": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "default": "active"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "description": "Variantes combinant les options"
+    },
+    "collection_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "seo": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "store_id",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

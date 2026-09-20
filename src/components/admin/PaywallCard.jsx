@@ -1,1 +1,21 @@
-aW1wb3J0IHsgTG9jaywgQXJyb3dSaWdodCB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsgZ2V0UGxhbiB9IGZyb20gJ0AvbGliL3BsYW5zJzsKCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFBheXdhbGxDYXJkKHsgcmVxdWlyZWRQbGFuLCB0aXRsZSwgZGVzY3JpcHRpb24gfSkgewogIGNvbnN0IHBsYW4gPSBnZXRQbGFuKHJlcXVpcmVkUGxhbik7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLXhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXN1cmZhY2UgcC02IGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIHRleHQtY2VudGVyIj4KICAgICAgPGRpdiBjbGFzc05hbWU9InctMTIgaC0xMiByb3VuZGVkLWZ1bGwgYmctbXV0ZWQgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgbWItMyI+CiAgICAgICAgPExvY2sgY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCIgLz4KICAgICAgPC9kaXY+CiAgICAgIDxoMyBjbGFzc05hbWU9ImZvbnQtaGVhZGluZyBmb250LWJvbGQgdGV4dC1iYXNlIHRleHQtZm9yZWdyb3VuZCI+e3RpdGxlIHx8IGBQbGFuICR7cGxhbi5uYW1lfSByZXF1aXNgfTwvaDM+CiAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMS41IHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIG1heC13LXNtIj4KICAgICAgICB7ZGVzY3JpcHRpb24gfHwgYENldHRlIGZvbmN0aW9ubmFsaXTDqSBuw6ljZXNzaXRlIGxlIHBsYW4gJHtwbGFuLm5hbWV9ICgke3BsYW4ucHJpY2V9JHtwbGFuLnBlcmlvZH0pLiBNZXR0ZXogw6Agbml2ZWF1IHBvdXIgeSBhY2PDqWRlci5gfQogICAgICA8L3A+CiAgICAgIDxMaW5rIHRvPSIvc2V0dGluZ3MiIGNsYXNzTmFtZT0ibXQtNCBpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBiZy1mb3JlZ3JvdW5kIHRleHQtYmFja2dyb3VuZCBmb250LXNlbWlib2xkIHB4LTUgcHktMi41IHJvdW5kZWQtZnVsbCB0ZXh0LXNtIGhvdmVyOm9wYWNpdHktOTAgdHJhbnNpdGlvbi1vcGFjaXR5Ij4KICAgICAgICBNZXR0cmUgw6Agbml2ZWF1IDxBcnJvd1JpZ2h0IGNsYXNzTmFtZT0idy0zLjUgaC0zLjUiIC8+CiAgICAgIDwvTGluaz4KICAgIDwvZGl2PgogICk7Cn0=
+import { Lock, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { getPlan } from '@/lib/plans';
+
+export default function PaywallCard({ requiredPlan, title, description }) {
+  const plan = getPlan(requiredPlan);
+  return (
+    <div className="rounded-xl border border-border bg-surface p-6 flex flex-col items-center text-center">
+      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+        <Lock className="w-5 h-5 text-muted-foreground" />
+      </div>
+      <h3 className="font-heading font-bold text-base text-foreground">{title || `Plan ${plan.name} requis`}</h3>
+      <p className="mt-1.5 text-sm text-muted-foreground max-w-sm">
+        {description || `Cette fonctionnalité nécessite le plan ${plan.name} (${plan.price}${plan.period}). Mettez à niveau pour y accéder.`}
+      </p>
+      <Link to="/settings" className="mt-4 inline-flex items-center gap-1.5 bg-foreground text-background font-semibold px-5 py-2.5 rounded-full text-sm hover:opacity-90 transition-opacity">
+        Mettre à niveau <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    </div>
+  );
+}

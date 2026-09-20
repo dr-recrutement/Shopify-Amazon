@@ -1,1 +1,207 @@
-aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IE5hdkxpbmssIE91dGxldCwgTGluaywgdXNlTG9jYXRpb24gfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJzsKaW1wb3J0IHsKICBTZWFyY2gsIEJlbGwsIENoZXZyb25Eb3duLCBIb21lLCBTaG9wcGluZ0NhcnQsIFBhY2thZ2UsIFVzZXJzLCBUcmVuZGluZ1VwLAogIFRhZywgRmlsZVRleHQsIEJhckNoYXJ0MywgU3RvcmUsIFNldHRpbmdzIGFzIFNldHRpbmdzSWNvbiwgR2xvYmUsIEJvdCwgTWVnYXBob25lLAogIEZpbGVCYXJDaGFydCwgWmFwLCBDYWxjdWxhdG9yLCBMYXlvdXRHcmlkLCBQYWxldHRlLAogIFN0YXIsIFRydWNrLCBCb3hlcywgSW1hZ2UgYXMgSW1hZ2VJY29uLCBCb29rT3BlbiwgTWVudSwgWCwKfSBmcm9tICdsdWNpZGUtcmVhY3QnOwppbXBvcnQgeyBCUkFORCB9IGZyb20gJ0AvbGliL2JyYW5kJzsKCmNvbnN0IE5BVl9HUk9VUFMgPSBbCiAgewogICAgaXRlbXM6IFsKICAgICAgeyBsYWJlbDogJ0FjY3VlaWwnLCB0bzogJy9kYXNoYm9hcmQnLCBpY29uOiBIb21lLCBlbmQ6IHRydWUgfSwKICAgIF0sCiAgfSwKICB7CiAgICB0aXRsZTogJ1ZlbmRyZScsCiAgICBpdGVtczogWwogICAgICB7IGxhYmVsOiAnQ29tbWFuZGVzJywgdG86ICcvb3JkZXJzJywgaWNvbjogU2hvcHBpbmdDYXJ0LCBjaGlsZHJlbjogWwogICAgICAgIHsgbGFiZWw6ICdSw6ljdXDDqXJhdGlvbiBwYW5pZXInLCB0bzogJy9hYmFuZG9uZWQtY2hlY2tvdXRzJywgaWNvbjogU2hvcHBpbmdDYXJ0IH0sCiAgICAgIF0gfSwKICAgICAgeyBsYWJlbDogJ1Byb2R1aXRzJywgdG86ICcvcHJvZHVjdHMnLCBpY29uOiBQYWNrYWdlIH0sCiAgICAgIHsgbGFiZWw6ICdDbGllbnRzJywgdG86ICcvY3VzdG9tZXJzJywgaWNvbjogVXNlcnMgfSwKICAgICAgeyBsYWJlbDogJ0NvbGxlY3Rpb25zJywgdG86ICcvY29sbGVjdGlvbnMnLCBpY29uOiBMYXlvdXRHcmlkIH0sCiAgICAgIHsgbGFiZWw6ICdBdmlzIGNsaWVudHMnLCB0bzogJy9yZXZpZXdzJywgaWNvbjogU3RhciB9LAogICAgICB7IGxhYmVsOiAnQ3JvaXNzYW5jZScsIHRvOiAnL2dyb3d0aCcsIGljb246IFRyZW5kaW5nVXAgfSwKICAgICAgeyBsYWJlbDogJ1LDqWR1Y3Rpb25zJywgdG86ICcvZGlzY291bnRzJywgaWNvbjogVGFnIH0sCiAgICAgIHsgbGFiZWw6ICdDb250ZW51JywgdG86ICcvY29udGVudCcsIGljb246IEZpbGVUZXh0LCBjaGlsZHJlbjogWwogICAgICAgIHsgbGFiZWw6ICdCbG9nJywgdG86ICcvYmxvZycsIGljb246IEJvb2tPcGVuIH0sCiAgICAgICAgeyBsYWJlbDogJ03DqWRpYXMnLCB0bzogJy9tZWRpYS1saWJyYXJ5JywgaWNvbjogSW1hZ2VJY29uIH0sCiAgICAgIF0gfSwKICAgIF0sCiAgfSwKICB7CiAgICB0aXRsZTogJ0NhbmF1eCBkZSB2ZW50ZScsCiAgICBpdGVtczogWwogICAgICB7IGxhYmVsOiAnTWFyY2jDqXMnLCB0bzogJy9tYXJrZXRzJywgaWNvbjogR2xvYmUgfSwKICAgICAgeyBsYWJlbDogJ0JvdXRpcXVlIGVuIGxpZ25lJywgdG86ICcvdGhlbWUtZWRpdG9yJywgaWNvbjogU3RvcmUsIGNoaWxkcmVuOiBbCiAgICAgICAgeyBsYWJlbDogJ1Row6htZXMnLCB0bzogJy90aGVtZS1nYWxsZXJ5JywgaWNvbjogUGFsZXR0ZSB9LAogICAgICBdIH0sCiAgICAgIHsgbGFiZWw6ICdEb21haW5lcycsIHRvOiAnL2RvbWFpbnMnLCBpY29uOiBHbG9iZSB9LAogICAgICB7IGxhYmVsOiAnQW5hbHl0aWNzJywgdG86ICcvYW5hbHl0aWNzJywgaWNvbjogQmFyQ2hhcnQzIH0sCiAgICBdLAogIH0sCiAgewogICAgdGl0bGU6ICdJQSAmIENyb2lzc2FuY2UnLAogICAgaXRlbXM6IFsKICAgICAgeyBsYWJlbDogJ0Fzc2lzdGFudCBJQScsIHRvOiAnL2Fzc2lzdGFudC1pYScsIGljb246IEJvdCB9LAogICAgICB7IGxhYmVsOiAnTWFya2V0aW5nJywgdG86ICcvbWFya2V0aW5nJywgaWNvbjogTWVnYXBob25lIH0sCiAgICAgIHsgbGFiZWw6ICdSYXBwb3J0cycsIHRvOiAnL3JlcG9ydHMnLCBpY29uOiBGaWxlQmFyQ2hhcnQgfSwKICAgICAgeyBsYWJlbDogJ0FuYWx5c2VzIHByb2R1aXRzJywgdG86ICcvcHJvZHVjdC1hbmFseXRpY3MnLCBpY29uOiBUcmVuZGluZ1VwIH0sCiAgICAgIHsgbGFiZWw6ICdBdXRvbWF0aW9ucycsIHRvOiAnL2F1dG9tYXRpb25zJywgaWNvbjogWmFwIH0sCiAgICBdLAogIH0sCiAgewogICAgdGl0bGU6ICdHZXN0aW9uJywKICAgIGl0ZW1zOiBbCiAgICAgIHsgbGFiZWw6ICdDb21wdGFiaWxpdMOpJywgdG86ICcvYWNjb3VudGluZycsIGljb246IENhbGN1bGF0b3IgfSwKICAgICAgeyBsYWJlbDogJ0ludmVudGFpcmUnLCB0bzogJy9pbnZlbnRvcnknLCBpY29uOiBCb3hlcyB9LAogICAgICB7IGxhYmVsOiAnTGl2cmFpc29uJywgdG86ICcvc2hpcHBpbmctc2V0dGluZ3MnLCBpY29uOiBUcnVjayB9LAogICAgXSwKICB9LAogIHsKICAgIHRpdGxlOiAnU3lzdMOobWUnLAogICAgaXRlbXM6IFsKICAgICAgeyBsYWJlbDogJ0FwcHMnLCB0bzogJy9hcHBzJywgaWNvbjogTGF5b3V0R3JpZCB9LAogICAgICB7IGxhYmVsOiAnUGFyYW3DqHRyZXMnLCB0bzogJy9zZXR0aW5ncycsIGljb246IFNldHRpbmdzSWNvbiB9LAogICAgXSwKICB9LApdOwoKZnVuY3Rpb24gTmF2SXRlbSh7IGl0ZW0sIG9uTmF2aWdhdGUgfSkgewogIGNvbnN0IGxvY2F0aW9uID0gdXNlTG9jYXRpb24oKTsKICBjb25zdCBoYXNDaGlsZHJlbiA9IGl0ZW0uY2hpbGRyZW4gJiYgaXRlbS5jaGlsZHJlbi5sZW5ndGggPiAwOwogIGNvbnN0IGNoaWxkQWN0aXZlID0gaGFzQ2hpbGRyZW4gJiYgaXRlbS5jaGlsZHJlbi5zb21lKChjKSA9PiBsb2NhdGlvbi5wYXRobmFtZS5zdGFydHNXaXRoKGMudG8pKTsKICBjb25zdCBbb3Blbiwgc2V0T3Blbl0gPSB1c2VTdGF0ZSghIWNoaWxkQWN0aXZlKTsKICBjb25zdCBleHBhbmRlZCA9IG9wZW4gfHwgY2hpbGRBY3RpdmU7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJteC0yIj4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIj4KICAgICAgICA8TmF2TGluawogICAgICAgICAgdG89e2l0ZW0udG99CiAgICAgICAgICBlbmQ9e2l0ZW0uZW5kfQogICAgICAgICAgb25DbGljaz17b25OYXZpZ2F0ZX0KICAgICAgICAgIGNsYXNzTmFtZT17KHsgaXNBY3RpdmUgfSkgPT4KICAgICAgICAgICAgYGZsZXggaXRlbXMtY2VudGVyIGdhcC0yLjUgZmxleC0xIHB4LTIuNSBweS0xLjUgcm91bmRlZC1tZCB0ZXh0LVsxM3B4XSB0cmFuc2l0aW9uLWNvbG9ycyAkewogICAgICAgICAgICAgIGlzQWN0aXZlID8gJ2JnLXdoaXRlIHRleHQtWyMyMDIyMjNdIGZvbnQtbWVkaXVtIHNoYWRvdy1zbScgOiAndGV4dC1bIzIwMjIyM10gaG92ZXI6YmctYmxhY2svNScKICAgICAgICAgICAgfWAKICAgICAgICAgIH0KICAgICAgICA+CiAgICAgICAgICA8aXRlbS5pY29uIGNsYXNzTmFtZT0idy00IGgtNCBvcGFjaXR5LTcwIiAvPgogICAgICAgICAge2l0ZW0ubGFiZWx9CiAgICAgICAgPC9OYXZMaW5rPgogICAgICAgIHtoYXNDaGlsZHJlbiAmJiAoCiAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldE9wZW4oKG8pID0+ICFvKX0gY2xhc3NOYW1lPSJwLTEgcm91bmRlZCBob3ZlcjpiZy1ibGFjay81IHRleHQtWyM2RDcxNzVdIj4KICAgICAgICAgICAgPENoZXZyb25Eb3duIGNsYXNzTmFtZT17YHctMy41IGgtMy41IHRyYW5zaXRpb24tdHJhbnNmb3JtICR7ZXhwYW5kZWQgPyAnJyA6ICctcm90YXRlLTkwJ31gfSAvPgogICAgICAgICAgPC9idXR0b24+CiAgICAgICAgKX0KICAgICAgPC9kaXY+CiAgICAgIHtoYXNDaGlsZHJlbiAmJiBleHBhbmRlZCAmJiAoCiAgICAgICAgPGRpdiBjbGFzc05hbWU9Im10LTAuNSBtbC0yIGJvcmRlci1sIGJvcmRlci1bI0UxRTFFMV0iPgogICAgICAgICAge2l0ZW0uY2hpbGRyZW4ubWFwKChjKSA9PiAoCiAgICAgICAgICAgIDxOYXZMaW5rCiAgICAgICAgICAgICAga2V5PXtjLmxhYmVsfQogICAgICAgICAgICAgIHRvPXtjLnRvfQogICAgICAgICAgICAgIG9uQ2xpY2s9e29uTmF2aWdhdGV9CiAgICAgICAgICAgICAgY2xhc3NOYW1lPXsoeyBpc0FjdGl2ZSB9KSA9PgogICAgICAgICAgICAgICAgYGZsZXggaXRlbXMtY2VudGVyIGdhcC0yLjUgcHgtMi41IHB5LTEuNSBtbC0zIHJvdW5kZWQtbWQgdGV4dC1bMTNweF0gdHJhbnNpdGlvbi1jb2xvcnMgJHsKICAgICAgICAgICAgICAgICAgaXNBY3RpdmUgPyAnYmctd2hpdGUgdGV4dC1bIzIwMjIyM10gZm9udC1tZWRpdW0gc2hhZG93LXNtJyA6ICd0ZXh0LVsjNkQ3MTc1XSBob3ZlcjpiZy1ibGFjay81JwogICAgICAgICAgICAgICAgfWAKICAgICAgICAgICAgICB9CiAgICAgICAgICAgID4KICAgICAgICAgICAgICA8Yy5pY29uIGNsYXNzTmFtZT0idy00IGgtNCBvcGFjaXR5LTYwIiAvPgogICAgICAgICAgICAgIHtjLmxhYmVsfQogICAgICAgICAgICA8L05hdkxpbms+CiAgICAgICAgICApKX0KICAgICAgICA8L2Rpdj4KICAgICAgKX0KICAgIDwvZGl2PgogICk7Cn0KCmZ1bmN0aW9uIE5hdkNvbnRlbnQoeyBvbk5hdmlnYXRlIH0pIHsKICByZXR1cm4gKAogICAgPD4KICAgICAge05BVl9HUk9VUFMubWFwKChnLCBnaSkgPT4gKAogICAgICAgIDxkaXYga2V5PXtnaX0gY2xhc3NOYW1lPSJtYi0xIj4KICAgICAgICAgIHtnLnRpdGxlICYmICgKICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJweC00IHB0LTMgcGItMSB0ZXh0LVsxMXB4XSBmb250LXNlbWlib2xkIHRleHQtWyM2RDcxNzVdIHVwcGVyY2FzZSB0cmFja2luZy13aWRlIj57Zy50aXRsZX08L3A+CiAgICAgICAgICApfQogICAgICAgICAge2cuaXRlbXMubWFwKChpdGVtKSA9PiAoCiAgICAgICAgICAgIDxOYXZJdGVtIGtleT17aXRlbS5sYWJlbH0gaXRlbT17aXRlbX0gb25OYXZpZ2F0ZT17b25OYXZpZ2F0ZX0gLz4KICAgICAgICAgICkpfQogICAgICAgIDwvZGl2PgogICAgICApKX0KICAgIDwvPgogICk7Cn0KCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFkbWluTGF5b3V0KCkgewogIGNvbnN0IFttb2JpbGVPcGVuLCBzZXRNb2JpbGVPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTsKCiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4taC1zY3JlZW4gYmctWyNGNEY0RjRdIHRleHQtWyMyMDIyMjNdIGZsZXggZmxleC1jb2wiPgogICAgICB7LyogVG9wIGJhciAqL30KICAgICAgPGhlYWRlciBjbGFzc05hbWU9ImgtWzUycHhdIGJnLWJsYWNrIHRleHQtd2hpdGUgZmxleCBpdGVtcy1jZW50ZXIgcHgtMyBzbTpweC00IGdhcC0zIHNocmluay0wIHN0aWNreSB0b3AtMCB6LTMwIj4KICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IHNldE1vYmlsZU9wZW4odHJ1ZSl9IGNsYXNzTmFtZT0ibWQ6aGlkZGVuIHAtMS41IHJvdW5kZWQtbWQgaG92ZXI6Ymctd2hpdGUvMTAgdGV4dC13aGl0ZSI+CiAgICAgICAgICA8TWVudSBjbGFzc05hbWU9InctNSBoLTUiIC8+CiAgICAgICAgPC9idXR0b24+CiAgICAgICAgPExpbmsgdG89Ii9kYXNoYm9hcmQiIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgc2hyaW5rLTAiPgogICAgICAgICAgPGltZyBzcmM9e0JSQU5ELmxvZ299IGFsdD0iU2VsbGlhIiBjbGFzc05hbWU9ImgtOCB3LTggb2JqZWN0LWNvbnRhaW4iIC8+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZsZXggZmxleC1jb2wgbGVhZGluZy1ub25lIj4KICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmb250LWJvbGQgdGV4dC1iYXNlIHRyYWNraW5nLXRpZ2h0IHRleHQtd2hpdGUiPlNlbGxpYTwvc3Bhbj4KICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LVs5cHhdIGZvbnQtbWVkaXVtIHRleHQtd2hpdGUvNTUiPmJ5IExpYWZyaWs8L3NwYW4+CiAgICAgICAgICA8L3NwYW4+CiAgICAgICAgPC9MaW5rPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJoaWRkZW4gbWQ6ZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgYmctd2hpdGUvMTAgcm91bmRlZC1tZCBweC0zIHB5LTEuNSB3LTgwIG1heC13LWZ1bGwiPgogICAgICAgICAgPFNlYXJjaCBjbGFzc05hbWU9InctNCBoLTQgb3BhY2l0eS02MCIgLz4KICAgICAgICAgIDxpbnB1dAogICAgICAgICAgICBwbGFjZWhvbGRlcj0iUmVjaGVyY2hlciIKICAgICAgICAgICAgY2xhc3NOYW1lPSJiZy10cmFuc3BhcmVudCBvdXRsaW5lLW5vbmUgdGV4dC1zbSBwbGFjZWhvbGRlcjp0ZXh0LXdoaXRlLzUwIHctZnVsbCIKICAgICAgICAgIC8+CiAgICAgICAgICA8a2JkIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gYmctd2hpdGUvMTUgcHgtMS41IHB5LTAuNSByb3VuZGVkIj7ijJhLPC9rYmQ+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9Im1sLWF1dG8gZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgc206Z2FwLTMiPgogICAgICAgICAgPEJlbGwgY2xhc3NOYW1lPSJ3LTUgaC01IG9wYWNpdHktODAiIC8+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBjdXJzb3ItcG9pbnRlciI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTcgaC03IHJvdW5kZWQtZnVsbCBiZy1bIzAwODA2MF0gZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC14cyBmb250LWJvbGQiPlNNPC9kaXY+CiAgICAgICAgICAgIDxDaGV2cm9uRG93biBjbGFzc05hbWU9InctNCBoLTQgb3BhY2l0eS02MCIgLz4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2hlYWRlcj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtMSBtaW4taC0wIj4KICAgICAgICB7LyogRGVza3RvcCBzaWRlYmFyICovfQogICAgICAgIDxhc2lkZSBjbGFzc05hbWU9InctNjAgYmctWyNGNEY0RjRdIGJvcmRlci1yIGJvcmRlci1bI0UxRTFFMV0gb3ZlcmZsb3cteS1hdXRvIHB5LTMgc2hyaW5rLTAgaGlkZGVuIG1kOmJsb2NrIj4KICAgICAgICAgIDxOYXZDb250ZW50IC8+CiAgICAgICAgPC9hc2lkZT4KCiAgICAgICAgey8qIE1vYmlsZSBkcmF3ZXIgKi99CiAgICAgICAge21vYmlsZU9wZW4gJiYgKAogICAgICAgICAgPD4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9Im1kOmhpZGRlbiBmaXhlZCBpbnNldC0wIGJnLWJsYWNrLzQwIHotNDAiIG9uQ2xpY2s9eygpID0+IHNldE1vYmlsZU9wZW4oZmFsc2UpfSAvPgogICAgICAgICAgICA8YXNpZGUgY2xhc3NOYW1lPSJtZDpoaWRkZW4gZml4ZWQgaW5zZXQteS0wIGxlZnQtMCB3LTcyIG1heC13LVs4NSVdIGJnLVsjRjRGNEY0XSBib3JkZXItciBib3JkZXItWyNFMUUxRTFdIG92ZXJmbG93LXktYXV0byBweS0zIHotNTAgc2hhZG93LTJ4bCI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBweC00IHBiLTIgbWItMSBib3JkZXItYiBib3JkZXItWyNFMUUxRTFdIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICAgICAgICAgIDxpbWcgc3JjPXtCUkFORC5sb2dvfSBhbHQ9IlNlbGxpYSIgY2xhc3NOYW1lPSJoLTcgdy03IG9iamVjdC1jb250YWluIiAvPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZvbnQtYm9sZCB0ZXh0LXNtIHRleHQtWyMyMDIyMjNdIj5TZWxsaWE8L3NwYW4+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gc2V0TW9iaWxlT3BlbihmYWxzZSl9IGNsYXNzTmFtZT0icC0xLjUgcm91bmRlZC1tZCBob3ZlcjpiZy1ibGFjay81IHRleHQtWyM2RDcxNzVdIj4KICAgICAgICAgICAgICAgICAgPFggY2xhc3NOYW1lPSJ3LTUgaC01IiAvPgogICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPE5hdkNvbnRlbnQgb25OYXZpZ2F0ZT17KCkgPT4gc2V0TW9iaWxlT3BlbihmYWxzZSl9IC8+CiAgICAgICAgICAgIDwvYXNpZGU+CiAgICAgICAgICA8Lz4KICAgICAgICApfQoKICAgICAgICB7LyogQ29udGVudCAqL30KICAgICAgICA8bWFpbiBjbGFzc05hbWU9ImZsZXgtMSBtaW4tdy0wIG92ZXJmbG93LXktYXV0byI+CiAgICAgICAgICA8T3V0bGV0IC8+CiAgICAgICAgPC9tYWluPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0=
+import { useState } from 'react';
+import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
+import {
+  Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
+  Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
+  FileBarChart, Zap, Calculator, LayoutGrid, Palette,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X,
+} from 'lucide-react';
+import { BRAND } from '@/lib/brand';
+
+const NAV_GROUPS = [
+  {
+    items: [
+      { label: 'Accueil', to: '/dashboard', icon: Home, end: true },
+    ],
+  },
+  {
+    title: 'Vendre',
+    items: [
+      { label: 'Commandes', to: '/orders', icon: ShoppingCart, children: [
+        { label: 'Récupération panier', to: '/abandoned-checkouts', icon: ShoppingCart },
+      ] },
+      { label: 'Produits', to: '/products', icon: Package },
+      { label: 'Clients', to: '/customers', icon: Users },
+      { label: 'Collections', to: '/collections', icon: LayoutGrid },
+      { label: 'Avis clients', to: '/reviews', icon: Star },
+      { label: 'Croissance', to: '/growth', icon: TrendingUp },
+      { label: 'Réductions', to: '/discounts', icon: Tag },
+      { label: 'Contenu', to: '/content', icon: FileText, children: [
+        { label: 'Blog', to: '/blog', icon: BookOpen },
+        { label: 'Médias', to: '/media-library', icon: ImageIcon },
+      ] },
+    ],
+  },
+  {
+    title: 'Canaux de vente',
+    items: [
+      { label: 'Marchés', to: '/markets', icon: Globe },
+      { label: 'Boutique en ligne', to: '/theme-editor', icon: Store, children: [
+        { label: 'Thèmes', to: '/theme-gallery', icon: Palette },
+      ] },
+      { label: 'Domaines', to: '/domains', icon: Globe },
+      { label: 'Analytics', to: '/analytics', icon: BarChart3 },
+    ],
+  },
+  {
+    title: 'IA & Croissance',
+    items: [
+      { label: 'Assistant IA', to: '/assistant-ia', icon: Bot },
+      { label: 'Marketing', to: '/marketing', icon: Megaphone },
+      { label: 'Rapports', to: '/reports', icon: FileBarChart },
+      { label: 'Analyses produits', to: '/product-analytics', icon: TrendingUp },
+      { label: 'Automations', to: '/automations', icon: Zap },
+    ],
+  },
+  {
+    title: 'Gestion',
+    items: [
+      { label: 'Comptabilité', to: '/accounting', icon: Calculator },
+      { label: 'Inventaire', to: '/inventory', icon: Boxes },
+      { label: 'Livraison', to: '/shipping-settings', icon: Truck },
+    ],
+  },
+  {
+    title: 'Système',
+    items: [
+      { label: 'Apps', to: '/apps', icon: LayoutGrid },
+      { label: 'Paramètres', to: '/settings', icon: SettingsIcon },
+    ],
+  },
+];
+
+function NavItem({ item, onNavigate }) {
+  const location = useLocation();
+  const hasChildren = item.children && item.children.length > 0;
+  const childActive = hasChildren && item.children.some((c) => location.pathname.startsWith(c.to));
+  const [open, setOpen] = useState(!!childActive);
+  const expanded = open || childActive;
+  return (
+    <div className="mx-2">
+      <div className="flex items-center">
+        <NavLink
+          to={item.to}
+          end={item.end}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            `flex items-center gap-2.5 flex-1 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
+              isActive ? 'bg-white text-[#202223] font-medium shadow-sm' : 'text-[#202223] hover:bg-black/5'
+            }`
+          }
+        >
+          <item.icon className="w-4 h-4 opacity-70" />
+          {item.label}
+        </NavLink>
+        {hasChildren && (
+          <button onClick={() => setOpen((o) => !o)} className="p-1 rounded hover:bg-black/5 text-[#6D7175]">
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? '' : '-rotate-90'}`} />
+          </button>
+        )}
+      </div>
+      {hasChildren && expanded && (
+        <div className="mt-0.5 ml-2 border-l border-[#E1E1E1]">
+          {item.children.map((c) => (
+            <NavLink
+              key={c.label}
+              to={c.to}
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-2.5 py-1.5 ml-3 rounded-md text-[13px] transition-colors ${
+                  isActive ? 'bg-white text-[#202223] font-medium shadow-sm' : 'text-[#6D7175] hover:bg-black/5'
+                }`
+              }
+            >
+              <c.icon className="w-4 h-4 opacity-60" />
+              {c.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NavContent({ onNavigate }) {
+  return (
+    <>
+      {NAV_GROUPS.map((g, gi) => (
+        <div key={gi} className="mb-1">
+          {g.title && (
+            <p className="px-4 pt-3 pb-1 text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">{g.title}</p>
+          )}
+          {g.items.map((item) => (
+            <NavItem key={item.label} item={item} onNavigate={onNavigate} />
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+export default function AdminLayout() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-[#F4F4F4] text-[#202223] flex flex-col">
+      {/* Top bar */}
+      <header className="h-[52px] bg-black text-white flex items-center px-3 sm:px-4 gap-3 shrink-0 sticky top-0 z-30">
+        <button onClick={() => setMobileOpen(true)} className="md:hidden p-1.5 rounded-md hover:bg-white/10 text-white">
+          <Menu className="w-5 h-5" />
+        </button>
+        <Link to="/dashboard" className="flex items-center gap-2 shrink-0">
+          <img src={BRAND.logo} alt="Sellia" className="h-8 w-8 object-contain" />
+          <span className="flex flex-col leading-none">
+            <span className="font-bold text-base tracking-tight text-white">Sellia</span>
+            <span className="text-[9px] font-medium text-white/55">by Liafrik</span>
+          </span>
+        </Link>
+        <div className="hidden md:flex items-center gap-2 bg-white/10 rounded-md px-3 py-1.5 w-80 max-w-full">
+          <Search className="w-4 h-4 opacity-60" />
+          <input
+            placeholder="Rechercher"
+            className="bg-transparent outline-none text-sm placeholder:text-white/50 w-full"
+          />
+          <kbd className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded">⌘K</kbd>
+        </div>
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <Bell className="w-5 h-5 opacity-80" />
+          <div className="flex items-center gap-1.5 cursor-pointer">
+            <div className="w-7 h-7 rounded-full bg-[#008060] flex items-center justify-center text-xs font-bold">SM</div>
+            <ChevronDown className="w-4 h-4 opacity-60" />
+          </div>
+        </div>
+      </header>
+
+      <div className="flex flex-1 min-h-0">
+        {/* Desktop sidebar */}
+        <aside className="w-60 bg-[#F4F4F4] border-r border-[#E1E1E1] overflow-y-auto py-3 shrink-0 hidden md:block">
+          <NavContent />
+        </aside>
+
+        {/* Mobile drawer */}
+        {mobileOpen && (
+          <>
+            <div className="md:hidden fixed inset-0 bg-black/40 z-40" onClick={() => setMobileOpen(false)} />
+            <aside className="md:hidden fixed inset-y-0 left-0 w-72 max-w-[85%] bg-[#F4F4F4] border-r border-[#E1E1E1] overflow-y-auto py-3 z-50 shadow-2xl">
+              <div className="flex items-center justify-between px-4 pb-2 mb-1 border-b border-[#E1E1E1]">
+                <div className="flex items-center gap-2">
+                  <img src={BRAND.logo} alt="Sellia" className="h-7 w-7 object-contain" />
+                  <span className="font-bold text-sm text-[#202223]">Sellia</span>
+                </div>
+                <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-md hover:bg-black/5 text-[#6D7175]">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <NavContent onNavigate={() => setMobileOpen(false)} />
+            </aside>
+          </>
+        )}
+
+        {/* Content */}
+        <main className="flex-1 min-w-0 overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}

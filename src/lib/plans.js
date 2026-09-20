@@ -1,1 +1,137 @@
-ZXhwb3J0IGNvbnN0IFBMQU5TID0gewogIHN0YXJ0ZXI6IHsKICAgIGlkOiAnc3RhcnRlcicsCiAgICBuYW1lOiAnU3RhcnRlcicsCiAgICBwcmljZTogNywKICAgIHBlcmlvZDogJyQvbW9pcycsCiAgICBjb2xvcjogJyM2QjcyODAnLAogICAgdGFnbGluZTogJ1BvdXIgbGFuY2VyIHZvdHJlIHByZW1pw6hyZSBib3V0aXF1ZScsCiAgICBsaW1pdHM6IHsKICAgICAgc3RvcmVzOiAxLAogICAgICBwcm9kdWN0czogNTAsCiAgICAgIHVzZXJzOiAxLAogICAgICB0aGVtZXM6ICdiYXNpYycsCiAgICAgIGVkaXRvcjogZmFsc2UsCiAgICAgIHBheW1lbnRzOiAnbWFudWFsJywKICAgICAgbXVsdGlfY3VycmVuY3k6IGZhbHNlLAogICAgICBhbmFseXRpY3M6IGZhbHNlLAogICAgICBhaV9hc3Npc3RhbnQ6IGZhbHNlLAogICAgICBjdXN0b21fZG9tYWluOiBmYWxzZSwKICAgICAgZGlzY291bnRzOiBmYWxzZSwKICAgICAgbWFya2V0cGxhY2U6IGZhbHNlLAogICAgICBhcGk6IGZhbHNlLAogICAgICBhdXRvbWF0aW9uczogZmFsc2UsCiAgICAgIGhlYWRsZXNzOiBmYWxzZSwKICAgICAgc3VwcG9ydDogJ2VtYWlsJywKICAgIH0sCiAgfSwKICBncm93dGg6IHsKICAgIGlkOiAnZ3Jvd3RoJywKICAgIG5hbWU6ICdHcm93dGgnLAogICAgcHJpY2U6IDE5LAogICAgcGVyaW9kOiAnJC9tb2lzJywKICAgIGNvbG9yOiAnIzAwODA2MCcsCiAgICB0YWdsaW5lOiAnUG91ciBsZXMgbWFyY2hhbmRzIGVuIGNyb2lzc2FuY2UnLAogICAgbGltaXRzOiB7CiAgICAgIHN0b3JlczogMSwKICAgICAgcHJvZHVjdHM6IDEwMDAsCiAgICAgIHVzZXJzOiAzLAogICAgICB0aGVtZXM6ICdwcmVtaXVtJywKICAgICAgZWRpdG9yOiB0cnVlLAogICAgICBwYXltZW50czogJ2ludGVncmF0ZWQnLAogICAgICBtdWx0aV9jdXJyZW5jeTogdHJ1ZSwKICAgICAgYW5hbHl0aWNzOiAnYmFzaWMnLAogICAgICBhaV9hc3Npc3RhbnQ6IGZhbHNlLAogICAgICBjdXN0b21fZG9tYWluOiBmYWxzZSwKICAgICAgZGlzY291bnRzOiB0cnVlLAogICAgICBtYXJrZXRwbGFjZTogZmFsc2UsCiAgICAgIGFwaTogZmFsc2UsCiAgICAgIGF1dG9tYXRpb25zOiBmYWxzZSwKICAgICAgaGVhZGxlc3M6IGZhbHNlLAogICAgICBzdXBwb3J0OiAncHJpb3JpdHknLAogICAgfSwKICB9LAogIHBybzogewogICAgaWQ6ICdwcm8nLAogICAgbmFtZTogJ1BybycsCiAgICBwcmljZTogMzksCiAgICBwZXJpb2Q6ICckL21vaXMnLAogICAgY29sb3I6ICcjN0MzQUVEJywKICAgIHRhZ2xpbmU6ICdQb3VyIGxlcyBtYXJjaGFuZHMgw6l0YWJsaXMnLAogICAgbGltaXRzOiB7CiAgICAgIHN0b3JlczogMiwKICAgICAgcHJvZHVjdHM6IEluZmluaXR5LAogICAgICB1c2VyczogMTAsCiAgICAgIHRoZW1lczogJ3ByZW1pdW0nLAogICAgICBlZGl0b3I6IHRydWUsCiAgICAgIHBheW1lbnRzOiAnaW50ZWdyYXRlZCcsCiAgICAgIG11bHRpX2N1cnJlbmN5OiB0cnVlLAogICAgICBhbmFseXRpY3M6ICdhZHZhbmNlZCcsCiAgICAgIGFpX2Fzc2lzdGFudDogdHJ1ZSwKICAgICAgY3VzdG9tX2RvbWFpbjogdHJ1ZSwKICAgICAgZGlzY291bnRzOiB0cnVlLAogICAgICBtYXJrZXRwbGFjZTogZmFsc2UsCiAgICAgIGFwaTogdHJ1ZSwKICAgICAgYXV0b21hdGlvbnM6IGZhbHNlLAogICAgICBoZWFkbGVzczogZmFsc2UsCiAgICAgIHN1cHBvcnQ6ICdwcmlvcml0eScsCiAgICB9LAogIH0sCiAgZW50ZXJwcmlzZTogewogICAgaWQ6ICdlbnRlcnByaXNlJywKICAgIG5hbWU6ICdFbnRlcnByaXNlJywKICAgIHByaWNlOiAxMjksCiAgICBwZXJpb2Q6ICckL21vaXMnLAogICAgY29sb3I6ICcjMUUyOTNCJywKICAgIHRhZ2xpbmU6ICdQb3VyIGxlcyBwbGFjZXMgZGUgbWFyY2jDqScsCiAgICBsaW1pdHM6IHsKICAgICAgc3RvcmVzOiBJbmZpbml0eSwKICAgICAgcHJvZHVjdHM6IEluZmluaXR5LAogICAgICB1c2VyczogSW5maW5pdHksCiAgICAgIHRoZW1lczogJ3ByZW1pdW0nLAogICAgICBlZGl0b3I6IHRydWUsCiAgICAgIHBheW1lbnRzOiAnaW50ZWdyYXRlZCcsCiAgICAgIG11bHRpX2N1cnJlbmN5OiB0cnVlLAogICAgICBhbmFseXRpY3M6ICdhZHZhbmNlZCcsCiAgICAgIGFpX2Fzc2lzdGFudDogdHJ1ZSwKICAgICAgY3VzdG9tX2RvbWFpbjogdHJ1ZSwKICAgICAgZGlzY291bnRzOiB0cnVlLAogICAgICBtYXJrZXRwbGFjZTogdHJ1ZSwKICAgICAgYXBpOiB0cnVlLAogICAgICBhdXRvbWF0aW9uczogdHJ1ZSwKICAgICAgaGVhZGxlc3M6IHRydWUsCiAgICAgIHN1cHBvcnQ6ICdkZWRpY2F0ZWQnLAogICAgfSwKICB9LAp9OwoKZXhwb3J0IGNvbnN0IFBMQU5fT1JERVIgPSBbJ3N0YXJ0ZXInLCAnZ3Jvd3RoJywgJ3BybycsICdlbnRlcnByaXNlJ107CgpleHBvcnQgZnVuY3Rpb24gZ2V0UGxhbihwbGFuSWQpIHsKICByZXR1cm4gUExBTlNbcGxhbklkXSB8fCBQTEFOUy5ncm93dGg7Cn0KCmV4cG9ydCBmdW5jdGlvbiBjYW5BY2Nlc3MocGxhbklkLCBmZWF0dXJlKSB7CiAgY29uc3QgcGxhbiA9IGdldFBsYW4ocGxhbklkKTsKICBjb25zdCB2ID0gcGxhbi5saW1pdHNbZmVhdHVyZV07CiAgcmV0dXJuIHYgIT09IHVuZGVmaW5lZCAmJiB2ICE9PSBmYWxzZSAmJiB2ICE9PSAnYmFzaWMnID8gdiA6IHY7Cn0KCmV4cG9ydCBmdW5jdGlvbiBoYXNGZWF0dXJlKHBsYW5JZCwgZmVhdHVyZSkgewogIGNvbnN0IHBsYW4gPSBnZXRQbGFuKHBsYW5JZCk7CiAgY29uc3QgdiA9IHBsYW4ubGltaXRzW2ZlYXR1cmVdOwogIGlmICh2ID09PSB1bmRlZmluZWQgfHwgdiA9PT0gZmFsc2UpIHJldHVybiBmYWxzZTsKICByZXR1cm4gdHJ1ZTsKfQoKZXhwb3J0IGZ1bmN0aW9uIGdldEZlYXR1cmVWYWx1ZShwbGFuSWQsIGZlYXR1cmUpIHsKICByZXR1cm4gZ2V0UGxhbihwbGFuSWQpLmxpbWl0c1tmZWF0dXJlXTsKfQoKZXhwb3J0IGZ1bmN0aW9uIHBsYW5SYW5rKHBsYW5JZCkgewogIHJldHVybiBQTEFOX09SREVSLmluZGV4T2YocGxhbklkKTsKfQoKZXhwb3J0IGZ1bmN0aW9uIGlzUGxhbkF0TGVhc3QoY3VycmVudFBsYW4sIHJlcXVpcmVkUGxhbikgewogIHJldHVybiBwbGFuUmFuayhjdXJyZW50UGxhbikgPj0gcGxhblJhbmsocmVxdWlyZWRQbGFuKTsKfQ==
+export const PLANS = {
+  starter: {
+    id: 'starter',
+    name: 'Starter',
+    price: 7,
+    period: '$/mois',
+    color: '#6B7280',
+    tagline: 'Pour lancer votre première boutique',
+    limits: {
+      stores: 1,
+      products: 50,
+      users: 1,
+      themes: 'basic',
+      editor: false,
+      payments: 'manual',
+      multi_currency: false,
+      analytics: false,
+      ai_assistant: false,
+      custom_domain: false,
+      discounts: false,
+      marketplace: false,
+      api: false,
+      automations: false,
+      headless: false,
+      support: 'email',
+    },
+  },
+  growth: {
+    id: 'growth',
+    name: 'Growth',
+    price: 19,
+    period: '$/mois',
+    color: '#008060',
+    tagline: 'Pour les marchands en croissance',
+    limits: {
+      stores: 1,
+      products: 1000,
+      users: 3,
+      themes: 'premium',
+      editor: true,
+      payments: 'integrated',
+      multi_currency: true,
+      analytics: 'basic',
+      ai_assistant: false,
+      custom_domain: false,
+      discounts: true,
+      marketplace: false,
+      api: false,
+      automations: false,
+      headless: false,
+      support: 'priority',
+    },
+  },
+  pro: {
+    id: 'pro',
+    name: 'Pro',
+    price: 39,
+    period: '$/mois',
+    color: '#7C3AED',
+    tagline: 'Pour les marchands établis',
+    limits: {
+      stores: 2,
+      products: Infinity,
+      users: 10,
+      themes: 'premium',
+      editor: true,
+      payments: 'integrated',
+      multi_currency: true,
+      analytics: 'advanced',
+      ai_assistant: true,
+      custom_domain: true,
+      discounts: true,
+      marketplace: false,
+      api: true,
+      automations: false,
+      headless: false,
+      support: 'priority',
+    },
+  },
+  enterprise: {
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 129,
+    period: '$/mois',
+    color: '#1E293B',
+    tagline: 'Pour les places de marché',
+    limits: {
+      stores: Infinity,
+      products: Infinity,
+      users: Infinity,
+      themes: 'premium',
+      editor: true,
+      payments: 'integrated',
+      multi_currency: true,
+      analytics: 'advanced',
+      ai_assistant: true,
+      custom_domain: true,
+      discounts: true,
+      marketplace: true,
+      api: true,
+      automations: true,
+      headless: true,
+      support: 'dedicated',
+    },
+  },
+};
+
+export const PLAN_ORDER = ['starter', 'growth', 'pro', 'enterprise'];
+
+export function getPlan(planId) {
+  return PLANS[planId] || PLANS.growth;
+}
+
+export function canAccess(planId, feature) {
+  const plan = getPlan(planId);
+  const v = plan.limits[feature];
+  return v !== undefined && v !== false && v !== 'basic' ? v : v;
+}
+
+export function hasFeature(planId, feature) {
+  const plan = getPlan(planId);
+  const v = plan.limits[feature];
+  if (v === undefined || v === false) return false;
+  return true;
+}
+
+export function getFeatureValue(planId, feature) {
+  return getPlan(planId).limits[feature];
+}
+
+export function planRank(planId) {
+  return PLAN_ORDER.indexOf(planId);
+}
+
+export function isPlanAtLeast(currentPlan, requiredPlan) {
+  return planRank(currentPlan) >= planRank(requiredPlan);
+}

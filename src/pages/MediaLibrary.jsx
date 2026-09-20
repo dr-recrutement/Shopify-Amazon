@@ -1,1 +1,86 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2ssIHVzZVJlZiB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgSW1hZ2UgYXMgSW1hZ2VJY29uLCBVcGxvYWQsIFRyYXNoMiwgU2VhcmNoLCBMb2FkZXIyLCBDb3B5LCBDaGVjaywgWCwgRm9sZGVyIH0gZnJvbSAnbHVjaWRlLXJlYWN0JzsKaW1wb3J0IHsgYmFzZTQ0IH0gZnJvbSAnQC9hcGkvYmFzZTQ0Q2xpZW50JzsKaW1wb3J0IHsgdXNlQ3VycmVudFN0b3JlIH0gZnJvbSAnQC9ob29rcy91c2VDdXJyZW50U3RvcmUnOwoKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gTWVkaWFMaWJyYXJ5KCkgewogIGNvbnN0IHsgc3RvcmUsIGxvYWRpbmcgfSA9IHVzZUN1cnJlbnRTdG9yZSgpOwogIGNvbnN0IFtmaWxlcywgc2V0RmlsZXNdID0gdXNlU3RhdGUoW10pOwogIGNvbnN0IFtzZWFyY2gsIHNldFNlYXJjaF0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW2ZvbGRlciwgc2V0Rm9sZGVyXSA9IHVzZVN0YXRlKCdhbGwnKTsKICBjb25zdCBbdXBsb2FkaW5nLCBzZXRVcGxvYWRpbmddID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtjb3BpZWQsIHNldENvcGllZF0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbZHJhZywgc2V0RHJhZ10gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgZmlsZVJlZiA9IHVzZVJlZihudWxsKTsKCiAgY29uc3QgbG9hZCA9IHVzZUNhbGxiYWNrKGFzeW5jICgpID0+IHsKICAgIGlmICghc3RvcmU/LmlkKSByZXR1cm47CiAgICBzZXRGaWxlcyhhd2FpdCBiYXNlNDQuZW50aXRpZXMuTWVkaWFGaWxlLmZpbHRlcih7IHN0b3JlX2lkOiBzdG9yZS5pZCB9LCAnLWNyZWF0ZWRfZGF0ZScsIDIwMCkpOwogIH0sIFtzdG9yZT8uaWRdKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsgbG9hZCgpOyB9LCBbbG9hZF0pOwoKICBjb25zdCB1cGxvYWQgPSBhc3luYyAoZmlsZUxpc3QpID0+IHsKICAgIGlmICghZmlsZUxpc3Q/Lmxlbmd0aCkgcmV0dXJuOwogICAgc2V0VXBsb2FkaW5nKHRydWUpOwogICAgdHJ5IHsKICAgICAgZm9yIChjb25zdCBmaWxlIG9mIEFycmF5LmZyb20oZmlsZUxpc3QpKSB7CiAgICAgICAgY29uc3QgeyBmaWxlX3VybCB9ID0gYXdhaXQgYmFzZTQ0LmludGVncmF0aW9ucy5Db3JlLlVwbG9hZFB1YmxpY0ZpbGUoeyBmaWxlIH0pOwogICAgICAgIGNvbnN0IHR5cGUgPSBmaWxlLnR5cGUuc3RhcnRzV2l0aCgndmlkZW8nKSA/ICd2aWRlbycgOiBmaWxlLnR5cGUuc3RhcnRzV2l0aCgnaW1hZ2UnKSA/ICdpbWFnZScgOiAnZG9jdW1lbnQnOwogICAgICAgIGF3YWl0IGJhc2U0NC5lbnRpdGllcy5NZWRpYUZpbGUuY3JlYXRlKHsgc3RvcmVfaWQ6IHN0b3JlLmlkLCBuYW1lOiBmaWxlLm5hbWUsIHVybDogZmlsZV91cmwsIHR5cGUsIG1pbWU6IGZpbGUudHlwZSwgc2l6ZTogZmlsZS5zaXplLCBmb2xkZXI6ICdnZW5lcmFsJyB9KTsKICAgICAgfQogICAgICBhd2FpdCBsb2FkKCk7CiAgICB9IGZpbmFsbHkgeyBzZXRVcGxvYWRpbmcoZmFsc2UpOyB9CiAgfTsKCiAgY29uc3QgcmVtb3ZlID0gYXN5bmMgKGlkKSA9PiB7IGlmIChjb25maXJtKCdTdXBwcmltZXIgY2UgZmljaGllciA/JykpIHsgYXdhaXQgYmFzZTQ0LmVudGl0aWVzLk1lZGlhRmlsZS5kZWxldGUoaWQpOyBhd2FpdCBsb2FkKCk7IH0gfTsKICBjb25zdCBjb3B5VXJsID0gKHVybCwgaWQpID0+IHsgbmF2aWdhdG9yLmNsaXBib2FyZC53cml0ZVRleHQodXJsKTsgc2V0Q29waWVkKGlkKTsgc2V0VGltZW91dCgoKSA9PiBzZXRDb3BpZWQobnVsbCksIDE1MDApOyB9OwoKICBjb25zdCBmb2xkZXJzID0gWydhbGwnLCAuLi5uZXcgU2V0KGZpbGVzLm1hcCgoZikgPT4gZi5mb2xkZXIpKV07CiAgY29uc3QgZmlsdGVyZWQgPSBmaWxlcy5maWx0ZXIoKGYpID0+IChmb2xkZXIgPT09ICdhbGwnIHx8IGYuZm9sZGVyID09PSBmb2xkZXIpICYmICghc2VhcmNoIHx8IGYubmFtZS50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHNlYXJjaC50b0xvd2VyQ2FzZSgpKSkpOwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0zMiI+PExvYWRlcjIgY2xhc3NOYW1lPSJ3LTYgaC02IGFuaW1hdGUtc3BpbiB0ZXh0LVsjMDA4MDYwXSIgLz48L2Rpdj47CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0icC00IHNtOnAtNiBtYXgtdy02eGwgbXgtYXV0byI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBtYi02Ij48SW1hZ2VJY29uIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LVsjNkQ3MTc1XSIgLz48aDEgY2xhc3NOYW1lPSJ0ZXh0LXhsIGZvbnQtYm9sZCB0ZXh0LVsjMjAyMjIzXSI+QmFucXVlIGRlIG3DqWRpYXM8L2gxPjwvZGl2PgoKICAgICAgPGRpdgogICAgICAgIG9uRHJhZ092ZXI9eyhlKSA9PiB7IGUucHJldmVudERlZmF1bHQoKTsgc2V0RHJhZyh0cnVlKTsgfX0KICAgICAgICBvbkRyYWdMZWF2ZT17KCkgPT4gc2V0RHJhZyhmYWxzZSl9CiAgICAgICAgb25Ecm9wPXsoZSkgPT4geyBlLnByZXZlbnREZWZhdWx0KCk7IHNldERyYWcoZmFsc2UpOyB1cGxvYWQoZS5kYXRhVHJhbnNmZXIuZmlsZXMpOyB9fQogICAgICAgIG9uQ2xpY2s9eygpID0+IGZpbGVSZWYuY3VycmVudD8uY2xpY2soKX0KICAgICAgICBjbGFzc05hbWU9e2BtYi01IHJvdW5kZWQtMnhsIGJvcmRlci0yIGJvcmRlci1kYXNoZWQgY3Vyc29yLXBvaW50ZXIgdHJhbnNpdGlvbiBweS04IGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGdhcC0yICR7ZHJhZyA/ICdib3JkZXItWyMwMDgwNjBdIGJnLVsjMDA4MDYwXS81JyA6ICdib3JkZXItWyNFMUUxRTFdIGhvdmVyOmJvcmRlci1bIzAwODA2MF0vNTAnfWB9CiAgICAgID4KICAgICAgICB7dXBsb2FkaW5nID8gPD48TG9hZGVyMiBjbGFzc05hbWU9InctNiBoLTYgYW5pbWF0ZS1zcGluIHRleHQtWyMwMDgwNjBdIiAvPjxwIGNsYXNzTmFtZT0idGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtWyMwMDgwNjBdIj5Uw6lsw6l2ZXJzZW1lbnTigKY8L3A+PC8+IDogPD48VXBsb2FkIGNsYXNzTmFtZT0idy03IGgtNyB0ZXh0LVsjNkQ3MTc1XSIgLz48cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LVsjMjAyMjIzXSI+R2xpc3NleiB2b3MgaW1hZ2VzIG91IHZpZMOpb3MgaWNpPC9wPjxwIGNsYXNzTmFtZT0idGV4dC14cyB0ZXh0LVsjNkQ3MTc1XSI+b3UgY2xpcXVleiBwb3VyIHBhcmNvdXJpciDCtyBQTkcgwrcgSlBHIMK3IFdFQlAgwrcgTVA0PC9wPjwvPn0KICAgICAgICA8aW5wdXQgcmVmPXtmaWxlUmVmfSB0eXBlPSJmaWxlIiBhY2NlcHQ9ImltYWdlLyosdmlkZW8vKiIgbXVsdGlwbGUgY2xhc3NOYW1lPSJoaWRkZW4iIG9uQ2hhbmdlPXsoZSkgPT4gdXBsb2FkKGUudGFyZ2V0LmZpbGVzKX0gLz4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvbCBzbTpmbGV4LXJvdyBnYXAtMyBtYi00Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgYmctd2hpdGUgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcm91bmRlZC1sZyBweC0zIHB5LTIgZmxleC0xIj48U2VhcmNoIGNsYXNzTmFtZT0idy00IGgtNCB0ZXh0LVsjNkQ3MTc1XSIgLz48aW5wdXQgdmFsdWU9e3NlYXJjaH0gb25DaGFuZ2U9eyhlKSA9PiBzZXRTZWFyY2goZS50YXJnZXQudmFsdWUpfSBwbGFjZWhvbGRlcj0iUmVjaGVyY2hlciB1biBmaWNoaWVyIiBjbGFzc05hbWU9Im91dGxpbmUtbm9uZSB0ZXh0LXNtIHctZnVsbCIgLz48L2Rpdj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBnYXAtMiBvdmVyZmxvdy14LWF1dG8iPgogICAgICAgICAge2ZvbGRlcnMubWFwKChmKSA9PiA8YnV0dG9uIGtleT17Zn0gb25DbGljaz17KCkgPT4gc2V0Rm9sZGVyKGYpfSBjbGFzc05hbWU9e2B0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgcHgtMyBweS0yIHJvdW5kZWQtZnVsbCB3aGl0ZXNwYWNlLW5vd3JhcCB0cmFuc2l0aW9uIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xICR7Zm9sZGVyID09PSBmID8gJ2JnLVsjMDA4MDYwXSB0ZXh0LXdoaXRlJyA6ICdiZy13aGl0ZSBib3JkZXIgYm9yZGVyLVsjRTFFMUUxXSB0ZXh0LVsjNkQ3MTc1XSBob3ZlcjpiZy1ibGFjay81J31gfT48Rm9sZGVyIGNsYXNzTmFtZT0idy0zLjUgaC0zLjUiIC8+IHtmID09PSAnYWxsJyA/ICdUb3VzJyA6IGZ9PC9idXR0b24+KX0KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBncmlkLWNvbHMtMiBzbTpncmlkLWNvbHMtMyBtZDpncmlkLWNvbHMtNCBsZzpncmlkLWNvbHMtNSBnYXAtMyI+CiAgICAgICAge2ZpbHRlcmVkLmxlbmd0aCA9PT0gMCA/ICgKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJjb2wtc3Bhbi1mdWxsIGJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gcC0xMCB0ZXh0LWNlbnRlciI+PEltYWdlSWNvbiBjbGFzc05hbWU9InctMTAgaC0xMCB0ZXh0LVsjQzlDOUM5XSBteC1hdXRvIG1iLTMiIC8+PHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtWyM2RDcxNzVdIj5BdWN1biBtw6lkaWEuIFTDqWzDqXZlcnNleiB2b3MgcHJlbWnDqHJlcyBpbWFnZXMuPC9wPjwvZGl2PgogICAgICAgICkgOiBmaWx0ZXJlZC5tYXAoKGYpID0+ICgKICAgICAgICAgIDxkaXYga2V5PXtmLmlkfSBjbGFzc05hbWU9Imdyb3VwIGJnLXdoaXRlIHJvdW5kZWQteGwgYm9yZGVyIGJvcmRlci1bI0UxRTFFMV0gb3ZlcmZsb3ctaGlkZGVuIj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImFzcGVjdC1zcXVhcmUgYmctWyNGNEY0RjRdIG92ZXJmbG93LWhpZGRlbiBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICAgICAge2YudHlwZSA9PT0gJ3ZpZGVvJyA/IDx2aWRlbyBzcmM9e2YudXJsfSBjbGFzc05hbWU9InctZnVsbCBoLWZ1bGwgb2JqZWN0LWNvdmVyIiAvPiA6IGYudHlwZSA9PT0gJ2ltYWdlJyA/IDxpbWcgc3JjPXtmLnVybH0gYWx0PXtmLm5hbWV9IGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+IDogPEltYWdlSWNvbiBjbGFzc05hbWU9InctOCBoLTggdGV4dC1bI0M5QzlDOV0iIC8+fQogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtMi41Ij4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgZm9udC1tZWRpdW0gdGV4dC1bIzIwMjIyM10gdHJ1bmNhdGUiPntmLm5hbWV9PC9wPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gbXQtMS41Ij4KICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gY29weVVybChmLnVybCwgZi5pZCl9IGNsYXNzTmFtZT0idGV4dC1bIzZENzE3NV0gaG92ZXI6dGV4dC1bIzAwODA2MF0iPntjb3BpZWQgPT09IGYuaWQgPyA8Q2hlY2sgY2xhc3NOYW1lPSJ3LTMuNSBoLTMuNSB0ZXh0LVsjMDA4MDYwXSIgLz4gOiA8Q29weSBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPn08L2J1dHRvbj4KICAgICAgICAgICAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gcmVtb3ZlKGYuaWQpfSBjbGFzc05hbWU9InRleHQtWyM2RDcxNzVdIGhvdmVyOnRleHQtcmVkLTYwMCI+PFRyYXNoMiBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPjwvYnV0dG9uPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICkpfQogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0=
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Image as ImageIcon, Upload, Trash2, Search, Loader2, Copy, Check, X, Folder } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
+
+export default function MediaLibrary() {
+  const { store, loading } = useCurrentStore();
+  const [files, setFiles] = useState([]);
+  const [search, setSearch] = useState('');
+  const [folder, setFolder] = useState('all');
+  const [uploading, setUploading] = useState(false);
+  const [copied, setCopied] = useState(null);
+  const [drag, setDrag] = useState(false);
+  const fileRef = useRef(null);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    setFiles(await base44.entities.MediaFile.filter({ store_id: store.id }, '-created_date', 200));
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const upload = async (fileList) => {
+    if (!fileList?.length) return;
+    setUploading(true);
+    try {
+      for (const file of Array.from(fileList)) {
+        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+        const type = file.type.startsWith('video') ? 'video' : file.type.startsWith('image') ? 'image' : 'document';
+        await base44.entities.MediaFile.create({ store_id: store.id, name: file.name, url: file_url, type, mime: file.type, size: file.size, folder: 'general' });
+      }
+      await load();
+    } finally { setUploading(false); }
+  };
+
+  const remove = async (id) => { if (confirm('Supprimer ce fichier ?')) { await base44.entities.MediaFile.delete(id); await load(); } };
+  const copyUrl = (url, id) => { navigator.clipboard.writeText(url); setCopied(id); setTimeout(() => setCopied(null), 1500); };
+
+  const folders = ['all', ...new Set(files.map((f) => f.folder))];
+  const filtered = files.filter((f) => (folder === 'all' || f.folder === folder) && (!search || f.name.toLowerCase().includes(search.toLowerCase())));
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+
+  return (
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <div className="flex items-center gap-2 mb-6"><ImageIcon className="w-5 h-5 text-[#6D7175]" /><h1 className="text-xl font-bold text-[#202223]">Banque de médias</h1></div>
+
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+        onDragLeave={() => setDrag(false)}
+        onDrop={(e) => { e.preventDefault(); setDrag(false); upload(e.dataTransfer.files); }}
+        onClick={() => fileRef.current?.click()}
+        className={`mb-5 rounded-2xl border-2 border-dashed cursor-pointer transition py-8 flex flex-col items-center justify-center gap-2 ${drag ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:border-[#008060]/50'}`}
+      >
+        {uploading ? <><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /><p className="text-sm font-semibold text-[#008060]">Téléversement…</p></> : <><Upload className="w-7 h-7 text-[#6D7175]" /><p className="text-sm font-semibold text-[#202223]">Glissez vos images ou vidéos ici</p><p className="text-xs text-[#6D7175]">ou cliquez pour parcourir · PNG · JPG · WEBP · MP4</p></>}
+        <input ref={fileRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={(e) => upload(e.target.files)} />
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="flex items-center gap-2 bg-white border border-[#E1E1E1] rounded-lg px-3 py-2 flex-1"><Search className="w-4 h-4 text-[#6D7175]" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher un fichier" className="outline-none text-sm w-full" /></div>
+        <div className="flex gap-2 overflow-x-auto">
+          {folders.map((f) => <button key={f} onClick={() => setFolder(f)} className={`text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap transition flex items-center gap-1 ${folder === f ? 'bg-[#008060] text-white' : 'bg-white border border-[#E1E1E1] text-[#6D7175] hover:bg-black/5'}`}><Folder className="w-3.5 h-3.5" /> {f === 'all' ? 'Tous' : f}</button>)}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {filtered.length === 0 ? (
+          <div className="col-span-full bg-white rounded-xl border border-[#E1E1E1] p-10 text-center"><ImageIcon className="w-10 h-10 text-[#C9C9C9] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Aucun média. Téléversez vos premières images.</p></div>
+        ) : filtered.map((f) => (
+          <div key={f.id} className="group bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+            <div className="aspect-square bg-[#F4F4F4] overflow-hidden flex items-center justify-center">
+              {f.type === 'video' ? <video src={f.url} className="w-full h-full object-cover" /> : f.type === 'image' ? <img src={f.url} alt={f.name} className="w-full h-full object-cover" /> : <ImageIcon className="w-8 h-8 text-[#C9C9C9]" />}
+            </div>
+            <div className="p-2.5">
+              <p className="text-xs font-medium text-[#202223] truncate">{f.name}</p>
+              <div className="flex items-center justify-between mt-1.5">
+                <button onClick={() => copyUrl(f.url, f.id)} className="text-[#6D7175] hover:text-[#008060]">{copied === f.id ? <Check className="w-3.5 h-3.5 text-[#008060]" /> : <Copy className="w-3.5 h-3.5" />}</button>
+                <button onClick={() => remove(f.id)} className="text-[#6D7175] hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

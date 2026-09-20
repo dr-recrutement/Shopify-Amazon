@@ -1,1 +1,94 @@
-aW1wb3J0IHsgdXNlU3RhdGUsIHVzZUVmZmVjdCwgdXNlQ2FsbGJhY2sgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmssIHVzZVBhcmFtcyB9IGZyb20gJ3JlYWN0LXJvdXRlci1kb20nOwppbXBvcnQgeyBBcnJvd0xlZnQsIExvYWRlcjIsIEFsZXJ0Q2lyY2xlLCBDYWxlbmRhciwgVXNlciwgQXJyb3dSaWdodCB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7CmltcG9ydCB7IGJhc2U0NCB9IGZyb20gJ0AvYXBpL2Jhc2U0NENsaWVudCc7CmltcG9ydCB7IGNsb25lVGhlbWUsIERFRkFVTFRfVEhFTUVfSUQgfSBmcm9tICdAL2xpYi90aGVtZXMnOwoKY29uc3QgQ1VTVE9NX0tFWSA9ICdzZWxsaWFfdGhlbWVfY3VzdG9tJzsKY29uc3QgVEhFTUVfS0VZID0gJ3NlbGxpYV90aGVtZSc7CgpmdW5jdGlvbiBsb2FkVGhlbWUoKSB7CiAgY29uc3QgY3VzdG9tID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oQ1VTVE9NX0tFWSk7CiAgaWYgKGN1c3RvbSkgeyB0cnkgeyByZXR1cm4gSlNPTi5wYXJzZShjdXN0b20pOyB9IGNhdGNoIHsgLyogZmFsbCB0aHJvdWdoICovIH0gfQogIHJldHVybiBjbG9uZVRoZW1lKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFRIRU1FX0tFWSkgfHwgREVGQVVMVF9USEVNRV9JRCk7Cn0KCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFydGljbGVEZXRhaWwoKSB7CiAgY29uc3QgeyBzbHVnLCBoYW5kbGUgfSA9IHVzZVBhcmFtcygpOwogIGNvbnN0IFtzdG9yZSwgc2V0U3RvcmVdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW2FydGljbGUsIHNldEFydGljbGVdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW2xvYWRpbmcsIHNldExvYWRpbmddID0gdXNlU3RhdGUodHJ1ZSk7CiAgY29uc3QgW2Vycm9yLCBzZXRFcnJvcl0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbdGhlbWUsIHNldFRoZW1lXSA9IHVzZVN0YXRlKGxvYWRUaGVtZSk7CgogIGNvbnN0IGxvYWQgPSB1c2VDYWxsYmFjayhhc3luYyAoKSA9PiB7CiAgICBpZiAoIXNsdWcgfHwgIWhhbmRsZSkgcmV0dXJuOwogICAgc2V0TG9hZGluZyh0cnVlKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHJlcyA9IGF3YWl0IGJhc2U0NC5mdW5jdGlvbnMuaW52b2tlKCdwdWJsaWNTdG9yZScsIHsgc2x1ZyB9KTsKICAgICAgaWYgKHJlcy5kYXRhPy5lcnJvcikgdGhyb3cgbmV3IEVycm9yKHJlcy5kYXRhLmVycm9yKTsKICAgICAgc2V0U3RvcmUocmVzLmRhdGEuc3RvcmUpOwogICAgICBjb25zdCBmb3VuZCA9IChyZXMuZGF0YS5hcnRpY2xlcyB8fCBbXSkuZmluZCgoYSkgPT4gYS5oYW5kbGUgPT09IGhhbmRsZSk7CiAgICAgIGlmICghZm91bmQpIHRocm93IG5ldyBFcnJvcignQXJ0aWNsZSBpbnRyb3V2YWJsZScpOwogICAgICBzZXRBcnRpY2xlKGZvdW5kKTsKICAgICAgc2V0RXJyb3IobnVsbCk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIHNldEVycm9yKGUubWVzc2FnZSB8fCAnRXJyZXVyJyk7CiAgICB9IGZpbmFsbHkgewogICAgICBzZXRMb2FkaW5nKGZhbHNlKTsKICAgIH0KICB9LCBbc2x1ZywgaGFuZGxlXSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IGxvYWQoKTsgfSwgW2xvYWRdKTsKCiAgaWYgKGxvYWRpbmcpIHJldHVybiA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHktMzIiPjxMb2FkZXIyIGNsYXNzTmFtZT0idy04IGgtOCBhbmltYXRlLXNwaW4gdGV4dC1bIzAwODA2MF0iIC8+PC9kaXY+OwogIGlmIChlcnJvcikgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy1tZCBteC1hdXRvIG10LTI0IHRleHQtY2VudGVyIj4KICAgICAgPEFsZXJ0Q2lyY2xlIGNsYXNzTmFtZT0idy0xMCBoLTEwIHRleHQtWyM2RDcxNzVdIG14LWF1dG8gbWItMyIgLz4KICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1bIzIwMjIyM10iPkFydGljbGUgaW50cm91dmFibGU8L2gxPgogICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1bIzZENzE3NV0gbXQtMSI+e2Vycm9yfTwvcD4KICAgICAgPExpbmsgdG89e2Avc3RvcmUvJHtzbHVnfWB9IGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgYmctWyMwMDgwNjBdIHRleHQtd2hpdGUgdGV4dC1zbSBmb250LW1lZGl1bSBweC00IHB5LTIgcm91bmRlZC1mdWxsIGhvdmVyOmJnLVsjMDA2OTRkXSBtdC00Ij5SZXRvdXIgXHUwMGUwIGxhIGJvdXRpcXVlPC9MaW5rPgogICAgPC9kaXY+CiAgKTsKICBpZiAoIXN0b3JlIHx8ICFhcnRpY2xlKSByZXR1cm4gbnVsbDsKCiAgY29uc3QgcCA9IHRoZW1lLnBhbGV0dGU7CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLWgtc2NyZWVuIGJnLXdoaXRlIiBzdHlsZT17eyBjb2xvcjogcC50ZXh0LCBmb250RmFtaWx5OiB0aGVtZS5mb250cz8uYm9keSB9fT4KICAgICAgey8qIFNpbXBsZSBoZWFkZXIgKi99CiAgICAgIDxoZWFkZXIgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gcHgtNSBzbTpweC04IHB5LTQgYm9yZGVyLWIiIHN0eWxlPXt7IGJvcmRlckNvbG9yOiBwLmJvcmRlciB9fT4KICAgICAgICA8TGluayB0bz17YC9zdG9yZS8ke3NsdWd9YH0gY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHRleHQtc20gZm9udC1tZWRpdW0iIHN0eWxlPXt7IGNvbG9yOiBwLmRhcmsgfX0+CiAgICAgICAgICA8QXJyb3dMZWZ0IGNsYXNzTmFtZT0idy00IGgtNCIgLz4ge3N0b3JlLm5hbWV9CiAgICAgICAgPC9MaW5rPgogICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC14cyBmb250LW1lZGl1bSIgc3R5bGU9e3sgY29sb3I6IHAubXV0ZWQgfX0+QmxvZzwvc3Bhbj4KICAgICAgPC9oZWFkZXI+CgogICAgICB7LyogQXJ0aWNsZSAqL30KICAgICAgPGFydGljbGUgY2xhc3NOYW1lPSJtYXgtdy0zeGwgbXgtYXV0byBweC01IHNtOnB4LTggcHktMTAiPgogICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtM3hsIHNtOnRleHQtNHhsIGZvbnQtYm9sZCBsZWFkaW5nLXRpZ2h0IiBzdHlsZT17eyBmb250RmFtaWx5OiB0aGVtZS5mb250cz8uaGVhZGluZywgY29sb3I6IHAuZGFyayB9fT57YXJ0aWNsZS50aXRsZX08L2gxPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtNCBtdC00IHRleHQteHMiIHN0eWxlPXt7IGNvbG9yOiBwLm11dGVkIH19PgogICAgICAgICAge2FydGljbGUuYXV0aG9yICYmIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEiPjxVc2VyIGNsYXNzTmFtZT0idy0zLjUgaC0zLjUiIC8+IHthcnRpY2xlLmF1dGhvcn08L3NwYW4+fQogICAgICAgICAge2FydGljbGUucHVibGlzaGVkX2F0ICYmIDxzcGFuIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEiPjxDYWxlbmRhciBjbGFzc05hbWU9InctMy41IGgtMy41IiAvPiB7bmV3IERhdGUoYXJ0aWNsZS5wdWJsaXNoZWRfYXQpLnRvTG9jYWxlRGF0ZVN0cmluZygnZnItRlInLCB7IGRheTogJ251bWVyaWMnLCBtb250aDogJ2xvbmcnLCB5ZWFyOiAnbnVtZXJpYycgfSl9PC9zcGFuPn0KICAgICAgICA8L2Rpdj4KICAgICAgICB7YXJ0aWNsZS5mZWF0dXJlZF9pbWFnZSAmJiAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNiByb3VuZGVkLTJ4bCBvdmVyZmxvdy1oaWRkZW4gYXNwZWN0LVsxNi85XSI+CiAgICAgICAgICAgIDxpbWcgc3JjPXthcnRpY2xlLmZlYXR1cmVkX2ltYWdlfSBhbHQ9e2FydGljbGUudGl0bGV9IGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQogICAgICAgIHthcnRpY2xlLmV4Y2VycHQgJiYgPHAgY2xhc3NOYW1lPSJtdC02IHRleHQtYmFzZSBmb250LW1lZGl1bSBsZWFkaW5nLXJlbGF4ZWQiIHN0eWxlPXt7IGNvbG9yOiBwLm11dGVkIH19PnthcnRpY2xlLmV4Y2VycHR9PC9wPn0KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNiBwcm9zZSBwcm9zZS1zbSBtYXgtdy1ub25lIHRleHQtc20gbGVhZGluZy1yZWxheGVkIFsmX2FdOnVuZGVybGluZSIgc3R5bGU9e3sgY29sb3I6IHAudGV4dCB9fSBkYW5nZXJvdXNseVNldElubmVySFRNTD17eyBfX2h0bWw6IGFydGljbGUuY29udGVudCB8fCAnJyB9fSAvPgogICAgICAgIHthcnRpY2xlLnRhZ3MgJiYgYXJ0aWNsZS50YWdzLmxlbmd0aCA+IDAgJiYgKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZmxleC13cmFwIGdhcC0yIG10LTggcHQtNiBib3JkZXItdCIgc3R5bGU9e3sgYm9yZGVyQ29sb3I6IHAuYm9yZGVyIH19PgogICAgICAgICAgICB7YXJ0aWNsZS50YWdzLm1hcCgodCkgPT4gKAogICAgICAgICAgICAgIDxzcGFuIGtleT17dH0gY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHB4LTMgcHktMSByb3VuZGVkLWZ1bGwiIHN0eWxlPXt7IGJhY2tncm91bmQ6IHAuc3VyZmFjZSwgY29sb3I6IHAubXV0ZWQgfX0+I3t0fTwvc3Bhbj4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQogICAgICAgIDxMaW5rIHRvPXtgL3N0b3JlLyR7c2x1Z31gfSBjbGFzc05hbWU9Im10LTggaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgdGV4dC1zbSBmb250LXNlbWlib2xkIiBzdHlsZT17eyBjb2xvcjogdGhlbWUucGFsZXR0ZS5wcmltYXJ5IH19PgogICAgICAgICAgUmV0b3VyIFx1MDBlMCBsYSBib3V0aXF1ZSA8QXJyb3dSaWdodCBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAgPC9MaW5rPgogICAgICA8L2FydGljbGU+CiAgICA8L2Rpdj4KICApOwp9
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, Loader2, AlertCircle, Calendar, User, ArrowRight } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { cloneTheme, DEFAULT_THEME_ID } from '@/lib/themes';
+
+const CUSTOM_KEY = 'sellia_theme_custom';
+const THEME_KEY = 'sellia_theme';
+
+function loadTheme() {
+  const custom = localStorage.getItem(CUSTOM_KEY);
+  if (custom) { try { return JSON.parse(custom); } catch { /* fall through */ } }
+  return cloneTheme(localStorage.getItem(THEME_KEY) || DEFAULT_THEME_ID);
+}
+
+export default function ArticleDetail() {
+  const { slug, handle } = useParams();
+  const [store, setStore] = useState(null);
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [theme, setTheme] = useState(loadTheme);
+
+  const load = useCallback(async () => {
+    if (!slug || !handle) return;
+    setLoading(true);
+    try {
+      const res = await base44.functions.invoke('publicStore', { slug });
+      if (res.data?.error) throw new Error(res.data.error);
+      setStore(res.data.store);
+      const found = (res.data.articles || []).find((a) => a.handle === handle);
+      if (!found) throw new Error('Article introuvable');
+      setArticle(found);
+      setError(null);
+    } catch (e) {
+      setError(e.message || 'Erreur');
+    } finally {
+      setLoading(false);
+    }
+  }, [slug, handle]);
+
+  useEffect(() => { load(); }, [load]);
+
+  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-8 h-8 animate-spin text-[#008060]" /></div>;
+  if (error) return (
+    <div className="max-w-md mx-auto mt-24 text-center">
+      <AlertCircle className="w-10 h-10 text-[#6D7175] mx-auto mb-3" />
+      <h1 className="text-lg font-bold text-[#202223]">Article introuvable</h1>
+      <p className="text-sm text-[#6D7175] mt-1">{error}</p>
+      <Link to={`/store/${slug}`} className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] mt-4">Retour \u00e0 la boutique</Link>
+    </div>
+  );
+  if (!store || !article) return null;
+
+  const p = theme.palette;
+
+  return (
+    <div className="min-h-screen bg-white" style={{ color: p.text, fontFamily: theme.fonts?.body }}>
+      {/* Simple header */}
+      <header className="flex items-center justify-between px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
+        <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
+          <ArrowLeft className="w-4 h-4" /> {store.name}
+        </Link>
+        <span className="text-xs font-medium" style={{ color: p.muted }}>Blog</span>
+      </header>
+
+      {/* Article */}
+      <article className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
+        <h1 className="text-3xl sm:text-4xl font-bold leading-tight" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{article.title}</h1>
+        <div className="flex items-center gap-4 mt-4 text-xs" style={{ color: p.muted }}>
+          {article.author && <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" /> {article.author}</span>}
+          {article.published_at && <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {new Date(article.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>}
+        </div>
+        {article.featured_image && (
+          <div className="mt-6 rounded-2xl overflow-hidden aspect-[16/9]">
+            <img src={article.featured_image} alt={article.title} className="w-full h-full object-cover" />
+          </div>
+        )}
+        {article.excerpt && <p className="mt-6 text-base font-medium leading-relaxed" style={{ color: p.muted }}>{article.excerpt}</p>}
+        <div className="mt-6 prose prose-sm max-w-none text-sm leading-relaxed [&_a]:underline" style={{ color: p.text }} dangerouslySetInnerHTML={{ __html: article.content || '' }} />
+        {article.tags && article.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t" style={{ borderColor: p.border }}>
+            {article.tags.map((t) => (
+              <span key={t} className="text-xs font-medium px-3 py-1 rounded-full" style={{ background: p.surface, color: p.muted }}>#{t}</span>
+            ))}
+          </div>
+        )}
+        <Link to={`/store/${slug}`} className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: theme.palette.primary }}>
+          Retour \u00e0 la boutique <ArrowRight className="w-4 h-4" />
+        </Link>
+      </article>
+    </div>
+  );
+}

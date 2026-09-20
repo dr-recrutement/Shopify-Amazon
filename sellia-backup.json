@@ -1,0 +1,195 @@
+{
+  "generated_at": "2026-09-20T19:37:06.810Z",
+  "totalSynced": 9,
+  "entities": {
+    "Store": [
+      {
+        "id": "6ab002e53c66396e3f2d3002",
+        "created_date": "2026-09-20T15:59:33.685000",
+        "updated_date": "2026-09-20T17:08:55.294000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "business_name": "Vincent Nogue",
+        "country": "SN",
+        "address": "",
+        "theme_id": null,
+        "description": "",
+        "phone": "+221",
+        "business_type": "Mode",
+        "domain": "liyah.shop",
+        "name": "Vincent Nogue",
+        "logo": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/09d0f7a0e_digital-transformation1.png",
+        "currency": "XOF",
+        "is_marketplace_seller": false,
+        "trial_ends_at": null,
+        "plan": "growth",
+        "slug": "vincent-nogue",
+        "email": "drrecrutement.ae@gmail.com",
+        "status": "draft",
+        "plan_status": "trial",
+        "is_sample": false
+      }
+    ],
+    "Product": [
+      {
+        "id": "6ab01febe7a69bd88e771cde",
+        "created_date": "2026-09-20T18:03:23.912000",
+        "updated_date": "2026-09-20T18:03:59.710000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "images": [
+          "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/90f304cf6_FromKlickpincom-299559812739240685-pin-id-299559812739240685.jpg"
+        ],
+        "compare_at_price": 1500,
+        "cost": null,
+        "description": "",
+        "weight": 10,
+        "handle": "vern",
+        "variants": [],
+        "title": "vern",
+        "tags": [
+          "verni"
+        ],
+        "product_type": "gel oil",
+        "weight_unit": "kg",
+        "vendor": "verni banla",
+        "price": 1220,
+        "track_inventory": true,
+        "options": [],
+        "currency": "XOF",
+        "collection_ids": [],
+        "sku": "grgrg122",
+        "seo": null,
+        "barcode": "151212",
+        "status": "active",
+        "is_sample": false
+      }
+    ],
+    "Order": [],
+    "Customer": [],
+    "Collection": [
+      {
+        "id": "6ab01f9b54d449e21d4cd56a",
+        "created_date": "2026-09-20T18:02:03.726000",
+        "updated_date": "2026-09-20T18:02:03.726000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "image": "",
+        "product_ids": [],
+        "name": "Verni",
+        "description": "bangala verni",
+        "handle": "verni",
+        "rules": [
+          {
+            "field": "product_type",
+            "value": "Femme",
+            "operator": "eq"
+          }
+        ],
+        "type": "smart",
+        "sort_order": "manual",
+        "status": "active",
+        "is_sample": false
+      }
+    ],
+    "Cart": [],
+    "Discount": [],
+    "Payment": [],
+    "Article": [],
+    "Review": [],
+    "Message": [],
+    "Automation": [],
+    "ShippingZone": [],
+    "MediaFile": [
+      {
+        "id": "6ab0225bfddab6596f237218",
+        "created_date": "2026-09-20T18:13:47.284000",
+        "updated_date": "2026-09-20T18:13:47.284000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 18742,
+        "mime": "image/webp",
+        "name": "IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f29.webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/f02fe71a2_IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f29.webp",
+        "tags": [],
+        "is_sample": false
+      },
+      {
+        "id": "6ab0225954636cc7d0a310a8",
+        "created_date": "2026-09-20T18:13:45.625000",
+        "updated_date": "2026-09-20T18:13:45.625000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 196146,
+        "mime": "image/webp",
+        "name": "IMG-21440595_m_jpeg_1_94fe59b5-9f3c-4000-b928-ea1e3f832db9.webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/800db4687_IMG-21440595_m_jpeg_1_94fe59b5-9f3c-4000-b928-ea1e3f832db9.webp",
+        "tags": [],
+        "is_sample": false
+      },
+      {
+        "id": "6ab022563a9b4e87274ce1df",
+        "created_date": "2026-09-20T18:13:42.826000",
+        "updated_date": "2026-09-20T18:13:42.826000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 19010,
+        "mime": "image/webp",
+        "name": "IMG-21440594_m_jpeg_1_7dbaf02b-af1f-45d0-8748-0a9569eef945.webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/f2259891c_IMG-21440594_m_jpeg_1_7dbaf02b-af1f-45d0-8748-0a9569eef945.webp",
+        "tags": [],
+        "is_sample": false
+      },
+      {
+        "id": "6ab0225567bc2a4554d6b4cb",
+        "created_date": "2026-09-20T18:13:41.030000",
+        "updated_date": "2026-09-20T18:13:41.030000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 50414,
+        "mime": "image/webp",
+        "name": "IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f29 (1).webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/87711ec2b_IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f291.webp",
+        "tags": [],
+        "is_sample": false
+      },
+      {
+        "id": "6ab0225339e81c0249b33cec",
+        "created_date": "2026-09-20T18:13:39.166000",
+        "updated_date": "2026-09-20T18:13:39.166000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 118086,
+        "mime": "image/webp",
+        "name": "IMG-21440601_m_jpeg_1_10be7dd9-5f2a-40ae-a16b-31a57e578cce.webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/cb146eb1a_IMG-21440601_m_jpeg_1_10be7dd9-5f2a-40ae-a16b-31a57e578cce.webp",
+        "tags": [],
+        "is_sample": false
+      },
+      {
+        "id": "6ab02250a21a41695c9fdaeb",
+        "created_date": "2026-09-20T18:13:36.967000",
+        "updated_date": "2026-09-20T18:13:36.967000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
+        "store_id": "6ab002e53c66396e3f2d3002",
+        "folder": "general",
+        "size": 135540,
+        "mime": "image/webp",
+        "name": "IMG-21440599_m_jpeg_1_b8274a57-e5d9-4c90-bdef-61dd41fc6779.webp",
+        "type": "image",
+        "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/3a9efc919_IMG-21440599_m_jpeg_1_b8274a57-e5d9-4c90-bdef-61dd41fc6779.webp",
+        "tags": [],
+        "is_sample": false
+      }
+    ]
+  }
+}

@@ -1,64 +1,65 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+# Sellia — SaaS E-commerce Mondial
 
-# Base44 Project
+Plateforme SaaS multi-tenant e-commerce, conçue et développée par **LiAfrik** basée à Dubai & Afrique 🌍.
 
-Use this repository to run and edit the app locally, then publish changes back through db.
+## Stack technique
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+- **Frontend** : React 18 + TypeScript + Vite + Tailwind CSS
+- **Backend** : Supabase (PostgreSQL, Auth, Edge Functions, RLS multi-tenant)
+- **Icons** : lucide-react
+- **Routing** : react-router-dom
 
-## Prerequisites
+## Pré-requis
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
-5. Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) — the local Base44 backend runs on it.
+- Node.js 18+
+- npm 9+
 
-Run `base44 --help` (or see the [CLI reference](https://docs.db.com/developers/references/cli/commands/introduction)) for the full command surface.
-
-## Run Locally
-
-Three commands, from the project root:
+## Installation locale
 
 ```bash
-base44 login   # one-time per machine
-base44 link    # one-time per clone
-base44 dev     # local backend + frontend together
+npm install
+npm run dev      # serveur de développement
+npm run build    # build production -> dist/
+npm run typecheck # vérification TypeScript
 ```
 
-Open the frontend URL that `base44 dev` prints (typically `http://localhost:5173`).
+## Variables d'environnement
 
-Notes:
+Copier `.env.example` vers `.env` et renseigner :
 
-- **Every fresh clone needs `base44 link`.** It writes `base44/.app.jsonc` (the app-id pointer), which is deliberately gitignored. Your app id is in the Builder URL (`app.db.com/apps/<id>/...`); `base44 link --help` shows the non-interactive flags.
-- **`base44 dev` runs the frontend for you** (via `site.serveCommand` in this repo's `base44/config.jsonc`) — never run `npm run dev` yourself: alone it serves a UI with no backend behind it (`[base44] Proxy not enabled`, every `/api` call fails), and alongside `base44 dev` the second Vite silently takes the next port and you end up looking at the wrong one.
-- **The app must be published at least once for the UI to load under `base44 dev`.** The frontend boots by fetching app settings from the hosted app; before the first publish that fails and every page redirects to login. The local API works regardless.
-- Entities, functions, and auth run locally — entity data is **in-memory only**, wiped when `base44 dev` restarts. Everything else (Core integrations, OAuth login) is forwarded to your deployed app. Full breakdown: [Local development overview](https://docs.db.com/developers/backend/overview/local-dev/local-development-overview).
-
-## Frontend Only, Hosted Backend
-
-To work on just the frontend against your app's live hosted backend:
-
-```bash
-base44 dev --remote
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
 ```
 
-⚠️ In this mode writes go to your app's **production data** — plain `base44 dev` keeps everything local.
+Les secrets serveur (clés de chiffrement des clés API paiement vendeurs, clés tierces) sont gérés via les variables d'environnement Cloudflare / secrets Supabase Edge Functions — jamais en dur dans le code.
 
-## Publish Your Changes
+## Déploiement Cloudflare Pages
 
-After pushing your changes to git, open the Base44 dashboard and publish the app:
+1. Connecter le dépôt GitHub à Cloudflare Pages
+2. Build command : `npm run build`
+3. Output directory : `dist`
+4. Variables d'environnement (Cloudflare Dashboard) :
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
 
-```bash
-base44 dashboard open
+## Multi-tenant & domaines personnalisés
+
+- Sous-domaines : `*.liafrikos.com` → DNS wildcard Cloudflare
+- Domaines personnalisés (plans Premium/Entreprise) : Cloudflare Custom Hostnames (SSL automatique)
+
+## Structure du dépôt
+
+```
+src/
+  components/      # Composants partagés (Navbar, Footer, Logo)
+  lib/             # Supabase client, auth, i18n, hooks, theme-engine
+  pages/
+    dashboard/     # Dashboard vendeur (18 modules)
+    admin/         # Master Console Super Admin
+    *.tsx          # Pages publiques (landing, marketplace, cart, checkout, etc.)
+supabase/
+  migrations/      # Migrations SQL (schema + RLS)
 ```
 
-This repo syncs to Base44 through git, so publish from the dashboard rather than `base44 deploy` — a CLI deploy ships your local tree directly, bypassing the sync, and the deployed state silently diverges from the repo.
-
-## Docs & Support
-
-GitHub integration: [https://docs.db.com/developers/app-code/local-development/github](https://docs.db.com/developers/app-code/local-development/github)
-
-Local development: [https://docs.db.com/developers/backend/overview/local-dev/local-development-overview](https://docs.db.com/developers/backend/overview/local-dev/local-development-overview)
-
-Support: [https://app.db.com/support](https://app.db.com/support)
+## Conçu et développé par LiAfrik basée à Dubai & Afrique 🌍

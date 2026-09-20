@@ -1,36 +1,119 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+# LiAfrik "Sellia" — Shopify-aligned SaaS e-commerce platform
 
-# AGENTS.md
+## Stack
+- React 18 + TypeScript + Vite + Tailwind CSS
+- lucide-react icons, react-router-dom 7
+- Backend: Supabase (multi-mode: real or local fallback when not configured)
+- State: localStorage via tenant-scoped keys (`getTenantStorageKey`)
 
-## Project Context
+## Architecture (Shopify Online Store 2.0 alignment)
+The platform mirrors Shopify's theme architecture. Do NOT rename concepts away from Shopify naming.
 
-This is a Base44 app repository. Treat it as user-owned application code, keep changes focused on the user's request, and preserve existing project conventions.
+### Theme engine (`src/lib/theme-engine.tsx`)
+- `ThemeConfig`, `ThemeSection`, `SectionType`, `SiteType`, `ThemePreset`
+- `SectionType` union includes all Shopify Dawn sections:
+  announcement-bar, header, image-banner, slideshow, hero-banner,
+  featured-collection, collection-list, multicolumn, image-with-text,
+  rich-text, collapsible-content, video, email-signup, contact-form,
+  product-grid, category-grid, single-product, countdown, testimonials,
+  social-bar, footer, chat-float, etc.
+- `SECTION_LIBRARY` groups sections (Structure, Hero/Banner, Products, Content, Commerce, Engagement) with Shopify naming
+- `renderSection()` is the router switch — add new section cases here
+- `defaultThemeForType(siteType)` returns a Dawn-style ordered section stack per site type
+- `THEME_PRESETS`: african, luxury, tech, minimal, food, fashion (legacy preset color sets)
 
-Start with `README.md` for local setup, environment variables, and publish workflow.
+### Online Store editor (`src/pages/dashboard/OnlineStore.tsx`)
+- `CUSTOM_PRESETS` = real Shopify Theme Store themes (Dawn, Refresh, Spotlight, Crave,
+  Sense, Taste, Craft, Colorblock, Studio, Origin, Publisher, + Dawn African Vibrant).
+  All free Shopify themes are Dawn-based; each is just a color/typography preset.
+- Panels: themes, sections (add/remove/reorder + section editors), design, pages, domains, inbox
+- Preview maps real store products/categories into `featured-collection` and `collection-list`
+- Section editor panels exist for every Shopify section type (image-banner, slideshow,
+  multicolumn, image-with-text, rich-text, collapsible-content, announcement-bar, video, etc.)
 
-## Base44 References
+### CMS (`src/lib/cms.ts` + `src/pages/dashboard/Content.tsx`)
+- `CmsTemplate`: index, product, collection, list-collections, cart, page, blog, article,
+  404, search, password, landing, about, contact, faq, custom (mirrors Shopify JSON templates)
+- `CmsBlock` / `CmsSection` / `osSections` model = Shopify sections + blocks + block_order
+- `SHOPIFY_TEMPLATES` and `SHOPIFY_BLOCK_TYPES` exported lists drive the editor dropdowns
+- `addBlock` / `removeBlock` helpers for OS 2.0 block manipulation
+- `defaultOsSections(template)` returns a Shopify-style main section stack per template
 
-- CLI overview: https://docs.db.com/developers/references/cli/get-started/overview.md
-- Agent skills: https://docs.db.com/developers/backend/overview/skills.md
+### Admin themes (`src/pages/admin/AdminThemes.tsx`)
+- Lists the real Shopify Theme Store catalog with industries (Dawn, Refresh, Spotlight, etc.)
+- Documents OS 2.0 architecture (JSON templates, sections everywhere, app blocks, metafields)
 
-If your agent supports Agent Skills, install or update Base44 skills before Base44-specific work:
+### Storefront (`src/pages/StorefrontPage.tsx`)
+- Public-facing e-commerce page at `/store` or `/s/:slug` (custom domain)
+- Renders merchant's live theme sections with REAL catalog products (active only)
+- Fully functional e-commerce (not just a landing page):
+  - **Cart drawer** (slide-in from right): add to cart, qty +/-, remove, subtotal, persisted via `getCartItems`/`saveCartItems`
+  - **Checkout modal**: customer form (name, phone, email, address, city) + 4 payment methods (Orange Money, Wave, MTN MoMo, Carte bancaire) + order summary + confirmation screen
+  - **Real order creation** via `saveOrder()` — orders appear in dashboard `/app/orders` list
+  - **Functional search**: live product filtering with add-to-cart from search results
+  - Cart count badge in header, mobile nav, announcement bar, full footer
+- `renderSection(section, theme, { onAddToCart })` — callbacks param wires buy buttons to cart
+- ProductGridSection passes `onAddToCart` to all 3 card variants (default, editorial, luxury)
 
-```bash
-npx skills add base44/skills
-```
+### Data persistence (`src/lib/app-state.ts`)
+- Tenant-scoped localStorage layer: products, orders, customers, discounts, staff,
+  automations, markets, reports, campaigns, chat threads, cart items, shop profile, theme
+- `getActiveCatalogProducts()` returns active products mapped to `CatalogProductCard` shape
+- `saveOrder()` / `getOrders()` — orders created from storefront checkout appear in dashboard
+- `getCartItems()` / `saveCartItems()` — cart persistence across page reloads
+- `getProductImage()` / `getProductImages()` — primary image + full gallery from uploaded base64
 
-## Key Files
+## Auth (`src/lib/supabase.ts`)
+- `isSupabaseConfigured` = env vars present. When false, local mode auto-activates.
+- `setLocalAuthMode(true)` forces local mode (used by "Explorer Démo" on login page).
+- Local client persists session in `liafrikos_auth_session` localStorage key.
+- Admin routes (`adminOnly`) redirect non-super-admin users to `/app`.
 
-- `src/`: frontend application source.
-- `src/api/base44Client.js`: frontend Base44 SDK client.
-- `vite.config.js`: Vite config and Base44 Vite plugin setup.
-- `.env.local`: local-only environment values; never commit secrets.
+## Commands
+- `npm run dev` — Vite dev server (port 5173)
+- `npm run build` — production build
+- `npm run typecheck` — `tsc --noEmit -p tsconfig.app.json` (must pass)
+- `npm run lint` — eslint
+- `npx vitest run` — test suite (`src/lib/*.test.ts`)
 
-## Working Notes
+## Conventions
+- French UI copy (the platform targets Francophone Africa). Keep user-facing strings in French.
+- Money formatting via `formatCurrency()` (FCFA / CFA).
+- When adding a new section type: extend `SectionType`, add to `SECTION_LIBRARY`, add a
+  renderer before `renderSection`, add a case in the switch, add defaults in
+  `defaultThemeForType`, and add an editor panel block in `OnlineStore.tsx`.
+- Keep backward compat: existing stored theme/CMS data must keep loading. New optional
+  fields (e.g. `osSections`, `group`) are additive.
+- Do NOT break existing tests in `src/lib/theme-engine.test.ts`.
 
-- Use `base44 dev` as the default local development command when you need the local Base44 backend. It can run the backend and frontend together.
-- When docs or code mention the frontend being started automatically, that usually means the Base44 project config includes `site.serveCommand`, for example `"serveCommand": "npm run dev"` in `base44/config.jsonc`.
-- Use `npm run dev` only for frontend-only work against the hosted Base44 backend.
-- Prefer the existing Base44 CLI workflow over adding new npm scripts for Base44-specific tasks.
-- Reuse the existing SDK client and Vite plugin patterns before adding new Base44 integration paths.
-- Run the relevant checks from `package.json` before finishing code changes.
+## Verification done
+- typecheck passes (exit 0)
+- build passes (3.25s, dist produced)
+- vitest passes (12/12)
+- Visual QA in browser (2026-08-08):
+  - Online Store editor renders Dawn sections, theme picker shows real Shopify themes
+  - CMS shows Shopify JSON templates + block types
+  - Storefront: add to cart → cart drawer opens, qty +/- works, total updates
+  - Storefront: checkout form filled → order confirmed (LA-201663)
+  - Dashboard /app/orders: order LA-201663 visible with customer, total, payment method
+  - Storefront: search "robe" → returns "Robe wax traditionnelle" product with add-to-cart
+  - All colors use Shopify green (#008060), no orange in UI
+
+## Session (2026-09-15) — global notifications + free AI content assistant
+(Note: the Design panel's corner-radius/shadow/button-style/gradient/sticky-header/
+scroll-animation "real settings" fix was done in a concurrent session — see the
+"Theme editor: real, persisted corner-radius/shadow/button/gradient settings" commit.)
+- Added `src/lib/toast.tsx` (`ToastProvider`/`useToast`), mounted in `main.tsx`. This is
+  the app-wide notification system — distinct from `OnlineStore.tsx`'s own local inline
+  toast banner used for its editor-specific confirmations, which is untouched. Replaced
+  `alert()` calls in `Products.tsx` with toasts; added success toasts on product
+  save/delete.
+- Added a free AI content assistant: `functions/api/ai/generate.ts` (Gemini API proxy,
+  `GEMINI_API_KEY` env var, graceful `{configured:false}` fallback exactly like
+  `instagram-feed.ts` when unset — never fakes output), `src/lib/ai.ts` (client wrapper),
+  `src/pages/dashboard/AIStudio.tsx` (new page, route `/app/ai-studio`, nav entry), and an
+  inline "Générer/Améliorer avec l'IA" button on the product description field in
+  `Products.tsx`.
+- Added `Spinner`/`LoadingState` to `ui.tsx` (dashboard shared UI kit).
+- Verification: `npm run typecheck` (app + functions) exit 0, `npm run build` succeeds,
+  `npx eslint` 0 new errors, `npx vitest run` 27/27 passing (no regressions).

@@ -11,12 +11,16 @@ function inferType(val: any): string {
   if (val === null || val === undefined) return 'text';
   if (Array.isArray(val) || typeof val === 'object') return 'jsonb';
   if (typeof val === 'boolean') return 'boolean';
-  if (typeof val === 'number') return 'numeric';
+  if (typeof val === 'number') return Number.isInteger(val) ? 'bigint' : 'numeric';
   return 'text';
 }
 
 export default async function(req: Request): Promise<Response> {
   try {
+    const body: any = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
+    const prune = body?.prune === true;
+    const only: string[] | null = Array.isArray(body?.entities) && body.entities.length ? body.entities : null;
+
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
@@ -27,7 +31,7 @@ export default async function(req: Request): Promise<Response> {
 
     const projRes = await fetch('https://api.supabase.com/v1/projects', { headers: { Authorization: `Bearer ${accessToken}` } });
     const projects = await projRes.json();
-    if (!Array.isArray(projects) || !projects.length) return Response.json({ error: 'No Supabase projects found' }, { status: 400 });
+    if (!Array.isArray(projects) || !projects.length) return Response.json({ error: 'Aucune base de données connectée' }, { status: 400 });
     const ref = projects[0].ref;
 
     const keysRes = await fetch(`https://api.supabase.com/v1/projects/${ref}/api-keys`, { headers: { Authorization: `Bearer ${accessToken}` } });
@@ -38,31 +42,42 @@ export default async function(req: Request): Promise<Response> {
     const restBase = `https://${ref}.supabase.co/rest/v1`;
     const restHeaders: Record<string, string> = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json' };
     const mgmtHeaders: Record<string, string> = { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' };
+    const runSql = async (sql: string) => fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, { method: 'POST', headers: mgmtHeaders, body: JSON.stringify({ query: sql }) });
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    // Phase 1: create tables (drop+replace) and collect rows
+    const entities = only ? only : ENTITIES;
+    const snapshot: any = {};
     const prepared: any[] = [];
-    for (const name of ENTITIES) {
+
+    // ===== Phase 1: ensure schema (non-destructive) for all entities =====
+    for (const name of entities) {
       const table = `sellia_${name.toLowerCase()}`;
       try {
         const records = await srEntities[name].list('-created_date', 100000);
         const rows = records || [];
+        snapshot[name] = rows;
+
         const colTypes: Record<string, string> = {};
         for (const r of rows) {
           for (const [k, v] of Object.entries(r)) {
-            if (BUILTINS.includes(k)) continue;
+            if (BUILTINS.includes(k) || k === 'store_id') continue;
             const t = inferType(v);
             if (!colTypes[k] || (colTypes[k] === 'text' && t !== 'text')) colTypes[k] = t;
           }
         }
-        const cols = ['"id" text primary key', '"created_date" text', '"updated_date" text', '"created_by_id" text'];
-        for (const [k, t] of Object.entries(colTypes)) cols.push(`"${k}" ${t}`);
-        const ddl = `DROP TABLE IF EXISTS "${table}" CASCADE; CREATE TABLE "${table}" (${cols.join(', ')});`;
-        const ddlRes = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, { method: 'POST', headers: mgmtHeaders, body: JSON.stringify({ query: ddl }) });
-        if (!ddlRes.ok) { prepared.push({ name, table, error: `DDL: ${await ddlRes.text()}` }); continue; }
+
+        const baseCols = ['"id" text primary key', '"created_date" text', '"updated_date" text', '"created_by_id" text', '"store_id" text'];
+        const ddl: string[] = [
+          `CREATE TABLE IF NOT EXISTS "${table}" (${baseCols.join(', ')});`,
+          `ALTER TABLE "${table}" ADD COLUMN IF NOT EXISTS "store_id" text;`,
+        ];
+        for (const [k, t] of Object.entries(colTypes)) ddl.push(`ALTER TABLE "${table}" ADD COLUMN IF NOT EXISTS "${k}" ${t};`);
+        ddl.push(`CREATE INDEX IF NOT EXISTS "${table}_store_id_idx" ON "${table}" (store_id);`);
+        await runSql(ddl.join(' '));
+
         const dataKeys = Object.keys(colTypes);
         const insertRows = rows.map((r: any) => {
-          const row: any = { id: r.id, created_date: r.created_date, updated_date: r.updated_date, created_by_id: r.created_by_id };
+          const row: any = { id: r.id, created_date: r.created_date, updated_date: r.updated_date, created_by_id: r.created_by_id, store_id: r.store_id || null };
           for (const k of dataKeys) row[k] = r[k] !== undefined ? r[k] : null;
           return row;
         });
@@ -72,28 +87,47 @@ export default async function(req: Request): Promise<Response> {
       }
     }
 
-    // Phase 2: refresh PostgREST schema cache, then insert
-    await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, { method: 'POST', headers: mgmtHeaders, body: JSON.stringify({ query: `NOTIFY pgrst, 'reload schema';` }) });
+    // refresh PostgREST schema cache so newly added columns are visible
+    await runSql(`NOTIFY pgrst, 'reload schema';`);
     await sleep(3000);
 
+    // ===== Phase 2: incremental upsert by id (+ optional prune) =====
     const report: any[] = [];
     for (const p of prepared) {
       if (p.error) { report.push({ entity: p.name, error: p.error }); continue; }
       const rows = p.insertRows || [];
-      let inserted = 0;
-      let failed = false;
+      let upserted = 0;
+      let upsertError: string | null = null;
       for (let i = 0; i < rows.length; i += BATCH) {
+        if (upsertError) break;
         const chunk = rows.slice(i, i + BATCH);
-        const insRes = await fetch(`${restBase}/${p.table}`, { method: 'POST', headers: { ...restHeaders, Prefer: 'return=representation' }, body: JSON.stringify(chunk) });
-        if (!insRes.ok) { report.push({ entity: p.name, table: p.table, error: `INSERT: ${await insRes.text()}`, synced: inserted }); failed = true; break; }
-        inserted += chunk.length;
+        const insRes = await fetch(`${restBase}/${p.table}?on_conflict=id`, {
+          method: 'POST', headers: { ...restHeaders, Prefer: 'resolution=merge-duplicates' }, body: JSON.stringify(chunk),
+        });
+        if (!insRes.ok) upsertError = `UPSERT: ${(await insRes.text()).slice(0, 300)}`;
+        else upserted += chunk.length;
       }
-      if (!failed) report.push({ entity: p.name, table: p.table, synced: inserted });
+      if (upsertError) { report.push({ entity: p.name, table: p.table, error: upsertError, synced: upserted }); continue; }
+
+      let pruned = 0;
+      if (prune) {
+        const exRes = await fetch(`${restBase}/${p.table}?select=id`, { headers: restHeaders });
+        const exRows = await exRes.json();
+        const existing = new Set((exRows || []).map((x: any) => String(x.id)));
+        const keep = new Set(rows.map((r: any) => String(r.id)).filter(Boolean));
+        const toDelete = [...existing].filter((id) => !keep.has(id));
+        for (let i = 0; i < toDelete.length; i += 100) {
+          const chunk = toDelete.slice(i, i + 100);
+          await fetch(`${restBase}/${p.table}?id=in.(${chunk.join(',')})`, { method: 'DELETE', headers: restHeaders });
+          pruned += chunk.length;
+        }
+      }
+      report.push({ entity: p.name, table: p.table, synced: upserted, ...(pruned ? { pruned } : {}) });
     }
 
     const totalSynced = report.reduce((s, r) => s + (typeof r.synced === 'number' ? r.synced : 0), 0);
 
-    // Phase 3: auto-push a data snapshot to GitHub after a successful sync
+    // ===== Phase 3: auto-push data snapshot to GitHub =====
     let githubBackup: any = null;
     try {
       const { accessToken: ghToken } = await base44.asServiceRole.connectors.getConnection('github');
@@ -112,8 +146,6 @@ export default async function(req: Request): Promise<Response> {
         const repo = match.name;
         const branch = 'main';
         const path = 'sellia-backup.json';
-        const snapshot: any = {};
-        for (const p of prepared) if (p.insertRows) snapshot[p.name] = p.insertRows;
         const content = btoa(unescape(encodeURIComponent(JSON.stringify({ generated_at: new Date().toISOString(), totalSynced, entities: snapshot }, null, 2))));
         let sha: string | undefined;
         const getR = await jget(await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, { headers: ghHeaders }));
@@ -128,7 +160,7 @@ export default async function(req: Request): Promise<Response> {
       githubBackup = { error: e.message };
     }
 
-    return Response.json({ ok: true, project: ref, totalSynced, report, githubBackup });
+    return Response.json({ ok: true, project: ref, mode: prune ? 'incremental+prune' : 'incremental', totalSynced, report, githubBackup });
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }

@@ -14,11 +14,19 @@ interface Env {
   GEMINI_API_KEY?: string;
 }
 
-type AiAction = 'product-description' | 'improve-text' | 'seo-title' | 'marketing-tagline';
+type AiAction = 'product-description' | 'improve-text' | 'seo-title' | 'marketing-tagline' | 'hero-copy' | 'section-text';
 
 interface AiRequestBody {
   action?: AiAction;
   productName?: string;
+  /** Store/business name, used by hero-copy — kept separate from
+   *  productName since it's a different kind of subject (a whole store,
+   *  not one product) even though the two actions share most other
+   *  fields. */
+  businessName?: string;
+  /** Which section field is being generated for section-text (e.g.
+   *  'title', 'subtitle', 'description') — shapes length/format. */
+  fieldType?: string;
   category?: string;
   keywords?: string;
   existingText?: string;
@@ -71,6 +79,21 @@ function buildPrompt(body: AiRequestBody): { prompt: string; error?: string } {
       if (!name) return { prompt: '', error: 'Le nom du produit est requis.' };
       return {
         prompt: `Génère 3 accroches marketing courtes (une par ligne, sans numérotation) en ${language}, ton ${tone}, pour promouvoir "${name}"${category ? ` (catégorie : ${category})` : ''} sur les réseaux sociaux. Chaque accroche fait 10 mots maximum, sans emoji, sans guillemets.`,
+      };
+    }
+    case 'hero-copy': {
+      const businessName = (body.businessName || '').trim();
+      if (!businessName) return { prompt: '', error: 'Le nom de la boutique est requis.' };
+      return {
+        prompt: `Génère le texte d'accueil (hero) de la page d'accueil d'une boutique en ligne nommée "${businessName}"${category ? `, spécialisée en ${category}` : ''}, ton ${tone}, en ${language}. Réponds EXACTEMENT sur 3 lignes, sans numérotation, sans préfixe ("Titre:", etc.), sans guillemets, sans emoji :\nLigne 1 : un titre accrocheur (8 mots maximum)\nLigne 2 : une phrase d'accroche qui donne envie d'acheter (20 mots maximum)\nLigne 3 : le texte d'un bouton d'appel à l'action (3 mots maximum)`,
+      };
+    }
+    case 'section-text': {
+      const businessName = (body.businessName || '').trim();
+      const fieldType = (body.fieldType || 'texte').trim();
+      if (!businessName) return { prompt: '', error: 'Le nom de la boutique est requis.' };
+      return {
+        prompt: `Génère un court texte de type "${fieldType}" pour une section de site e-commerce, pour la boutique "${businessName}"${category ? ` (${category})` : ''}${keywords ? `, sur le thème : ${keywords}` : ''}, ton ${tone}, en ${language}. Réponds uniquement avec le texte final, sans titre, sans guillemets, adapté à ce type de champ (concis pour un titre, une à deux phrases pour une description).`,
       };
     }
     default:

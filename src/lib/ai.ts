@@ -3,11 +3,16 @@
 // framework-agnostic so it can be called both from the AI Studio page and
 // from inline "Améliorer avec l'IA" buttons elsewhere (e.g. Products).
 
-export type AiAction = 'product-description' | 'improve-text' | 'seo-title' | 'marketing-tagline';
+export type AiAction = 'product-description' | 'improve-text' | 'seo-title' | 'marketing-tagline' | 'hero-copy' | 'section-text';
 
 export interface AiGenerateRequest {
   action: AiAction;
   productName?: string;
+  /** Store/business name, used by hero-copy. */
+  businessName?: string;
+  /** Which section field is being generated for section-text (e.g.
+   *  'titre', 'sous-titre', 'description'). */
+  fieldType?: string;
   category?: string;
   keywords?: string;
   existingText?: string;

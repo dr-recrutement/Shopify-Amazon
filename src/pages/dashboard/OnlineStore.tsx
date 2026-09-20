@@ -16,6 +16,7 @@ import { ImageUploadField } from '../../components/ImageUpload';
 import { supabase } from '../../lib/supabase';
 import { PreviewFrame } from '../../components/PreviewFrame';
 import { getCmsPages, createCmsPage, saveCmsPage, deleteCmsPage, type CmsPage } from '../../lib/cms';
+import { generateAIContent } from '../../lib/ai';
 
 interface CustomDomain {
   domain: string;
@@ -489,6 +490,44 @@ export default function OnlineStore() {
 
   const updateColor = (key: keyof ThemeConfig['colors'], value: string) => {
     setTheme({ ...theme, colors: { ...theme.colors, [key]: value } });
+  };
+
+  // Real "Assistant IA" inside the theme editor — was completely absent
+  // here (AI Studio/Products already had generateAIContent, this editor
+  // had none). Reuses the same real backend (/api/ai/generate, Gemini)
+  // with the same honest "not configured" fallback when no API key is
+  // set, rather than faking generated copy.
+  const [aiLoadingKey, setAiLoadingKey] = useState<string | null>(null);
+  const [aiNotice, setAiNotice] = useState<string | null>(null);
+
+  const aiGenerateField = async (sectionId: string, propKey: string, fieldLabel: string, existingText: string) => {
+    setAiLoadingKey(`${sectionId}:${propKey}`);
+    setAiNotice(null);
+    const result = existingText.trim()
+      ? await generateAIContent({ action: 'improve-text', existingText, language: 'français' })
+      : await generateAIContent({ action: 'section-text', businessName: shopProfile.name, fieldType: fieldLabel, category: theme.siteType, language: 'français' });
+    setAiLoadingKey(null);
+    if (result.ok) { updateSectionProp(sectionId, propKey, result.text.trim()); return; }
+    setAiNotice(result.notConfigured
+      ? "Assistant IA non configuré côté plateforme (clé API manquante) — contactez le support."
+      : result.error);
+  };
+
+  const aiGenerateHeroCopy = async (sectionId: string) => {
+    setAiLoadingKey(`${sectionId}:hero-all`);
+    setAiNotice(null);
+    const result = await generateAIContent({ action: 'hero-copy', businessName: shopProfile.name, category: theme.siteType, language: 'français' });
+    setAiLoadingKey(null);
+    if (!result.ok) {
+      setAiNotice(result.notConfigured
+        ? "Assistant IA non configuré côté plateforme (clé API manquante) — contactez le support."
+        : result.error);
+      return;
+    }
+    const lines = result.text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines[0]) updateSectionProp(sectionId, 'title', lines[0]);
+    if (lines[1]) updateSectionProp(sectionId, 'subtitle', lines[1]);
+    if (lines[2]) updateSectionProp(sectionId, 'cta', lines[2]);
   };
 
   const updateSectionProp = (sectionId: string, propKey: string, value: any) => {
@@ -1125,10 +1164,30 @@ export default function OnlineStore() {
                 </div>
 
                 <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1 text-left">
-                  {/* Common Title/Heading inputs */}
+                  {aiNotice && (
+                    <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-700 flex items-start justify-between gap-2">
+                      <span>{aiNotice}</span>
+                      <button onClick={() => setAiNotice(null)} className="text-amber-400 hover:text-amber-700 shrink-0">×</button>
+                    </div>
+                  )}
+
+                  {/* Common Title/Heading inputs — each with a real "✨ IA"
+                      helper (Assistant IA): generates fresh copy when the
+                      field is empty, improves/rewrites it when it already
+                      has text. Same real backend (Gemini via
+                      /api/ai/generate) AI Studio/Products already use. */}
                   {'title' in activeSection.props && (
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Titre principal</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">Titre principal</label>
+                        <button
+                          onClick={() => aiGenerateField(activeSection.id, 'title', 'titre', activeSection.props.title || '')}
+                          disabled={aiLoadingKey === `${activeSection.id}:title`}
+                          className="text-[10px] font-bold text-brand-600 hover:text-brand-800 disabled:opacity-50 flex items-center gap-0.5"
+                        >
+                          <Sparkles size={11} /> {aiLoadingKey === `${activeSection.id}:title` ? '…' : 'IA'}
+                        </button>
+                      </div>
                       <input
                         type="text"
                         value={activeSection.props.title || ''}
@@ -1140,7 +1199,16 @@ export default function OnlineStore() {
 
                   {'subtitle' in activeSection.props && (
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Sous-titre</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">Sous-titre</label>
+                        <button
+                          onClick={() => aiGenerateField(activeSection.id, 'subtitle', 'sous-titre', activeSection.props.subtitle || '')}
+                          disabled={aiLoadingKey === `${activeSection.id}:subtitle`}
+                          className="text-[10px] font-bold text-brand-600 hover:text-brand-800 disabled:opacity-50 flex items-center gap-0.5"
+                        >
+                          <Sparkles size={11} /> {aiLoadingKey === `${activeSection.id}:subtitle` ? '…' : 'IA'}
+                        </button>
+                      </div>
                       <input
                         type="text"
                         value={activeSection.props.subtitle || ''}
@@ -1152,7 +1220,16 @@ export default function OnlineStore() {
 
                   {'description' in activeSection.props && (
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">Description</label>
+                        <button
+                          onClick={() => aiGenerateField(activeSection.id, 'description', 'description', activeSection.props.description || '')}
+                          disabled={aiLoadingKey === `${activeSection.id}:description`}
+                          className="text-[10px] font-bold text-brand-600 hover:text-brand-800 disabled:opacity-50 flex items-center gap-0.5"
+                        >
+                          <Sparkles size={11} /> {aiLoadingKey === `${activeSection.id}:description` ? '…' : 'IA'}
+                        </button>
+                      </div>
                       <textarea
                         value={activeSection.props.description || ''}
                         onChange={e => updateSectionProp(activeSection.id, 'description', e.target.value)}
@@ -1346,6 +1423,13 @@ export default function OnlineStore() {
                   {/* Hero-specific inputs */}
                   {activeSection.type === 'hero' && (
                     <div className="space-y-3">
+                      <button
+                        onClick={() => aiGenerateHeroCopy(activeSection.id)}
+                        disabled={aiLoadingKey === `${activeSection.id}:hero-all`}
+                        className="w-full py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-brand-600 to-purple-600 hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                      >
+                        <Sparkles size={13} /> {aiLoadingKey === `${activeSection.id}:hero-all` ? 'Génération…' : "Générer tout avec l'IA (titre, sous-titre, bouton)"}
+                      </button>
                       <ImageUploadField
                         label="Image (téléversement)"
                         value={activeSection.props.image || ''}

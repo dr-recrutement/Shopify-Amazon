@@ -1,3 +1,1 @@
-# See AGENTS.md
-
-Follow the instructions in `AGENTS.md`.
+IyBTZWUgQUdFTlRTLm1kCgpGb2xsb3cgdGhlIGluc3RydWN0aW9ucyBpbiBgQUdFTlRTLm1kYC4K

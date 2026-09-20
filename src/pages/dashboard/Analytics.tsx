@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Badge } from './ui';
 import { BarChart3, Download, Radio } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { getOrders, getProducts, type StoreOrder, type StoreProduct } from '../../lib/app-state';
+import { getOrders, getProducts, getShopProfile, type StoreOrder, type StoreProduct } from '../../lib/app-state';
 import { fetchCloudOrders, fetchCloudProducts, fetchLiveVisitors, type LiveVisitorRow } from '../../lib/tenant-sync';
 import { ALL_COUNTRIES } from '../../lib/constants';
 
@@ -54,13 +54,18 @@ export default function Analytics() {
   const avgBasket = orders.length > 0 ? Math.round(revenue / orders.length) : 0;
   const pendingCount = orders.filter(o => o.status === 'pending').length;
   const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 5);
+  // Real store currency — from actual order data when available (a
+  // merchant's own recorded transactions), falling back to their
+  // configured store currency. Previously hardcoded "XOF" regardless of
+  // what currency the store actually uses.
+  const storeCurrency = orders[0]?.currency || getShopProfile().currency;
 
   // Real metrics only — no invented "+12%" trend, this schema has no prior-
   // period baseline to compute a real change against.
   const metrics = [
-    { label: "Chiffre d'affaires", value: `${revenue.toLocaleString('fr-FR')} XOF` },
+    { label: "Chiffre d'affaires", value: `${revenue.toLocaleString('fr-FR')} ${storeCurrency}` },
     { label: 'Commandes', value: String(orders.length) },
-    { label: 'Panier moyen', value: `${avgBasket.toLocaleString('fr-FR')} XOF` },
+    { label: 'Panier moyen', value: `${avgBasket.toLocaleString('fr-FR')} ${storeCurrency}` },
     { label: 'En attente', value: String(pendingCount) },
   ];
 
@@ -146,7 +151,7 @@ export default function Analytics() {
           ) : (
             <div className="h-48 flex items-end gap-1">
               {salesByDate.map(([date, v]) => (
-                <div key={date} title={`${date}: ${v.toLocaleString('fr-FR')} XOF`} className="flex-1 bg-brand-500 rounded-t" style={{ height: `${Math.max(4, (v / maxSale) * 100)}%` }} />
+                <div key={date} title={`${date}: ${v.toLocaleString('fr-FR')} ${storeCurrency}`} className="flex-1 bg-brand-500 rounded-t" style={{ height: `${Math.max(4, (v / maxSale) * 100)}%` }} />
               ))}
             </div>
           )}

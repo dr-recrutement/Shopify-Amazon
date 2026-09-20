@@ -60,6 +60,11 @@ export default function CartPage() {
   };
 
   const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR');
+  // Real store currency — previously the totals section hardcoded " XOF"
+  // literally while each line item correctly showed its own real
+  // currency, so a merchant using any other currency saw mismatched
+  // labels between their line items and their own total.
+  const storeCurrency = tenant?.currency || items[0]?.currency || 'XOF';
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
   const shipping = items.length > 0 ? 1000 : 0;
   const discountAmount = !discount ? 0
@@ -179,15 +184,15 @@ export default function CartPage() {
               <div className="space-y-4">
                 <Card className="p-5">
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-gray-500">Sous-total</span><span className="font-medium">{fmt(total)} XOF</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500">Sous-total</span><span className="font-medium">{fmt(total)} {storeCurrency}</span></div>
                     {discount && (
                       <div className="flex justify-between text-green-600">
                         <span>Réduction ({discount.code})</span>
-                        <span className="font-medium">-{fmt(discount.type === 'free_shipping' ? shipping : discountAmount)} XOF</span>
+                        <span className="font-medium">-{fmt(discount.type === 'free_shipping' ? shipping : discountAmount)} {storeCurrency}</span>
                       </div>
                     )}
-                    <div className="flex justify-between"><span className="text-gray-500">Livraison estimée</span><span className="font-medium">{shippingAfterDiscount === 0 && shipping > 0 ? <span className="text-green-600">Gratuite</span> : `${fmt(shippingAfterDiscount)} XOF`}</span></div>
-                    <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg" style={{ color: theme.colors.primary }}>{fmt(grandTotal)} XOF</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500">Livraison estimée</span><span className="font-medium">{shippingAfterDiscount === 0 && shipping > 0 ? <span className="text-green-600">Gratuite</span> : `${fmt(shippingAfterDiscount)} ${storeCurrency}`}</span></div>
+                    <div className="pt-2 border-t border-gray-100 flex justify-between"><span className="font-semibold">Total</span><span className="font-bold text-lg" style={{ color: theme.colors.primary }}>{fmt(grandTotal)} {storeCurrency}</span></div>
                   </div>
                   <Link to={checkoutHref}><Button className="mt-4 w-full" style={{ backgroundColor: theme.colors.primary }}>Finaliser ma commande <ArrowRight size={16} /></Button></Link>
                 </Card>

@@ -809,7 +809,7 @@ export default function Settings() {
               )}
               {(settings.shippingZones || []).map((z: { id: string; name: string; price: number; days: string }) => (
                 <div key={z.id} className="p-3 border border-gray-200 rounded-lg flex items-center justify-between bg-white shadow-sm">
-                  <div><p className="font-bold text-gray-900 font-medium">{z.name}</p><p className="text-[10px] text-gray-500">{z.price.toLocaleString('fr-FR')} XOF · {z.days}</p></div>
+                  <div><p className="font-bold text-gray-900 font-medium">{z.name}</p><p className="text-[10px] text-gray-500">{z.price.toLocaleString('fr-FR')} {shopProfile.currency} · {z.days}</p></div>
                   <Button variant="ghost" size="sm" onClick={() => updateSetting('shippingZones', (settings.shippingZones || []).filter((x: any) => x.id !== z.id))}>Retirer</Button>
                 </div>
               ))}

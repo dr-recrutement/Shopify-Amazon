@@ -1,7 +1,7 @@
 import { PageHeader, Card, Button, Table, Badge, EmptyState } from './ui';
 import { Tag, Plus, X, Edit2, Trash2, Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getDiscounts, saveDiscounts, type Discount, type DiscountType, type DiscountStatus } from '../../lib/app-state';
+import { getDiscounts, saveDiscounts, getShopProfile, type Discount, type DiscountType, type DiscountStatus } from '../../lib/app-state';
 import { fetchCloudDiscounts, pushCloudDiscounts, deleteCloudDiscount, ensureUuidId } from '../../lib/tenant-sync';
 
 const TYPE_LABELS: Record<DiscountType, string> = { percentage: 'Pourcentage', fixed_amount: 'Montant fixe', free_shipping: 'Livraison' };
@@ -95,7 +95,7 @@ export default function Discounts() {
                 <td className="py-3 px-4 text-gray-700">{d.title}</td>
                 <td className="py-3 px-4 text-gray-500">{TYPE_LABELS[d.type]}</td>
                 <td className="py-3 px-4 text-gray-700 font-medium">{fmtValue(d)}</td>
-                <td className="py-3 px-4 text-gray-500">{d.minOrder ? `${d.minOrder.toLocaleString('fr-FR')} XOF` : '—'}</td>
+                <td className="py-3 px-4 text-gray-500">{d.minOrder ? `${d.minOrder.toLocaleString('fr-FR')} ${d.currency || getShopProfile().currency}` : '—'}</td>
                 <td className="py-3 px-4 text-gray-700">{d.usedCount}/{d.usageLimit || '∞'}</td>
                 <td className="py-3 px-4"><Badge color={STATUS_COLORS[d.status] as any}>{STATUS_LABELS[d.status]}</Badge></td>
                 <td className="py-3 px-4">

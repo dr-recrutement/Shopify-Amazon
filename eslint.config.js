@@ -1,37 +1,60 @@
-import js from '@eslint/js';
-import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import tseslint from 'typescript-eslint';
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import pluginReact from "eslint-plugin-react";
+import pluginReactHooks from "eslint-plugin-react-hooks";
+import pluginUnusedImports from "eslint-plugin-unused-imports";
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default [
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
+    files: [
+      "src/components/**/*.{js,mjs,cjs,jsx}",
+      "src/pages/**/*.{js,mjs,cjs,jsx}",
+      "src/Layout.jsx",
+    ],
+    ignores: ["src/lib/**/*", "src/components/ui/**/*"],
+    ...pluginJs.configs.recommended,
+    ...pluginReact.configs.flat.recommended,
     languageOptions: {
-      ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      react: pluginReact,
+      "react-hooks": pluginReactHooks,
+      "unused-imports": pluginUnusedImports,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
+      "no-unused-vars": "off",
+      "react/jsx-uses-vars": "error",
+      "react/jsx-uses-react": "error",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_",
+        },
       ],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      "react/prop-types": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/no-unknown-property": [
+        "error",
+        { ignore: ["cmdk-input-wrapper", "toast-close"] },
       ],
-      // Downgraded to warning: ~150 pre-existing `any` usages across event
-      // handlers and dynamic JSON shapes. Guessing precise types for each
-      // one blind risks introducing real bugs for a cosmetic win — left as
-      // a visible warning so they can be tightened file-by-file with intent.
-      '@typescript-eslint/no-explicit-any': 'warn',
+      "react-hooks/rules-of-hooks": "error",
     },
-  }
-);
+  },
+];

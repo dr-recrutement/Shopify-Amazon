@@ -1,13 +1,9 @@
 {
-  "generated_at": "2026-09-20T19:52:42.767Z",
-  "totalSynced": 9,
+  "generated_at": "2026-09-20T20:04:52.349Z",
+  "totalSynced": 8,
   "entities": {
     "Store": [
       {
-        "id": "6ab002e53c66396e3f2d3002",
-        "created_date": "2026-09-20T15:59:33.685000",
-        "updated_date": "2026-09-20T17:08:55.294000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "business_name": "Vincent Nogue",
         "country": "SN",
         "address": "",
@@ -26,15 +22,15 @@
         "email": "drrecrutement.ae@gmail.com",
         "status": "draft",
         "plan_status": "trial",
+        "id": "6ab002e53c66396e3f2d3002",
+        "created_date": "2026-09-20T15:59:33.685000",
+        "updated_date": "2026-09-20T17:08:55.294000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       }
     ],
     "Product": [
       {
-        "id": "6ab01febe7a69bd88e771cde",
-        "created_date": "2026-09-20T18:03:23.912000",
-        "updated_date": "2026-09-20T18:03:59.710000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "images": [
           "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/90f304cf6_FromKlickpincom-299559812739240685-pin-id-299559812739240685.jpg"
@@ -61,6 +57,10 @@
         "seo": null,
         "barcode": "151212",
         "status": "active",
+        "id": "6ab01febe7a69bd88e771cde",
+        "created_date": "2026-09-20T18:03:23.912000",
+        "updated_date": "2026-09-20T18:03:59.710000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       }
     ],
@@ -68,10 +68,6 @@
     "Customer": [],
     "Collection": [
       {
-        "id": "6ab01f9b54d449e21d4cd56a",
-        "created_date": "2026-09-20T18:02:03.726000",
-        "updated_date": "2026-09-20T18:02:03.726000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "image": "",
         "product_ids": [],
@@ -88,6 +84,10 @@
         "type": "smart",
         "sort_order": "manual",
         "status": "active",
+        "id": "6ab01f9b54d449e21d4cd56a",
+        "created_date": "2026-09-20T18:02:03.726000",
+        "updated_date": "2026-09-20T18:02:03.726000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       }
     ],
@@ -101,10 +101,6 @@
     "ShippingZone": [],
     "MediaFile": [
       {
-        "id": "6ab0225bfddab6596f237218",
-        "created_date": "2026-09-20T18:13:47.284000",
-        "updated_date": "2026-09-20T18:13:47.284000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 18742,
@@ -113,13 +109,13 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/f02fe71a2_IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f29.webp",
         "tags": [],
+        "id": "6ab0225bfddab6596f237218",
+        "created_date": "2026-09-20T18:13:47.284000",
+        "updated_date": "2026-09-20T18:13:47.284000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       },
       {
-        "id": "6ab0225954636cc7d0a310a8",
-        "created_date": "2026-09-20T18:13:45.625000",
-        "updated_date": "2026-09-20T18:13:45.625000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 196146,
@@ -128,13 +124,13 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/800db4687_IMG-21440595_m_jpeg_1_94fe59b5-9f3c-4000-b928-ea1e3f832db9.webp",
         "tags": [],
+        "id": "6ab0225954636cc7d0a310a8",
+        "created_date": "2026-09-20T18:13:45.625000",
+        "updated_date": "2026-09-20T18:13:45.625000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       },
       {
-        "id": "6ab022563a9b4e87274ce1df",
-        "created_date": "2026-09-20T18:13:42.826000",
-        "updated_date": "2026-09-20T18:13:42.826000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 19010,
@@ -143,13 +139,13 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/f2259891c_IMG-21440594_m_jpeg_1_7dbaf02b-af1f-45d0-8748-0a9569eef945.webp",
         "tags": [],
+        "id": "6ab022563a9b4e87274ce1df",
+        "created_date": "2026-09-20T18:13:42.826000",
+        "updated_date": "2026-09-20T18:13:42.826000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       },
       {
-        "id": "6ab0225567bc2a4554d6b4cb",
-        "created_date": "2026-09-20T18:13:41.030000",
-        "updated_date": "2026-09-20T18:13:41.030000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 50414,
@@ -158,13 +154,13 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/87711ec2b_IMG-21440593_m_jpeg_1_624ab383-6330-4fca-b720-1a2857000f291.webp",
         "tags": [],
+        "id": "6ab0225567bc2a4554d6b4cb",
+        "created_date": "2026-09-20T18:13:41.030000",
+        "updated_date": "2026-09-20T18:13:41.030000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       },
       {
-        "id": "6ab0225339e81c0249b33cec",
-        "created_date": "2026-09-20T18:13:39.166000",
-        "updated_date": "2026-09-20T18:13:39.166000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 118086,
@@ -173,13 +169,13 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/cb146eb1a_IMG-21440601_m_jpeg_1_10be7dd9-5f2a-40ae-a16b-31a57e578cce.webp",
         "tags": [],
+        "id": "6ab0225339e81c0249b33cec",
+        "created_date": "2026-09-20T18:13:39.166000",
+        "updated_date": "2026-09-20T18:13:39.166000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       },
       {
-        "id": "6ab02250a21a41695c9fdaeb",
-        "created_date": "2026-09-20T18:13:36.967000",
-        "updated_date": "2026-09-20T18:13:36.967000",
-        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "store_id": "6ab002e53c66396e3f2d3002",
         "folder": "general",
         "size": 135540,
@@ -188,6 +184,10 @@
         "type": "image",
         "url": "https://base44.app/api/apps/6aaf8e00382d12ca2edaacca/files/mp/public/6aaf8e00382d12ca2edaacca/3a9efc919_IMG-21440599_m_jpeg_1_b8274a57-e5d9-4c90-bdef-61dd41fc6779.webp",
         "tags": [],
+        "id": "6ab02250a21a41695c9fdaeb",
+        "created_date": "2026-09-20T18:13:36.967000",
+        "updated_date": "2026-09-20T18:13:36.967000",
+        "created_by_id": "6aaf8e04382d12ca2edaaccb",
         "is_sample": false
       }
     ]

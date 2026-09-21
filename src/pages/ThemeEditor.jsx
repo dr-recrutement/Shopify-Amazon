@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   ArrowLeft, Plus, Trash2, Eye, EyeOff, ArrowUp, ArrowDown,
   Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
   Palette, Image as ImageIcon, LayoutGrid, ShoppingBag, FileText, Star, Mail,
-  Megaphone, PanelTop, Columns, Bell, Sparkles, Wand2, Loader2, ShieldCheck,
+  Megaphone, PanelTop, Columns, Bell, Loader2, ShieldCheck,
   UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -15,7 +15,6 @@ import ThemeRenderer from '@/components/theme/ThemeRenderer';
 
 const STORAGE_KEY = 'sellia_theme';
 const CUSTOM_KEY = 'sellia_theme_custom';
-const BUSINESS_KEY = 'sellia_business';
 
 const SECTION_ICONS = {
   announcement: Bell, header: PanelTop, hero: ImageIcon, productGrid: ShoppingBag,
@@ -75,7 +74,17 @@ function loadInitial() {
   return cloneTheme(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME_ID);
 }
 
+async function uploadThemeImage(file, tenantId) {
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+  const path = `theme/${tenantId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false });
+  if (error) throw error;
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+  return data.publicUrl;
+}
+
 function ImageField({ value, onSetUrl }) {
+  const { store } = useCurrentStore();
   const [url, setUrl] = useState(value || '');
   const [busy, setBusy] = useState(false);
   const [drag, setDrag] = useState(false);
@@ -85,9 +94,11 @@ function ImageField({ value, onSetUrl }) {
     if (!file) return;
     setBusy(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+      const file_url = await uploadThemeImage(file, store?.id || 'shared');
       onSetUrl(file_url);
       setUrl(file_url);
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de l'image");
     } finally { setBusy(false); }
   };
   return (
@@ -240,71 +251,6 @@ function ThemeSettings({ theme, onPalette, onFont, onReset }) {
   );
 }
 
-function AIAssistant({ section, sections, onApply, business, setBusiness }) {
-  const [loadingOne, setLoadingOne] = useState(false);
-  const [loadingAll, setLoadingAll] = useState(false);
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
-  const [status, setStatus] = useState('');
-
-  const genOne = async (sec) => {
-    if (!sec) return;
-    setLoadingOne(true); setStatus('');
-    try {
-      const res = await base44.functions.invoke('aiThemeAssistant', { sectionType: sec.type, currentProps: sec.props, business });
-      if (res.data?.error) throw new Error(res.data.error);
-      if (res.data?.props) { onApply(sec.id, res.data.props); setStatus(`Contenu de « ${sec.label} » régénéré.`); }
-    } catch (e) { setStatus('Erreur : ' + e.message); }
-    finally { setLoadingOne(false); }
-  };
-
-  const genAll = async () => {
-    const vis = sections.filter((s) => s.visible);
-    if (!vis.length) return;
-    setLoadingAll(true); setStatus('Génération du thème en cours…'); setProgress({ done: 0, total: vis.length });
-    try {
-      for (let i = 0; i < vis.length; i++) {
-        setProgress({ done: i, total: vis.length });
-        const sec = vis[i];
-        const res = await base44.functions.invoke('aiThemeAssistant', { sectionType: sec.type, currentProps: sec.props, business });
-        if (res.data?.props) onApply(sec.id, res.data.props);
-      }
-      setProgress({ done: vis.length, total: vis.length });
-      setStatus('Thème entièrement généré !');
-    } catch (e) { setStatus('Erreur : ' + e.message); }
-    finally { setLoadingAll(false); }
-  };
-
-  return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="w-7 h-7 rounded-md bg-gradient-to-br from-[#008060] to-[#0EA5E9] flex items-center justify-center"><Sparkles className="w-4 h-4 text-white" /></span>
-        <div>
-          <p className="text-xs font-bold text-[#202223]">Assistant IA</p>
-          <p className="text-[10px] text-[#6D7175]">Génère du contenu premium automatiquement</p>
-        </div>
-      </div>
-
-      <Field label="Décris ton commerce en une phrase">
-        <textarea value={business} onChange={(e) => setBusiness(e.target.value)} rows={3} placeholder="Ex : boutique de mode wax haut de gamme à Dakar, livraison dans toute l'Afrique de l'Ouest" className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs" />
-      </Field>
-
-      <div className="rounded-lg border border-[#E1E1E1] p-3 bg-[#FAFAFA]">
-        <p className="text-[11px] font-semibold text-[#202223] mb-1">Section sélectionnée</p>
-        <p className="text-xs text-[#6D7175]">{section ? section.label : 'Aucune section sélectionnée'}</p>
-        <button onClick={() => genOne(section)} disabled={!section || loadingOne} className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#008060] rounded-md py-2 hover:bg-[#00694d] disabled:opacity-40">
-          {loadingOne ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Génération…</> : <><Wand2 className="w-3.5 h-3.5" /> Régénérer cette section</>}
-        </button>
-      </div>
-
-      <button onClick={genAll} disabled={loadingAll} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-[#202223] border border-[#202223] rounded-md py-2.5 hover:bg-black/5 disabled:opacity-40">
-        {loadingAll ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {progress.done}/{progress.total}…</> : <><Sparkles className="w-3.5 h-3.5" /> Générer tout le thème</>}
-      </button>
-
-      {status && <p className="text-[11px] text-[#008060] font-medium">{status}</p>}
-      <p className="text-[10px] text-[#6D7175] leading-relaxed">L'IA réécrit les textes (titres, descriptions, libellés) adaptés à ton commerce. Les images, couleurs et prix sont conservés.</p>
-    </div>
-  );
-}
 
 export default function ThemeEditor() {
   const [theme, setTheme] = useState(loadInitial);
@@ -312,28 +258,47 @@ export default function ThemeEditor() {
   const [future, setFuture] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [device, setDevice] = useState('desktop');
-  const [saved, setSaved] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
   const [rightOpen, setRightOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [tab, setTab] = useState('section');
-  const [business, setBusiness] = useState(() => localStorage.getItem(BUSINESS_KEY) || '');
   const { store } = useCurrentStore();
   const [autoSaved, setAutoSaved] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
+  const [themeLoaded, setThemeLoaded] = useState(false);
 
-  useEffect(() => { localStorage.setItem(BUSINESS_KEY, business); }, [business]);
-
-  // Autosave — debounced localStorage write whenever theme changes
+  // Load the tenant's real saved theme from theme_configs (one row per
+  // tenant, UNIQUE(tenant_id)) instead of starting from whatever was in
+  // this browser's localStorage - that's per-device and invisible to the
+  // actual storefront, which is the whole point of the table already
+  // having anon-readable published_config/config policies.
   useEffect(() => {
+    if (!store?.id) return;
+    let cancelled = false;
+    supabase.from('theme_configs').select('config').eq('tenant_id', store.id).maybeSingle().then(({ data }) => {
+      if (cancelled) return;
+      if (data?.config) setTheme(data.config);
+      setThemeLoaded(true);
+    });
+    return () => { cancelled = true; };
+  }, [store?.id]);
+
+  // Autosave — debounced upsert into theme_configs.config. Waits for the
+  // initial DB load above so it never overwrites a saved theme with the
+  // fallback default before that load has had a chance to run.
+  useEffect(() => {
+    if (!themeLoaded || !store?.id) return;
     setAutoSaved(false);
-    const t = setTimeout(() => {
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(theme));
-      setAutoSaved(true);
+    const t = setTimeout(async () => {
+      const { error } = await supabase.from('theme_configs').upsert(
+        { tenant_id: store.id, config: theme, sections: theme.sections, colors: theme.palette, fonts: theme.fonts, updated_at: new Date().toISOString() },
+        { onConflict: 'tenant_id' }
+      );
+      if (!error) setAutoSaved(true);
     }, 800);
     return () => clearTimeout(t);
-  }, [theme]);
+  }, [theme, themeLoaded, store?.id]);
 
   const commit = useCallback((next) => {
     setPast((h) => [...h, theme]);
@@ -360,23 +325,29 @@ export default function ThemeEditor() {
     updateSections((s) => s.map((x) => (x.id === selectedId ? { ...x, props: setByPath(x.props, path, value) } : x)));
   };
   const uploadImage = async (sectionId, path, file) => {
-    const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-    updateSections((s) => s.map((x) => (x.id === sectionId ? { ...x, props: setByPath(x.props, path, file_url) } : x)));
+    try {
+      const file_url = await uploadThemeImage(file, store?.id || 'shared');
+      updateSections((s) => s.map((x) => (x.id === sectionId ? { ...x, props: setByPath(x.props, path, file_url) } : x)));
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de l'image");
+    }
   };
-  const applySectionProps = (id, props) => updateSections((s) => s.map((x) => (x.id === id ? { ...x, props } : x)));
-
   const onPalette = (k, v) => commit({ ...theme, palette: { ...theme.palette, [k]: v } });
   const onFont = (k, v) => commit({ ...theme, fonts: { ...theme.fonts, [k]: v } });
-  const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); localStorage.removeItem(CUSTOM_KEY); commit(fresh); } };
+  const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
-  const persist = () => { localStorage.setItem(CUSTOM_KEY, JSON.stringify(theme)); setSaved(true); setTimeout(() => setSaved(false), 1500); };
   const publish = async () => {
     setPublishing(true);
     try {
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(theme));
       if (store?.id) {
-        await base44.entities.Store.update(store.id, { theme_id: theme.id, status: 'active' });
+        const { error: cfgError } = await supabase.from('theme_configs').upsert(
+          { tenant_id: store.id, config: theme, published_config: theme, sections: theme.sections, colors: theme.palette, fonts: theme.fonts, is_published: true, published_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+          { onConflict: 'tenant_id' }
+        );
+        if (cfgError) throw cfgError;
+        const { error: tenantError } = await supabase.from('tenants').update({ theme_id: theme.id, status: store.status === 'trial' ? store.status : 'active' }).eq('id', store.id);
+        if (tenantError) throw tenantError;
       }
       setPublished(true);
       setTimeout(() => setPublished(false), 2500);
@@ -407,9 +378,6 @@ export default function ThemeEditor() {
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => { setTab('ai'); setRightOpen(true); }} className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/40 rounded-md px-2.5 py-2 hover:bg-[#008060]/5">
-            <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">IA</span>
-          </button>
           <div className="flex items-center gap-1 bg-[#F4F4F4] p-1 rounded-lg">
             <button onClick={() => setDevice('desktop')} className={`p-1.5 rounded-md ${device === 'desktop' ? 'bg-white shadow-sm text-[#008060]' : 'text-[#6D7175]'}`}><Monitor className="w-4 h-4" /></button>
             <button onClick={() => setDevice('tablet')} className={`p-1.5 rounded-md ${device === 'tablet' ? 'bg-white shadow-sm text-[#008060]' : 'text-[#6D7175]'}`}><Tablet className="w-4 h-4" /></button>
@@ -496,14 +464,12 @@ export default function ThemeEditor() {
             <div className="flex gap-1 bg-[#F4F4F4] p-1 rounded-lg flex-1">
               <TabBtn id="section" label="Section" icon={LayoutGrid} />
               <TabBtn id="theme" label="Thème" icon={Palette} />
-              <TabBtn id="ai" label="IA" icon={Sparkles} />
             </div>
             <button onClick={() => setRightOpen(false)} className="lg:hidden p-1 ml-2 rounded text-[#6D7175]"><X className="w-4 h-4" /></button>
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
             {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onReset={onReset} />}
-            {tab === 'ai' && <AIAssistant section={selectedSection} sections={theme.sections} onApply={applySectionProps} business={business} setBusiness={setBusiness} />}
           </div>
         </div>
       </div>

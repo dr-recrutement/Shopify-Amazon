@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Truck, Plus, Trash2, Loader2, X, Check } from 'lucide-react';
+import { Truck, Plus, Trash2, Loader2, X, Check, Globe } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import { COUNTRIES } from '@/lib/world/countries';
 
-// Native shipping_zones: one country per zone (not an array), a single
-// estimated_days figure (not min/max), and no carrier column - simplified
-// from the original multi-country/carrier UI to match what's really there.
+// A zone can cover several countries (countries[]) or every country
+// (is_global) - see migration shipping_zones_multi_country. Still one
+// estimated_days figure per zone, no carrier column (no equivalent yet).
 export default function ShippingSettings() {
   const { store, loading } = useCurrentStore();
   const [zones, setZones] = useState([]);
   const [busy, setBusy] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', country: 'SN', rate_type: 'flat', rate: 0, estimated_days: 5, free_shipping_threshold: 0 });
+  const [form, setForm] = useState({ name: '', isGlobal: false, countries: [], rate_type: 'flat', rate: 0, estimated_days: 5, free_shipping_threshold: 0 });
 
   const load = useCallback(async () => {
     if (!store?.id) return;
@@ -39,13 +39,18 @@ export default function ShippingSettings() {
 
   useEffect(() => { load(); }, [load]);
 
+  const toggleCountry = (code) => setForm((f) => ({ ...f, countries: f.countries.includes(code) ? f.countries.filter((c) => c !== code) : [...f.countries, code] }));
+
   const create = async () => {
+    if (!form.isGlobal && form.countries.length === 0) { alert('Choisissez au moins un pays, ou activez la livraison mondiale.'); return; }
     setBusy(true);
     try {
       const { error } = await supabase.from('shipping_zones').insert({
         tenant_id: store.id,
         name: form.name,
-        country: form.country,
+        is_global: form.isGlobal,
+        countries: form.isGlobal ? null : form.countries,
+        country: form.isGlobal ? null : form.countries[0], // kept in sync for backward compatibility only
         rate_type: form.rate_type,
         rate_amount_cents: form.rate_type === 'free' ? 0 : Math.round(Number(form.rate) * 100),
         estimated_days: Number(form.estimated_days) || null,
@@ -54,7 +59,7 @@ export default function ShippingSettings() {
       });
       if (error) throw error;
       setShowForm(false);
-      setForm({ name: '', country: 'SN', rate_type: 'flat', rate: 0, estimated_days: 5, free_shipping_threshold: 0 });
+      setForm({ name: '', isGlobal: false, countries: [], rate_type: 'flat', rate: 0, estimated_days: 5, free_shipping_threshold: 0 });
       await load();
     } catch (e) {
       alert(e.message || "Échec de la création de la zone");
@@ -82,7 +87,7 @@ export default function ShippingSettings() {
         <button onClick={() => setShowForm(true)} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Créer une zone</button>
       </div>
 
-      <p className="text-sm text-[#6D7175] mb-4">Configurez vos zones de livraison et frais d'expédition par pays.</p>
+      <p className="text-sm text-[#6D7175] mb-4">Configurez vos zones de livraison — un ou plusieurs pays, ou le monde entier — et vos frais d'expédition.</p>
 
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
@@ -90,7 +95,28 @@ export default function ShippingSettings() {
             <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-bold text-[#202223]">Nouvelle zone de livraison</h2><button onClick={() => setShowForm(false)} className="text-[#6D7175]"><X className="w-5 h-5" /></button></div>
             <div className="space-y-3">
               <div><label className="text-xs font-semibold text-[#6D7175]">Nom de la zone</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ex: Dakar Express" className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" /></div>
-              <div><label className="text-xs font-semibold text-[#6D7175]">Pays</label><select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm">{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+
+              <label className="flex items-center gap-2 text-sm font-medium text-[#202223] cursor-pointer bg-[#F4F4F4] rounded-lg px-3 py-2.5">
+                <input type="checkbox" checked={form.isGlobal} onChange={(e) => setForm({ ...form, isGlobal: e.target.checked })} className="accent-[#008060]" />
+                <Globe className="w-4 h-4 text-[#008060]" /> Livraison mondiale (tous les pays)
+              </label>
+
+              {!form.isGlobal && (
+                <div>
+                  <label className="text-xs font-semibold text-[#6D7175] flex items-center justify-between">
+                    <span>Pays couverts</span>
+                    <span className="text-[#008060]">{form.countries.length} sélectionné(s)</span>
+                  </label>
+                  <div className="mt-1 max-h-40 overflow-y-auto border border-[#E1E1E1] rounded-lg p-2 grid grid-cols-2 gap-1">
+                    {COUNTRIES.map((c) => (
+                      <label key={c.code} className="flex items-center gap-1.5 text-xs cursor-pointer hover:bg-black/5 rounded px-1.5 py-1">
+                        <input type="checkbox" checked={form.countries.includes(c.code)} onChange={() => toggleCountry(c.code)} className="accent-[#008060]" /> {c.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div><label className="text-xs font-semibold text-[#6D7175]">Type de tarif</label><select value={form.rate_type} onChange={(e) => setForm({ ...form, rate_type: e.target.value })} className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm"><option value="flat">Forfait</option><option value="free">Gratuit</option><option value="weight_based">Selon le poids</option></select></div>
               {form.rate_type !== 'free' && <div><label className="text-xs font-semibold text-[#6D7175]">Frais ({store?.currency})</label><input type="number" value={form.rate} onChange={(e) => setForm({ ...form, rate: +e.target.value })} className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" /></div>}
               <div><label className="text-xs font-semibold text-[#6D7175]">Délai estimé (jours)</label><input type="number" value={form.estimated_days} onChange={(e) => setForm({ ...form, estimated_days: +e.target.value })} className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" /></div>
@@ -109,7 +135,15 @@ export default function ShippingSettings() {
             <div>
               <div className="flex items-center gap-2"><p className="text-sm font-bold text-[#202223]">{z.name}</p><span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${z.enabled ? 'bg-[#008060]/10 text-[#008060]' : 'bg-gray-100 text-gray-500'}`}>{z.enabled ? 'Actif' : 'Désactivé'}</span></div>
               <p className="text-xs text-[#6D7175] mt-1">{z.rate_type === 'free' ? 'Livraison gratuite' : formatMoney(z.rate, z.currency)} · {z.estimated_days ? `${z.estimated_days} jours` : '—'}</p>
-              <p className="text-[11px] text-[#6D7175] mt-1">{COUNTRIES.find((c) => c.code === z.country)?.name || z.country}</p>
+              <p className="text-[11px] text-[#6D7175] mt-1 flex items-center gap-1">
+                {z.is_global ? (
+                  <><Globe className="w-3 h-3 text-[#008060]" /> Mondial — tous les pays</>
+                ) : (z.countries || []).length > 0 ? (
+                  `${z.countries.length} pays : ${z.countries.map((code) => COUNTRIES.find((c) => c.code === code)?.name || code).join(', ')}`
+                ) : (
+                  COUNTRIES.find((c) => c.code === z.country)?.name || z.country || '—'
+                )}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => toggle(z)} className="w-8 h-8 rounded-md border border-[#E1E1E1] flex items-center justify-center text-[#6D7175] hover:bg-black/5">{z.enabled ? <Check className="w-4 h-4 text-[#008060]" /> : <X className="w-4 h-4" />}</button>

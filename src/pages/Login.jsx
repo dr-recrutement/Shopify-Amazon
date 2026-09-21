@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,17 +23,23 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
       window.location.href = returnTo;
     } catch (err) {
-      setError(err.status === 405 ? "L'authentification par email n'est pas activée pour cette application. Activez « Email / mot de passe » dans la page Authentification du dashboard." : err.message || "Invalid email or password");
+      setError(err.message === "Email logins are disabled"
+        ? "L'authentification par email n'est pas activée pour ce projet Supabase. Activez le provider « Email » dans Authentication \u2192 Providers du dashboard Supabase."
+        : err.message || "Email ou mot de passe invalide");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", returnTo);
+  const handleGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + returnTo },
+    });
   };
 
   return (

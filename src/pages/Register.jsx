@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,10 +29,19 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await base44.auth.register({ email, password });
+      const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+      if (signUpError) throw signUpError;
+      if (data.session) {
+        // Email confirmation is disabled for this project: the account is
+        // already active and signed in, so there's no code to verify.
+        window.location.href = safeReturnTo();
+        return;
+      }
       setShowOtp(true);
     } catch (err) {
-      setError(err.status === 405 ? "L'inscription par email n'est pas activée pour cette application. Activez « Email / mot de passe » et l'inscription dans la page Authentification du dashboard." : err.message || "Registration failed");
+      setError(err.message === "Signups not allowed for this instance"
+        ? "L'inscription par email n'est pas activée pour ce projet Supabase. Activez-la dans Authentication \u2192 Providers du dashboard Supabase."
+        : err.message || "L'inscription a échoué");
     } finally {
       setLoading(false);
     }
@@ -42,13 +51,11 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
-      }
+      const { error: verifyError } = await supabase.auth.verifyOtp({ email, token: otpCode, type: "signup" });
+      if (verifyError) throw verifyError;
       window.location.href = safeReturnTo();
     } catch (err) {
-      setError(err.message || "Invalid verification code");
+      setError(err.message || "Code de vérification invalide");
     } finally {
       setLoading(false);
     }
@@ -57,18 +64,22 @@ export default function Register() {
   const handleResend = async () => {
     setError("");
     try {
-      await base44.auth.resendOtp(email);
+      const { error: resendError } = await supabase.auth.resend({ type: "signup", email });
+      if (resendError) throw resendError;
       toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
+        title: "Code envoyé",
+        description: "Vérifiez votre e-mail pour le nouveau code.",
       });
     } catch (err) {
-      setError(err.message || "Failed to resend code");
+      setError(err.message || "Impossible de renvoyer le code");
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", safeReturnTo());
+  const handleGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + safeReturnTo() },
+    });
   };
 
   if (showOtp) {

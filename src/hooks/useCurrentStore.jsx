@@ -1,28 +1,65 @@
-import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/api/supabaseClient';
 
-// Loads the first store owned by the current user (created_by_id).
+// Loads the tenant (boutique) owned by the current user from the native
+// `tenants` table (RLS: owner_id = auth.uid()), and normalizes it into the
+// field names the rest of the app already expects (business_name, plan_status,
+// etc. - the shape the old Base44 `Store` entity used). `tenants` doesn't
+// carry every one of those fields (no logo/email/address/description columns
+// today) - those come back undefined rather than crashing the page.
 // Returns { store, loading, error, reload }.
+function normalizeTenant(t) {
+  if (!t) return null;
+  return {
+    ...t,
+    business_name: t.name,
+    business_type: t.sector,
+    category: t.sector,
+    plan_status: t.status,
+    // No dedicated columns yet on `tenants` for these - left undefined on
+    // purpose rather than guessed, so pages render an empty state instead of
+    // wrong data.
+    color: t.color,
+    description: t.description,
+    domain: t.domain,
+    email: t.email,
+    image: t.image,
+    address: t.address,
+  };
+}
+
 export function useCurrentStore() {
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
-      const user = await base44.auth.me();
-      const list = await base44.entities.Store.filter({ created_by_id: user.id });
-      setStore(list[0] || null);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setStore(null);
+        setError(null);
+        return;
+      }
+      const { data, error: queryError } = await supabase
+        .from('tenants')
+        .select('*')
+        .eq('owner_id', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (queryError) throw queryError;
+      setStore(normalizeTenant(data));
       setError(null);
     } catch (e) {
       setError(e);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
   return { store, loading, error, reload: load };
 }
 

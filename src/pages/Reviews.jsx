@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Star, Check, X, Trash2, Loader2, Search, MessageSquare } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 function Stars({ n }) {
@@ -15,7 +15,30 @@ export default function Reviews() {
 
   const load = useCallback(async () => {
     if (!store?.id) return;
-    setReviews(await base44.entities.Review.filter({ store_id: store.id }, '-created_date', 500));
+    try {
+      // is_approved is a boolean (no dedicated "pending" state stored), so
+      // it's normalized here into the pending/approved/rejected status this
+      // page already reads: null -> pending, true -> approved, false ->
+      // rejected. There's no separate review "title" or order-derived
+      // product name column, so product_title comes from the products join
+      // and there's no r.title line.
+      const { data, error } = await supabase
+        .from('product_reviews')
+        .select('*, products(name)')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      setReviews((data || []).map((row) => ({
+        ...row,
+        body: row.comment,
+        product_title: row.products?.name || '',
+        status: row.is_approved === true ? 'approved' : row.is_approved === false ? 'rejected' : 'pending',
+      })));
+    } catch (e) {
+      console.error('Failed to load reviews:', e);
+      setReviews([]);
+    }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
@@ -26,8 +49,17 @@ export default function Reviews() {
     return m && f;
   }), [reviews, search, filter]);
 
-  const setStatus = async (id, status) => { await base44.entities.Review.update(id, { status }); await load(); };
-  const remove = async (id) => { if (confirm('Supprimer cet avis ?')) { await base44.entities.Review.delete(id); await load(); } };
+  const setStatus = async (id, status) => {
+    const { error } = await supabase.from('product_reviews').update({ is_approved: status === 'approved' }).eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
+  };
+  const remove = async (id) => {
+    if (!confirm('Supprimer cet avis ?')) return;
+    const { error } = await supabase.from('product_reviews').delete().eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
+  };
 
   const stats = useMemo(() => ({
     pending: reviews.filter((r) => r.status === 'pending').length,

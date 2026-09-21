@@ -9,14 +9,23 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import PhoneInput from "@/components/PhoneInput";
+import { COUNTRIES } from "@/lib/world/countries";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
+
+function guessDefaultCountry() {
+  const locale = typeof navigator !== "undefined" ? navigator.language : "en-US";
+  const region = locale?.split("-")[1]?.toUpperCase();
+  if (region && COUNTRIES.some((c) => c.code === region)) return region;
+  return "SN";
+}
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState(guessDefaultCountry());
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
@@ -44,7 +53,7 @@ export default function Register() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { phone } },
+        options: { data: { phone, country } },
       });
       if (signUpError) throw signUpError;
       if (data.session) {
@@ -212,9 +221,23 @@ export default function Register() {
           </div>
         </div>
         <div className="space-y-2">
+          <Label htmlFor="country">Pays de résidence</Label>
+          <select
+            id="country"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            required
+            className="flex h-12 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            {[...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
+              <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="phone">Numéro de téléphone</Label>
           <div className="relative">
-            <PhoneInput id="phone" value={phone} onChange={setPhone} required />
+            <PhoneInput id="phone" value={phone} onChange={setPhone} countryHint={country} required />
           </div>
         </div>
         <div className="space-y-2">

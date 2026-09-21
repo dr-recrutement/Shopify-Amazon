@@ -50,14 +50,17 @@ export default function Onboarding() {
   }, [f.country]);
   const [phone, setPhone] = useState(store?.phone || '');
   useEffect(() => {
-    if (store?.phone) { setPhone(store.phone); return; }
     // Prefill from what was entered at sign-up (Register.jsx stores it in
-    // user_metadata) so people don't have to type it twice.
+    // user_metadata) so people don't have to fill in the same info twice.
     supabase.auth.getUser().then(({ data }) => {
-      const p = data?.user?.user_metadata?.phone;
-      if (p) setPhone((cur) => cur || p);
+      const meta = data?.user?.user_metadata || {};
+      if (!store?.phone && meta.phone) setPhone((cur) => cur || meta.phone);
+      if (!store?.country && meta.country) {
+        setF((cur) => (cur.country === 'SN' || !cur.country) ? { ...cur, country: meta.country, currency: COUNTRIES.find((c) => c.code === meta.country)?.currency || cur.currency } : cur);
+      }
     });
-  }, [store?.phone]);
+    if (store?.phone) setPhone(store.phone);
+  }, [store?.phone, store?.country]);
   // step 2 state
   const [items, setItems] = useState([{ title: '', price: '' }]);
   // step 4 state

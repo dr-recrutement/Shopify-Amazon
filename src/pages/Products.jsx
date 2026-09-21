@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
 import { formatMoney } from '@/lib/world/currencies';
@@ -29,8 +29,27 @@ export default function Products() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.Product.filter({ store_id: store.id }, '-created_date', 200);
-      setProducts(list);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      // price_cents/name -> the price/title field names this page (and
+      // ProductForm) already read; metafields carries the extra attributes
+      // (vendor, product_type, tags, barcode, weight, track_inventory) that
+      // have no dedicated column on the native `products` table yet.
+      setProducts((data || []).map((row) => ({
+        ...row,
+        title: row.name,
+        price: (row.price_cents || 0) / 100,
+        compare_at_price: (row.compare_at_price_cents || 0) / 100,
+        ...(row.metafields || {}),
+      })));
+    } catch (e) {
+      console.error('Failed to load products:', e);
+      setProducts([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -50,7 +69,8 @@ export default function Products() {
   const openEdit = (p) => { setEditing(p); setFormOpen(true); };
   const remove = async (p) => {
     if (!confirm(`Supprimer « ${p.title} » ?`)) return;
-    await base44.entities.Product.delete(p.id);
+    const { error } = await supabase.from('products').delete().eq('id', p.id);
+    if (error) { alert(error.message); return; }
     setProducts((l) => l.filter((x) => x.id !== p.id));
   };
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package, Sparkles, Wand2 } from 'lucide-react';
+import { X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package } from 'lucide-react';
 import { formatMoney } from '@/lib/world/currencies';
 
 const STATUSES = [
@@ -24,17 +24,27 @@ function Field({ label, children }) {
   );
 }
 
-function ImagesEditor({ images, onSet }) {
+function ImagesEditor({ images, onSet, pathPrefix }) {
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const upload = async (files) => {
-    setBusy(true);
+    setBusy(true); setError('');
     try {
       const urls = [];
       for (const f of Array.from(files)) {
-        const { file_url } = await base44.integrations.Core.UploadPublicFile({ file: f });
-        urls.push(file_url);
+        const ext = (f.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+        const path = `${pathPrefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: uploadError } = await supabase.storage.from('product-images').upload(path, f, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+        urls.push(data.publicUrl);
       }
       onSet([...(images || []), ...urls]);
+    } catch (e) {
+      setError(e.message || "Échec de l'envoi de l'image");
     } finally { setBusy(false); }
   };
   return (
@@ -54,6 +64,7 @@ function ImagesEditor({ images, onSet }) {
         </label>
       </div>
       <p className="text-[11px] text-[#6D7175]">PNG · JPG · WEBP — multiple</p>
+      {error && <p className="text-[11px] text-red-600 mt-1">{error}</p>}
     </div>
   );
 }
@@ -165,9 +176,6 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [tagsText, setTagsText] = useState('');
-  const [aiBrief, setAiBrief] = useState('');
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -184,61 +192,46 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
   const set = (patch) => setForm({ ...form, ...patch });
   const isNew = !form.id;
 
-  const generateWithAI = async () => {
-    if (!aiBrief.trim()) return;
-    setAiLoading(true); setAiError('');
-    try {
-      const res = await base44.functions.invoke('aiAssistant', {
-        task: 'product_description',
-        input: aiBrief,
-        context: store?.name || '',
-      });
-      if (res.data?.error) throw new Error(res.data.error);
-      const r = res.data?.result || {};
-      set({
-        title: r.title || form.title,
-        description: r.description || form.description,
-        seo: { title: r.title || '', description: r.short_description || '' },
-      });
-      if (Array.isArray(r.tags) && r.tags.length) setTagsText(r.tags.join(', '));
-    } catch (e) {
-      setAiError(e.message || 'Échec de la génération IA');
-    } finally { setAiLoading(false); }
-  };
-
   const save = async () => {
     if (!form.title) return;
     setSaving(true);
     try {
+      // Native `products` columns only carry name/description/price_cents/
+      // currency/stock/status/images/sku/compare_at_price_cents/variants -
+      // the rest (vendor, product_type, tags, barcode, weight,
+      // track_inventory, handle, seo) have no dedicated column yet, so they
+      // ride along in `metafields` rather than being silently dropped.
       const payload = {
-        store_id: store.id,
-        title: form.title,
-        handle: (form.title || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        tenant_id: store.id,
+        name: form.title,
         description: form.description || '',
         status: form.status || 'draft',
-        vendor: form.vendor || '',
-        product_type: form.product_type || '',
-        price: Number(form.price) || 0,
-        compare_at_price: Number(form.compare_at_price) || 0,
+        price_cents: Math.round((Number(form.price) || 0) * 100),
+        compare_at_price_cents: Math.round((Number(form.compare_at_price) || 0) * 100),
         currency: store.currency,
         sku: form.sku || '',
-        barcode: form.barcode || '',
-        weight: Number(form.weight) || 0,
-        track_inventory: form.track_inventory !== false,
         stock: (form.variants || []).length === 0 ? Number(form.stock) || 0 : 0,
         images: form.images || [],
-        tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
-        options: (form.options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length),
         variants: form.variants || [],
-        seo: form.seo || { title: '', description: '' },
+        metafields: {
+          vendor: form.vendor || '',
+          product_type: form.product_type || '',
+          barcode: form.barcode || '',
+          weight: Number(form.weight) || 0,
+          track_inventory: form.track_inventory !== false,
+          tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
+          options: (form.options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length),
+          seo: form.seo || { title: '', description: '' },
+        },
       };
-      if (isNew) {
-        await base44.entities.Product.create(payload);
-      } else {
-        await base44.entities.Product.update(form.id, payload);
-      }
+      const { error } = isNew
+        ? await supabase.from('products').insert(payload)
+        : await supabase.from('products').update(payload).eq('id', form.id);
+      if (error) throw error;
       onSaved();
       onOpenChange(false);
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement du produit");
     } finally { setSaving(false); }
   };
 
@@ -250,21 +243,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         </DialogHeader>
         <div className="space-y-4">
           <Field label="Titre *"><input value={form.title} onChange={(e) => set({ title: e.target.value })} className={inputCls} placeholder="Ex : Boubou wax premium" /></Field>
-          <div className="rounded-lg border border-[#008060]/30 bg-[#008060]/[0.03] p-3">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Sparkles className="w-4 h-4 text-[#008060]" />
-              <span className="text-xs font-bold text-[#202223]">Assistant IA</span>
-            </div>
-            <textarea value={aiBrief} onChange={(e) => setAiBrief(e.target.value)} rows={2} placeholder="Décrivez le produit en quelques mots (matière, origine, public, atouts)…" className={inputCls + ' mb-2'} />
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-[11px] text-[#6D7175]">Génère titre, description & tags SEO.</p>
-              <button type="button" onClick={generateWithAI} disabled={aiLoading || !aiBrief.trim()} className="flex items-center gap-1.5 bg-[#008060] text-white text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-[#00694d] disabled:opacity-40">
-                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />} Rédiger avec l'IA
-              </button>
-            </div>
-            {aiError && <p className="text-[11px] text-red-600 mt-1.5">{aiError}</p>}
-          </div>
-          <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} /></Field>
+          <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} pathPrefix={store.id} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label={`Prix (${store.currency})`}><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set({ price: e.target.value })} className={inputCls} /></Field>
             <Field label="Prix barré"><input type="number" min="0" step="0.01" value={form.compare_at_price} onChange={(e) => set({ compare_at_price: e.target.value })} className={inputCls} /></Field>

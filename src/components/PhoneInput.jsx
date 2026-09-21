@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { COUNTRIES } from "@/lib/world/countries";
 
 // Sorted once, not on every render.
@@ -25,11 +25,25 @@ function splitValue(value) {
 /**
  * value: full phone as "<calling_code><national digits>" (e.g. "+221701234567"), or "".
  * onChange(fullPhone: string)
+ * countryHint: an ISO2 code (e.g. the store's country of residence) this
+ * field should follow by default - the calling code jumps to match it
+ * automatically, the same way it would on any coherent checkout form. Once
+ * the person picks a calling code themselves, their choice sticks (e.g. a
+ * business run from one country with a phone number from another) and stops
+ * following the hint.
  */
-export default function PhoneInput({ value, onChange, id, required, autoComplete = "tel-national" }) {
+export default function PhoneInput({ value, onChange, id, required, autoComplete = "tel-national", countryHint }) {
   const initial = useMemo(() => splitValue(value), []);
-  const [countryCode, setCountryCode] = useState(initial?.countryCode || guessDefaultCountry());
+  const [countryCode, setCountryCode] = useState(initial?.countryCode || countryHint || guessDefaultCountry());
   const [national, setNational] = useState(initial?.national || "");
+  const touchedRef = useRef(!!initial?.countryCode);
+
+  useEffect(() => {
+    if (touchedRef.current) return;
+    if (countryHint && SORTED_COUNTRIES.some((c) => c.code === countryHint)) {
+      setCountryCode(countryHint);
+    }
+  }, [countryHint]);
 
   const country = SORTED_COUNTRIES.find((c) => c.code === countryCode) || SORTED_COUNTRIES[0];
 
@@ -44,7 +58,7 @@ export default function PhoneInput({ value, onChange, id, required, autoComplete
       <select
         aria-label="Indicatif du pays"
         value={countryCode}
-        onChange={(e) => { setCountryCode(e.target.value); emit(e.target.value, national); }}
+        onChange={(e) => { touchedRef.current = true; setCountryCode(e.target.value); emit(e.target.value, national); }}
         className="h-12 rounded-md border border-input bg-background px-2 text-sm w-[6.5rem] shrink-0 focus:outline-none focus:ring-2 focus:ring-ring"
       >
         {SORTED_COUNTRIES.map((c) => (

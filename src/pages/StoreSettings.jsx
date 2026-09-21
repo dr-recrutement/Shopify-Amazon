@@ -78,7 +78,7 @@ export default function StoreSettings() {
         <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
           <div className="flex items-center gap-2 mb-4"><Phone className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Contact</h2></div>
           <label className={lbl}>Téléphone</label>
-          <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+          <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} countryHint={form.country} />
         </section>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
@@ -39,6 +39,15 @@ export default function Onboarding() {
 
   // step 1 state
   const [f, setF] = useState({ name: store?.name || '', country: store?.country || 'SN', currency: store?.currency || 'XOF', business_type: store?.business_type || BUSINESS_TYPES[0] });
+  // The curated CURRENCIES list plus whatever currency the selected country
+  // actually implies (e.g. Kenya -> KES isn't in that short list) - so the
+  // dropdown never silently shows a currency that doesn't match the country
+  // that was just auto-applied.
+  const currencyOptions = useMemo(() => {
+    const implied = COUNTRIES.find((c) => c.code === f.country)?.currency;
+    if (!implied || CURRENCIES.some((c) => c.code === implied)) return CURRENCIES;
+    return [...CURRENCIES, { code: implied, label: implied }];
+  }, [f.country]);
   const [phone, setPhone] = useState(store?.phone || '');
   useEffect(() => {
     if (store?.phone) { setPhone(store.phone); return; }
@@ -130,10 +139,10 @@ export default function Onboarding() {
             <p className="text-sm text-[#6D7175] mt-1 mb-5">Ces informations apparaissent sur votre vitrine et vos factures.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2"><label className={lbl}>Nom de la boutique</label><input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={fld} placeholder="Ex : AfriStyle" /></div>
-              <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => setF({ ...f, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
-              <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{CURRENCIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}</select></div>
+              <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => { const country = e.target.value; const impliedCurrency = COUNTRIES.find((c) => c.code === country)?.currency; setF({ ...f, country, currency: impliedCurrency || f.currency }); }} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+              <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{currencyOptions.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}</select><p className="text-[11px] text-[#6D7175] mt-1">Pré-remplie selon le pays choisi — modifiable si besoin.</p></div>
               <div className="sm:col-span-2"><label className={lbl}>Type d'activité</label><select value={f.business_type} onChange={(e) => setF({ ...f, business_type: e.target.value })} className={fld}>{BUSINESS_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}</select></div>
-              <div className="sm:col-span-2"><label className={lbl}>Téléphone</label><PhoneInput value={phone} onChange={setPhone} /></div>
+              <div className="sm:col-span-2"><label className={lbl}>Téléphone</label><PhoneInput value={phone} onChange={setPhone} countryHint={f.country} /><p className="text-[11px] text-[#6D7175] mt-1">Indicatif pré-rempli selon le pays choisi ci-dessus.</p></div>
             </div>
           </>
         );

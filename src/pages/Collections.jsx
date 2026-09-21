@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import CollectionForm from '@/components/admin/CollectionForm';
 import {
@@ -18,16 +18,37 @@ export default function Collections() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.Collection.filter({ store_id: store.id }, '-created_date', 100);
-      setCollections(list);
+      const { data, error } = await supabase
+        .from('product_categories')
+        .select('*, product_category_assignments(count)')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      setCollections((data || []).map((row) => ({
+        ...row,
+        image: row.image_url,
+        product_ids: [], // loaded on demand by CollectionForm when editing
+        product_count: row.product_category_assignments?.[0]?.count || 0,
+      })));
+    } catch (e) {
+      console.error('Failed to load collections:', e);
+      setCollections([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
 
+  const openEdit = async (c) => {
+    const { data } = await supabase.from('product_category_assignments').select('product_id').eq('category_id', c.id);
+    setEditing({ ...c, product_ids: (data || []).map((r) => r.product_id) });
+    setFormOpen(true);
+  };
+
   const remove = async (c) => {
     if (!confirm(`Supprimer la collection « ${c.name} » ?`)) return;
-    await base44.entities.Collection.delete(c.id);
+    const { error } = await supabase.from('product_categories').delete().eq('id', c.id);
+    if (error) { alert(error.message); return; }
     setCollections((l) => l.filter((x) => x.id !== c.id));
   };
 
@@ -75,16 +96,11 @@ export default function Collections() {
                   {c.image ? <img src={c.image} alt={c.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-8 h-8 text-[#C9C9C9]" /></div>}
                 </div>
                 <div className="p-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-[#202223] truncate">{c.name}</p>
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${c.status === 'active' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-[#E1E1E1] text-[#6D7175]'}`}>
-                      {c.status === 'active' ? 'Active' : 'Brouillon'}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#6D7175] mt-0.5">{c.type === 'smart' ? 'Automatique' : 'Manuelle'} · {c.product_ids?.length || 0} produit(s)</p>
+                  <p className="text-sm font-semibold text-[#202223] truncate">{c.name}</p>
+                  <p className="text-[11px] text-[#6D7175] mt-0.5">{c.product_count} produit(s)</p>
                   {c.description && <p className="text-xs text-[#6D7175] mt-1 line-clamp-2">{c.description}</p>}
                   <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition">
-                    <button onClick={() => { setEditing(c); setFormOpen(true); }} className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium text-[#6D7175] border border-[#E1E1E1] rounded py-1 hover:bg-black/5"><Pencil className="w-3 h-3" /> Éditer</button>
+                    <button onClick={() => openEdit(c)} className="flex-1 flex items-center justify-center gap-1 text-[11px] font-medium text-[#6D7175] border border-[#E1E1E1] rounded py-1 hover:bg-black/5"><Pencil className="w-3 h-3" /> Éditer</button>
                     <button onClick={() => remove(c)} className="flex items-center justify-center px-2 text-[#6D7175] border border-[#E1E1E1] rounded hover:text-red-500 hover:bg-red-50"><Trash2 className="w-3 h-3" /></button>
                   </div>
                 </div>

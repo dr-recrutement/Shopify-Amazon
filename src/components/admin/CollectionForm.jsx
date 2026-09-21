@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, Upload, Image as ImageIcon, X, Search, Check, Plus } from 'lucide-react';
+import { Loader2, Upload, Image as ImageIcon, X, Search, Check } from 'lucide-react';
 
 const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 
@@ -17,66 +17,38 @@ function Field({ label, children }) {
   );
 }
 
-function ImageField({ value, onSet }) {
+function ImageField({ value, onSet, pathPrefix }) {
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const upload = async (file) => {
-    setBusy(true);
+    setBusy(true); setError('');
     try {
-      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-      onSet(file_url);
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      const path = `${pathPrefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+      onSet(data.publicUrl);
+    } catch (e) {
+      setError(e.message || "Échec de l'envoi");
     } finally { setBusy(false); }
   };
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-20 h-20 rounded-lg border border-[#E1E1E1] bg-[#F4F4F4] overflow-hidden flex items-center justify-center">
-        {value ? <img src={value} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-[#C9C9C9]" />}
-      </div>
-      {value ? (
-        <button type="button" onClick={() => onSet('')} className="flex items-center gap-1 text-xs font-semibold text-[#6D7175] hover:text-red-500"><X className="w-3.5 h-3.5" /> Retirer</button>
-      ) : (
-        <label className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/40 rounded-md px-3 py-2 cursor-pointer hover:bg-[#008060]/5">
-          {busy ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Téléversement…</> : <><Upload className="w-3.5 h-3.5" /> Téléverser</>}
-          <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
-        </label>
-      )}
-    </div>
-  );
-}
-
-const RULE_FIELDS = [
-  { value: 'product_type', label: 'Type de produit' },
-  { value: 'tag', label: 'Tag' },
-  { value: 'vendor', label: 'Marque / Fournisseur' },
-  { value: 'price', label: 'Prix' },
-  { value: 'status', label: 'Statut' },
-];
-const RULE_OPS = [
-  { value: 'eq', label: 'égal à' },
-  { value: 'neq', label: 'différent de' },
-  { value: 'contains', label: 'contient' },
-  { value: 'gt', label: 'supérieur à' },
-  { value: 'lt', label: 'inférieur à' },
-];
-
-function RulesEditor({ rules, onSet }) {
-  const add = () => onSet([...(rules || []), { field: 'product_type', operator: 'eq', value: '' }]);
-  const setRule = (i, patch) => onSet(rules.map((r, j) => (j === i ? { ...r, ...patch } : r)));
-  const remove = (i) => onSet(rules.filter((_, j) => j !== i));
-  return (
-    <div className="space-y-2">
-      {(rules || []).map((r, i) => (
-        <div key={i} className="flex items-center gap-1.5">
-          <select value={r.field} onChange={(e) => setRule(i, { field: e.target.value })} className="flex-1 px-2 py-1.5 border border-[#E1E1E1] rounded text-xs">
-            {RULE_FIELDS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-          </select>
-          <select value={r.operator} onChange={(e) => setRule(i, { operator: e.target.value })} className="px-2 py-1.5 border border-[#E1E1E1] rounded text-xs">
-            {RULE_OPS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-          <input value={r.value} onChange={(e) => setRule(i, { value: e.target.value })} placeholder="Valeur" className="flex-1 px-2 py-1.5 border border-[#E1E1E1] rounded text-xs" />
-          <button type="button" onClick={() => remove(i)} className="text-[#6D7175] hover:text-red-500"><X className="w-4 h-4" /></button>
+    <div>
+      <div className="flex items-center gap-3">
+        <div className="w-20 h-20 rounded-lg border border-[#E1E1E1] bg-[#F4F4F4] overflow-hidden flex items-center justify-center">
+          {value ? <img src={value} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-[#C9C9C9]" />}
         </div>
-      ))}
-      <button type="button" onClick={add} className="text-xs font-semibold text-[#008060] inline-flex items-center gap-1.5 border border-dashed border-[#008060]/40 rounded-md px-3 py-1.5 hover:bg-[#008060]/5"><Plus className="w-3.5 h-3.5" /> Ajouter une règle</button>
+        {value ? (
+          <button type="button" onClick={() => onSet('')} className="flex items-center gap-1 text-xs font-semibold text-[#6D7175] hover:text-red-500"><X className="w-3.5 h-3.5" /> Retirer</button>
+        ) : (
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/40 rounded-md px-3 py-2 cursor-pointer hover:bg-[#008060]/5">
+            {busy ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Téléversement…</> : <><Upload className="w-3.5 h-3.5" /> Téléverser</>}
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
+          </label>
+        )}
+      </div>
+      {error && <p className="text-[11px] text-red-600 mt-1">{error}</p>}
     </div>
   );
 }
@@ -88,8 +60,8 @@ function ProductPicker({ store, selectedIds, onSet }) {
 
   useEffect(() => {
     if (!store?.id) return;
-    base44.entities.Product.filter({ store_id: store.id }, '-created_date', 200)
-      .then(setProducts)
+    supabase.from('products').select('id, name, images, status').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200)
+      .then(({ data }) => setProducts(data || []))
       .finally(() => setLoading(false));
   }, [store?.id]);
 
@@ -98,7 +70,7 @@ function ProductPicker({ store, selectedIds, onSet }) {
     else onSet([...(selectedIds || []), id]);
   };
 
-  const filtered = products.filter((p) => !search || p.title.toLowerCase().includes(search.toLowerCase()));
+  const filtered = products.filter((p) => !search || p.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="border border-[#E1E1E1] rounded-lg">
@@ -124,7 +96,7 @@ function ProductPicker({ store, selectedIds, onSet }) {
                   {p.images?.[0] ? <img src={p.images[0]} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-4 h-4 text-[#C9C9C9] m-auto mt-2" />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-[#202223] truncate">{p.title}</p>
+                  <p className="text-xs font-medium text-[#202223] truncate">{p.name}</p>
                   <p className="text-[10px] text-[#6D7175]">{p.status === 'active' ? 'Actif' : 'Brouillon'}</p>
                 </div>
               </button>
@@ -136,14 +108,18 @@ function ProductPicker({ store, selectedIds, onSet }) {
   );
 }
 
+// Native schema: `product_categories` (name/description/image_url/slug) +
+// `product_category_assignments` (product_id, category_id) as the
+// many-to-many link. No `status` or smart/rule-based auto-collections on
+// this schema, so this form is manual-selection only.
 export default function CollectionForm({ open, onOpenChange, store, collection, onSaved }) {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    const base = collection || { name: '', description: '', type: 'manual', image: '', status: 'active', product_ids: [], rules: [] };
-    setForm({ ...base, product_ids: base.product_ids || [], rules: base.rules || [] });
+    const base = collection || { name: '', description: '', image_url: '', product_ids: [] };
+    setForm({ ...base, product_ids: base.product_ids || [] });
   }, [open, collection]);
 
   if (!form) return null;
@@ -155,20 +131,36 @@ export default function CollectionForm({ open, onOpenChange, store, collection, 
     setSaving(true);
     try {
       const payload = {
-        store_id: store.id,
+        tenant_id: store.id,
         name: form.name,
-        handle: form.name.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        slug: form.name.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
         description: form.description || '',
-        type: form.type || 'manual',
-        image: form.image || '',
-        status: form.status || 'active',
-        product_ids: form.type === 'manual' ? (form.product_ids || []) : [],
-        rules: form.type === 'smart' ? (form.rules || []) : [],
+        image_url: form.image_url || '',
       };
-      if (isNew) await base44.entities.Collection.create(payload);
-      else await base44.entities.Collection.update(form.id, payload);
+      let categoryId = form.id;
+      if (isNew) {
+        const { data, error } = await supabase.from('product_categories').insert(payload).select('id').single();
+        if (error) throw error;
+        categoryId = data.id;
+      } else {
+        const { error } = await supabase.from('product_categories').update(payload).eq('id', categoryId);
+        if (error) throw error;
+      }
+      // Reconcile the product<->category links: drop the old set, insert the
+      // current selection. Simple and correct; not the most efficient for
+      // huge collections, but collections here are small.
+      const { error: delError } = await supabase.from('product_category_assignments').delete().eq('category_id', categoryId);
+      if (delError) throw delError;
+      if (form.product_ids.length > 0) {
+        const { error: insError } = await supabase.from('product_category_assignments').insert(
+          form.product_ids.map((product_id) => ({ product_id, category_id: categoryId }))
+        );
+        if (insError) throw insError;
+      }
       onSaved();
       onOpenChange(false);
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement de la collection");
     } finally { setSaving(false); }
   };
 
@@ -180,31 +172,11 @@ export default function CollectionForm({ open, onOpenChange, store, collection, 
         </DialogHeader>
         <div className="space-y-4">
           <Field label="Nom *"><input value={form.name} onChange={(e) => set({ name: e.target.value })} className={inputCls} placeholder="Ex : Nouveautés" /></Field>
-          <Field label="Type">
-            <select value={form.type} onChange={(e) => set({ type: e.target.value })} className={inputCls}>
-              <option value="manual">Manuelle (sélection de produits)</option>
-              <option value="smart">Automatique (règles)</option>
-            </select>
-          </Field>
-          <Field label="Image"><ImageField value={form.image || ''} onSet={(u) => set({ image: u })} /></Field>
+          <Field label="Image"><ImageField value={form.image_url || ''} onSet={(u) => set({ image_url: u })} pathPrefix={`categories/${store.id}`} /></Field>
           <Field label="Description"><textarea value={form.description} onChange={(e) => set({ description: e.target.value })} rows={2} className={inputCls} /></Field>
-          <Field label="Statut">
-            <select value={form.status} onChange={(e) => set({ status: e.target.value })} className={inputCls}>
-              <option value="active">Active</option>
-              <option value="draft">Brouillon</option>
-            </select>
+          <Field label="Produits de la collection">
+            <ProductPicker store={store} selectedIds={form.product_ids} onSet={(ids) => set({ product_ids: ids })} />
           </Field>
-
-          {form.type === 'manual' ? (
-            <Field label="Produits de la collection">
-              <ProductPicker store={store} selectedIds={form.product_ids} onSet={(ids) => set({ product_ids: ids })} />
-            </Field>
-          ) : (
-            <Field label="Règles automatiques">
-              <RulesEditor rules={form.rules} onSet={(r) => set({ rules: r })} />
-              <p className="text-[11px] text-[#6D7175] mt-2">Les produits correspondant à ces règles seront ajoutés automatiquement.</p>
-            </Field>
-          )}
         </div>
         <DialogFooter className="pt-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Annuler</Button>

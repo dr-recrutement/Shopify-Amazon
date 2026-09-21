@@ -59,7 +59,7 @@ import MediaLibrary from '@/pages/MediaLibrary';
 import AbandonedCheckouts from '@/pages/AbandonedCheckouts';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -70,15 +70,15 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
+  // Handle authentication errors that block the whole app (e.g. this app
+  // requires auth before its public settings can even be fetched). We do NOT
+  // bail out for 'auth_required' here: that would hijack every route -
+  // including the public /login, /register and storefront pages - into an
+  // external redirect before the router ever runs. Per-route protection is
+  // already handled below by ProtectedRoute, which sends unauthenticated
+  // visitors to /login via a normal, in-app <Navigate>.
+  if (authError && authError.type === 'user_not_registered') {
+    return <UserNotRegisteredError />;
   }
 
   // Render the main app

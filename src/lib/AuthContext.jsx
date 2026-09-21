@@ -116,8 +116,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
-    base44.auth.redirectToLogin(window.location.href);
+    // Send the user to this app's own /login page (not the platform-hosted
+    // login the SDK's redirectToLogin points at) so the custom Login/Register
+    // flow is always what people see. Preserve where they were headed via
+    // returnTo, same param safeReturnTo() reads on the login/register pages.
+    const returnTo = window.location.pathname + window.location.search;
+    const target = "/login" + (returnTo !== "/" ? "?returnTo=" + encodeURIComponent(returnTo) : "");
+    if (window.location.pathname !== "/login") {
+      window.location.href = target;
+    }
   };
 
   return (

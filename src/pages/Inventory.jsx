@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Package, AlertTriangle, Loader2, Search, TrendingDown, Boxes, ArrowUpDown, X, BellRing } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -16,7 +16,9 @@ export default function Inventory() {
 
   const load = useCallback(async () => {
     if (!store?.id) return;
-    setProducts(await base44.entities.Product.filter({ store_id: store.id }, '-created_date', 500));
+    const { data, error } = await supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500);
+    if (error) { console.error('Failed to load products:', error); setProducts([]); return; }
+    setProducts((data || []).map((row) => ({ ...row, title: row.name, price: (row.price_cents || 0) / 100 })));
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
@@ -25,9 +27,9 @@ export default function Inventory() {
     const rows = [];
     products.forEach((p) => {
       if (p.variants?.length) {
-        p.variants.forEach((v, i) => rows.push({ id: p.id, variantIndex: i, title: p.title, variantTitle: v.title || 'Défaut', sku: v.sku || p.sku || '—', stock: v.stock ?? 0, price: v.price ?? p.price, track: p.track_inventory }));
+        p.variants.forEach((v, i) => rows.push({ id: p.id, variantIndex: i, title: p.title, variantTitle: v.title || 'Défaut', sku: v.sku || p.sku || '—', stock: v.stock ?? 0, price: v.price ?? p.price }));
       } else {
-        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: p.stock ?? 0, price: p.price, track: p.track_inventory });
+        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: p.stock ?? 0, price: p.price });
       }
     });
     return rows;
@@ -53,14 +55,18 @@ export default function Inventory() {
     try {
       const prod = products.find((p) => p.id === row.id);
       if (!prod) return;
+      let error;
       if (row.variantIndex >= 0 && prod.variants) {
         const updated = [...prod.variants];
         updated[row.variantIndex] = { ...updated[row.variantIndex], stock: Math.max(0, (updated[row.variantIndex].stock || 0) + delta) };
-        await base44.entities.Product.update(row.id, { variants: updated });
+        ({ error } = await supabase.from('products').update({ variants: updated }).eq('id', row.id));
       } else {
-        await base44.entities.Product.update(row.id, { stock: Math.max(0, (prod.stock || 0) + delta) });
+        ({ error } = await supabase.from('products').update({ stock: Math.max(0, (prod.stock || 0) + delta) }).eq('id', row.id));
       }
+      if (error) throw error;
       await load();
+    } catch (e) {
+      alert(e.message || "Échec de l'ajustement du stock");
     } finally { setAdjusting(null); }
   };
 
@@ -69,14 +75,18 @@ export default function Inventory() {
     try {
       const prod = products.find((p) => p.id === row.id);
       if (!prod) return;
+      let error;
       if (row.variantIndex >= 0 && prod.variants) {
         const updated = [...prod.variants];
         updated[row.variantIndex] = { ...updated[row.variantIndex], stock: Math.max(0, val) };
-        await base44.entities.Product.update(row.id, { variants: updated });
+        ({ error } = await supabase.from('products').update({ variants: updated }).eq('id', row.id));
       } else {
-        await base44.entities.Product.update(row.id, { stock: Math.max(0, val) });
+        ({ error } = await supabase.from('products').update({ stock: Math.max(0, val) }).eq('id', row.id));
       }
+      if (error) throw error;
       await load();
+    } catch (e) {
+      alert(e.message || "Échec de l'ajustement du stock");
     } finally { setAdjusting(null); }
   };
 

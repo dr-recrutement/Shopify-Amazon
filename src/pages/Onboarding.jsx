@@ -6,6 +6,7 @@ import {
   Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles, Globe,
 } from 'lucide-react';
 import { COUNTRIES } from '@/lib/world/countries';
+import { CURRENCIES } from '@/lib/world/currencies';
 import PhoneInput from '@/components/PhoneInput';
 
 const STEPS = [
@@ -17,10 +18,6 @@ const STEPS = [
   { id: 'launch', label: 'Lancement', icon: Rocket },
 ];
 
-const CURRENCIES = [
-  { code: 'USD', label: 'USD ($)' }, { code: 'EUR', label: 'EUR (€)' },
-  { code: 'XOF', label: 'XOF (FCFA)' }, { code: 'NGN', label: 'NGN (₦)' }, { code: 'GBP', label: 'GBP (£)' },
-];
 const BUSINESS_TYPES = ['Mode & accessoires', 'Beauté & cosmétiques', 'Électronique', 'Maison & déco', 'Alimentation', 'Artisanat', 'Autre'];
 const PROVIDERS = [
   { id: 'manual', label: 'Paiement manuel' }, { id: 'flutterwave', label: 'Flutterwave' },
@@ -39,15 +36,9 @@ export default function Onboarding() {
 
   // step 1 state
   const [f, setF] = useState({ name: store?.name || '', country: store?.country || 'SN', currency: store?.currency || 'XOF', business_type: store?.business_type || BUSINESS_TYPES[0] });
-  // The curated CURRENCIES list plus whatever currency the selected country
-  // actually implies (e.g. Kenya -> KES isn't in that short list) - so the
-  // dropdown never silently shows a currency that doesn't match the country
-  // that was just auto-applied.
-  const currencyOptions = useMemo(() => {
-    const implied = COUNTRIES.find((c) => c.code === f.country)?.currency;
-    if (!implied || CURRENCIES.some((c) => c.code === implied)) return CURRENCIES;
-    return [...CURRENCIES, { code: implied, label: implied }];
-  }, [f.country]);
+  // Full ISO 4217 list (142 currencies) - the implied currency from any
+  // country is always in there already, so no ad-hoc fallback needed.
+  const currencyOptions = useMemo(() => [...CURRENCIES].sort((a, b) => a.code.localeCompare(b.code)), []);
   const [phone, setPhone] = useState(store?.phone || '');
   useEffect(() => {
     // Prefill from what was entered at sign-up (Register.jsx stores it in
@@ -150,7 +141,7 @@ export default function Onboarding() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2"><label className={lbl}>Nom de la boutique</label><input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className={fld} placeholder="Ex : AfriStyle" /></div>
               <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => { const country = e.target.value; const impliedCurrency = COUNTRIES.find((c) => c.code === country)?.currency; setF({ ...f, country, currency: impliedCurrency || f.currency }); }} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
-              <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{currencyOptions.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}</select><p className="text-[11px] text-[#6D7175] mt-1">Pré-remplie selon le pays choisi — modifiable si besoin.</p></div>
+              <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{currencyOptions.map((c) => <option key={c.code} value={c.code}>{c.code} — {c.name} ({c.symbol})</option>)}</select><p className="text-[11px] text-[#6D7175] mt-1">Pré-remplie selon le pays choisi — modifiable si besoin.</p></div>
               <div className="sm:col-span-2"><label className={lbl}>Type d'activité</label><select value={f.business_type} onChange={(e) => setF({ ...f, business_type: e.target.value })} className={fld}>{BUSINESS_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}</select></div>
               <div className="sm:col-span-2"><label className={lbl}>Téléphone</label><PhoneInput value={phone} onChange={setPhone} countryHint={f.country} /><p className="text-[11px] text-[#6D7175] mt-1">Indicatif pré-rempli selon le pays choisi ci-dessus.</p></div>
             </div>

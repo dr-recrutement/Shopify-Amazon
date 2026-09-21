@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';
+import { CURRENCIES } from '@/lib/world/currencies';
 
 const fld = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 const lbl = 'text-xs font-semibold text-[#6D7175] mb-1 block';
@@ -20,7 +21,7 @@ export function SettingsGeneral() {
     <div><label className={lbl}>E-mail de contact</label><input value={f.email || ''} onChange={(e) => setF({ ...f, email: e.target.value })} className={fld} /></div>
     <div><label className={lbl}>Téléphone</label><input value={f.phone || ''} onChange={(e) => setF({ ...f, phone: e.target.value })} className={fld} /></div>
     <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => setF({ ...f, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
-    <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="XOF">XOF (FCFA)</option><option value="NGN">NGN (₦)</option><option value="GBP">GBP (£)</option></select></div>
+    <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{[...CURRENCIES].sort((a, b) => a.code.localeCompare(b.code)).map((c) => <option key={c.code} value={c.code}>{c.code} — {c.name} ({c.symbol})</option>)}</select></div>
     <div><label className={lbl}>Description</label><input value={f.description || ''} onChange={(e) => setF({ ...f, description: e.target.value })} className={fld} /></div>
   </div><button onClick={save} className="mt-4 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]">Enregistrer</button></div>;
 }

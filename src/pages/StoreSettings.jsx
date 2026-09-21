@@ -4,6 +4,7 @@ import { Store, Loader2, Save, Check, MapPin, Phone, Globe } from 'lucide-react'
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';
+import { CURRENCIES } from '@/lib/world/currencies';
 import PhoneInput from '@/components/PhoneInput';
 
 // Native `tenants` columns: name/sector/country/region/city/landmark/
@@ -68,7 +69,7 @@ export default function StoreSettings() {
           <div className="flex items-center gap-2 mb-4"><MapPin className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Adresse d'expédition</h2></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className={lbl}>Pays</label><select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
-            <div><label className={lbl}>Devise</label><select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })} className={fld}><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="XOF">XOF (FCFA)</option><option value="NGN">NGN (₦)</option><option value="GBP">GBP (£)</option></select></div>
+            <div><label className={lbl}>Devise</label><select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })} className={fld}>{[...CURRENCIES].sort((a, b) => a.code.localeCompare(b.code)).map((c) => <option key={c.code} value={c.code}>{c.code} — {c.name} ({c.symbol})</option>)}</select></div>
             <div><label className={lbl}>Région</label><input value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} className={fld} /></div>
             <div><label className={lbl}>Ville</label><input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className={fld} /></div>
             <div className="sm:col-span-2"><label className={lbl}>Repère / quartier</label><input value={form.landmark} onChange={(e) => setForm({ ...form, landmark: e.target.value })} className={fld} /></div>

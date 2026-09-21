@@ -65,8 +65,10 @@ export default function Onboarding() {
   // step 5 state
   const [ship, setShip] = useState({ country: 'SN', rate: '' });
 
+  const [error, setError] = useState('');
+
   const next = async () => {
-    setBusy(true);
+    setBusy(true); setError('');
     try {
       if (step === 0) {
         const { data: { user } } = await supabase.auth.getUser();
@@ -124,6 +126,9 @@ export default function Onboarding() {
       }
       setDone((d) => ({ ...d, [STEPS[step].id]: true }));
       if (step < STEPS.length - 1) setStep((s) => s + 1);
+    } catch (e) {
+      console.error('Onboarding step failed:', e);
+      setError(e.message || "Une erreur est survenue. Réessayez.");
     } finally { setBusy(false); }
   };
 
@@ -248,6 +253,7 @@ export default function Onboarding() {
           <div className="flex-1">
             <StepContent />
           </div>
+          {error && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mt-4">{error}</p>}
           <div className="flex items-center justify-between mt-7 pt-5 border-t border-[#F4F4F4]">
             <button onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0} className="flex items-center gap-1.5 text-sm font-medium text-[#6D7175] hover:text-[#202223] disabled:opacity-30"><ArrowLeft className="w-4 h-4" /> Retour</button>
             <div className="flex items-center gap-2">

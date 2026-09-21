@@ -166,7 +166,11 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const { store, loading: storeLoading } = useCurrentStore();
   const [superadmin, setSuperadmin] = useState(false);
-  useEffect(() => { if (user?.id) checkIsSuperAdmin(user.id).then(setSuperadmin); }, [user?.id]);
+  const [superadminChecked, setSuperadminChecked] = useState(false);
+  useEffect(() => {
+    if (!user?.id) { setSuperadminChecked(true); return; }
+    checkIsSuperAdmin(user.id).then((v) => { setSuperadmin(v); setSuperadminChecked(true); });
+  }, [user?.id]);
 
   useEffect(() => {
     const onClick = (e) => {
@@ -179,14 +183,16 @@ export default function AdminLayout() {
 
   // A logged-in user with no store yet (fresh signup, or one who bailed out
   // of onboarding before creating it) has nothing for any of these admin
-  // pages to show - send them to set up their store first.
+  // pages to show - send them to set up their store first. Super admins are
+  // exempt: they manage the whole platform, not one tenant, and have no
+  // reason to be funneled through store creation at all.
   useEffect(() => {
-    if (!storeLoading && !store && location.pathname !== '/onboarding') {
+    if (!storeLoading && superadminChecked && !superadmin && !store && location.pathname !== '/onboarding') {
       navigate('/onboarding', { replace: true });
     }
-  }, [storeLoading, store, location.pathname, navigate]);
+  }, [storeLoading, superadminChecked, superadmin, store, location.pathname, navigate]);
 
-  if (storeLoading || (!store && location.pathname !== '/onboarding')) {
+  if (storeLoading || !superadminChecked || (!superadmin && !store && location.pathname !== '/onboarding')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F4F4]">
         <Loader2 className="w-6 h-6 animate-spin text-[#008060]" />

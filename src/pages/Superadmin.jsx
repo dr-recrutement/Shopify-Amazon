@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
+import SubscriptionManager from '@/components/superadmin/SubscriptionManager';
 import { formatMoney } from '@/lib/world/currencies';
 import {
   ShieldCheck, Loader2, Store, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
@@ -24,6 +25,7 @@ export default function Superadmin() {
   const [admins, setAdmins] = useState([]);
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState('overview');
   const [busy, setBusy] = useState(null);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviting, setInviting] = useState(false);
@@ -154,6 +156,14 @@ export default function Superadmin() {
           ))}
         </div>
 
+        {/* Tabs */}
+        <div className="flex items-center gap-1 bg-[#F4F4F4] p-1 rounded-lg w-fit">
+          <button onClick={() => setTab('overview')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'overview' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Vue d'ensemble</button>
+          <button onClick={() => setTab('subscriptions')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'subscriptions' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Abonnements</button>
+        </div>
+
+        {tab === 'subscriptions' ? <SubscriptionManager /> : (
+        <>
         {/* Super admins */}
         <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
           <div className="px-4 py-3 border-b border-[#E1E1E1] flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-[#2EE6A8]" /><h2 className="text-sm font-bold text-[#202223]">Super admins</h2></div>
@@ -226,6 +236,8 @@ export default function Superadmin() {
             </div>
           )}
         </div>
+        </>
+        )}
       </div>
     </div>
   );

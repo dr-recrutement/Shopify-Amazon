@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, ShoppingCart, Users, Package, Loader2, AlertCircle, ArrowRight, Zap, Target, Bell } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -18,12 +18,19 @@ export default function Growth() {
     setLoading(true);
     try {
       const [o, c, ca, p] = await Promise.all([
-        base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500),
-        base44.entities.Customer.filter({ store_id: store.id }, '-created_date', 200),
-        base44.entities.Cart.filter({ store_id: store.id, status: 'abandoned' }, '-created_date', 50),
-        base44.entities.Product.filter({ store_id: store.id }, '-created_date', 100),
+        supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500),
+        supabase.from('customers').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200),
+        supabase.from('abandoned_carts').select('*').eq('tenant_id', store.id).eq('status', 'abandoned').order('created_at', { ascending: false }).limit(50),
+        supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(100),
       ]);
-      setOrders(o); setCustomers(c); setCarts(ca); setProducts(p);
+      const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
+      setOrders((o.data || []).map((row) => ({ ...row, total: (row.total_cents || 0) / 100, created_date: row.created_at, payment_status: NOT_PAID.has(row.status) ? 'unpaid' : 'paid' })));
+      setCustomers((c.data || []).map((row) => ({ ...row, created_date: row.created_at })));
+      setCarts((ca.data || []).map((row) => ({ ...row, total: (row.total_cents || 0) / 100, created_date: row.created_at })));
+      setProducts((p.data || []).map((row) => ({ ...row, title: row.name })));
+    } catch (e) {
+      console.error('Growth load failed:', e);
+      setOrders([]); setCustomers([]); setCarts([]); setProducts([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 

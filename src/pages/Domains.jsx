@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { useState, useEffect, useCallback } from 'react';
+import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2 } from 'lucide-react';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 const SELLIA_SUBDOMAIN = 'sellia.app';
 
+// Native `domains` table: one row per connected/purchased domain
+// (domain_name/type/dns_status/ssl_status), not a single store.domain field.
+// There's no delete policy for authenticated users on this table (by
+// design, presumably to avoid orphaning DNS/SSL setups) - disconnecting
+// surfaces that instead of pretending it worked.
 export default function Domains() {
   const { store, loading } = useCurrentStore();
+  const [domains, setDomains] = useState([]);
   const [connecting, setConnecting] = useState(false);
   const [domain, setDomain] = useState('');
   const [buying, setBuying] = useState(false);
@@ -14,20 +20,44 @@ export default function Domains() {
   const [domainResult, setDomainResult] = useState(null);
   const [checking, setChecking] = useState(false);
 
+  const loadDomains = useCallback(async () => {
+    if (!store?.id) return;
+    const { data, error } = await supabase.from('domains').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false });
+    if (error) { console.error('Failed to load domains:', error); setDomains([]); return; }
+    setDomains(data || []);
+  }, [store?.id]);
+
+  useEffect(() => { loadDomains(); }, [loadDomains]);
+
+  const customDomain = domains.find((d) => d.type !== 'buy');
+
   const connectDomain = async () => {
     if (!domain || !store?.id) return;
     setConnecting(true);
     try {
-      await base44.entities.Store.update(store.id, { domain: domain.trim() });
+      const { error } = await supabase.from('domains').insert({
+        tenant_id: store.id,
+        domain_name: domain.trim(),
+        type: 'custom',
+        dns_status: 'pending',
+        ssl_status: 'pending',
+      });
+      if (error) throw error;
       setDomain('');
-      window.location.reload();
+      await loadDomains();
+    } catch (e) {
+      alert(e.message || 'Échec de la connexion du domaine');
     } finally { setConnecting(false); }
   };
 
-  const removeDomain = async () => {
-    if (!store?.id || !confirm('Déconnecter ce domaine ?')) return;
-    await base44.entities.Store.update(store.id, { domain: '' });
-    window.location.reload();
+  const removeDomain = async (d) => {
+    if (!confirm('Déconnecter ce domaine ?')) return;
+    const { error } = await supabase.from('domains').delete().eq('id', d.id);
+    if (error) {
+      alert("Ce domaine ne peut pas être retiré directement (contactez le support) : " + error.message);
+      return;
+    }
+    await loadDomains();
   };
 
   const checkDomain = async () => {
@@ -41,14 +71,23 @@ export default function Domains() {
   };
 
   const buyDomain = async () => {
-    if (!domainResult?.available) return;
+    if (!domainResult?.available || !store?.id) return;
     setBuying(true);
     try {
-      await new Promise((r) => setTimeout(r, 1500));
-      if (store?.id) await base44.entities.Store.update(store.id, { domain: domainResult.name });
-      setBuying(false);
-      window.location.reload();
-    } catch (e) { setBuying(false); }
+      const { error } = await supabase.from('domains').insert({
+        tenant_id: store.id,
+        domain_name: domainResult.name,
+        type: 'buy',
+        dns_status: 'pending',
+        ssl_status: 'pending',
+      });
+      if (error) throw error;
+      setDomainResult(null);
+      setSearchDomain('');
+      await loadDomains();
+    } catch (e) {
+      alert(e.message || "Échec de l'achat du domaine");
+    } finally { setBuying(false); }
   };
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
@@ -75,10 +114,10 @@ export default function Domains() {
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">
         <div className="flex items-center gap-2 mb-3"><Link2 className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Connecter un domaine existant</p></div>
         <p className="text-xs text-[#6D7175] mb-3">Vous avez déjà acheté un domaine chez un autre registrar (GoDaddy, Namecheap, Cloudflare, etc.). Connectez-le gratuitement.</p>
-        {store?.domain ? (
+        {customDomain ? (
           <div className="flex items-center justify-between bg-[#008060]/5 rounded-lg px-4 py-3 border border-[#008060]/20">
-            <div><p className="text-sm font-mono text-[#202223]">{store.domain}</p><p className="text-xs text-[#008060]">Connecté — DNS vérifié</p></div>
-            <button onClick={removeDomain} className="text-xs font-semibold text-red-600 hover:underline">Déconnecter</button>
+            <div><p className="text-sm font-mono text-[#202223]">{customDomain.domain_name}</p><p className="text-xs text-[#008060]">{customDomain.dns_status === 'verified' ? 'Connecté — DNS vérifié' : `DNS : ${customDomain.dns_status || 'en attente'}`}</p></div>
+            <button onClick={() => removeDomain(customDomain)} className="flex items-center gap-1 text-xs font-semibold text-red-600 hover:underline"><Trash2 className="w-3.5 h-3.5" /> Déconnecter</button>
           </div>
         ) : (
           <div className="flex gap-2">

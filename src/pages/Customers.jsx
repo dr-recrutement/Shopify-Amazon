@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import CustomerForm from '@/components/admin/CustomerForm';
 import { formatMoney } from '@/lib/world/currencies';
@@ -25,8 +25,28 @@ export default function Customers() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.Customer.filter({ store_id: store.id }, '-created_date', 200);
-      setCustomers(list);
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      // The native table stores one `name` field (no tags column yet) -
+      // split it back into first/last for the existing edit form.
+      setCustomers((data || []).map((row) => {
+        const [first_name, ...rest] = (row.name || '').split(' ');
+        return {
+          ...row,
+          first_name: first_name || '',
+          last_name: rest.join(' '),
+          total_spent: (row.total_spent_cents || 0) / 100,
+          tags: [],
+        };
+      }));
+    } catch (e) {
+      console.error('Failed to load customers:', e);
+      setCustomers([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -39,7 +59,8 @@ export default function Customers() {
 
   const remove = async (c) => {
     if (!confirm(`Supprimer le client ${c.email} ?`)) return;
-    await base44.entities.Customer.delete(c.id);
+    const { error } = await supabase.from('customers').delete().eq('id', c.id);
+    if (error) { alert(error.message); return; }
     setCustomers((l) => l.filter((x) => x.id !== c.id));
   };
 

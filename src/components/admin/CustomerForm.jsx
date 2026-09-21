@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
@@ -17,16 +17,17 @@ function Field({ label, children }) {
   );
 }
 
+// The native `customers` table only has name/email/phone (plus
+// total_spent_cents/orders_count, computed from orders) - no tags, note or
+// marketing-consent columns yet, so this form only edits what's real.
 export default function CustomerForm({ open, onOpenChange, store, customer, onSaved }) {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [tagsText, setTagsText] = useState('');
 
   useEffect(() => {
     if (!open) return;
-    const base = customer || { first_name: '', last_name: '', email: '', phone: '', accepts_marketing: false, tags: [], note: '' };
+    const base = customer || { first_name: '', last_name: '', email: '', phone: '' };
     setForm({ ...base });
-    setTagsText((base.tags || []).join(', '));
   }, [open, customer]);
 
   if (!form) return null;
@@ -38,19 +39,19 @@ export default function CustomerForm({ open, onOpenChange, store, customer, onSa
     setSaving(true);
     try {
       const payload = {
-        store_id: store.id,
-        first_name: form.first_name || '',
-        last_name: form.last_name || '',
+        tenant_id: store.id,
+        name: [form.first_name, form.last_name].filter(Boolean).join(' '),
         email: form.email,
         phone: form.phone || '',
-        accepts_marketing: !!form.accepts_marketing,
-        tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
-        note: form.note || '',
       };
-      if (isNew) await base44.entities.Customer.create(payload);
-      else await base44.entities.Customer.update(form.id, payload);
+      const { error } = isNew
+        ? await supabase.from('customers').insert(payload)
+        : await supabase.from('customers').update(payload).eq('id', form.id);
+      if (error) throw error;
       onSaved();
       onOpenChange(false);
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement du client");
     } finally { setSaving(false); }
   };
 
@@ -67,12 +68,6 @@ export default function CustomerForm({ open, onOpenChange, store, customer, onSa
           </div>
           <Field label="E-mail *"><input type="email" value={form.email} onChange={(e) => set({ email: e.target.value })} className={inputCls} /></Field>
           <Field label="Téléphone"><input value={form.phone} onChange={(e) => set({ phone: e.target.value })} className={inputCls} placeholder="+221…" /></Field>
-          <Field label="Tags"><input value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} placeholder="VIP, grossiste (séparés par virgules)" /></Field>
-          <Field label="Note"><textarea value={form.note} onChange={(e) => set({ note: e.target.value })} rows={2} className={inputCls} /></Field>
-          <label className="flex items-center gap-2 text-sm text-[#202223] cursor-pointer">
-            <input type="checkbox" checked={!!form.accepts_marketing} onChange={(e) => set({ accepts_marketing: e.target.checked })} className="accent-[#008060]" />
-            Accepte de recevoir nos communications marketing
-          </label>
         </div>
         <DialogFooter className="pt-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Annuler</Button>

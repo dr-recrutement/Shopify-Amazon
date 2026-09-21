@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import OrderDetail from '@/components/admin/OrderDetail';
 import { formatMoney } from '@/lib/world/currencies';
@@ -49,8 +49,21 @@ export default function Orders() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.Order.filter({ store_id: store.id }, '-created_date', 200);
-      setOrders(list);
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*, items:order_items(*)')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      setOrders((data || []).map((row) => ({
+        ...row,
+        total: (row.total_cents || 0) / 100,
+        created_date: row.created_at,
+      })));
+    } catch (e) {
+      console.error('Failed to load orders:', e);
+      setOrders([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 

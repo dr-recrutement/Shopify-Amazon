@@ -1,0 +1,231 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "title": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string",
+      "description": "Slug URL du produit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description riche"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "draft",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Fournisseur / marque"
+    },
+    "product_type": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs des images"
+    },
+    "price": {
+      "type": "number",
+      "description": "Prix de vente dans la devise de la boutique"
+    },
+    "compare_at_price": {
+      "type": "number",
+      "description": "Prix barr\u00e9 de r\u00e9f\u00e9rence"
+    },
+    "cost": {
+      "type": "number",
+      "description": "Co\u00fbt unitaire"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "barcode": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number"
+    },
+    "weight_unit": {
+      "type": "string",
+      "enum": [
+        "g",
+        "kg",
+        "lb",
+        "oz"
+      ],
+      "default": "kg"
+    },
+    "track_inventory": {
+      "type": "boolean",
+      "default": true
+    },
+    "stock": {
+      "type": "number",
+      "default": 0,
+      "description": "Quantit\u00e9 en stock pour les produits simples (sans variantes)"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Ex: Couleur, Taille"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "description": "Options g\u00e9n\u00e9rant les variantes"
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "compare_at_price": {
+            "type": "number"
+          },
+          "stock": {
+            "type": "number",
+            "default": 0
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "image": {
+            "type": "string"
+          },
+          "option1": {
+            "type": "string"
+          },
+          "option2": {
+            "type": "string"
+          },
+          "option3": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "default": "active"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "description": "Variantes combinant les options"
+    },
+    "collection_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "seo": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "store_id",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

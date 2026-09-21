@@ -1,0 +1,91 @@
+{
+  "name": "MediaFile",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom du fichier"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL publique du fichier"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video",
+        "document"
+      ],
+      "default": "image"
+    },
+    "mime": {
+      "type": "string"
+    },
+    "size": {
+      "type": "number",
+      "description": "Taille en octets"
+    },
+    "folder": {
+      "type": "string",
+      "default": "general",
+      "description": "Dossier virtuel"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "store_id",
+    "name",
+    "url",
+    "type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

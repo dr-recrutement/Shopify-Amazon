@@ -1,0 +1,124 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "accepts_marketing": {
+      "type": "boolean",
+      "default": false
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "addresses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "is_default": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "country",
+          "address"
+        ]
+      }
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0
+    },
+    "orders_count": {
+      "type": "number",
+      "default": 0
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "store_id",
+    "email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

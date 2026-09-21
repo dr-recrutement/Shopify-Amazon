@@ -1,0 +1,119 @@
+{
+  "name": "Automation",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Boutique propri\u00e9taire"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom de l'automatisation"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "cart_abandoned",
+        "order_created",
+        "customer_signup",
+        "order_delivered",
+        "low_stock",
+        "manual"
+      ],
+      "description": "\u00c9v\u00e9nement d\u00e9clencheur"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "send_email",
+        "add_tag",
+        "create_discount",
+        "notify",
+        "update_status"
+      ],
+      "description": "Action \u00e0 ex\u00e9cuter"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "delay_hours": {
+          "type": "number",
+          "default": 0,
+          "description": "D\u00e9lai avant ex\u00e9cution (heures)"
+        },
+        "email_template": {
+          "type": "string"
+        },
+        "email_subject": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "discount_type": {
+          "type": "string"
+        },
+        "discount_value": {
+          "type": "number"
+        }
+      },
+      "description": "Configuration de l'action"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "runs_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'ex\u00e9cutions"
+    }
+  },
+  "required": [
+    "store_id",
+    "name",
+    "trigger",
+    "action"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

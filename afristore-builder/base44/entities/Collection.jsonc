@@ -1,0 +1,142 @@
+{
+  "name": "Collection",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "handle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "smart"
+      ],
+      "default": "manual"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "product_type",
+              "tag",
+              "vendor",
+              "price",
+              "stock",
+              "status"
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "contains",
+              "gt",
+              "lt",
+              "gte",
+              "lte"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "operator",
+          "value"
+        ]
+      },
+      "description": "R\u00e8gles des smart collections"
+    },
+    "product_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Produits des manual collections"
+    },
+    "sort_order": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "best_selling",
+        "alpha_asc",
+        "alpha_desc",
+        "price_asc",
+        "price_desc",
+        "created_desc"
+      ],
+      "default": "manual"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "draft"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "store_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

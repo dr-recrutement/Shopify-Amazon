@@ -1,0 +1,104 @@
+{
+  "name": "ShippingZone",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom de la zone (ex: Afrique de l'Ouest)"
+    },
+    "countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Codes ISO pays"
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Transporteur (ex: DHL, Fedex, Local Post)"
+    },
+    "rate_type": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "weight_based",
+        "price_based",
+        "free"
+      ],
+      "default": "flat"
+    },
+    "rate": {
+      "type": "number",
+      "description": "Frais de livraison"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "min_days": {
+      "type": "number",
+      "default": 3
+    },
+    "max_days": {
+      "type": "number",
+      "default": 7
+    },
+    "min_order_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Montant min pour livraison gratuite"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "store_id",
+    "name",
+    "rate"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "name": "Discount",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "description": "Code promo saisi par le client"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed_amount",
+        "free_shipping"
+      ],
+      "default": "percentage"
+    },
+    "value": {
+      "type": "number",
+      "description": "Pourcentage ou montant fixe"
+    },
+    "min_order_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "usage_limit": {
+      "type": "number",
+      "description": "Nombre max d'utilisations (0 = illimit\u00e9)"
+    },
+    "used_count": {
+      "type": "number",
+      "default": 0
+    },
+    "starts_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ends_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "scheduled",
+        "disabled"
+      ],
+      "default": "active"
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "all",
+        "products",
+        "collections"
+      ],
+      "default": "all"
+    },
+    "target_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs produits/collections si applies_to != all"
+    }
+  },
+  "required": [
+    "store_id",
+    "code",
+    "type",
+    "value"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

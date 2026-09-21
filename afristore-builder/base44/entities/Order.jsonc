@@ -1,0 +1,240 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "order_number": {
+      "type": "string",
+      "description": "Num\u00e9ro affich\u00e9 (ex: #1001)"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Null pour commande invit\u00e9"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "variant_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "variant_title": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "product_id",
+          "price",
+          "quantity",
+          "total"
+        ]
+      }
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_total": {
+      "type": "number",
+      "default": 0
+    },
+    "shipping_total": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_total": {
+      "type": "number",
+      "default": 0
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "processing",
+        "fulfilled",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+        "partially_refunded"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "partially_paid",
+        "refunded",
+        "voided"
+      ],
+      "default": "pending"
+    },
+    "fulfillment_status": {
+      "type": "string",
+      "enum": [
+        "unfulfilled",
+        "partial",
+        "fulfilled"
+      ],
+      "default": "unfulfilled"
+    },
+    "shipping_address": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "billing_address": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "shipping_method": {
+      "type": "string"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "payment_id": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      }
+    }
+  },
+  "required": [
+    "store_id",
+    "total"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

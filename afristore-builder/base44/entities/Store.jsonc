@@ -1,0 +1,150 @@
+{
+  "name": "Store",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de la boutique"
+    },
+    "slug": {
+      "type": "string",
+      "description": "Identifiant URL unique de la boutique"
+    },
+    "description": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string",
+      "description": "URL du logo de la boutique"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "business_type": {
+      "type": "string",
+      "description": "Type d'activit\u00e9 (mode, beaut\u00e9, \u00e9lectronique...)"
+    },
+    "country": {
+      "type": "string",
+      "description": "Code pays ISO (ex: SN, NG, CI)"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Code devise ISO (ex: XOF, NGN, USD)"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "fr",
+        "en",
+        "es",
+        "pt",
+        "ar",
+        "zh",
+        "de"
+      ],
+      "default": "fr",
+      "description": "Langue par d\u00e9faut de la boutique"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domaine personnalis\u00e9 ou sous-domaine Sellia"
+    },
+    "theme_id": {
+      "type": "string",
+      "description": "Th\u00e8me appliqu\u00e9 \u00e0 la boutique"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "suspended",
+        "draft"
+      ],
+      "default": "draft"
+    },
+    "is_marketplace_seller": {
+      "type": "boolean",
+      "default": false
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "pro",
+        "enterprise"
+      ],
+      "default": "growth",
+      "description": "Plan d'abonnement Sellia"
+    },
+    "plan_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "past_due",
+        "canceled"
+      ],
+      "default": "trial"
+    },
+    "trial_ends_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

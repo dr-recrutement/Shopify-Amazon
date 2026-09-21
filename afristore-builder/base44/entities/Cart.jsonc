@@ -1,0 +1,122 @@
+{
+  "name": "Cart",
+  "type": "object",
+  "properties": {
+    "store_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Null pour un panier invit\u00e9"
+    },
+    "token": {
+      "type": "string",
+      "description": "Token de panier invit\u00e9"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "variant_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "variant_title": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "line_total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "product_id",
+          "price",
+          "quantity"
+        ]
+      }
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_code": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "abandoned",
+        "converted"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "store_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

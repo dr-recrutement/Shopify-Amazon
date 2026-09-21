@@ -298,13 +298,34 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
           }
 
           case 'testimonials':
+            if (c.displayMode === 'scrolling' && (c.items || []).length > 0) {
+              const loop = [...c.items, ...c.items];
+              return wrap(s, (
+                <div className="py-12 overflow-hidden" style={{ background: p.surface }}>
+                  <h2 className="text-xl sm:text-3xl font-bold text-center mb-10 px-5" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
+                  <style>{`@keyframes sellia-review-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
+                  <div className="flex gap-5 w-max" style={{ animation: 'sellia-review-scroll 35s linear infinite' }}>
+                    {loop.map((t, i) => (
+                      <div key={i} className="p-6 rounded-2xl w-72 shrink-0" style={{ border: `1px solid ${p.border}`, background: p.bg }}>
+                        <Stars n={t.rating || 5} color={accent} />
+                        <p className="text-sm leading-relaxed mt-3" style={{ color: p.text }}>“{t.quote}”</p>
+                        <div className="mt-4 pt-4 border-t" style={{ borderColor: p.border }}>
+                          <p className="text-xs font-semibold" style={{ color: p.dark }}>{t.author}</p>
+                          <p className="text-xs" style={{ color: p.muted }}>{t.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ));
+            }
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12" style={{ background: p.surface }}>
                 <h2 className="text-xl sm:text-3xl font-bold text-center mb-10" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
                   {(c.items || []).map((t, i) => (
                     <div key={i} className="p-6 rounded-2xl" style={{ border: `1px solid ${p.border}`, background: p.bg }}>
-                      <Stars n={5} color={accent} />
+                      <Stars n={t.rating || 5} color={accent} />
                       <p className="text-sm leading-relaxed mt-3" style={{ color: p.text }}>“{t.quote}”</p>
                       <div className="mt-4 pt-4 border-t" style={{ borderColor: p.border }}>
                         <p className="text-xs font-semibold" style={{ color: p.dark }}>{t.author}</p>

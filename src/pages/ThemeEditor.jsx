@@ -137,6 +137,8 @@ const ENUM_OPTIONS = {
   variant: ['primary', 'outline'],
   kind: ['heading', 'text', 'image', 'button'],
   span: [1, 2, 3, 4],
+  displayMode: ['grid', 'scrolling'],
+  style: ['fixed', 'scrolling'],
 };
 
 function ScalarInput({ value, onChange, fieldKey }) {

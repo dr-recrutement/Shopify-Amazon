@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import DiscountForm from '@/components/admin/DiscountForm';
 import { formatMoney } from '@/lib/world/currencies';
@@ -32,8 +32,27 @@ export default function Discounts() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.Discount.filter({ store_id: store.id }, '-created_date', 100);
-      setDiscounts(list);
+      const { data, error } = await supabase
+        .from('discount_codes')
+        .select('*')
+        .eq('tenant_id', store.id)
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      const now = Date.now();
+      setDiscounts((data || []).map((row) => ({
+        ...row,
+        type: row.discount_type,
+        min_order_amount: (row.min_amount_cents || 0) / 100,
+        usage_limit: row.max_uses || 0,
+        status: !row.is_active ? 'disabled'
+          : (row.ends_at && new Date(row.ends_at).getTime() < now) ? 'expired'
+          : (row.starts_at && new Date(row.starts_at).getTime() > now) ? 'scheduled'
+          : 'active',
+      })));
+    } catch (e) {
+      console.error('Failed to load discounts:', e);
+      setDiscounts([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -41,7 +60,8 @@ export default function Discounts() {
 
   const remove = async (d) => {
     if (!confirm(`Supprimer le code « ${d.code} » ?`)) return;
-    await base44.entities.Discount.delete(d.id);
+    const { error } = await supabase.from('discount_codes').delete().eq('id', d.id);
+    if (error) { alert(error.message); return; }
     setDiscounts((l) => l.filter((x) => x.id !== d.id));
   };
 

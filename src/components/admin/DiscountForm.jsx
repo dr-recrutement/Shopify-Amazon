@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
@@ -49,23 +49,27 @@ export default function DiscountForm({ open, onOpenChange, store, discount, onSa
     if (!form.code || (form.type !== 'free_shipping' && (form.value === '' || form.value == null))) return;
     setSaving(true);
     try {
+      // Native discount_codes has is_active (boolean) instead of a 3-way
+      // status - "scheduled" is derived on read from starts_at, not stored.
       const payload = {
-        store_id: store.id,
+        tenant_id: store.id,
         code: form.code.toUpperCase(),
-        type: form.type,
+        discount_type: form.type,
         value: Number(form.value) || 0,
-        min_order_amount: Number(form.min_order_amount) || 0,
-        usage_limit: Number(form.usage_limit) || 0,
-        used_count: form.used_count || 0,
-        starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : undefined,
-        ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : undefined,
-        status: form.status || 'active',
-        applies_to: form.applies_to || 'all',
+        min_amount_cents: Math.round((Number(form.min_order_amount) || 0) * 100),
+        max_uses: Number(form.usage_limit) > 0 ? Number(form.usage_limit) : null,
+        starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : null,
+        ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
+        is_active: form.status !== 'disabled',
       };
-      if (isNew) await base44.entities.Discount.create(payload);
-      else await base44.entities.Discount.update(form.id, payload);
+      const { error } = isNew
+        ? await supabase.from('discount_codes').insert(payload)
+        : await supabase.from('discount_codes').update(payload).eq('id', form.id);
+      if (error) throw error;
       onSaved();
       onOpenChange(false);
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement de la réduction");
     } finally { setSaving(false); }
   };
 

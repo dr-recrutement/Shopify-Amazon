@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
-import { cloneTheme, DEFAULT_THEME_ID } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme } from '@/lib/themes';
 import { formatMoney } from '@/lib/world/currencies';
 
 const CART_KEY = 'sellia_cart_session';
@@ -51,10 +51,10 @@ export default function Storefront() {
         supabase.from('product_category_assignments').select('product_id, category_id'),
         supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('status', 'published').order('published_at', { ascending: false }).limit(20),
       ]);
-      // The published theme is what a real visitor should see - not
-      // whatever is mid-edit in the merchant's own browser. Falls back to
-      // the stock default only if nothing has ever been published.
-      setTheme(themeRes.data?.published_config || cloneTheme(DEFAULT_THEME_ID));
+      // Some theme_configs rows predate this editor and store an
+      // incompatible/empty shape there (see isValidTheme) - falls back to
+      // the stock default rather than crashing on the mismatch.
+      setTheme(isValidTheme(themeRes.data?.published_config) ? themeRes.data.published_config : cloneTheme(DEFAULT_THEME_ID));
       setProducts(productsRes.data || []);
       const counts = {};
       (assignRes.data || []).forEach((a) => { counts[a.category_id] = (counts[a.category_id] || 0) + 1; });

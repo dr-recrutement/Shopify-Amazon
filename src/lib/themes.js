@@ -184,6 +184,15 @@ export function getThemeById(id) {
   return THEMES.find((t) => t.id === id) || THEMES[0];
 }
 
+// theme_configs.config/published_config can be a legacy/incompatible
+// value - some rows predate this app's theme editor entirely and store
+// `{}` there (their real content lives in different top-level columns,
+// from an older, incompatible section-prop shape). Anything without a
+// real sections array isn't safe to render or edit as this app's theme.
+export function isValidTheme(t) {
+  return !!t && Array.isArray(t.sections) && t.sections.length > 0 && !!t.palette && !!t.fonts;
+}
+
 export function cloneTheme(id) {
   const t = getThemeById(id);
   return {

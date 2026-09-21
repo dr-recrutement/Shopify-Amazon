@@ -10,27 +10,27 @@ const LOGO_BASE = 'https://media.base44.com/images/public/6aaf8e00382d12ca2edaac
 // on a dark container to make the black background transparent.
 const INTEGRATIONS = [
   // Payments — Africa (real logos)
-  { id: 'paystack', name: 'Paystack', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/de5fcd15b_paystack-logo-vector.png`, desc: 'Cartes & Mobile Money (NG, GH, ZA, KE)', type: 'payment' },
-  { id: 'flutterwave', name: 'Flutterwave', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/e26c19886_Flutterwave-Logo1.png`, desc: 'Paiements panafricains multi-devises', type: 'payment' },
-  { id: 'mpesa', name: 'M-Pesa', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/795fb39dd_unnamed.png`, desc: 'Mobile Money Kenya & Tanzanie', type: 'payment' },
-  { id: 'payunit', name: 'Payunit', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/cceaad03f_payunit-logo.png`, desc: 'Agrégateur Mobile Money Cameroun & CEMAC', type: 'payment' },
-  { id: 'payfast', name: 'Payfast', category: 'Paiements', region: 'Afrique du Sud', logo: `${LOGO_BASE}/681ccb17d_White-on-Blue-2-1-1-1-1080x499.png`, desc: 'Paiements cartes & EFT (ZA)', type: 'payment' },
-  { id: 'mtn-momo', name: 'MTN MoMo', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/fbc0010c3_1648544928638.png`, desc: 'Mobile Money MTN (UG, GH, CI, CM…)', type: 'payment' },
-  { id: 'orange-money', name: 'Orange Money', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/85a953228_OIP.png`, desc: 'Mobile Money CI, Sénégal, Mali', type: 'payment' },
-  { id: 'wave', name: 'Wave', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/230cdac94_logo_wave_circle_818.png`, desc: 'Mobile Money Sénégal & Côte d\u2019Ivoire', type: 'payment' },
-  { id: 'kkiapay', name: 'Kkiapay', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/58a62a75f_1200x630wa.png`, desc: 'Mobile Money & cartes Afrique de l\u2019Ouest', type: 'payment' },
+  { id: 'paystack', name: 'Paystack', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/paystack.png', desc: 'Cartes & Mobile Money (NG, GH, ZA, KE)', type: 'payment' },
+  { id: 'flutterwave', name: 'Flutterwave', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/flutterwave.png', desc: 'Paiements panafricains multi-devises', type: 'payment' },
+  { id: 'mpesa', name: 'M-Pesa', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/mpesa.png', desc: 'Mobile Money Kenya & Tanzanie', type: 'payment' },
+  { id: 'payunit', name: 'Payunit', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/payunit.png', desc: 'Agrégateur Mobile Money Cameroun & CEMAC', type: 'payment' },
+  { id: 'payfast', name: 'Payfast', category: 'Paiements', region: 'Afrique du Sud', logo: '/payment-logos/payfast.png', desc: 'Paiements cartes & EFT (ZA)', type: 'payment' },
+  { id: 'mtn-momo', name: 'MTN MoMo', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/mtn-momo.png', desc: 'Mobile Money MTN (UG, GH, CI, CM…)', type: 'payment' },
+  { id: 'orange-money', name: 'Orange Money', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/orange-money.png', desc: 'Mobile Money CI, Sénégal, Mali', type: 'payment' },
+  { id: 'wave', name: 'Wave', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/wave.png', desc: 'Mobile Money Sénégal & Côte d\u2019Ivoire', type: 'payment' },
+  { id: 'kkiapay', name: 'Kkiapay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/kkiapay.png', desc: 'Mobile Money & cartes Afrique de l\u2019Ouest', type: 'payment' },
   { id: 'chapa', name: 'Chapa', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/f25f8db81_Logo-Chapa-.png`, desc: 'Paiements Éthiopie — cartes & mobile', type: 'payment' },
 
   // Payments — Global (real logos)
-  { id: 'stripe', name: 'Stripe', category: 'Paiements', region: 'Mondial', logo: `${LOGO_BASE}/d56771535_1685814539stripe-icon-png.png`, desc: 'Cartes & wallets — 46 pays', type: 'payment' },
-  { id: 'paypal', name: 'PayPal', category: 'Paiements', region: 'Mondial', color: '#003087', accent: '#FFFFFF', desc: 'PayPal, cartes, Pay Later', type: 'payment' },
+  { id: 'stripe', name: 'Stripe', category: 'Paiements', region: 'Mondial', logo: '/payment-logos/stripe.png', desc: 'Cartes & wallets — 46 pays', type: 'payment' },
+  { id: 'paypal', name: 'PayPal', category: 'Paiements', region: 'Mondial', logo: '/payment-logos/paypal.png', desc: 'PayPal, cartes, Pay Later', type: 'payment' },
   { id: 'paddle', name: 'Paddle', category: 'Paiements', region: 'Mondial', color: '#9CE37D', accent: '#1A2B3C', desc: 'Merchant of Record — taxes incluses', type: 'payment' },
-  { id: 'adyen', name: 'Adyen', category: 'Paiements', region: 'Europe', color: '#0ABF53', accent: '#FFFFFF', desc: 'Paiements unifiés enterprise', type: 'payment' },
+  { id: 'adyen', name: 'Adyen', category: 'Paiements', region: 'Europe', logo: '/payment-logos/adyen.png', desc: 'Paiements unifiés enterprise', type: 'payment' },
   { id: 'klarna', name: 'Klarna', category: 'Paiements', region: 'Europe', color: '#FFA8CD', accent: '#17120F', desc: 'Achetez maintenant, payez plus tard', type: 'payment' },
-  { id: 'alipay', name: 'Alipay', category: 'Paiements', region: 'Asie', color: '#1677FF', accent: '#FFFFFF', desc: 'Paiements Chine', type: 'payment' },
+  { id: 'alipay', name: 'Alipay', category: 'Paiements', region: 'Asie', logo: '/payment-logos/alipay.png', desc: 'Paiements Chine', type: 'payment' },
   { id: 'razorpay', name: 'Razorpay', category: 'Paiements', region: 'Asie', color: '#5B21B6', accent: '#FFFFFF', desc: 'Paiements Inde', type: 'payment' },
   { id: 'square', name: 'Square', category: 'Paiements', region: 'USA', color: '#3E4348', accent: '#FFFFFF', desc: 'Cartes & en boutique', type: 'payment' },
-  { id: 'mercado-pago', name: 'Mercado Pago', category: 'Paiements', region: 'Latino', color: '#00B1EA', accent: '#FFFFFF', desc: 'Paiements Amérique Latine', type: 'payment' },
+  { id: 'mercado-pago', name: 'Mercado Pago', category: 'Paiements', region: 'Latino', logo: '/payment-logos/mercadopago.png', desc: 'Paiements Amérique Latine', type: 'payment' },
 
   // Shipping (real logos where available)
   { id: 'aramex', name: 'Aramex', category: 'Livraison', region: 'Moyen-Orient', logo: `${LOGO_BASE}/c6bba6fdc_ARMXAE_BIG-ade0e246.png`, desc: 'Livraison Moyen-Orient & Asie', type: 'shipping' },
@@ -54,8 +54,8 @@ const INTEGRATIONS = [
 function LogoBadge({ app }) {
   if (app.logo) {
     return (
-      <div className="w-14 h-14 rounded-xl bg-[#0F0F1A] flex items-center justify-center shrink-0 overflow-hidden">
-        <img src={app.logo} alt={app.name} className="w-full h-full object-contain p-1.5" style={{ mixBlendMode: 'screen' }} />
+      <div className="w-14 h-14 rounded-xl bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">
+        <img src={app.logo} alt={app.name} className="w-full h-full object-contain p-2" />
       </div>
     );
   }

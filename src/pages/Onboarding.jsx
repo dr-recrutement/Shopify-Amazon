@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
-  Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles,
+  Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles, Globe,
 } from 'lucide-react';
 import { COUNTRIES } from '@/lib/world/countries';
 import PhoneInput from '@/components/PhoneInput';
@@ -66,7 +66,7 @@ export default function Onboarding() {
   // step 4 state
   const [pay, setPay] = useState('manual');
   // step 5 state
-  const [ship, setShip] = useState({ country: 'SN', rate: '' });
+  const [ship, setShip] = useState({ isGlobal: false, countries: ['SN'], rate: '' });
 
   const [error, setError] = useState('');
 
@@ -119,7 +119,9 @@ export default function Onboarding() {
           const { error } = await supabase.from('shipping_zones').insert({
             tenant_id: store.id,
             name: 'Zone principale',
-            country: ship.country,
+            is_global: ship.isGlobal,
+            countries: ship.isGlobal ? null : ship.countries,
+            country: ship.isGlobal ? null : ship.countries[0],
             rate_type: 'flat',
             rate_amount_cents: Math.round(Number(ship.rate) * 100),
             is_active: true,
@@ -200,9 +202,32 @@ export default function Onboarding() {
         return (
           <>
             <h2 className="text-lg font-bold text-[#202223]">Définissez vos frais de livraison</h2>
-            <p className="text-sm text-[#6D7175] mt-1 mb-5">Ajoutez une première zone de livraison. Configurable en détail plus tard.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><label className={lbl}>Pays de la zone</label><select value={ship.country} onChange={(e) => setShip({ ...ship, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
+            <p className="text-sm text-[#6D7175] mt-1 mb-5">Ajoutez une première zone de livraison — un ou plusieurs pays, ou le monde entier. Configurable en détail plus tard.</p>
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 text-sm font-medium text-[#202223] cursor-pointer bg-[#F4F4F4] rounded-lg px-3 py-2.5">
+                <input type="checkbox" checked={ship.isGlobal} onChange={(e) => setShip({ ...ship, isGlobal: e.target.checked })} className="accent-[#008060]" />
+                <Globe className="w-4 h-4 text-[#008060]" /> Livraison mondiale (tous les pays)
+              </label>
+              {!ship.isGlobal && (
+                <div>
+                  <label className={lbl + ' flex items-center justify-between'}>
+                    <span>Pays couverts</span>
+                    <span className="text-[#008060]">{ship.countries.length} sélectionné(s)</span>
+                  </label>
+                  <div className="max-h-40 overflow-y-auto border border-[#E1E1E1] rounded-lg p-2 grid grid-cols-2 gap-1">
+                    {COUNTRIES.map((c) => (
+                      <label key={c.code} className="flex items-center gap-1.5 text-xs cursor-pointer hover:bg-black/5 rounded px-1.5 py-1">
+                        <input
+                          type="checkbox"
+                          checked={ship.countries.includes(c.code)}
+                          onChange={() => setShip((s) => ({ ...s, countries: s.countries.includes(c.code) ? s.countries.filter((x) => x !== c.code) : [...s.countries, c.code] }))}
+                          className="accent-[#008060]"
+                        /> {c.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div><label className={lbl}>Frais de livraison ({f.currency})</label><input value={ship.rate} onChange={(e) => setShip({ ...ship, rate: e.target.value })} className={fld} type="number" placeholder="Ex : 5" /></div>
             </div>
           </>

@@ -53,6 +53,7 @@ export function useCurrentStore() {
       setStore(normalizeTenant(data));
       setError(null);
     } catch (e) {
+      console.error('useCurrentStore: failed to load tenant:', e);
       setError(e);
     } finally {
       setLoading(false);

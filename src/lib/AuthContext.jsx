@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
+import { claimPendingSuperAdminInvite } from '@/lib/superadmin';
 
 const AuthContext = createContext();
 
@@ -23,6 +24,9 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(!!session?.user);
       setIsLoadingAuth(false);
       setAuthChecked(true);
+      if (_event === 'SIGNED_IN' && session?.user) {
+        claimPendingSuperAdminInvite(session.user).catch(() => {});
+      }
     });
 
     return () => subscription.unsubscribe();

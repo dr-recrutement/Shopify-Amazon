@@ -9,7 +9,7 @@ import {
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
-import { isSuperadmin } from '@/lib/superadmin';
+import { checkIsSuperAdmin } from '@/lib/superadmin';
 
 const NAV_GROUPS = [
   {
@@ -165,6 +165,8 @@ export default function AdminLayout() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { store, loading: storeLoading } = useCurrentStore();
+  const [superadmin, setSuperadmin] = useState(false);
+  useEffect(() => { if (user?.id) checkIsSuperAdmin(user.id).then(setSuperadmin); }, [user?.id]);
 
   useEffect(() => {
     const onClick = (e) => {
@@ -194,7 +196,6 @@ export default function AdminLayout() {
 
   const displayName = user?.user_metadata?.full_name || user?.email || 'Utilisateur';
   const initials = displayName.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase();
-  const superadmin = isSuperadmin(user?.email);
   const doLogout = () => { logout(); };
   const submitSearch = (e) => { e.preventDefault(); navigate(q.trim() ? `/products?q=${encodeURIComponent(q.trim())}` : '/products'); };
 

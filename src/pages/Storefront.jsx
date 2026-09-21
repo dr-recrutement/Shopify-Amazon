@@ -4,19 +4,17 @@ import {
   ShoppingCart, X, Loader2, AlertCircle, Trash2, ArrowRight, ArrowLeft, Check,
   Minus, Plus, Tag, Truck, MapPin, Mail, Phone, ShieldCheck, Lock, CreditCard,
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import { cloneTheme, DEFAULT_THEME_ID } from '@/lib/themes';
 import { formatMoney } from '@/lib/world/currencies';
 
-const CUSTOM_KEY = 'sellia_theme_custom';
-const THEME_KEY = 'sellia_theme';
-const CART_KEY = 'sellia_cart_id';
+const CART_KEY = 'sellia_cart_session';
 
-function loadTheme() {
-  const custom = localStorage.getItem(CUSTOM_KEY);
-  if (custom) { try { return JSON.parse(custom); } catch { /* fall through */ } }
-  return cloneTheme(localStorage.getItem(THEME_KEY) || DEFAULT_THEME_ID);
+function getCartSessionId() {
+  let id = localStorage.getItem(CART_KEY);
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem(CART_KEY, id); }
+  return id;
 }
 
 export default function Storefront() {
@@ -27,7 +25,7 @@ export default function Storefront() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [theme, setTheme] = useState(loadTheme);
+  const [theme, setTheme] = useState(() => cloneTheme(DEFAULT_THEME_ID));
   const [cart, setCart] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -40,12 +38,28 @@ export default function Storefront() {
     if (!slug) return;
     setLoading(true);
     try {
-      const res = await base44.functions.invoke('publicStore', { slug });
-      if (res.data?.error) throw new Error(res.data.error);
-      setStore(res.data.store);
-      setProducts(res.data.products || []);
-      setCollections(res.data.collections || []);
-      setArticles(res.data.articles || []);
+      const { data: tenant, error: tenantError } = await supabase
+        .from('tenants').select('*').eq('slug', slug).maybeSingle();
+      if (tenantError) throw tenantError;
+      if (!tenant) throw new Error("Cette boutique n'existe pas.");
+      setStore({ ...tenant, currency: tenant.currency || 'USD' });
+
+      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes] = await Promise.all([
+        supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
+        supabase.from('products').select('*').eq('tenant_id', tenant.id).eq('status', 'active').order('created_at', { ascending: false }).limit(200),
+        supabase.from('product_categories').select('*').eq('tenant_id', tenant.id),
+        supabase.from('product_category_assignments').select('product_id, category_id'),
+        supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('status', 'published').order('published_at', { ascending: false }).limit(20),
+      ]);
+      // The published theme is what a real visitor should see - not
+      // whatever is mid-edit in the merchant's own browser. Falls back to
+      // the stock default only if nothing has ever been published.
+      setTheme(themeRes.data?.published_config || cloneTheme(DEFAULT_THEME_ID));
+      setProducts(productsRes.data || []);
+      const counts = {};
+      (assignRes.data || []).forEach((a) => { counts[a.category_id] = (counts[a.category_id] || 0) + 1; });
+      setCollections((categoriesRes.data || []).map((c) => ({ ...c, product_count: counts[c.id] || 0 })));
+      setArticles(pagesRes.data || []);
       setError(null);
     } catch (e) {
       setError(e.message || 'Boutique introuvable');
@@ -55,15 +69,15 @@ export default function Storefront() {
   }, [slug]);
 
   const loadCart = useCallback(async () => {
-    const cartId = localStorage.getItem(CART_KEY);
-    if (!cartId || !store?.id) return;
+    if (!store?.id) return;
+    const sessionId = getCartSessionId();
     try {
-      const c = await base44.entities.Cart.get(cartId);
-      if (c && c.store_id === store.id) {
-        setCart(c);
-        setCartCount((c.items || []).reduce((s, i) => s + i.quantity, 0));
+      const { data } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'active').maybeSingle();
+      if (data) {
+        setCart(data);
+        setCartCount((data.items || []).reduce((s, i) => s + i.quantity, 0));
       }
-    } catch { localStorage.removeItem(CART_KEY); }
+    } catch { /* no cart yet, fine */ }
   }, [store?.id]);
 
   useEffect(() => { loadStore(); }, [loadStore]);
@@ -72,19 +86,19 @@ export default function Storefront() {
   const storeSections = useMemo(() => {
     const prods = products.map((p) => ({
       _id: p.id,
-      image: (p.images && p.images[0]) || 'https://picsum.photos/seed/p' + p.id + '/600',
-      title: p.title,
-      price: formatMoney(p.price, store?.currency || p.currency),
-      _price: p.price,
+      image: (p.images && p.images[0]) || '',
+      title: p.name,
+      price: formatMoney((p.price_cents || 0) / 100, store?.currency || p.currency),
+      _price: (p.price_cents || 0) / 100,
     }));
     const posts = articles.map((a) => ({
       _id: a.id,
-      _handle: a.handle,
-      image: a.featured_image || 'https://picsum.photos/seed/art' + a.id + '/700/500',
+      _handle: a.slug,
+      image: '',
       title: a.title,
-      excerpt: a.excerpt || (a.content || '').replace(/<[^>]*>/g, '').slice(0, 120),
+      excerpt: (a.body || '').replace(/<[^>]*>/g, '').slice(0, 120),
       date: a.published_at ? new Date(a.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
-      author: a.author || '',
+      author: '',
     }));
     return theme.sections.map((s) => {
       if (s.type === 'productGrid' && prods.length > 0) {
@@ -93,46 +107,45 @@ export default function Storefront() {
       if (s.type === 'blogList' && posts.length > 0) {
         return { ...s, props: { ...s.props, posts: posts.slice(0, 3) } };
       }
+      if (s.type === 'collectionList' && collections.length > 0) {
+        return { ...s, props: { ...s.props, items: collections.map((c) => ({ image: c.image_url || '', title: c.name, count: `${c.product_count} article${c.product_count > 1 ? 's' : ''}` })) } };
+      }
       return s;
     });
-  }, [theme, products, articles, store]);
+  }, [theme, products, articles, collections, store]);
+
+  const saveCart = async (items) => {
+    const subtotal = items.reduce((s, i) => s + i.line_total, 0);
+    const sessionId = getCartSessionId();
+    if (cart?.id) {
+      const { data, error } = await supabase.from('abandoned_carts').update({ items, total_cents: Math.round(subtotal * 100), last_activity_at: new Date().toISOString() }).eq('id', cart.id).select().single();
+      if (error) throw error;
+      return data;
+    }
+    const { data, error } = await supabase.from('abandoned_carts').insert({
+      tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'active',
+    }).select().single();
+    if (error) throw error;
+    return data;
+  };
 
   const addToCart = async (product) => {
-    let currentCart = cart;
-    if (!currentCart) {
-      try {
-        currentCart = await base44.entities.Cart.create({
-          store_id: store.id,
-          currency: store.currency,
-          items: [],
-          subtotal: 0,
-          total: 0,
-          status: 'active',
-        });
-        localStorage.setItem(CART_KEY, currentCart.id);
-        setCart(currentCart);
-      } catch { return; }
+    try {
+      const items = [...(cart?.items || [])];
+      const existing = items.find((i) => i.product_id === product._id);
+      if (existing) {
+        existing.quantity += 1;
+        existing.line_total = existing.price * existing.quantity;
+      } else {
+        items.push({ product_id: product._id, title: product.title, image: product.image, price: product._price, quantity: 1, line_total: product._price });
+      }
+      const updated = await saveCart(items);
+      setCart(updated);
+      setCartCount(items.reduce((s, i) => s + i.quantity, 0));
+      setCartOpen(true);
+    } catch (e) {
+      alert(e.message || "Impossible d'ajouter au panier");
     }
-    const items = [...(currentCart.items || [])];
-    const existing = items.find((i) => i.product_id === product._id);
-    if (existing) {
-      existing.quantity += 1;
-      existing.line_total = existing.price * existing.quantity;
-    } else {
-      items.push({
-        product_id: product._id,
-        title: product.title,
-        image: product.image,
-        price: product._price,
-        quantity: 1,
-        line_total: product._price,
-      });
-    }
-    const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-    const updated = await base44.entities.Cart.update(currentCart.id, { items, subtotal, total: subtotal });
-    setCart(updated);
-    setCartCount(items.reduce((s, i) => s + i.quantity, 0));
-    setCartOpen(true);
   };
 
   const updateQty = async (productId, delta) => {
@@ -142,8 +155,7 @@ export default function Storefront() {
     if (!item) return;
     item.quantity = Math.max(1, item.quantity + delta);
     item.line_total = item.price * item.quantity;
-    const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-    const updated = await base44.entities.Cart.update(cart.id, { items, subtotal, total: subtotal });
+    const updated = await saveCart(items);
     setCart(updated);
     setCartCount(items.reduce((s, i) => s + i.quantity, 0));
   };
@@ -151,8 +163,7 @@ export default function Storefront() {
   const removeFromCart = async (productId) => {
     if (!cart) return;
     const items = (cart.items || []).filter((i) => i.product_id !== productId);
-    const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-    const updated = await base44.entities.Cart.update(cart.id, { items, subtotal, total: subtotal });
+    const updated = await saveCart(items);
     setCart(updated);
     setCartCount(items.reduce((s, i) => s + i.quantity, 0));
   };
@@ -161,24 +172,20 @@ export default function Storefront() {
     if (!cart || !couponCode.trim()) return;
     setCouponMsg(null);
     try {
-      const found = await base44.entities.Discount.filter({ store_id: store.id, code: couponCode.trim(), status: 'active' });
-      const d = found[0];
+      const { data: d } = await supabase.from('discount_codes').select('*').eq('tenant_id', store.id).eq('code', couponCode.trim().toUpperCase()).eq('is_active', true).maybeSingle();
       if (!d) { setCouponMsg({ ok: false, text: 'Code promo invalide.' }); return; }
-      if (d.usage_limit && d.used_count >= d.usage_limit) { setCouponMsg({ ok: false, text: 'Ce code a atteint sa limite d\u2019utilisation.' }); return; }
+      if (d.max_uses && d.used_count >= d.max_uses) { setCouponMsg({ ok: false, text: "Ce code a atteint sa limite d'utilisation." }); return; }
       if (d.ends_at && new Date(d.ends_at) < new Date()) { setCouponMsg({ ok: false, text: 'Ce code a expiré.' }); return; }
-      if (d.min_order_amount && (cart.subtotal || 0) < d.min_order_amount) { setCouponMsg({ ok: false, text: `Minimum requis : ${formatMoney(d.min_order_amount, store.currency)}.` }); return; }
+      const subtotal = (cart.total_cents || 0) / 100;
+      if (d.min_amount_cents && subtotal * 100 < d.min_amount_cents) { setCouponMsg({ ok: false, text: `Minimum requis : ${formatMoney(d.min_amount_cents / 100, store.currency)}.` }); return; }
       let amount = 0;
-      if (d.type === 'percentage') amount = (cart.subtotal || 0) * (d.value / 100);
-      else if (d.type === 'fixed_amount') amount = d.value;
-      else if (d.type === 'free_shipping') amount = 0;
-      amount = Math.min(amount, cart.subtotal || 0);
+      if (d.discount_type === 'percentage') amount = subtotal * (d.value / 100);
+      else if (d.discount_type === 'fixed_amount') amount = d.value;
+      amount = Math.min(amount, subtotal);
       setDiscount({ ...d, amount });
-      const total = Math.max(0, (cart.subtotal || 0) - amount);
-      const updated = await base44.entities.Cart.update(cart.id, { discount_code: d.code, total });
-      setCart(updated);
-      setCouponMsg({ ok: true, text: `Code appliqué : −${formatMoney(amount, store.currency)}` });
-    } catch (e) {
-      setCouponMsg({ ok: false, text: 'Erreur lors de l\u2019application du code.' });
+      setCouponMsg({ ok: true, text: `Code appliqué : -${formatMoney(amount, store.currency)}` });
+    } catch {
+      setCouponMsg({ ok: false, text: "Erreur lors de l'application du code." });
     }
   };
 
@@ -194,7 +201,8 @@ export default function Storefront() {
   if (!store) return null;
 
   const discountAmount = discount?.amount || 0;
-  const cartTotal = Math.max(0, (cart?.subtotal || 0) - discountAmount);
+  const cartSubtotal = (cart?.total_cents || 0) / 100;
+  const cartTotal = Math.max(0, cartSubtotal - discountAmount);
 
   return (
     <div className="min-h-screen bg-white">
@@ -271,12 +279,12 @@ export default function Storefront() {
               <div className="border-t border-border px-5 py-4 space-y-2.5 bg-surface/40">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Sous-total</span>
-                  <span className="font-semibold text-foreground">{formatMoney(cart.subtotal || 0, store.currency)}</span>
+                  <span className="font-semibold text-foreground">{formatMoney(cartSubtotal, store.currency)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex items-center justify-between text-sm text-emerald-600">
                     <span className="font-medium">Réduction ({discount?.code})</span>
-                    <span className="font-semibold">−{formatMoney(discountAmount, store.currency)}</span>
+                    <span className="font-semibold">-{formatMoney(discountAmount, store.currency)}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-sm">
@@ -318,57 +326,68 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
     { id: 'mobile', label: 'Mobile Money', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
   ];
 
+  const cartSubtotal = (cart?.total_cents || 0) / 100;
+  const total = Math.max(0, cartSubtotal - discountAmount);
+
   const placeOrder = async (e) => {
     e.preventDefault();
     setPlacing(true);
     try {
-      const num = '#' + Math.floor(1000 + Math.random() * 9000);
-      const total = Math.max(0, (cart.subtotal || 0) - discountAmount);
-      const order = await base44.entities.Order.create({
-        store_id: store.id,
-        order_number: num,
+      const shippingAddress = `${form.address}, ${form.postal_code} ${form.city}, ${form.country}`.trim();
+      const { data: order, error: orderError } = await supabase.from('orders').insert({
+        tenant_id: store.id,
         customer_email: form.email,
-        items: (cart.items || []).map((i) => ({
-          product_id: i.product_id,
-          title: i.title,
-          image: i.image,
-          price: i.price,
-          quantity: i.quantity,
-          total: i.line_total,
-        })),
-        subtotal: cart.subtotal || 0,
-        discount_total: discountAmount || 0,
-        total,
+        customer_name: `${form.first_name} ${form.last_name}`.trim(),
+        customer_phone: form.phone,
+        total_cents: Math.round(total * 100),
         currency: store.currency,
         status: 'pending',
-        payment_status: 'pending',
-        fulfillment_status: 'unfulfilled',
-        shipping_address: { country: form.country, city: form.city, address: form.address, postal_code: form.postal_code, phone: form.phone },
-        payment_method: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
-        note: `Client: ${form.first_name} ${form.last_name}`,
-      });
-      await base44.entities.Payment.create({
-        store_id: store.id,
+        shipping_address: shippingAddress,
+        shipping_city: form.city,
+        discount_code: discount?.code || null,
+        payment_gateway: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
+      }).select().single();
+      if (orderError) throw orderError;
+
+      const items = (cart.items || []).map((i) => ({
         order_id: order.id,
-        amount: total,
-        currency: store.currency,
-        status: 'pending',
-        provider: 'manual',
-        method: paymentMethod,
-        customer_email: form.email,
-      });
-      if (discount?.id) {
-        try { await base44.entities.Discount.update(discount.id, { used_count: (discount.used_count || 0) + 1 }); } catch { /* ignore */ }
+        product_id: i.product_id,
+        product_name: i.title,
+        quantity: i.quantity,
+        price_cents: Math.round(i.price * 100),
+      }));
+      if (items.length) {
+        const { error: itemsError } = await supabase.from('order_items').insert(items);
+        if (itemsError) throw itemsError;
       }
-      await base44.entities.Customer.filter({ store_id: store.id, email: form.email }).then((existing) => {
-        if (existing.length === 0) {
-          return base44.entities.Customer.create({ store_id: store.id, first_name: form.first_name, last_name: form.last_name, email: form.email, phone: form.phone, orders_count: 1, total_spent: total });
-        } else {
-          return base44.entities.Customer.update(existing[0].id, { orders_count: (existing[0].orders_count || 0) + 1, total_spent: (existing[0].total_spent || 0) + total });
-        }
-      });
-      await base44.entities.Cart.update(cart.id, { status: 'converted' });
-      setOrderNumber(num);
+
+      if (discount?.id) {
+        try { await supabase.from('discount_codes').update({ used_count: (discount.used_count || 0) + 1 }).eq('id', discount.id); } catch { /* non-fatal */ }
+      }
+
+      const { data: existing } = await supabase.from('customers').select('id, orders_count, total_spent_cents').eq('tenant_id', store.id).eq('email', form.email).maybeSingle();
+      if (existing) {
+        await supabase.from('customers').update({
+          orders_count: (existing.orders_count || 0) + 1,
+          total_spent_cents: (existing.total_spent_cents || 0) + Math.round(total * 100),
+          phone: form.phone || undefined,
+        }).eq('id', existing.id);
+      } else {
+        await supabase.from('customers').insert({
+          tenant_id: store.id,
+          name: `${form.first_name} ${form.last_name}`.trim(),
+          email: form.email,
+          phone: form.phone,
+          orders_count: 1,
+          total_spent_cents: Math.round(total * 100),
+        });
+      }
+
+      if (cart?.id) {
+        await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);
+      }
+
+      setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
       onDone();
     } catch (err) {
@@ -384,14 +403,12 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
           <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-emerald-600" /></div>
           <h2 className="font-heading font-bold text-lg text-foreground">Commande confirmée !</h2>
-          <p className="text-sm text-muted-foreground mt-1.5">Votre commande {orderNumber} a bien été reçue. Un e-mail de confirmation vous a été envoyé.</p>
+          <p className="text-sm text-muted-foreground mt-1.5">Votre commande {orderNumber} a bien été reçue.</p>
           <button onClick={onClose} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
         </div>
       </div>
     );
   }
-
-  const total = Math.max(0, (cart?.subtotal || 0) - discountAmount);
 
   return (
     <div className="fixed inset-0 z-50 bg-[#FAFAFB] overflow-y-auto">
@@ -493,9 +510,9 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
             </div>
 
             <div className="mt-4 pt-4 border-t border-border space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Sous-total</span><span className="font-semibold text-foreground">{formatMoney(cart?.subtotal || 0, store.currency)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Sous-total</span><span className="font-semibold text-foreground">{formatMoney(cartSubtotal, store.currency)}</span></div>
               {discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-600"><span className="font-medium">Réduction ({discount?.code})</span><span className="font-semibold">−{formatMoney(discountAmount, store.currency)}</span></div>
+                <div className="flex justify-between text-emerald-600"><span className="font-medium">Réduction ({discount?.code})</span><span className="font-semibold">-{formatMoney(discountAmount, store.currency)}</span></div>
               )}
               <div className="flex justify-between"><span className="text-muted-foreground inline-flex items-center gap-1.5"><Truck className="w-4 h-4" /> Livraison</span><span className="font-semibold text-emerald-600">Offerte</span></div>
             </div>

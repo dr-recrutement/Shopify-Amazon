@@ -4,8 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { isSuperadmin } from '@/lib/superadmin';
 import { formatMoney } from '@/lib/world/currencies';
 import {
-  ShieldCheck, Loader2, Store, Users, ShoppingCart, Package, Ban, CheckCircle2,
-  AlertCircle, ArrowLeft, RefreshCw, Lock,
+  ShieldCheck, Loader2, Store, Users, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
 } from 'lucide-react';
 
 const PLAN_LABELS = { starter: 'Starter', growth: 'Growth', pro: 'Pro', enterprise: 'Enterprise' };

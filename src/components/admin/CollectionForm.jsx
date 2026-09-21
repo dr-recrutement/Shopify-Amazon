@@ -4,7 +4,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, Upload, Image as ImageIcon, X, Search, Check, Plus, Filter } from 'lucide-react';
+import { Loader2, Upload, Image as ImageIcon, X, Search, Check, Plus } from 'lucide-react';
 
 const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 

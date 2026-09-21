@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Calculator, Loader2, AlertCircle, TrendingUp, TrendingDown, Wallet,
+  Calculator, Loader2, AlertCircle, TrendingUp, Wallet,
   Download, ArrowDownCircle, ArrowUpCircle, Receipt, Scale, Truck,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

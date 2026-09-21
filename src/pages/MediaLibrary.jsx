@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Image as ImageIcon, Upload, Trash2, Search, Loader2, Copy, Check, X, Folder } from 'lucide-react';
+import { Image as ImageIcon, Upload, Trash2, Search, Loader2, Copy, Check, Folder } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

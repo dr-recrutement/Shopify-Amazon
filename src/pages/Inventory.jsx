@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Package, AlertTriangle, Loader2, Search, TrendingDown, Boxes, ArrowUpDown, Bell, X, BellRing } from 'lucide-react';
+import { Package, AlertTriangle, Loader2, Search, TrendingDown, Boxes, ArrowUpDown, X, BellRing } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';

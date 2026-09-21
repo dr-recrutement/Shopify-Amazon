@@ -4,7 +4,7 @@ import { FileBarChart, Loader2, AlertCircle, TrendingUp, Package, Users, Downloa
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar } from 'recharts';
 
 const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
 

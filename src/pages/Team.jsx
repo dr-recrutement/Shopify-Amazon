@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Users as UsersIcon, UserPlus, Loader2, AlertCircle, Trash2, Mail, Shield, Crown, Check } from 'lucide-react';
+import { Users as UsersIcon, UserPlus, Loader2, AlertCircle, Mail, Shield, Crown, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { hasFeature, getFeatureValue } from '@/lib/plans';

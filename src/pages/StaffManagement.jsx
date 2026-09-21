@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UsersRound, Plus, Trash2, Loader2, Mail, Shield, Crown, User } from 'lucide-react';
+import { UsersRound, Plus, Trash2, Loader2, Crown, User } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

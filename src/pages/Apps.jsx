@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  LayoutGrid, Loader2, AlertCircle, Plus, CreditCard, Truck, Megaphone, Plug,
+  LayoutGrid, Loader2, AlertCircle, Plus,
 } from 'lucide-react';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

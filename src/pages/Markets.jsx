@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Globe, Loader2, AlertCircle, ShoppingBag, Smartphone, Store,
+  Globe, Loader2, AlertCircle, Smartphone, Store,
   Instagram, Facebook, MessageCircle, ExternalLink, Check, Zap, Plus,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

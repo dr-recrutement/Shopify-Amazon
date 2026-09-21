@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
-import { Wallet, Eye } from '@/components/admin/StatCard';
+import { Wallet } from '@/components/admin/StatCard';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   BarChart, Bar,

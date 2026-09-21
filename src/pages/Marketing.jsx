@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Megaphone, Loader2, AlertCircle, ShoppingCart, Mail, Users, TrendingUp,
-  Send, Clock, CheckCircle, ArrowRight, Zap, Target,
+  Send, Clock, CheckCircle,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';

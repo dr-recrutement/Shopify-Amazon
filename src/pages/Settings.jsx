@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Settings as SettingsIcon, Loader2 } from 'lucide-react';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
-  SettingsGeneral, SettingsPlan, SettingsBilling, SettingsUsers,
+  SettingsGeneral, SettingsPlan,
   SettingsCheckout, SettingsCustomerAccounts, SettingsShippingDelivery, SettingsTaxes,
   SettingsLocations, SettingsApps, SettingsSalesChannels, SettingsDomains,
   SettingsCustomerEvents, SettingsNotifications, SettingsMetafields, SettingsLanguages,
-  SettingsCustomerPrivacy, SettingsPolicies, SettingsSupportChat,
+  SettingsCustomerPrivacy, SettingsPolicies,
 } from '@/components/settings/SettingsSections';
 import Billing from '@/pages/Billing';
 import Payments from '@/pages/Payments';

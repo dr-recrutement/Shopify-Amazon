@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { formatMoney } from '@/lib/world/currencies';
-import { Loader2, MapPin, CreditCard, Truck, Clock, Check } from 'lucide-react';
+import { Loader2, MapPin, Clock, Check } from 'lucide-react';
 
 const ORDER_STATUSES = ['pending', 'paid', 'processing', 'fulfilled', 'shipped', 'delivered', 'cancelled', 'refunded', 'partially_refunded'];
 const PAY_STATUSES = ['pending', 'paid', 'partially_paid', 'refunded', 'voided'];

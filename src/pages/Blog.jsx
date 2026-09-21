@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FileText, Plus, Loader2, Trash2, Eye, Edit3, X, Save, Globe } from 'lucide-react';
+import { FileText, Plus, Loader2, Trash2, Edit3, X, Save, Globe } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

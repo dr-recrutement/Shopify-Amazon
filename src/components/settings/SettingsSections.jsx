@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, Plus, Trash2, Globe, Shield, Bell, CreditCard, MapPin, FileText, Users, ShoppingBag, Tag, Zap, Mail, Lock, Code, Layers } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';

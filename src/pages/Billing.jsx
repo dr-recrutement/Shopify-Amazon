@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CreditCard, Check, Loader2, Download, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import { CreditCard, Check, Loader2, Download, Calendar, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { PLANS, PLAN_ORDER, getPlan } from '@/lib/plans';

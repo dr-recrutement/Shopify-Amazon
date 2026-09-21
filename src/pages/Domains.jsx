@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

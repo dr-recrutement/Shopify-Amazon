@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package, Sparkles, Wand2 } from 'lucide-react';
+import { X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package, Sparkles, Wand2 } from 'lucide-react';
 import { formatMoney } from '@/lib/world/currencies';
 
 const STATUSES = [

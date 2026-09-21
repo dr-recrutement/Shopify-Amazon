@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Bot, Loader2, AlertCircle, Sparkles, Send, Copy, Check,
+  Bot, Loader2, AlertCircle, Sparkles, Copy, Check,
   Package, Search, Megaphone, Mail, Share2, Store, Lightbulb, ShoppingCart,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

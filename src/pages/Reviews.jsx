@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Star, Check, X, Trash2, Loader2, Search, MessageSquare, ThumbsUp } from 'lucide-react';
+import { Star, Check, X, Trash2, Loader2, Search, MessageSquare } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 

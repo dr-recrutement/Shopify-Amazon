@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
-import { ShoppingBag, Wallet, Clock, Package, Users, Tag, Plus, Loader2, AlertCircle, ArrowRight, Boxes, Palette } from 'lucide-react';
+import { ShoppingBag, Wallet, Clock, Package, Users, Tag, Plus, Loader2, AlertCircle, Boxes, Palette } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';

@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   ArrowLeft, Plus, Trash2, Eye, EyeOff, ArrowUp, ArrowDown,
-  Monitor, Tablet, Smartphone, Undo2, Redo2, Save, Check, Menu, X, SlidersHorizontal,
+  Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
   Palette, Image as ImageIcon, LayoutGrid, ShoppingBag, FileText, Star, Mail,
   Megaphone, PanelTop, Columns, Bell, Sparkles, Wand2, Loader2, ShieldCheck,
   UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket,

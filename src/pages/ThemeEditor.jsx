@@ -219,7 +219,15 @@ function Inspector({ section, onSetProp }) {
 const PALETTE_KEYS = ['primary', 'primaryText', 'accent', 'bg', 'surface', 'text', 'muted', 'border', 'dark'];
 const PALETTE_LABELS = { primary: 'Primaire', primaryText: 'Texte sur primaire', accent: 'Accent', bg: 'Fond', surface: 'Surface', text: 'Texte', muted: 'Texte secondaire', border: 'Bordures', dark: 'Fond foncé' };
 
-function ThemeSettings({ theme, onPalette, onFont, onReset }) {
+import { FONT_OPTIONS } from '@/lib/fonts';
+
+const BUTTON_STYLES = [
+  { id: 'rounded', label: 'Arrondi' },
+  { id: 'pill', label: 'Pilule' },
+  { id: 'square', label: 'Carré' },
+];
+
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -243,8 +251,35 @@ function ThemeSettings({ theme, onPalette, onFont, onReset }) {
           <span className="w-1.5 h-4 rounded bg-[#008060]" />
           <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Typographie</p>
         </div>
-        <Field label="Police des titres"><input value={theme.fonts.heading} onChange={(e) => onFont('heading', e.target.value)} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs" /></Field>
-        <Field label="Police du texte"><input value={theme.fonts.body} onChange={(e) => onFont('body', e.target.value)} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs" /></Field>
+        <Field label="Police des titres">
+          <select value={theme.fonts.heading} onChange={(e) => onFont('heading', e.target.value)} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" style={{ fontFamily: theme.fonts.heading }}>
+            {FONT_OPTIONS.map((f) => <option key={f.css} value={f.css} style={{ fontFamily: f.css }}>{f.label} — {f.category}</option>)}
+          </select>
+        </Field>
+        <Field label="Police du texte">
+          <select value={theme.fonts.body} onChange={(e) => onFont('body', e.target.value)} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" style={{ fontFamily: theme.fonts.body }}>
+            {FONT_OPTIONS.map((f) => <option key={f.css} value={f.css} style={{ fontFamily: f.css }}>{f.label} — {f.category}</option>)}
+          </select>
+        </Field>
+        <p className="text-[10px] text-[#6D7175] mt-1">Chaque police est chargée avec plusieurs graisses (light à bold) et s'adapte automatiquement aux écrans mobiles.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Forme des boutons</p>
+        </div>
+        <div className="flex gap-2">
+          {BUTTON_STYLES.map((b) => (
+            <button
+              key={b.id}
+              onClick={() => onButtonStyle(b.id)}
+              className={`flex-1 text-xs font-semibold py-2 border transition ${(theme.buttonStyle || 'rounded') === b.id ? 'border-[#008060] bg-[#008060]/5 text-[#008060]' : 'border-[#E1E1E1] text-[#6D7175] hover:border-[#C9C9C9]'}`}
+              style={{ borderRadius: b.id === 'pill' ? '9999px' : b.id === 'square' ? '4px' : '10px' }}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
       </div>
       <button onClick={onReset} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-[#6D7175] border border-[#E1E1E1] rounded-md py-2 hover:bg-black/5"><RotateCcw className="w-3.5 h-3.5" /> Réinitialiser le thème</button>
     </div>
@@ -337,6 +372,7 @@ export default function ThemeEditor() {
   };
   const onPalette = (k, v) => commit({ ...theme, palette: { ...theme.palette, [k]: v } });
   const onFont = (k, v) => commit({ ...theme, fonts: { ...theme.fonts, [k]: v } });
+  const onButtonStyle = (v) => commit({ ...theme, buttonStyle: v });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -472,7 +508,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onReset={onReset} />}
           </div>
         </div>
       </div>

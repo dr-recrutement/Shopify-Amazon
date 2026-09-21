@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Image } from '@/components/ui/image';
 import { Upload, Link2, X, Star, Check, ArrowRight } from 'lucide-react';
+import { ensureGoogleFonts } from '@/lib/fonts';
 
 const SECTION_LABELS = {
   announcement: 'Annonce', header: 'En-tête', hero: 'Bannière', productGrid: 'Produits',
@@ -152,6 +153,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
   const primary = p.primary;
 
   const radius = { pill: '9999px', rounded: '10px', square: '4px' }[theme.buttonStyle] || '10px';
+  ensureGoogleFonts([theme.fonts?.heading, theme.fonts?.body].filter(Boolean));
 
   return (
     <div style={{ background: p.bg, color: p.text, fontFamily: theme.fonts?.body, '--sellia-radius': radius }}>

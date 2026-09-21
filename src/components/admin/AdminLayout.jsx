@@ -4,10 +4,11 @@ import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { isSuperadmin } from '@/lib/superadmin';
 
 const NAV_GROUPS = [
@@ -155,16 +156,17 @@ function NavContent({ onNavigate, superadmin }) {
 
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [q, setQ] = useState('');
   const menuRef = useRef(null);
   const notifRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout } = useAuth();
+  const { store, loading: storeLoading } = useCurrentStore();
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
     const onClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
@@ -173,9 +175,27 @@ export default function AdminLayout() {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  const initials = (user?.full_name || user?.email || 'U').split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase();
+  // A logged-in user with no store yet (fresh signup, or one who bailed out
+  // of onboarding before creating it) has nothing for any of these admin
+  // pages to show - send them to set up their store first.
+  useEffect(() => {
+    if (!storeLoading && !store && location.pathname !== '/onboarding') {
+      navigate('/onboarding', { replace: true });
+    }
+  }, [storeLoading, store, location.pathname, navigate]);
+
+  if (storeLoading || (!store && location.pathname !== '/onboarding')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F4F4]">
+        <Loader2 className="w-6 h-6 animate-spin text-[#008060]" />
+      </div>
+    );
+  }
+
+  const displayName = user?.user_metadata?.full_name || user?.email || 'Utilisateur';
+  const initials = displayName.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase();
   const superadmin = isSuperadmin(user?.email);
-  const doLogout = () => { base44.auth.logout('/login'); };
+  const doLogout = () => { logout(); };
   const submitSearch = (e) => { e.preventDefault(); navigate(q.trim() ? `/products?q=${encodeURIComponent(q.trim())}` : '/products'); };
 
   return (
@@ -227,7 +247,7 @@ export default function AdminLayout() {
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl border border-[#E1E1E1] py-2 text-[#202223] z-50">
                 <div className="px-4 py-2 border-b border-[#F4F4F4]">
-                  <p className="text-sm font-bold truncate">{user?.full_name || 'Utilisateur'}</p>
+                  <p className="text-sm font-bold truncate">{displayName}</p>
                   <p className="text-xs text-[#6D7175] truncate">{user?.email || ''}</p>
                 </div>
                 <Link to="/store-settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-black/5"><SettingsIcon className="w-4 h-4 opacity-60" /> Paramètres de la boutique</Link>

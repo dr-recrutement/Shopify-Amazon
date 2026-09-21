@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
@@ -55,18 +55,34 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const [o, c, p] = await Promise.all([
-        base44.entities.Order.filter({ store_id: store.id }, '-created_date', 100),
-        base44.entities.Customer.filter({ store_id: store.id }, '-created_date', 100),
-        base44.entities.Product.filter({ store_id: store.id }, '-created_date', 100),
+        supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(100),
+        supabase.from('customers').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(100),
+        supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(100),
       ]);
-      setOrders(o); setCustomers(c); setProducts(p);
+      if (o.error) throw o.error;
+      if (c.error) throw c.error;
+      if (p.error) throw p.error;
+      // total_cents -> plain currency units, and created_at/id normalized to
+      // the field names the rest of this page already reads.
+      const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
+      setOrders((o.data || []).map((row) => ({
+        ...row,
+        total: (row.total_cents || 0) / 100,
+        created_date: row.created_at,
+        order_number: '#' + row.id.slice(0, 8),
+        payment_status: NOT_PAID.has(row.status) ? 'unpaid' : 'paid',
+      })));
+      setCustomers(c.data || []);
+      setProducts(p.data || []);
+    } catch (e) {
+      console.error('Dashboard load failed:', e);
+      setOrders([]); setCustomers([]); setProducts([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
 
   const stats = useMemo(() => {
-    const revenue = orders.reduce((s, o) => s + (o.total || 0), 0);
     const pending = orders.filter((o) => o.status === 'pending');
     const paid = orders.filter((o) => o.payment_status === 'paid');
     const paidRevenue = paid.reduce((s, o) => s + (o.total || 0), 0);

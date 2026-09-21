@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles,
 } from 'lucide-react';
 import { COUNTRIES } from '@/lib/world/countries';
+import PhoneInput from '@/components/PhoneInput';
 
 const STEPS = [
   { id: 'store', label: 'Votre boutique', icon: Store },
@@ -38,6 +39,16 @@ export default function Onboarding() {
 
   // step 1 state
   const [f, setF] = useState({ name: store?.name || '', country: store?.country || 'SN', currency: store?.currency || 'XOF', business_type: store?.business_type || BUSINESS_TYPES[0] });
+  const [phone, setPhone] = useState(store?.phone || '');
+  useEffect(() => {
+    if (store?.phone) { setPhone(store.phone); return; }
+    // Prefill from what was entered at sign-up (Register.jsx stores it in
+    // user_metadata) so people don't have to type it twice.
+    supabase.auth.getUser().then(({ data }) => {
+      const p = data?.user?.user_metadata?.phone;
+      if (p) setPhone((cur) => cur || p);
+    });
+  }, [store?.phone]);
   // step 2 state
   const [items, setItems] = useState([{ title: '', price: '' }]);
   // step 4 state
@@ -49,21 +60,58 @@ export default function Onboarding() {
     setBusy(true);
     try {
       if (step === 0) {
-        const payload = { name: f.name || 'Ma boutique', country: f.country, currency: f.currency, business_type: f.business_type, status: 'active', plan: 'growth', plan_status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() };
-        if (store?.id) await base44.entities.Store.update(store.id, payload);
-        else await base44.entities.Store.create(payload);
+        const { data: { user } } = await supabase.auth.getUser();
+        const payload = {
+          name: f.name || 'Ma boutique',
+          country: f.country,
+          currency: f.currency,
+          sector: f.business_type,
+          phone: phone || null,
+        };
+        if (store?.id) {
+          const { error } = await supabase.from('tenants').update(payload).eq('id', store.id);
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.from('tenants').insert({
+            ...payload,
+            owner_id: user.id,
+            status: 'trial',
+            plan: 'growth',
+            trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString(),
+          });
+          if (error) throw error;
+        }
         await reload();
       }
       if (step === 1) {
         for (const it of items) {
-          if (it.title.trim()) await base44.entities.Product.create({ store_id: store?.id, title: it.title.trim(), price: Number(it.price) || 0, currency: f.currency, status: 'draft' });
+          if (it.title.trim() && store?.id) {
+            const { error } = await supabase.from('products').insert({
+              tenant_id: store.id,
+              name: it.title.trim(),
+              price_cents: Math.round((Number(it.price) || 0) * 100),
+              currency: f.currency,
+              status: 'draft',
+            });
+            if (error) throw error;
+          }
         }
       }
-      if (step === 3) {
-        if (store?.id) await base44.entities.PaymentProvider.create({ store_id: store.id, provider: pay, is_active: true, mode: 'test' });
-      }
+      // Step 3 (payment provider choice) has no dedicated table yet on the
+      // native Supabase schema - kept as a local UI choice for now rather
+      // than silently pretending to save it (see MIGRATION.md).
       if (step === 4) {
-        if (store?.id && ship.rate) await base44.entities.ShippingZone.create({ store_id: store.id, name: 'Zone principale', countries: [ship.country], rate: Number(ship.rate), currency: f.currency, rate_type: 'flat' });
+        if (store?.id && ship.rate) {
+          const { error } = await supabase.from('shipping_zones').insert({
+            tenant_id: store.id,
+            name: 'Zone principale',
+            country: ship.country,
+            rate_type: 'flat',
+            rate_amount_cents: Math.round(Number(ship.rate) * 100),
+            is_active: true,
+          });
+          if (error) throw error;
+        }
       }
       setDone((d) => ({ ...d, [STEPS[step].id]: true }));
       if (step < STEPS.length - 1) setStep((s) => s + 1);
@@ -85,6 +133,7 @@ export default function Onboarding() {
               <div><label className={lbl}>Pays</label><select value={f.country} onChange={(e) => setF({ ...f, country: e.target.value })} className={fld}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select></div>
               <div><label className={lbl}>Devise</label><select value={f.currency} onChange={(e) => setF({ ...f, currency: e.target.value })} className={fld}>{CURRENCIES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}</select></div>
               <div className="sm:col-span-2"><label className={lbl}>Type d'activité</label><select value={f.business_type} onChange={(e) => setF({ ...f, business_type: e.target.value })} className={fld}>{BUSINESS_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}</select></div>
+              <div className="sm:col-span-2"><label className={lbl}>Téléphone</label><PhoneInput value={phone} onChange={setPhone} /></div>
             </div>
           </>
         );

@@ -2,22 +2,22 @@
 // after sign-in, e.g. the MCP OAuth consent page). Keep the redirect
 // validation in one place — it is security-sensitive and easy to drift.
 
-// Resolve ?returnTo= to a safe same-origin path, else the dashboard.
+// Resolve ?returnTo= to a safe same-origin path, else `fallback`.
 //
 // The same-origin check alone is not enough: a value like /.//evil.com or
 // /\evil.com parses same-origin but normalizes to a protocol-relative
 // //evil.com when assigned to location.href — an open redirect. So require the
 // resolved path to be exactly one leading slash (no "//" prefix, no backslash).
-export function safeReturnTo() {
+export function safeReturnTo(fallback = "/dashboard") {
   const raw = new URLSearchParams(window.location.search).get("returnTo");
   // "/" is the public landing page, not a real post-login destination - if
-  // nothing else was asked for, send people to the dashboard instead of
+  // nothing else was asked for, send people to `fallback` instead of
   // bouncing a freshly-authenticated user straight back to the marketing
   // page (indistinguishable from "login did nothing").
-  if (!raw) return "/dashboard";
+  if (!raw) return fallback;
   try {
     const url = new URL(raw, window.location.origin);
-    if (url.origin !== window.location.origin) return "/dashboard";
+    if (url.origin !== window.location.origin) return fallback;
     // Only access_token/clear_access_token are still URL-read by app-params.js, but the
     // whole bootstrap set stays stripped: one going back to a URL read must not silently
     // become injectable again. Normal app-flow params (e.g. the OAuth consent ctx) are kept.
@@ -25,9 +25,9 @@ export function safeReturnTo() {
       url.searchParams.delete(p);
     }
     const path = url.pathname + url.search;
-    if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) return "/dashboard";
+    if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) return fallback;
     return path;
   } catch {
-    return "/dashboard";
+    return fallback;
   }
 }

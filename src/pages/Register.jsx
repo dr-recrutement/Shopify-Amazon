@@ -8,6 +8,7 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import PhoneInput from "@/components/PhoneInput";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
@@ -15,26 +16,41 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
+  // A brand-new account has no store yet - send it through onboarding rather
+  // than straight to the (still empty) dashboard. An explicit ?returnTo=
+  // (e.g. resuming the MCP OAuth consent flow) still wins either way.
+  const postAuthDestination = safeReturnTo("/onboarding");
+  const hasExplicitReturnTo = !!new URLSearchParams(window.location.search).get("returnTo");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Les mots de passe ne correspondent pas");
+      return;
+    }
+    if (phone.replace(/[^\d]/g, "").length < 6) {
+      setError("Merci d'entrer un numéro de téléphone valide");
       return;
     }
     setLoading(true);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { phone } },
+      });
       if (signUpError) throw signUpError;
       if (data.session) {
         // Email confirmation is disabled for this project: the account is
         // already active and signed in, so there's no code to verify.
-        window.location.href = safeReturnTo();
+        window.location.href = postAuthDestination;
         return;
       }
       setShowOtp(true);
@@ -53,7 +69,7 @@ export default function Register() {
     try {
       const { error: verifyError } = await supabase.auth.verifyOtp({ email, token: otpCode, type: "signup" });
       if (verifyError) throw verifyError;
-      window.location.href = safeReturnTo();
+      window.location.href = postAuthDestination;
     } catch (err) {
       setError(err.message || "Code de vérification invalide");
     } finally {
@@ -78,7 +94,7 @@ export default function Register() {
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + safeReturnTo() },
+      options: { redirectTo: window.location.origin + postAuthDestination },
     });
   };
 
@@ -145,7 +161,7 @@ export default function Register() {
         <>
           Already have an account?{" "}
           <Link
-            to={"/login" + (safeReturnTo() !== "/" ? "?returnTo=" + encodeURIComponent(safeReturnTo()) : "")}
+            to={"/login" + (hasExplicitReturnTo ? "?returnTo=" + encodeURIComponent(new URLSearchParams(window.location.search).get("returnTo")) : "")}
             className="text-primary font-medium hover:underline"
           >
             Log in
@@ -193,6 +209,12 @@ export default function Register() {
               className="pl-10 h-12"
               required
             />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">Numéro de téléphone</Label>
+          <div className="relative">
+            <PhoneInput id="phone" value={phone} onChange={setPhone} required />
           </div>
         </div>
         <div className="space-y-2">

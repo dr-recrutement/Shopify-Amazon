@@ -26,11 +26,16 @@ const INTEGRATIONS = [
   { id: 'paypal', name: 'PayPal', category: 'Paiements', region: 'Mondial', logo: '/payment-logos/paypal.png', desc: 'PayPal, cartes, Pay Later', type: 'payment' },
   { id: 'paddle', name: 'Paddle', category: 'Paiements', region: 'Mondial', color: '#9CE37D', accent: '#1A2B3C', desc: 'Merchant of Record — taxes incluses', type: 'payment' },
   { id: 'adyen', name: 'Adyen', category: 'Paiements', region: 'Europe', logo: '/payment-logos/adyen.png', desc: 'Paiements unifiés enterprise', type: 'payment' },
-  { id: 'klarna', name: 'Klarna', category: 'Paiements', region: 'Europe', color: '#FFA8CD', accent: '#17120F', desc: 'Achetez maintenant, payez plus tard', type: 'payment' },
+  { id: 'klarna', name: 'Klarna', category: 'Paiements', region: 'Europe', logo: '/payment-logos/klarna.jpg', desc: 'Achetez maintenant, payez plus tard', type: 'payment' },
   { id: 'alipay', name: 'Alipay', category: 'Paiements', region: 'Asie', logo: '/payment-logos/alipay.png', desc: 'Paiements Chine', type: 'payment' },
   { id: 'razorpay', name: 'Razorpay', category: 'Paiements', region: 'Asie', color: '#5B21B6', accent: '#FFFFFF', desc: 'Paiements Inde', type: 'payment' },
-  { id: 'square', name: 'Square', category: 'Paiements', region: 'USA', color: '#3E4348', accent: '#FFFFFF', desc: 'Cartes & en boutique', type: 'payment' },
+  { id: 'square', name: 'Square', category: 'Paiements', region: 'USA', logo: '/payment-logos/square.jpg', desc: 'Cartes & en boutique', type: 'payment' },
+  { id: 'braintree', name: 'Braintree', category: 'Paiements', region: 'USA', logo: '/payment-logos/braintree.jpg', desc: 'Paiements PayPal pour développeurs', type: 'payment' },
   { id: 'mercado-pago', name: 'Mercado Pago', category: 'Paiements', region: 'Latino', logo: '/payment-logos/mercadopago.png', desc: 'Paiements Amérique Latine', type: 'payment' },
+  { id: 'ebanx', name: 'EBANX', category: 'Paiements', region: 'Latino', logo: '/payment-logos/ebanx.jpg', desc: 'Paiements locaux Amérique Latine', type: 'payment' },
+  { id: 'airtel-money', name: 'Airtel Money', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/airtel-money.jpg', desc: 'Mobile Money Afrique de l\u2019Est & Centrale', type: 'payment' },
+  { id: 'cinetpay', name: 'CinetPay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/cinetpay.webp', desc: 'Agrégateur Mobile Money Afrique de l\u2019Ouest', type: 'payment' },
+  { id: 'yoco', name: 'Yoco', category: 'Paiements', region: 'Afrique du Sud', logo: '/payment-logos/yoco.png', desc: 'Paiements carte & TPE (ZA)', type: 'payment' },
 
   // Shipping (real logos where available)
   { id: 'aramex', name: 'Aramex', category: 'Livraison', region: 'Moyen-Orient', logo: `${LOGO_BASE}/c6bba6fdc_ARMXAE_BIG-ade0e246.png`, desc: 'Livraison Moyen-Orient & Asie', type: 'shipping' },
@@ -55,7 +60,7 @@ function LogoBadge({ app }) {
   if (app.logo) {
     return (
       <div className="w-14 h-14 rounded-xl bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">
-        <img src={app.logo} alt={app.name} className="w-full h-full object-contain p-2" />
+        <img src={app.logo} alt={app.name} className="w-full h-full object-contain p-2 scale-125" />
       </div>
     );
   }

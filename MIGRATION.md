@@ -47,10 +47,22 @@ Ce projet quitte Base44 pour Supabase. État actuel :
 - `src/pages/Customers.jsx` + `src/components/admin/CustomerForm.jsx` : CRUD
   sur `customers` (`name`/`email`/`phone` uniquement — pas de `tags`/`note`/
   consentement marketing sur la table native).
-
+- `src/pages/Collections.jsx` + `src/components/admin/CollectionForm.jsx` :
+  CRUD sur `product_categories` + `product_category_assignments` (lien
+  many-to-many réel). Retiré : collections « intelligentes » à règles et le
+  statut actif/brouillon (aucune colonne pour ça côté natif) — reste une
+  collection à sélection manuelle de produits, ce que le schéma supporte
+  vraiment.
+- `src/pages/Discounts.jsx` + `src/components/admin/DiscountForm.jsx` : CRUD
+  sur `discount_codes`. `scheduled`/`expired` sont recalculés à la lecture
+  depuis `starts_at`/`ends_at`, la table n'a qu'un booléen `is_active`.
+- `src/pages/Reviews.jsx` : lecture/modération/suppression sur
+  `product_reviews`, avec jointure vers `products(name)` pour le nom du
+  produit. `is_approved` (booléen, nullable) est normalisé en
+  pending/approved/rejected.
 ## ⏳ Pas fait — reste sur `@base44/sdk`
 
-Toutes les autres pages : Collections, Discounts, Reviews, Marketing,
+Toutes les autres pages : Marketing,
 Automations, Accounting, Markets, Chat, Apps, Payments, Superadmin,
 ActivityLogs, SeoIa, Team, Reports, Settings, Billing, Inventory,
 ShippingSettings, Domains, StaffManagement (invite/liste faite plus tôt,

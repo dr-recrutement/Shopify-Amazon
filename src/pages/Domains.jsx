@@ -4,6 +4,12 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 const SELLIA_SUBDOMAIN = 'sellia.app';
+const REASON_LABELS = {
+  domain_unavailable: 'Ce domaine est déjà pris.',
+  extension_not_supported_via_api: 'Cette extension (TLD) n\u2019est pas encore disponible via achat automatique.',
+  extension_not_supported: 'Cette extension (TLD) n\u2019est pas prise en charge par Cloudflare Registrar.',
+  extension_disallows_registration: 'Cette extension n\u2019autorise pas l\u2019enregistrement automatique.',
+};
 
 // Native `domains` table: one row per connected/purchased domain
 // (domain_name/type/dns_status/ssl_status), not a single store.domain field.
@@ -30,6 +36,7 @@ export default function Domains() {
   useEffect(() => { loadDomains(); }, [loadDomains]);
 
   const customDomain = domains.find((d) => d.type !== 'buy');
+  const purchasedDomains = domains.filter((d) => d.type === 'buy');
 
   const connectDomain = async () => {
     if (!domain || !store?.id) return;
@@ -65,23 +72,25 @@ export default function Domains() {
     setChecking(true);
     setDomainResult(null);
     try {
-      await new Promise((r) => setTimeout(r, 1200));
-      setDomainResult({ name: searchDomain.trim(), available: Math.random() > 0.4, price: 12 });
+      const { data, error } = await supabase.functions.invoke('cloudflare-domains', { body: { action: 'check', domain_name: searchDomain.trim() } });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      setDomainResult(data);
+    } catch (e) {
+      setDomainResult({ name: searchDomain.trim(), registrable: false, reason: e.message || 'Erreur de vérification' });
     } finally { setChecking(false); }
   };
 
   const buyDomain = async () => {
-    if (!domainResult?.available || !store?.id) return;
+    if (!domainResult?.registrable || !store?.id) return;
+    if (!confirm(`Confirmer l'achat de ${domainResult.name} pour ${domainResult.price} ${domainResult.currency} ?\n\nCe montant sera facturé réellement (paiement Cloudflare de Sellia) et n'est pas remboursable une fois l'enregistrement terminé.`)) return;
     setBuying(true);
     try {
-      const { error } = await supabase.from('domains').insert({
-        tenant_id: store.id,
-        domain_name: domainResult.name,
-        type: 'buy',
-        dns_status: 'pending',
-        ssl_status: 'pending',
+      const { data, error } = await supabase.functions.invoke('cloudflare-domains', {
+        body: { action: 'register', domain_name: domainResult.name, tenant_id: store.id, confirm: true },
       });
       if (error) throw error;
+      if (data.error) throw new Error(data.error);
       setDomainResult(null);
       setSearchDomain('');
       await loadDomains();
@@ -137,14 +146,41 @@ export default function Domains() {
         {domainResult && (
           <div className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
             <div className="flex items-center gap-3">
-              {domainResult.available ? <Check className="w-5 h-5 text-[#008060]" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
-              <div><p className="text-sm font-mono text-[#202223]">{domainResult.name}</p><p className="text-xs text-[#6D7175]">{domainResult.available ? `Disponible — ${domainResult.price}$/an (+10% Sellia)` : 'Non disponible'}</p></div>
+              {domainResult.registrable ? <Check className="w-5 h-5 text-[#008060]" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+              <div>
+                <p className="text-sm font-mono text-[#202223]">{domainResult.name}</p>
+                <p className="text-xs text-[#6D7175]">
+                  {domainResult.registrable
+                    ? `Disponible — ${domainResult.price} ${domainResult.currency}/an (dont ${domainResult.platform_fee} ${domainResult.currency} de frais Sellia)`
+                    : REASON_LABELS[domainResult.reason] || domainResult.reason || 'Non disponible'}
+                </p>
+              </div>
             </div>
-            {domainResult.available && <button onClick={buyDomain} disabled={buying} className="bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Acheter'}</button>}
+            {domainResult.registrable && <button onClick={buyDomain} disabled={buying} className="bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Acheter'}</button>}
           </div>
         )}
-        <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> La connexion Cloudflare Registrar est requise pour l'achat de domaines. Configurez votre clé API Cloudflare dans Paramètres → Domaines.</p>
+        <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Recherche et prix en temps réel via Cloudflare Registrar. L'achat facture réellement le compte Cloudflare de Sellia et n'est pas remboursable.</p>
       </div>
+
+      {purchasedDomains.length > 0 && (
+        <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mt-6">
+          <div className="flex items-center gap-2 mb-3"><Globe className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Domaines achetés via Sellia</p></div>
+          <div className="space-y-2">
+            {purchasedDomains.map((d) => (
+              <div key={d.id} className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
+                <div>
+                  <p className="text-sm font-mono text-[#202223]">{d.domain_name}</p>
+                  <p className="text-xs text-[#6D7175]">
+                    {d.dns_status === 'verified' ? 'Actif' : `Statut : ${d.dns_status || 'en cours'}`}
+                    {d.price_cents ? ` · ${(d.price_cents / 100).toFixed(2)} ${d.currency || 'USD'} payé` : ''}
+                  </p>
+                </div>
+                {d.last_error && <span className="text-xs text-red-600">{d.last_error}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

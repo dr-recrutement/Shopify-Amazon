@@ -21,26 +21,45 @@ Ce projet quitte Base44 pour Supabase. État actuel :
 - `vite.config.js` : le plugin `@base44/vite-plugin` a été retiré ; l'alias `@` (vers
   `src/`) qu'il fournissait est maintenant déclaré explicitement dans `resolve.alias`.
 
-## ⏳ Pas fait — Données (toujours sur `@base44/sdk`)
+## ✅ Fait — Données (pages cœur)
 
-Toutes les pages métier (Produits, Commandes, Clients, Thèmes, Automatisations,
-Facturation, Staff, etc. — ~47 fichiers) utilisent encore
-`base44.entities.X.filter/create/update/delete` via `src/api/base44Client.js`.
-`@base44/sdk` est donc **volontairement conservé** en dépendance : le retirer
-casserait l'app entière tant que ces pages n'ont pas leur propre migration.
+- `src/pages/Onboarding.jsx` : crée/édite le tenant (`tenants`), les premiers
+  produits (`products`), une zone de livraison (`shipping_zones`).
+- `src/components/admin/AdminLayout.jsx` : utilisateur + déconnexion via
+  `useAuth()` ; redirige automatiquement vers `/onboarding` tout utilisateur
+  sans boutique.
+- `src/pages/Dashboard.jsx` : stats/graphique sur `orders`/`customers`/
+  `products` réels.
+- `src/pages/Products.jsx` + `src/components/admin/ProductForm.jsx` : CRUD
+  complet sur `products`, upload d'images vers le bucket Storage
+  `product-images` (confirmé public-read + policies authenticated). Les
+  colonnes absentes de la table (`vendor`, `product_type`, `barcode`,
+  `weight`, `track_inventory`, `tags`, `options`, `seo`) vivent dans
+  `products.metafields` (jsonb) plutôt que d'être perdues. L'assistant IA de
+  description produit a été retiré (appelait une fonction Base44 sans
+  équivalent Supabase).
+- `src/pages/Orders.jsx` + `src/components/admin/OrderDetail.jsx` : lecture
+  jointe `orders` + `order_items`. L'édition ne couvre que ce qui existe
+  vraiment sur la table (`status`, `tracking_number`) — `payment_status`,
+  `fulfillment_status`, `timeline`, `note`, `billing_address`, le détail
+  sous-total/remise/taxes n'ont pas de colonne : retirés de l'UI plutôt que
+  simulés.
+- `src/pages/Customers.jsx` + `src/components/admin/CustomerForm.jsx` : CRUD
+  sur `customers` (`name`/`email`/`phone` uniquement — pas de `tags`/`note`/
+  consentement marketing sur la table native).
 
-**Important** : comme l'authentification est maintenant 100% Supabase, ces pages
-n'ont plus de token Base44 valide côté client — leurs appels `base44.entities.*`
-renverront des erreurs 401. Il faut les migrer vers de vraies requêtes Supabase
-(table par table) pour qu'elles refonctionnent.
+## ⏳ Pas fait — reste sur `@base44/sdk`
 
-Le vrai backend de données ciblé, confirmé avec des données réelles dedans :
-`tenants`, `products`, `orders`, `order_items`, `customers`, `domains`,
-`theme_configs`, `marketing_campaigns`, `discount_codes`, `shipping_zones`,
-`product_reviews`, `content_pages`, etc. (project Supabase `hfzbykndwsrlxqlqrmjh`).
-Les tables `sellia_*` sont une copie/export Base44 quasi vide (données de démo) —
-à ne pas utiliser comme source de vérité.
+Toutes les autres pages : Collections, Discounts, Reviews, Marketing,
+Automations, Accounting, Markets, Chat, Apps, Payments, Superadmin,
+ActivityLogs, SeoIa, Team, Reports, Settings, Billing, Inventory,
+ShippingSettings, Domains, StaffManagement (invite/liste faite plus tôt,
+mais toujours sur base44 pour le CRUD), StoreSettings, Support, Blog,
+ProductAnalytics, MediaLibrary, AbandonedCheckouts, ThemeEditor, Analytics,
+ThemeGallery, StoreSetup, Growth, Content, AssistantIA, ArticleDetail,
+Storefront (la vitrine publique !), `useSubscription.jsx`, `PageNotFound.jsx`,
+`SettingsSections.jsx`. Ces pages continueront à échouer en 401 (aucune
+session Base44 n'existe plus) tant qu'elles ne sont pas migrées une à une,
+en vérifiant à chaque fois quelle table/quelles colonnes existent réellement
+côté Supabase avant d'écrire les requêtes.
 
-Plusieurs entités Base44 (MediaFile, Automation, Payment, Article, Message) n'ont
-pas encore de table native équivalente et devront soit être mappées sur une table
-existante, soit être créées.

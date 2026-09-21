@@ -135,7 +135,7 @@ export default function Onboarding() {
   const skip = () => { setStep((s) => Math.min(s + 1, STEPS.length - 1)); };
   const finish = () => navigate('/dashboard');
 
-  const StepContent = () => {
+  const renderStep = () => {
     switch (STEPS[step].id) {
       case 'store':
         return (
@@ -251,7 +251,7 @@ export default function Onboarding() {
         {/* Content */}
         <div className="flex-1 min-w-0 bg-white rounded-xl border border-[#E1E1E1] p-5 sm:p-7 flex flex-col">
           <div className="flex-1">
-            <StepContent />
+            {renderStep()}
           </div>
           {error && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mt-4">{error}</p>}
           <div className="flex items-center justify-between mt-7 pt-5 border-t border-[#F4F4F4]">

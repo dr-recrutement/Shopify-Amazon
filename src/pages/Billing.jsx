@@ -25,7 +25,6 @@ const planFeatures = (plan) => {
 export default function Billing() {
   const { store, loading } = useCurrentStore();
   const [payments, setPayments] = useState([]);
-  const [busy, setBusy] = useState(false);
   const [changing, setChanging] = useState(null);
 
   const load = useCallback(async () => {

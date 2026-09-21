@@ -1,33 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UsersRound, Plus, Trash2, Loader2, Crown, User } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { useCurrentStore } from '@/hooks/useCurrentStore';
-
-const PERMISSIONS = [
-  { key: 'products', label: 'Produits' },
-  { key: 'orders', label: 'Commandes' },
-  { key: 'customers', label: 'Clients' },
-  { key: 'marketing', label: 'Marketing' },
-  { key: 'analytics', label: 'Analyses' },
-  { key: 'content', label: 'Contenu' },
-  { key: 'settings', label: 'Paramètres' },
-];
 
 export default function StaffManagement() {
-  const { store, loading } = useCurrentStore();
   const [staff, setStaff] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showInvite, setShowInvite] = useState(false);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
-  const [permissions, setPermissions] = useState(['products', 'orders']);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
       const users = await base44.entities.User.list();
       setStaff(users);
     } catch { setStaff([]); }
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -39,17 +29,15 @@ export default function StaffManagement() {
       await load();
       setShowInvite(false);
       setEmail('');
-      setPermissions(['products', 'orders']);
+      setRole('user');
     } catch (e) { setError(e.message || 'Erreur lors de l\'invitation'); }
     finally { setBusy(false); }
   };
 
   const removeStaff = async (id) => {
-    if (!confirm('Retirer cet employé de la boutique ?')) return;
+    if (!confirm('Retirer cet employé de la plateforme ?')) return;
     try { await base44.entities.User.delete(id); await load(); } catch {}
   };
-
-  const togglePerm = (k) => setPermissions((p) => p.includes(k) ? p.filter((x) => x !== k) : [...p, k]);
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
 
@@ -60,7 +48,7 @@ export default function StaffManagement() {
         <button onClick={() => setShowInvite(true)} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Inviter un employé</button>
       </div>
 
-      <p className="text-sm text-[#6D7175] mb-4">Invitez des employés et définissez leurs permissions d'accès à votre boutique.</p>
+      <p className="text-sm text-[#6D7175] mb-4">Invitez des employés et gérez leur accès à la plateforme.</p>
 
       {showInvite && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowInvite(false)}>
@@ -68,10 +56,14 @@ export default function StaffManagement() {
             <h2 className="text-lg font-bold text-[#202223] mb-4">Inviter un employé</h2>
             <div className="space-y-3">
               <div><label className="text-xs font-semibold text-[#6D7175]">Adresse e-mail</label><input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="employe@boutique.com" className="w-full mt-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" /></div>
-              <div><label className="text-xs font-semibold text-[#6D7175]">Rôle</label><div className="flex gap-2 mt-1"><button onClick={() => setRole('admin')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'admin' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Administrateur</button><button onClick={() => setRole('user')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'user' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Employé</button></div></div>
-              {role === 'user' && (
-                <div><label className="text-xs font-semibold text-[#6D7175]">Permissions d'accès</label><div className="mt-1 grid grid-cols-2 gap-1.5">{PERMISSIONS.map((p) => <label key={p.key} className="flex items-center gap-1.5 text-xs cursor-pointer hover:bg-black/5 rounded px-2 py-1.5"><input type="checkbox" checked={permissions.includes(p.key)} onChange={() => togglePerm(p.key)} className="accent-[#008060]" /> {p.label}</label>)}</div></div>
-              )}
+              <div>
+                <label className="text-xs font-semibold text-[#6D7175]">Rôle</label>
+                <div className="flex gap-2 mt-1">
+                  <button onClick={() => setRole('admin')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'admin' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Administrateur</button>
+                  <button onClick={() => setRole('user')} className={`flex-1 text-xs font-semibold py-2 rounded-full border ${role === 'user' ? 'bg-[#008060] text-white border-[#008060]' : 'border-[#E1E1E1] text-[#6D7175]'}`}>Employé</button>
+                </div>
+                <p className="text-[11px] text-[#6D7175] mt-1">Ce rôle s'applique à l'ensemble de la plateforme.</p>
+              </div>
               {error && <p className="text-xs text-red-600">{error}</p>}
             </div>
             <button onClick={invite} disabled={busy || !email} className="w-full mt-5 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{busy ? 'Envoi…' : 'Envoyer l\'invitation'}</button>

@@ -36,8 +36,6 @@ function Editor({ automation, onSave, onClose, saving }) {
   const [form, setForm] = useState(automation || { name: '', trigger: 'cart_abandoned', action: 'send_email', config: { delay_hours: 0 }, enabled: true });
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const setCfg = (k, v) => setForm((f) => ({ ...f, config: { ...(f.config || {}), [k]: v } }));
-  const trigger = TRIGGERS.find((t) => t.id === form.trigger);
-  const action = ACTIONS.find((a) => a.id === form.action);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>

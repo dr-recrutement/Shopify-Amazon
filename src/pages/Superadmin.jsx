@@ -7,6 +7,7 @@ import SubscriptionManager from '@/components/superadmin/SubscriptionManager';
 import IconLibraryManager from '@/components/superadmin/IconLibraryManager';
 import CommunicationsManager from '@/components/superadmin/CommunicationsManager';
 import CouponsOverview from '@/components/superadmin/CouponsOverview';
+import AuditLogViewer from '@/components/superadmin/AuditLogViewer';
 import { formatMoney } from '@/lib/world/currencies';
 import {
   ShieldCheck, Loader2, Store, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
@@ -65,7 +66,16 @@ export default function Superadmin() {
     setBusy(s.id);
     try {
       const next = s.status === 'suspended' ? 'trial' : 'suspended';
-      const { error } = await supabase.from('tenants').update({ status: next }).eq('id', s.id);
+      // Routed through the same audited RPC as the Abonnements tab, instead
+      // of a plain update - this action is now logged (who, when, old/new
+      // status) instead of being the one super-admin action that silently
+      // wasn't.
+      const { error } = await supabase.rpc('super_admin_update_subscription', {
+        p_tenant_id: s.id,
+        p_action: next === 'suspended' ? 'suspend' : 'reactivate',
+        p_status: next,
+        p_suspended_reason: next === 'suspended' ? 'Suspendu depuis la vue d\u2019ensemble' : null,
+      });
       if (error) throw error;
       setStores((l) => l.map((x) => (x.id === s.id ? { ...x, status: next } : x)));
     } catch (e) {
@@ -166,9 +176,10 @@ export default function Superadmin() {
           <button onClick={() => setTab('icons')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'icons' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Bibliothèque d'icônes</button>
           <button onClick={() => setTab('coupons')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'coupons' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Coupons</button>
           <button onClick={() => setTab('comms')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'comms' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Communications</button>
+          <button onClick={() => setTab('audit')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'audit' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Journal d'audit</button>
         </div>
 
-        {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : tab === 'coupons' ? <CouponsOverview /> : tab === 'comms' ? <CommunicationsManager /> : (
+        {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : tab === 'coupons' ? <CouponsOverview /> : tab === 'comms' ? <CommunicationsManager /> : tab === 'audit' ? <AuditLogViewer /> : (
         <>
         {/* Super admins */}
         <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">

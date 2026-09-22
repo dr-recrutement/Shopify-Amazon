@@ -46,6 +46,13 @@ export default function CommunicationsManager() {
         ? await supabase.from('platform_posts').update(payload).eq('id', editing.id)
         : await supabase.from('platform_posts').insert(payload);
       if (error) throw error;
+      if (publish) {
+        await supabase.from('platform_audit_log').insert({
+          admin_id: user.id, admin_email: user.email, action: 'communication_published',
+          target_type: 'platform_post', target_id: editing.slug || slugify(editing.title),
+          new_value: { title: payload.title, category: payload.category },
+        });
+      }
       setEditing(null);
       await load();
     } catch (e) {
@@ -55,8 +62,14 @@ export default function CommunicationsManager() {
 
   const remove = async (id) => {
     if (!confirm('Supprimer cette communication ?')) return;
+    const target = posts.find((p) => p.id === id);
     const { error } = await supabase.from('platform_posts').delete().eq('id', id);
     if (error) { alert(error.message); return; }
+    await supabase.from('platform_audit_log').insert({
+      admin_id: user.id, admin_email: user.email, action: 'communication_deleted',
+      target_type: 'platform_post', target_id: target?.slug || id,
+      old_value: target ? { title: target.title } : null,
+    });
     await load();
   };
 

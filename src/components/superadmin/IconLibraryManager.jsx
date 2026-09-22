@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Image as ImageIcon, Upload, Trash2, Loader2 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function IconLibraryManager() {
+  const { user } = useAuth();
   const [icons, setIcons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -40,6 +42,10 @@ export default function IconLibraryManager() {
     if (!confirm(`Retirer « ${icon.name} » de la bibliothèque ? Les icônes déjà utilisées dans des boutiques resteront affichées (l'URL reste valide), mais elle ne sera plus proposée pour de nouveaux choix.`)) return;
     const { error } = await supabase.from('icon_library').delete().eq('id', icon.id);
     if (error) { alert(error.message); return; }
+    await supabase.from('platform_audit_log').insert({
+      admin_id: user.id, admin_email: user.email, action: 'icon_removed',
+      target_type: 'icon_library', target_id: icon.id, old_value: { name: icon.name, category: icon.category },
+    });
     await load();
   };
 

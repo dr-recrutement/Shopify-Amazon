@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { applySEO, applyStoreJsonLd, applyProductListJsonLd } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -57,7 +57,7 @@ export default function Storefront() {
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
       // the stock default rather than crashing on the mismatch.
-      setTheme(isValidTheme(themeRes.data?.published_config) ? themeRes.data.published_config : cloneTheme(DEFAULT_THEME_ID));
+      setTheme(isValidTheme(themeRes.data?.published_config) ? migrateTheme(themeRes.data.published_config) : cloneTheme(DEFAULT_THEME_ID));
       setProducts(productsRes.data || []);
       const counts = {};
       (assignRes.data || []).forEach((a) => { counts[a.category_id] = (counts[a.category_id] || 0) + 1; });

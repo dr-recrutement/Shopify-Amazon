@@ -199,8 +199,69 @@ export function cloneTheme(id) {
     id: t.id,
     name: t.name,
     category: t.category,
+    buttonStyle: t.buttonStyle || 'rounded',
     fonts: { ...t.fonts },
     palette: { ...t.palette },
     sections: JSON.parse(JSON.stringify(t.sections)),
   };
+}
+
+// Backfills fields added to the section schema AFTER a theme was already
+// saved. theme_configs stores exactly what was captured at save time - it
+// is never re-synced against the built-in template defaults - so a theme
+// saved before, say, announcement gained a `style` field simply doesn't
+// have that key, and the Inspector (which only renders fields that
+// actually exist on the object) has nothing to show or edit for it. Same
+// problem for every enhancement added mid-session: imageFit, displayMode,
+// iconImage on trustbar/multicolumn items, stats, and footer social links
+// stored as plain strings instead of {label, url}. Called on every load
+// (editor and storefront alike) so older saved themes gain the same real
+// capabilities new ones start with, without losing any customization
+// already made.
+export function migrateTheme(theme) {
+  if (!theme || !Array.isArray(theme.sections)) return theme;
+  const t = { buttonStyle: 'rounded', ...theme };
+  t.sections = theme.sections.map((s) => {
+    const props = { ...(s.props || {}) };
+    switch (s.type) {
+      case 'announcement':
+        if (props.style === undefined) props.style = 'fixed';
+        break;
+      case 'header':
+        if (Array.isArray(props.links)) {
+          props.links = props.links.map((l) => (typeof l === 'string' ? { label: l, url: '#' } : l));
+        }
+        break;
+      case 'testimonials':
+        if (props.displayMode === undefined) props.displayMode = 'grid';
+        break;
+      case 'hero':
+        if (props.imageFit === undefined) props.imageFit = 'cover';
+        break;
+      case 'imageText':
+        if (props.imageFit === undefined) props.imageFit = 'cover';
+        if (props.stats === undefined) props.stats = [];
+        break;
+      case 'trustbar':
+      case 'multicolumn':
+        if (Array.isArray(props.items)) {
+          props.items = props.items.map((it) => (it && it.iconImage === undefined ? { ...it, iconImage: '' } : it));
+        }
+        break;
+      case 'footer':
+        if (Array.isArray(props.social)) {
+          props.social = props.social.map((soc) => (typeof soc === 'string' ? { label: soc, url: '#' } : soc));
+        }
+        if (Array.isArray(props.columns)) {
+          props.columns = props.columns.map((col) => (col && Array.isArray(col.links)
+            ? { ...col, links: col.links.map((l) => (typeof l === 'string' ? { label: l, url: '#' } : l)) }
+            : col));
+        }
+        break;
+      default:
+        break;
+    }
+    return { ...s, props };
+  });
+  return t;
 }

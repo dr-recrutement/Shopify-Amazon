@@ -10,7 +10,7 @@ import {
   UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 
 const STORAGE_KEY = 'sellia_theme';
@@ -70,7 +70,7 @@ function setByPath(obj, path, value) {
 
 function loadInitial() {
   const custom = localStorage.getItem(CUSTOM_KEY);
-  if (custom) { try { return JSON.parse(custom); } catch { /* fall through */ } }
+  if (custom) { try { return migrateTheme(JSON.parse(custom)); } catch { /* fall through */ } }
   return cloneTheme(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME_ID);
 }
 
@@ -379,7 +379,7 @@ export default function ThemeEditor() {
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
       // the stock default rather than crashing on the mismatch.
-      if (isValidTheme(data?.config)) setTheme(data.config);
+      if (isValidTheme(data?.config)) setTheme(migrateTheme(data.config));
       setThemeLoaded(true);
     });
     return () => { cancelled = true; };

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, Calendar, ArrowRight } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { applySEO, applyArticleJsonLd } from '@/lib/seo';
 
 // Was calling base44.functions.invoke('publicStore', ...) - a Base44 edge
@@ -32,7 +32,7 @@ export default function ArticleDetail() {
         supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
         supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('slug', handle).eq('status', 'published').maybeSingle(),
       ]);
-      setTheme(isValidTheme(themeRes.data?.published_config) ? themeRes.data.published_config : cloneTheme(DEFAULT_THEME_ID));
+      setTheme(isValidTheme(themeRes.data?.published_config) ? migrateTheme(themeRes.data.published_config) : cloneTheme(DEFAULT_THEME_ID));
       if (!pageRes.data) throw new Error('Article introuvable');
       setArticle(pageRes.data);
       setError(null);

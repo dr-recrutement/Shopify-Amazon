@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
 import SubscriptionManager from '@/components/superadmin/SubscriptionManager';
+import IconLibraryManager from '@/components/superadmin/IconLibraryManager';
 import { formatMoney } from '@/lib/world/currencies';
 import {
   ShieldCheck, Loader2, Store, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
@@ -160,9 +161,10 @@ export default function Superadmin() {
         <div className="flex items-center gap-1 bg-[#F4F4F4] p-1 rounded-lg w-fit">
           <button onClick={() => setTab('overview')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'overview' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Vue d'ensemble</button>
           <button onClick={() => setTab('subscriptions')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'subscriptions' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Abonnements</button>
+          <button onClick={() => setTab('icons')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'icons' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Bibliothèque d'icônes</button>
         </div>
 
-        {tab === 'subscriptions' ? <SubscriptionManager /> : (
+        {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : (
         <>
         {/* Super admins */}
         <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">

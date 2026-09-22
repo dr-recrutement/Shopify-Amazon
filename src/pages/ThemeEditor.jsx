@@ -83,6 +83,65 @@ async function uploadThemeImage(file, tenantId) {
   return data.publicUrl;
 }
 
+function IconImageField({ value, onSetUrl }) {
+  const { store } = useCurrentStore();
+  const [busy, setBusy] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [icons, setIcons] = useState(null);
+  const fileRef = useRef(null);
+  const upload = async (file) => {
+    if (!file) return;
+    setBusy(true);
+    try {
+      const file_url = await uploadThemeImage(file, store?.id || 'shared');
+      onSetUrl(file_url);
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de l'icône");
+    } finally { setBusy(false); }
+  };
+  const openPicker = () => {
+    setPickerOpen(true);
+    if (icons === null) supabase.from('icon_library').select('*').order('category').then(({ data }) => setIcons(data || []));
+  };
+  return (
+    <div>
+      <div className="flex items-center gap-2">
+        <div className="w-10 h-10 rounded-md overflow-hidden bg-[#F4F4F4] border border-[#E1E1E1] flex items-center justify-center shrink-0">
+          {value ? <img src={value} alt="" className="w-full h-full object-contain p-1" /> : <ImageIcon className="w-4 h-4 text-[#C9C9C9]" />}
+        </div>
+        <div className="flex flex-col gap-1 flex-1">
+          <label className="text-[11px] font-semibold text-[#008060] cursor-pointer hover:underline">
+            {busy ? 'Téléversement…' : 'Téléverser mon icône'}
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} disabled={busy} />
+          </label>
+          <button type="button" onClick={openPicker} className="text-[11px] font-semibold text-[#6D7175] hover:text-[#202223] text-left">Choisir dans la bibliothèque</button>
+        </div>
+        {value && <button type="button" onClick={() => { onSetUrl(''); }} className="text-[#6D7175] hover:text-red-500 shrink-0"><X className="w-3.5 h-3.5" /></button>}
+      </div>
+      {pickerOpen && (
+        <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-4" onClick={() => setPickerOpen(false)}>
+          <div className="bg-white rounded-xl max-w-md w-full max-h-[70vh] overflow-y-auto p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3"><p className="text-xs font-bold text-[#202223]">Bibliothèque d'icônes</p><button onClick={() => setPickerOpen(false)} className="text-[#6D7175]"><X className="w-4 h-4" /></button></div>
+            {icons === null ? (
+              <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-[#008060]" /></div>
+            ) : icons.length === 0 ? (
+              <p className="text-xs text-[#6D7175] text-center py-8">Aucune icône dans la bibliothèque pour l'instant. Un super admin peut en ajouter depuis le tableau de bord Super Admin.</p>
+            ) : (
+              <div className="grid grid-cols-5 gap-2">
+                {icons.map((ic) => (
+                  <button key={ic.id} type="button" onClick={() => { onSetUrl(ic.url); setPickerOpen(false); }} title={ic.name} className="aspect-square rounded-md border border-[#E1E1E1] hover:border-[#008060] flex items-center justify-center p-2 bg-[#FAFAFA]">
+                    <img src={ic.url} alt={ic.name} className="w-full h-full object-contain" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ImageField({ value, onSetUrl }) {
   const { store } = useCurrentStore();
   const [url, setUrl] = useState(value || '');
@@ -160,6 +219,7 @@ function ScalarInput({ value, onChange, fieldKey }) {
       </div>
     );
   }
+  if (fieldKey === 'iconImage' && typeof value === 'string') return <IconImageField value={value} onSetUrl={onChange} />;
   if (isImage(value) || (IMAGE_KEYS.has(fieldKey) && typeof value === 'string')) return <ImageField value={value} onSetUrl={onChange} />;
   if (typeof value === 'number') return <input type="number" value={value} onChange={(e) => onChange(+e.target.value)} className={inputCls} />;
   if (typeof value === 'boolean') return <label className="flex items-center gap-2 text-xs text-[#202223] cursor-pointer"><input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="accent-[#008060]" /> {value ? 'Oui' : 'Non'}</label>;

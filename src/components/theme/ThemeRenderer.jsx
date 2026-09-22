@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Image } from '@/components/ui/image';
 import { Upload, Link2, X, Star, Check, ArrowRight } from 'lucide-react';
 import { ensureGoogleFonts } from '@/lib/fonts';
+import { supabase } from '@/api/supabaseClient';
 
 const SECTION_LABELS = {
   announcement: 'Annonce', header: 'En-tête', hero: 'Bannière', productGrid: 'Produits',
@@ -53,10 +54,35 @@ function scrollToProducts() {
   else window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function NewsletterBlock({ c, p, primary, primaryText, headingFont, storefront }) {
+function NewsletterBlock({ c, p, primary, primaryText, headingFont, storefront, tenantId }) {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
-  const submit = (e) => { e.preventDefault(); if (!email.trim()) return; setDone(true); setEmail(''); setTimeout(() => setDone(false), 4000); };
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !tenantId) return;
+    setBusy(true);
+    setError('');
+    try {
+      const { error: insertError } = await supabase.from('newsletter_subscribers').insert({
+        tenant_id: tenantId,
+        email: email.trim().toLowerCase(),
+        source: 'theme_newsletter_block',
+      });
+      // A unique (tenant_id, email) constraint means re-subscribing just
+      // errors instead of duplicating - treat that as success too, not a
+      // failure the visitor needs to see.
+      if (insertError && insertError.code !== '23505') throw insertError;
+      setDone(true);
+      setEmail('');
+      setTimeout(() => setDone(false), 4000);
+    } catch (err) {
+      setError(err.message || "Échec de l'inscription");
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <div className="px-5 sm:px-10 py-14 text-center">
       <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: headingFont, color: p.dark }}>{c.title}</h2>
@@ -65,10 +91,11 @@ function NewsletterBlock({ c, p, primary, primaryText, headingFont, storefront }
         <p className="mt-6 text-sm font-semibold" style={{ color: primary }}>Merci ! Votre inscription est confirmée.</p>
       ) : (
         <form onSubmit={storefront ? submit : (e) => e.preventDefault()} className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={c.placeholder} className="flex-1 px-4 py-3 rounded-md text-sm border" style={{ borderColor: p.border, background: p.surface, color: p.text }} />
-          <button type="submit" className="px-6 py-3 sellia-btn text-sm font-semibold transition hover:opacity-90" style={{ background: primary, color: primaryText }}>{c.buttonLabel}</button>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={c.placeholder} className="flex-1 px-4 py-3 rounded-md text-sm border" style={{ borderColor: p.border, background: p.surface, color: p.text }} />
+          <button type="submit" disabled={busy} className="px-6 py-3 sellia-btn text-sm font-semibold transition hover:opacity-90 disabled:opacity-60" style={{ background: primary, color: primaryText }}>{busy ? '…' : c.buttonLabel}</button>
         </form>
       )}
+      {error && <p className="mt-3 text-xs text-red-500">{error}</p>}
     </div>
   );
 }
@@ -138,7 +165,7 @@ function SectionShell({ section, editor, selectedId, onSelect, children }) {
   return <div>{children}</div>;
 }
 
-export default function ThemeRenderer({ theme, sections, mode = 'gallery', selectedId, onSelectSection, onSetImage, onUploadFile, onAddToCart, onNavigate, storeSlug }) {
+export default function ThemeRenderer({ theme, sections, mode = 'gallery', selectedId, onSelectSection, onSetImage, onUploadFile, onAddToCart, onNavigate, storeSlug, tenantId }) {
   const p = theme.palette;
   const editor = mode === 'editor';
   const storefront = mode === 'storefront';
@@ -435,7 +462,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             ));
 
           case 'newsletter':
-            return wrap(s, <NewsletterBlock c={c} p={p} primary={primary} primaryText={p.primaryText} headingFont={theme.fonts?.heading} storefront={storefront} />);
+            return wrap(s, <NewsletterBlock c={c} p={p} primary={primary} primaryText={p.primaryText} headingFont={theme.fonts?.heading} storefront={storefront} tenantId={tenantId} />);
 
           case 'footer':
             return wrap(s, (

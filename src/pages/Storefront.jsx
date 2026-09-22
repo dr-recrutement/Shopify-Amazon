@@ -23,6 +23,7 @@ export default function Storefront() {
   const [products, setProducts] = useState([]);
   const [collections, setCollections] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState(() => cloneTheme(DEFAULT_THEME_ID));
@@ -44,12 +45,13 @@ export default function Storefront() {
       if (!tenant) throw new Error("Cette boutique n'existe pas.");
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
-      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes] = await Promise.all([
+      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes] = await Promise.all([
         supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
         supabase.from('products').select('*').eq('tenant_id', tenant.id).eq('status', 'active').order('created_at', { ascending: false }).limit(200),
         supabase.from('product_categories').select('*').eq('tenant_id', tenant.id),
         supabase.from('product_category_assignments').select('product_id, category_id'),
         supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('status', 'published').order('published_at', { ascending: false }).limit(20),
+        supabase.from('product_reviews').select('*, products(name)').eq('tenant_id', tenant.id).eq('is_approved', true).order('created_at', { ascending: false }).limit(30),
       ]);
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
@@ -60,6 +62,7 @@ export default function Storefront() {
       (assignRes.data || []).forEach((a) => { counts[a.category_id] = (counts[a.category_id] || 0) + 1; });
       setCollections((categoriesRes.data || []).map((c) => ({ ...c, product_count: counts[c.id] || 0 })));
       setArticles(pagesRes.data || []);
+      setReviews(reviewsRes.data || []);
       setError(null);
     } catch (e) {
       setError(e.message || 'Boutique introuvable');
@@ -100,6 +103,12 @@ export default function Storefront() {
       date: a.published_at ? new Date(a.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
       author: '',
     }));
+    const testimonialItems = reviews.map((r) => ({
+      quote: r.comment,
+      author: r.customer_name || 'Client Sellia',
+      role: r.products?.name || '',
+      rating: r.rating,
+    }));
     return theme.sections.map((s) => {
       if (s.type === 'productGrid' && prods.length > 0) {
         return { ...s, props: { ...s.props, products: prods.slice(0, s.props?.columns ? s.props.columns * 2 : 8) } };
@@ -110,9 +119,17 @@ export default function Storefront() {
       if (s.type === 'collectionList' && collections.length > 0) {
         return { ...s, props: { ...s.props, items: collections.map((c) => ({ image: c.image_url || '', title: c.name, count: `${c.product_count} article${c.product_count > 1 ? 's' : ''}` })) } };
       }
+      if (s.type === 'testimonials' && testimonialItems.length > 0) {
+        // Real customer reviews replace the theme's example quotes. Many
+        // reviews auto-switch to the scrolling banner even if the merchant
+        // hadn't set displayMode, since a long static grid of reviews reads
+        // worse than a few example cards did.
+        const displayMode = s.props?.displayMode || (testimonialItems.length > 6 ? 'scrolling' : 'grid');
+        return { ...s, props: { ...s.props, items: testimonialItems.slice(0, 24), displayMode } };
+      }
       return s;
     });
-  }, [theme, products, articles, collections, store]);
+  }, [theme, products, articles, collections, reviews, store]);
 
   const saveCart = async (items) => {
     const subtotal = items.reduce((s, i) => s + i.line_total, 0);
@@ -211,7 +228,7 @@ export default function Storefront() {
         {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
       </button>
 
-      <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} />
+      <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
 
       {/* Cart drawer — WooCommerce style */}
       {cartOpen && (

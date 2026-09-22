@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Store, Loader2, Save, Check, MapPin, Phone, Globe } from 'lucide-react';
+import { Store, Loader2, Save, Check, MapPin, Phone, Globe, Mail } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';
@@ -17,14 +17,21 @@ export default function StoreSettings() {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [subscriberCount, setSubscriberCount] = useState(null);
 
   useEffect(() => {
     if (store) setForm({
       name: store.name || '', sector: store.sector || '',
       country: store.country || '', region: store.region || '', city: store.city || '', landmark: store.landmark || '',
-      currency: store.currency || 'USD', phone: store.phone || '',
+      currency: store.currency || 'USD', phone: store.phone || '', newsletter_notify_email: store.newsletter_notify_email || '',
     });
   }, [store]);
+
+  useEffect(() => {
+    if (!store?.id) return;
+    supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('tenant_id', store.id)
+      .then(({ count }) => setSubscriberCount(count ?? 0));
+  }, [store?.id]);
 
   const save = async () => {
     setSaving(true);
@@ -80,6 +87,16 @@ export default function StoreSettings() {
           <div className="flex items-center gap-2 mb-4"><Phone className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Contact</h2></div>
           <label className={lbl}>Téléphone</label>
           <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} countryHint={form.country} />
+        </section>
+
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Newsletter</h2></div>
+            {subscriberCount !== null && <span className="text-xs font-semibold text-[#6D7175] bg-[#F4F4F4] px-2.5 py-1 rounded-full">{subscriberCount} inscrit{subscriberCount > 1 ? 's' : ''}</span>}
+          </div>
+          <label className={lbl}>E-mail de notification des inscriptions</label>
+          <input type="email" value={form.newsletter_notify_email} onChange={(e) => setForm({ ...form, newsletter_notify_email: e.target.value })} placeholder="contact@maboutique.com" className={fld} />
+          <p className="text-[11px] text-[#6D7175] mt-1.5">Les inscriptions elles-mêmes sont déjà enregistrées en base pour chaque nouvel abonné. L'envoi automatique d'un e-mail de notification n'est pas encore branché.</p>
         </section>
       </div>
     </div>

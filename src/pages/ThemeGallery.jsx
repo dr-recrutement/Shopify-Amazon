@@ -1,23 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Check, Sparkles } from 'lucide-react';
-import { THEMES } from '@/lib/themes';
+import { ArrowLeft, Check, Sparkles, Loader2 } from 'lucide-react';
+import { THEMES, cloneTheme } from '@/lib/themes';
 import ThemePreview from '@/components/theme/ThemePreview';
+import { supabase } from '@/api/supabaseClient';
+import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 const CATEGORIES = ['Tous', 'E-commerce', 'Marketplace', 'Business', 'Blog', 'Portfolio', 'Restaurant'];
 
 export default function ThemeGallery() {
   const navigate = useNavigate();
+  const { store } = useCurrentStore();
   const [active, setActive] = useState('Tous');
-  const [applied, setApplied] = useState(() => localStorage.getItem('sellia_theme') || 'aurora');
+  const [applied, setApplied] = useState(null);
+  const [applying, setApplying] = useState(null);
+
+  const loadApplied = useCallback(async () => {
+    if (!store?.id) return;
+    const { data } = await supabase.from('theme_configs').select('config').eq('tenant_id', store.id).maybeSingle();
+    setApplied(data?.config?.id || null);
+  }, [store?.id]);
+
+  useEffect(() => { loadApplied(); }, [loadApplied]);
 
   const list = active === 'Tous' ? THEMES : THEMES.filter((t) => t.category === active);
 
-  const apply = (id) => {
-    localStorage.setItem('sellia_theme', id);
-    localStorage.removeItem('sellia_theme_custom');
-    setApplied(id);
-    setTimeout(() => navigate('/theme-editor'), 350);
+  // The editor's real source of truth is theme_configs.config in the
+  // database (see ThemeEditor.jsx) - it was only ever written to
+  // localStorage here, which the editor's DB load then silently
+  // overwrote the moment it mounted. Picking a theme looked like it did
+  // nothing (or reverted to whatever was last saved) because it actually
+  // did nothing to the data the editor reads.
+  const apply = async (id) => {
+    if (!store?.id) return;
+    setApplying(id);
+    try {
+      const fresh = cloneTheme(id);
+      const { error } = await supabase.from('theme_configs').upsert(
+        { tenant_id: store.id, config: fresh, sections: fresh.sections, colors: fresh.palette, fonts: fresh.fonts, updated_at: new Date().toISOString() },
+        { onConflict: 'tenant_id' }
+      );
+      if (error) throw error;
+      setApplied(id);
+      setTimeout(() => navigate('/theme-editor'), 300);
+    } catch (e) {
+      alert(e.message || "Échec de l'application du thème");
+    } finally { setApplying(null); }
   };
 
   return (
@@ -57,8 +85,8 @@ export default function ThemeGallery() {
                   </div>
                   <p className="text-xs text-[#6D7175] mt-1">{t.description}</p>
                 </div>
-                <button onClick={() => apply(t.id)} className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-md whitespace-nowrap ${isApplied ? 'bg-[#E1E1E1] text-[#6D7175] cursor-default' : 'bg-[#008060] text-white hover:bg-[#00694d]'}`}>
-                  {isApplied ? 'Utilisé' : 'Utiliser ce thème'}
+                <button onClick={() => apply(t.id)} disabled={applying === t.id || isApplied} className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-1.5 ${isApplied ? 'bg-[#E1E1E1] text-[#6D7175] cursor-default' : 'bg-[#008060] text-white hover:bg-[#00694d]'} disabled:opacity-60`}>
+                  {applying === t.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null} {isApplied ? 'Utilisé' : applying === t.id ? 'Application…' : 'Utiliser ce thème'}
                 </button>
               </div>
             </div>

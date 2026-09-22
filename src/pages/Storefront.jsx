@@ -18,6 +18,26 @@ function getCartSessionId() {
   return id;
 }
 
+// Loads a checkout SDK <script> exactly once and resolves once it's ready -
+// both gateways expose a global (FlutterwaveCheckout / PaystackPop) once
+// their script has loaded. Cached by src so re-opening checkout doesn't
+// re-inject the tag.
+const scriptPromises = {};
+function loadScript(src) {
+  if (scriptPromises[src]) return scriptPromises[src];
+  scriptPromises[src] = new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) { existing.addEventListener('load', () => resolve()); if (existing.dataset.loaded) resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = () => { s.dataset.loaded = '1'; resolve(); };
+    s.onerror = () => reject(new Error('Impossible de charger le module de paiement.'));
+    document.head.appendChild(s);
+  });
+  return scriptPromises[src];
+}
+
 export default function Storefront() {
   const { slug } = useParams();
   const [store, setStore] = useState(null);
@@ -36,26 +56,6 @@ export default function Storefront() {
   const [couponCode, setCouponCode] = useState('');
   const [couponMsg, setCouponMsg] = useState(null);
   const [discount, setDiscount] = useState(null);
-  const [paymentReturn, setPaymentReturn] = useState(null); // { status: 'checking'|'paid'|'failed' }
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('flw_return') !== '1') return;
-    const transaction_id = params.get('transaction_id');
-    const tx_ref = params.get('tx_ref') || params.get('order_id');
-    setPaymentReturn({ status: 'checking' });
-    (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id, tx_ref } });
-        if (error) throw error;
-        setPaymentReturn({ status: data.status === 'paid' ? 'paid' : 'failed', orderNumber: '#' + (tx_ref || '').slice(0, 8).toUpperCase() });
-      } catch {
-        setPaymentReturn({ status: 'failed' });
-      } finally {
-        window.history.replaceState({}, '', window.location.pathname);
-      }
-    })();
-  }, []);
 
   const loadStore = useCallback(async () => {
     if (!slug) return;
@@ -276,33 +276,6 @@ export default function Storefront() {
 
       <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
 
-      {paymentReturn && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
-            {paymentReturn.status === 'checking' ? (
-              <>
-                <Loader2 className="w-10 h-10 text-brand mx-auto mb-4 animate-spin" />
-                <p className="text-sm font-semibold text-foreground">Vérification du paiement…</p>
-              </>
-            ) : paymentReturn.status === 'paid' ? (
-              <>
-                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-emerald-600" /></div>
-                <h2 className="font-heading font-bold text-lg text-foreground">Paiement confirmé !</h2>
-                <p className="text-sm text-muted-foreground mt-1.5">Votre commande {paymentReturn.orderNumber} a bien été payée.</p>
-                <button onClick={() => setPaymentReturn(null)} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
-              </>
-            ) : (
-              <>
-                <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
-                <h2 className="font-heading font-bold text-lg text-foreground">Paiement non confirmé</h2>
-                <p className="text-sm text-muted-foreground mt-1.5">Le paiement n'a pas pu être vérifié. Si vous avez été débité, contactez la boutique avec votre référence.</p>
-                <button onClick={() => setPaymentReturn(null)} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Fermer</button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Cart drawer — WooCommerce style */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
@@ -405,7 +378,7 @@ export default function Storefront() {
 
 function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
-  const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : 'cod');
+  const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : 'cod');
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
@@ -413,6 +386,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
 
   const PAYMENT_METHODS = [
     ...(activeGateways?.includes('flutterwave') ? [{ id: 'flutterwave', label: 'Carte bancaire / Mobile Money', desc: 'Paiement immédiat sécurisé via Flutterwave', icon: CreditCard }] : []),
+    ...(activeGateways?.includes('paystack') ? [{ id: 'paystack', label: 'Carte bancaire', desc: 'Paiement immédiat sécurisé via Paystack', icon: CreditCard }] : []),
     { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
     { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
     { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
@@ -481,14 +455,74 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
       }
 
       if (paymentMethod === 'flutterwave') {
-        // Real hosted checkout: redirect the browser to Flutterwave's own
-        // payment page. The order stays 'pending' until Flutterwave's
-        // return trip is independently verified (see the flw_return
-        // handler above) - never trust the redirect alone to mean paid.
         const { data, error: initError } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'initiate', order_id: order.id } });
         if (initError) throw initError;
         if (data.error) throw new Error(data.error);
-        window.location.href = data.link;
+        await loadScript('https://checkout.flutterwave.com/v3.js');
+        setPlacing(false);
+        window.FlutterwaveCheckout({
+          public_key: data.public_key,
+          tx_ref: data.tx_ref,
+          amount: data.amount,
+          currency: data.currency,
+          customer: data.customer,
+          customizations: { title: store.name },
+          callback: async (response) => {
+            // The popup's own response is never trusted as proof of payment -
+            // only the server-side verify (Flutterwave's own /verify
+            // endpoint, called with the secret key) can confirm it.
+            setPlacing(true);
+            try {
+              const { data: v, error: vErr } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id: response.transaction_id, tx_ref: response.tx_ref } });
+              if (vErr) throw vErr;
+              if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
+              setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+              setDone(true);
+              onDone();
+            } catch (vErr2) {
+              setError(vErr2.message || 'Paiement non confirmé.');
+            } finally {
+              setPlacing(false);
+            }
+          },
+          onclose: () => {},
+        });
+        return;
+      }
+
+      if (paymentMethod === 'paystack') {
+        const { data, error: initError } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'initiate', order_id: order.id } });
+        if (initError) throw initError;
+        if (data.error) throw new Error(data.error);
+        await loadScript('https://js.paystack.co/v1/inline.js');
+        setPlacing(false);
+        const handler = window.PaystackPop.setup({
+          key: data.public_key,
+          email: data.email,
+          amount: data.amount,
+          currency: data.currency,
+          ref: data.reference,
+          callback: (response) => {
+            // Same rule: the popup's callback is never trusted alone.
+            setPlacing(true);
+            (async () => {
+              try {
+                const { data: v, error: vErr } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'verify', reference: response.reference } });
+                if (vErr) throw vErr;
+                if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
+                setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+                setDone(true);
+                onDone();
+              } catch (vErr2) {
+                setError(vErr2.message || 'Paiement non confirmé.');
+              } finally {
+                setPlacing(false);
+              }
+            })();
+          },
+          onClose: () => {},
+        });
+        handler.openIframe();
         return;
       }
 

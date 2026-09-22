@@ -4,7 +4,7 @@ import {
   FileText, Loader2, AlertCircle, Plus, Search, Pencil, Trash2,
   Eye, EyeOff, X, Calendar, Tag as TagIcon, Upload, Image as ImageIcon,
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -31,8 +31,14 @@ function ArticleEditor({ article, onSave, onClose, saving }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-      set('featured_image', file_url);
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      const path = `content/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (error) throw error;
+      const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+      set('featured_image', data.publicUrl);
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de l'image");
     } finally { setUploading(false); }
   };
 
@@ -140,7 +146,12 @@ export default function Content() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      setArticles(await base44.entities.Article.filter({ store_id: store.id }, '-created_date', 200));
+      const { data, error } = await supabase.from('content_pages').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200);
+      if (error) throw error;
+      setArticles((data || []).map((a) => ({ ...a, handle: a.slug, content: a.body })));
+    } catch (e) {
+      console.error('Failed to load content pages:', e);
+      setArticles([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -158,11 +169,18 @@ export default function Content() {
   const save = async (data) => {
     setSaving(true);
     try {
-      if (editing) {
-        await base44.entities.Article.update(editing.id, data);
-      } else {
-        await base44.entities.Article.create({ ...data, store_id: store.id });
-      }
+      const payload = {
+        tenant_id: store.id,
+        title: data.title,
+        slug: data.handle,
+        body: data.content || '',
+        status: data.status,
+        published_at: data.published_at || null,
+      };
+      const { error } = editing
+        ? await supabase.from('content_pages').update(payload).eq('id', editing.id)
+        : await supabase.from('content_pages').insert(payload);
+      if (error) throw error;
       setShowEditor(false);
       setEditing(null);
       load();
@@ -172,17 +190,19 @@ export default function Content() {
   };
 
   const remove = async (a) => {
-    if (!confirm(`Supprimer \u00ab ${a.title} \u00bb ?`)) return;
-    await base44.entities.Article.delete(a.id);
+    if (!confirm(`Supprimer « ${a.title} » ?`)) return;
+    const { error } = await supabase.from('content_pages').delete().eq('id', a.id);
+    if (error) { alert(error.message); return; }
     load();
   };
 
   const toggleStatus = async (a) => {
     const status = a.status === 'published' ? 'draft' : 'published';
-    await base44.entities.Article.update(a.id, {
+    const { error } = await supabase.from('content_pages').update({
       status,
       published_at: status === 'published' && !a.published_at ? new Date().toISOString() : a.published_at,
-    });
+    }).eq('id', a.id);
+    if (error) { alert(error.message); return; }
     load();
   };
 

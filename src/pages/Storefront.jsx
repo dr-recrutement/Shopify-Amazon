@@ -25,6 +25,7 @@ export default function Storefront() {
   const [collections, setCollections] = useState([]);
   const [articles, setArticles] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [activeGateways, setActiveGateways] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState(() => cloneTheme(DEFAULT_THEME_ID));
@@ -35,6 +36,26 @@ export default function Storefront() {
   const [couponCode, setCouponCode] = useState('');
   const [couponMsg, setCouponMsg] = useState(null);
   const [discount, setDiscount] = useState(null);
+  const [paymentReturn, setPaymentReturn] = useState(null); // { status: 'checking'|'paid'|'failed' }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('flw_return') !== '1') return;
+    const transaction_id = params.get('transaction_id');
+    const tx_ref = params.get('tx_ref') || params.get('order_id');
+    setPaymentReturn({ status: 'checking' });
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id, tx_ref } });
+        if (error) throw error;
+        setPaymentReturn({ status: data.status === 'paid' ? 'paid' : 'failed', orderNumber: '#' + (tx_ref || '').slice(0, 8).toUpperCase() });
+      } catch {
+        setPaymentReturn({ status: 'failed' });
+      } finally {
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    })();
+  }, []);
 
   const loadStore = useCallback(async () => {
     if (!slug) return;
@@ -46,13 +67,14 @@ export default function Storefront() {
       if (!tenant) throw new Error("Cette boutique n'existe pas.");
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
-      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes] = await Promise.all([
+      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, gatewaysRes] = await Promise.all([
         supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
         supabase.from('products').select('*').eq('tenant_id', tenant.id).eq('status', 'active').order('created_at', { ascending: false }).limit(200),
         supabase.from('product_categories').select('*').eq('tenant_id', tenant.id),
         supabase.from('product_category_assignments').select('product_id, category_id'),
         supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('status', 'published').order('published_at', { ascending: false }).limit(20),
         supabase.from('product_reviews').select('*, products(name)').eq('tenant_id', tenant.id).eq('is_approved', true).order('created_at', { ascending: false }).limit(30),
+        supabase.from('public_active_gateways').select('gateway').eq('tenant_id', tenant.id),
       ]);
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
@@ -64,6 +86,7 @@ export default function Storefront() {
       setCollections((categoriesRes.data || []).map((c) => ({ ...c, product_count: counts[c.id] || 0 })));
       setArticles(pagesRes.data || []);
       setReviews(reviewsRes.data || []);
+      setActiveGateways((gatewaysRes.data || []).map((g) => g.gateway));
       setError(null);
     } catch (e) {
       setError(e.message || 'Boutique introuvable');
@@ -253,6 +276,33 @@ export default function Storefront() {
 
       <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
 
+      {paymentReturn && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+            {paymentReturn.status === 'checking' ? (
+              <>
+                <Loader2 className="w-10 h-10 text-brand mx-auto mb-4 animate-spin" />
+                <p className="text-sm font-semibold text-foreground">Vérification du paiement…</p>
+              </>
+            ) : paymentReturn.status === 'paid' ? (
+              <>
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-emerald-600" /></div>
+                <h2 className="font-heading font-bold text-lg text-foreground">Paiement confirmé !</h2>
+                <p className="text-sm text-muted-foreground mt-1.5">Votre commande {paymentReturn.orderNumber} a bien été payée.</p>
+                <button onClick={() => setPaymentReturn(null)} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
+                <h2 className="font-heading font-bold text-lg text-foreground">Paiement non confirmé</h2>
+                <p className="text-sm text-muted-foreground mt-1.5">Le paiement n'a pas pu être vérifié. Si vous avez été débité, contactez la boutique avec votre référence.</p>
+                <button onClick={() => setPaymentReturn(null)} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Fermer</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Cart drawer — WooCommerce style */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
@@ -347,23 +397,25 @@ export default function Storefront() {
 
       {/* Checkout — Shopify style */}
       {checkoutOpen && (
-        <CheckoutModal store={store} cart={cart} discount={discount} discountAmount={discountAmount} onClose={() => setCheckoutOpen(false)} onDone={() => { localStorage.removeItem(CART_KEY); setCart(null); setCartCount(0); setDiscount(null); setCouponCode(''); setCheckoutOpen(false); }} />
+        <CheckoutModal store={store} cart={cart} discount={discount} discountAmount={discountAmount} activeGateways={activeGateways} onClose={() => setCheckoutOpen(false)} onDone={() => { localStorage.removeItem(CART_KEY); setCart(null); setCartCount(0); setDiscount(null); setCouponCode(''); setCheckoutOpen(false); }} />
       )}
     </div>
   );
 }
 
-function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone }) {
+function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
-  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : 'cod');
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [error, setError] = useState('');
 
   const PAYMENT_METHODS = [
+    ...(activeGateways?.includes('flutterwave') ? [{ id: 'flutterwave', label: 'Carte bancaire / Mobile Money', desc: 'Paiement immédiat sécurisé via Flutterwave', icon: CreditCard }] : []),
     { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
     { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
-    { id: 'mobile', label: 'Mobile Money', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
+    { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
   ];
 
   const cartSubtotal = (cart?.total_cents || 0) / 100;
@@ -372,6 +424,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
   const placeOrder = async (e) => {
     e.preventDefault();
     setPlacing(true);
+    setError('');
     try {
       const shippingAddress = `${form.address}, ${form.postal_code} ${form.city}, ${form.country}`.trim();
       const { data: order, error: orderError } = await supabase.from('orders').insert({
@@ -427,11 +480,23 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
         await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);
       }
 
+      if (paymentMethod === 'flutterwave') {
+        // Real hosted checkout: redirect the browser to Flutterwave's own
+        // payment page. The order stays 'pending' until Flutterwave's
+        // return trip is independently verified (see the flw_return
+        // handler above) - never trust the redirect alone to mean paid.
+        const { data, error: initError } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'initiate', order_id: order.id } });
+        if (initError) throw initError;
+        if (data.error) throw new Error(data.error);
+        window.location.href = data.link;
+        return;
+      }
+
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
       onDone();
     } catch (err) {
-      alert('Erreur: ' + (err.message || 'commande impossible'));
+      setError(err.message || 'Commande impossible');
     } finally {
       setPlacing(false);
     }
@@ -521,6 +586,8 @@ function CheckoutModal({ store, cart, discount, discountAmount, onClose, onDone 
               })}
             </div>
           </section>
+
+          {error && <p className="text-sm text-destructive font-medium bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           {/* Pay button (mobile) */}
           <button type="submit" disabled={placing} className="lg:hidden w-full bg-brand text-brand-foreground font-semibold py-4 rounded-full text-sm hover:bg-brand/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg">

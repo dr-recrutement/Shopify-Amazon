@@ -54,36 +54,6 @@ export default function LandingFooter() {
           ))}
         </div>
 
-        {/* PSP logos — real brand logos on white chips (not plain text on
-            the dark footer background, and not logos floating directly on
-            black, where several would lose contrast/legibility). Same
-            real assets and uniform sizing as LandingPSPs.jsx. */}
-        <div className="mt-10 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
-          <p className="text-xs font-semibold text-background/60 uppercase tracking-wide">Paiements sécurisés via</p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl">
-            {[
-              { name: 'Paystack', logo: '/payment-logos/paystack.png' },
-              { name: 'Flutterwave', logo: '/payment-logos/flutterwave.png' },
-              { name: 'M-Pesa', logo: '/payment-logos/mpesa.png' },
-              { name: 'Stripe', logo: '/payment-logos/stripe.png' },
-              { name: 'PayPal', logo: '/payment-logos/paypal.png' },
-              { name: 'PayUnit', logo: '/payment-logos/payunit.png' },
-              { name: 'Wave', logo: '/payment-logos/wave.png' },
-              { name: 'Orange Money', logo: '/payment-logos/orange-money.png' },
-              { name: 'Kkiapay', logo: '/payment-logos/kkiapay.png' },
-              { name: 'Square', logo: '/payment-logos/square.jpg' },
-              { name: 'Klarna', logo: '/payment-logos/klarna.jpg' },
-              { name: 'Adyen', logo: '/payment-logos/adyen.png' },
-              { name: 'Mercado Pago', logo: '/payment-logos/mercadopago.png' },
-              { name: 'CinetPay', logo: '/payment-logos/cinetpay.webp' },
-            ].map((p) => (
-              <div key={p.name} className="w-[84px] h-11 shrink-0 bg-white rounded-lg flex items-center justify-center px-2.5 shadow-sm">
-                <img src={p.logo} alt={p.name} title={p.name} className="max-w-full max-h-full object-contain" loading="lazy" />
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
           <div className="flex items-center gap-5 text-xs text-background/70">

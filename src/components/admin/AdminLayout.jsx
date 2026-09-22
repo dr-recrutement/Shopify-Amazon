@@ -91,7 +91,7 @@ function NavItem({ item, onNavigate }) {
           onClick={onNavigate}
           className={({ isActive }) =>
             `flex items-center gap-2.5 flex-1 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
-              isActive ? 'bg-white text-[#202223] font-medium shadow-sm' : 'text-[#202223] hover:bg-black/5'
+              isActive || childActive ? 'bg-white text-[#202223] font-medium shadow-sm' : 'text-[#202223] hover:bg-black/5'
             }`
           }
         >
@@ -180,6 +180,27 @@ export default function AdminLayout() {
     document.addEventListener('mousedown', onClick);
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
+
+  // Close every open overlay (drawer, dropdowns) on every route change - a
+  // Link inside a page (not routed through NavContent's onNavigate, e.g. a
+  // "Voir les commandes" link elsewhere) could otherwise leave the mobile
+  // drawer or a dropdown open on top of the new page.
+  useEffect(() => {
+    setMobileOpen(false);
+    setMenuOpen(false);
+    setNotifOpen(false);
+  }, [location.pathname]);
+
+  // Lock background scroll while the mobile drawer is open - without this,
+  // a long nav list scrolls independently while the page underneath also
+  // scrolls, a real double-scroll bug on mobile.
+  useEffect(() => {
+    if (mobileOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [mobileOpen]);
 
   // A logged-in user with no store yet (fresh signup, or one who bailed out
   // of onboarding before creating it) has nothing for any of these admin

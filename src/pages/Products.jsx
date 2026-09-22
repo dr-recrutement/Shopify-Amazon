@@ -84,7 +84,7 @@ export default function Products() {
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Créez d'abord votre boutique</h1>
         <p className="text-sm text-[#6D7175] mt-1 mb-4">Vous devez configurer une boutique avant d'ajouter des produits.</p>
-        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]">Configurer ma boutique</Link>
+        <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]">Configurer ma boutique</Link>
       </div>
     );
   }

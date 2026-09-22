@@ -19,7 +19,6 @@ import Dashboard from '@/pages/Dashboard';
 import ThemeEditor from '@/pages/ThemeEditor';
 import Analytics from '@/pages/Analytics';
 import ThemeGallery from '@/pages/ThemeGallery';
-import StoreSetup from '@/pages/StoreSetup';
 import Products from '@/pages/Products';
 import Orders from '@/pages/Orders';
 import Customers from '@/pages/Customers';
@@ -101,7 +100,6 @@ const AuthenticatedApp = () => {
           <Route path="/theme-editor" element={<ThemeEditor />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/theme-gallery" element={<ThemeGallery />} />
-          <Route path="/store-setup" element={<StoreSetup />} />
           <Route path="/products" element={<Products />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/customers" element={<Customers />} />

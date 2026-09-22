@@ -97,7 +97,7 @@ export default function Reports() {
       <div className="max-w-md mx-auto mt-20 text-center">
         <AlertCircle className="w-10 h-10 text-brand mx-auto mb-3" />
         <h1 className="text-lg font-bold text-foreground">Configurez votre boutique</h1>
-        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-3">Configurer</Link>
+        <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-3">Configurer</Link>
       </div>
     );
   }

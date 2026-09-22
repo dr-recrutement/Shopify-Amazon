@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2 } from 'lucide-react';
+import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2, RefreshCcw } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
@@ -20,6 +20,8 @@ export default function Domains() {
   const { store, loading } = useCurrentStore();
   const [domains, setDomains] = useState([]);
   const [connecting, setConnecting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState(null);
   const [domain, setDomain] = useState('');
   const [buying, setBuying] = useState(false);
   const [searchDomain, setSearchDomain] = useState('');
@@ -55,6 +57,19 @@ export default function Domains() {
     } catch (e) {
       alert(e.message || 'Échec de la connexion du domaine');
     } finally { setConnecting(false); }
+  };
+
+  const verifyDns = async (d) => {
+    setVerifying(true);
+    setVerifyResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-custom-domain', { body: { domain_id: d.id } });
+      if (error) throw error;
+      setVerifyResult(data);
+      await loadDomains();
+    } catch (e) {
+      setVerifyResult({ verified: false, error: e.message });
+    } finally { setVerifying(false); }
   };
 
   const removeDomain = async (d) => {
@@ -124,9 +139,31 @@ export default function Domains() {
         <div className="flex items-center gap-2 mb-3"><Link2 className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Connecter un domaine existant</p></div>
         <p className="text-xs text-[#6D7175] mb-3">Vous avez déjà acheté un domaine chez un autre registrar (GoDaddy, Namecheap, Cloudflare, etc.). Connectez-le gratuitement.</p>
         {customDomain ? (
-          <div className="flex items-center justify-between bg-[#008060]/5 rounded-lg px-4 py-3 border border-[#008060]/20">
-            <div><p className="text-sm font-mono text-[#202223]">{customDomain.domain_name}</p><p className="text-xs text-[#008060]">{customDomain.dns_status === 'verified' ? 'Connecté — DNS vérifié' : `DNS : ${customDomain.dns_status || 'en attente'}`}</p></div>
-            <button onClick={() => removeDomain(customDomain)} className="flex items-center gap-1 text-xs font-semibold text-red-600 hover:underline"><Trash2 className="w-3.5 h-3.5" /> Déconnecter</button>
+          <div>
+            <div className="flex items-center justify-between bg-[#008060]/5 rounded-lg px-4 py-3 border border-[#008060]/20">
+              <div><p className="text-sm font-mono text-[#202223]">{customDomain.domain_name}</p><p className={`text-xs ${customDomain.dns_status === 'verified' ? 'text-[#008060]' : 'text-amber-600'}`}>{customDomain.dns_status === 'verified' ? 'Connecté — DNS vérifié' : `DNS : ${customDomain.dns_status || 'en attente de configuration'}`}</p></div>
+              <div className="flex items-center gap-2 shrink-0">
+                {customDomain.dns_status !== 'verified' && (
+                  <button onClick={() => verifyDns(customDomain)} disabled={verifying} className="flex items-center gap-1 text-xs font-semibold text-[#008060] border border-[#008060]/30 rounded-full px-3 py-1.5 hover:bg-[#008060]/5 disabled:opacity-40">
+                    {verifying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCcw className="w-3.5 h-3.5" />} Vérifier le DNS
+                  </button>
+                )}
+                <button onClick={() => removeDomain(customDomain)} className="flex items-center gap-1 text-xs font-semibold text-red-600 hover:underline"><Trash2 className="w-3.5 h-3.5" /> Déconnecter</button>
+              </div>
+            </div>
+            {customDomain.dns_status !== 'verified' && (
+              <div className="mt-3 rounded-lg bg-[#F4F4F4] p-3">
+                <p className="text-xs font-semibold text-[#202223] mb-2">Chez votre registrar ({customDomain.domain_name.split('.').slice(-2).join('.')}), ajoutez cet enregistrement DNS :</p>
+                <div className="grid grid-cols-3 gap-2 text-[11px] font-mono bg-white rounded border border-[#E1E1E1] p-2">
+                  <span className="text-[#6D7175]">Type</span><span className="text-[#6D7175] col-span-2">Valeur</span>
+                  <span className="font-bold text-[#202223]">CNAME</span><span className="col-span-2 text-[#202223]">sellia.liafrik.com</span>
+                </div>
+                <p className="text-[11px] text-[#6D7175] mt-2">Si votre registrar n'autorise pas de CNAME sur le domaine racine (souvent le cas), utilisez un sous-domaine (ex : www) ou un enregistrement A pointant vers la même adresse que sellia.liafrik.com. La propagation DNS peut prendre jusqu'à 24h — cliquez sur « Vérifier » une fois configuré.</p>
+                {verifyResult && (
+                  <p className={`text-xs font-semibold mt-2 ${verifyResult.verified ? 'text-[#008060]' : 'text-red-600'}`}>{verifyResult.verified ? '✓ DNS correctement configuré et vérifié !' : 'DNS pas encore détecté — vérifiez la configuration ou patientez pour la propagation.'}</p>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex gap-2">

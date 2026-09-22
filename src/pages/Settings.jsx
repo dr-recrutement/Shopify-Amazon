@@ -13,7 +13,6 @@ import Payments from '@/pages/Payments';
 import Profile from '@/pages/Profile';
 import StaffManagement from '@/pages/StaffManagement';
 import StoreSettings from '@/pages/StoreSettings';
-import StoreSetup from '@/pages/StoreSetup';
 import Support from '@/pages/Support';
 import Chat from '@/pages/Chat';
 
@@ -26,7 +25,6 @@ const SECTIONS = [
     { id: 'plan', label: 'Plan', comp: SettingsPlan },
     { id: 'billing', label: 'Facturation', comp: Billing },
     { id: 'users', label: 'Personnel & permissions', comp: StaffManagement },
-    { id: 'store-config', label: 'Configuration boutique', comp: StoreSetup },
     { id: 'store-settings', label: 'Paramètres boutique', comp: StoreSettings },
     { id: 'locations', label: 'Emplacements', comp: SettingsLocations },
   ]},

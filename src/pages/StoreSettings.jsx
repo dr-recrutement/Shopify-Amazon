@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Store, Loader2, Save, Check, MapPin, Phone, Globe, Mail } from 'lucide-react';
+import { Store, Loader2, Save, Check, MapPin, Phone, Globe, Mail, Search } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';
@@ -18,6 +18,8 @@ export default function StoreSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [subscriberCount, setSubscriberCount] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const sitemapUrl = store?.id ? `https://hfzbykndwsrlxqlqrmjh.supabase.co/functions/v1/sitemap?store=${store.slug}` : '';
 
   useEffect(() => {
     if (store) setForm({
@@ -97,6 +99,16 @@ export default function StoreSettings() {
           <label className={lbl}>E-mail de notification des inscriptions</label>
           <input type="email" value={form.newsletter_notify_email} onChange={(e) => setForm({ ...form, newsletter_notify_email: e.target.value })} placeholder="contact@maboutique.com" className={fld} />
           <p className="text-[11px] text-[#6D7175] mt-1.5">Les inscriptions elles-mêmes sont déjà enregistrées en base pour chaque nouvel abonné. L'envoi automatique d'un e-mail de notification n'est pas encore branché.</p>
+        </section>
+
+        <section className="bg-white rounded-xl border border-[#E1E1E1] p-5">
+          <div className="flex items-center gap-2 mb-4"><Search className="w-4 h-4 text-[#008060]" /><h2 className="text-sm font-bold text-[#202223]">Référencement (SEO)</h2></div>
+          <label className={lbl}>Sitemap — à soumettre dans Google Search Console</label>
+          <div className="flex gap-2">
+            <input readOnly value={sitemapUrl} onClick={(e) => e.target.select()} className={fld + ' font-mono text-xs'} />
+            <button type="button" onClick={() => { navigator.clipboard?.writeText(sitemapUrl); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="shrink-0 text-xs font-semibold text-[#008060] border border-[#008060]/30 rounded-lg px-3 hover:bg-[#008060]/5">{copied ? 'Copié !' : 'Copier'}</button>
+          </div>
+          <p className="text-[11px] text-[#6D7175] mt-1.5">Mis à jour automatiquement avec votre page d'accueil et vos articles de blog publiés. Titre, description et données structurées de votre boutique sont déjà générés automatiquement sur chaque page.</p>
         </section>
       </div>
     </div>

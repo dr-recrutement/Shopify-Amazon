@@ -198,6 +198,7 @@ const ENUM_OPTIONS = {
   span: [1, 2, 3, 4],
   displayMode: ['grid', 'scrolling'],
   style: ['fixed', 'scrolling'],
+  imageFit: ['cover', 'contain'],
 };
 
 function ScalarInput({ value, onChange, fieldKey }) {

@@ -218,7 +218,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
           case 'hero':
             return wrap(s, (
               <div className="relative">
-                <Img src={c.image} className="h-[300px] sm:h-[460px]" {...ip} path="image" />
+                <Img src={c.image} className="h-[300px] sm:h-[460px]" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} {...ip} path="image" />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0) 70%)' }} />
                 <div className="absolute inset-0 flex items-center">
                   <div className="p-6 sm:p-14 max-w-xl" style={{ textAlign: c.align }}>
@@ -313,10 +313,20 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 items-center max-w-5xl mx-auto">
-                  <div className={rev ? 'sm:order-2' : ''}><Img src={c.image} className="aspect-square rounded-2xl overflow-hidden" {...ip} path="image" /></div>
+                  <div className={rev ? 'sm:order-2' : ''}><Img src={c.image} className="aspect-square rounded-2xl overflow-hidden" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} {...ip} path="image" /></div>
                   <div className={rev ? 'sm:order-1' : ''}>
                     <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                     <p className="mt-4 text-sm sm:text-base leading-relaxed" style={{ color: p.muted }}>{c.text}</p>
+                    {(c.stats || []).length > 0 && (
+                      <div className="flex flex-wrap gap-x-8 gap-y-3 mt-6">
+                        {c.stats.map((st, i) => (
+                          <div key={i}>
+                            <p className="text-xl sm:text-2xl font-bold" style={{ color: accent, fontFamily: theme.fonts?.heading }}>{st.value}</p>
+                            <p className="text-[11px] sm:text-xs mt-0.5" style={{ color: p.muted }}>{st.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {c.button && <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-6 text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{c.button}</button>}
                   </div>
                 </div>

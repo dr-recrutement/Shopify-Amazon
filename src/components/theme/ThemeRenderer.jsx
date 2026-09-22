@@ -474,7 +474,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                       : <p className="font-bold tracking-[0.25em] text-base" style={{ fontFamily: theme.fonts?.heading }}>{c.logo}</p>}
                     <p className="text-xs mt-4 opacity-70 leading-relaxed max-w-xs">{c.description}</p>
                     <div className="flex flex-wrap gap-3 mt-5">
-                      {(c.social || []).map((s, i) => <span key={i} className="text-xs opacity-70 hover:opacity-100 cursor-pointer">{s}</span>)}
+                      {(c.social || []).map((s, i) => <NavLink key={i} link={s} storefront={storefront} storeSlug={storeSlug} className="text-xs opacity-70 hover:opacity-100" />)}
                     </div>
                   </div>
                   {(c.columns || []).map((col, i) => (

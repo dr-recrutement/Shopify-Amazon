@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
+import PlatformNews from '@/components/PlatformNews';
 import { ShoppingBag, Wallet, Clock, Package, Users, Tag, Plus, Loader2, AlertCircle, Boxes, Palette } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -127,6 +128,8 @@ export default function Dashboard() {
           <p className="text-xs text-[#6D7175]">{store.name}</p>
         </div>
       </div>
+
+      <PlatformNews />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={Wallet} label="Revenu encaissé" value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orders} commande(s)`} />

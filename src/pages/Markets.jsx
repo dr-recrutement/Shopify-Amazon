@@ -4,7 +4,7 @@ import {
   Globe, Loader2, AlertCircle, Smartphone, Store,
   Instagram, Facebook, MessageCircle, ExternalLink, Check, Zap, Plus,
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -26,7 +26,12 @@ export default function Markets() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      setOrders(await base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500));
+      const { data, error } = await supabase.from('orders').select('total_cents, status').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500);
+      if (error) throw error;
+      setOrders(data || []);
+    } catch (e) {
+      console.error('Failed to load orders:', e);
+      setOrders([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -43,7 +48,8 @@ export default function Markets() {
     );
   }
 
-  const revenue = orders.filter((o) => o.payment_status === 'paid').reduce((s, o) => s + (o.total || 0), 0);
+  const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
+  const revenue = orders.filter((o) => !NOT_PAID.has(o.status)).reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
 
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">

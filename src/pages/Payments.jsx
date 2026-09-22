@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   CreditCard, Plus, Pencil, Trash2, Loader2, AlertCircle, ArrowLeft,
@@ -8,19 +8,20 @@ import {
 } from 'lucide-react';
 
 const PROVIDERS = [
-  { value: 'stripe', label: 'Stripe', fields: ['secret_key', 'public_key', 'webhook_secret'], hint: 'Cartes internationales' },
-  { value: 'flutterwave', label: 'Flutterwave', fields: ['secret_key', 'public_key'], hint: 'Cartes + Mobile Money (Afrique)' },
-  { value: 'paystack', label: 'Paystack', fields: ['secret_key', 'public_key'], hint: 'Afrique de l’Ouest & du Sud' },
-  { value: 'payunit', label: 'Payunit', fields: ['secret_key', 'public_key', 'merchant_id'], hint: 'Mobile Money (CEMAC)' },
+  { value: 'stripe', label: 'Stripe', fields: ['api_secret', 'api_key'], hint: 'Cartes internationales' },
+  { value: 'flutterwave', label: 'Flutterwave', fields: ['api_secret', 'api_key'], hint: 'Cartes + Mobile Money (Afrique)' },
+  { value: 'paystack', label: 'Paystack', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Ouest & du Sud' },
+  { value: 'payunit', label: 'Payunit', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Mobile Money (CEMAC)' },
 ];
-const FIELD_LABELS = {
-  secret_key: 'Clé secrète (secret_key)',
-  public_key: 'Clé publique (public_key)',
-  webhook_secret: 'Secret webhook',
-  merchant_id: 'Identifiant marchand',
-};
+const FIELD_LABELS = { api_secret: 'Clé secrète', api_key: 'Clé publique / API key', client_id: 'Identifiant client / marchand' };
 const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 
+// Native vendor_payment_gateways: gateway/status/is_active/display_order +
+// api_key_encrypted/api_secret_encrypted/client_id_encrypted - the column
+// names themselves say these must never be plaintext. Encryption happens
+// server-side (Edge Function encrypt-gateway-credentials, AES-256-GCM with
+// a key only that function can read) - this page only ever sends
+// plaintext over HTTPS to get it encrypted, and never fetches it back.
 export default function Payments() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [providers, setProviders] = useState([]);
@@ -34,26 +35,24 @@ export default function Payments() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const list = await base44.entities.PaymentProvider.filter({ store_id: store.id }, '-created_date', 50);
-      setProviders(list);
+      const { data, error } = await supabase.from('vendor_payment_gateways').select('*').eq('tenant_id', store.id).order('display_order', { ascending: true });
+      if (error) throw error;
+      setProviders(data || []);
+    } catch (e) {
+      console.error('Failed to load payment gateways:', e);
+      setProviders([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
 
-  const blank = () => ({
-    provider: 'stripe', display_name: '', mode: 'test', is_active: true,
-    credentials: { secret_key: '', public_key: '', webhook_secret: '', merchant_id: '' },
-  });
+  const blank = () => ({ provider: 'stripe', is_active: true, credentials: { api_secret: '', api_key: '', client_id: '' } });
   const [form, setForm] = useState(blank());
 
   const openNew = () => { setEditing(null); setForm(blank()); setFormOpen(true); setShow({}); };
   const openEdit = (p) => {
     setEditing(p);
-    setForm({
-      provider: p.provider, display_name: p.display_name || '', mode: p.mode || 'test', is_active: p.is_active !== false,
-      credentials: { secret_key: '', public_key: '', webhook_secret: '', merchant_id: '', ...(p.credentials || {}) },
-    });
+    setForm({ provider: p.gateway, is_active: p.is_active !== false, credentials: { api_secret: '', api_key: '', client_id: '' } });
     setFormOpen(true); setShow({});
   };
   const set = (patch) => setForm({ ...form, ...patch });
@@ -62,36 +61,36 @@ export default function Payments() {
   const save = async () => {
     setSaving(true);
     try {
-      const payload = {
-        store_id: store.id,
-        provider: form.provider,
-        display_name: form.display_name || PROVIDERS.find((p) => p.value === form.provider)?.label || form.provider,
-        mode: form.mode,
-        is_active: form.is_active,
-        credentials: form.credentials,
-      };
-      // On edit, don't overwrite with empty secret fields (keep existing)
-      if (editing) {
-        const merged = { ...(editing.credentials || {}), ...form.credentials };
-        Object.keys(merged).forEach((k) => { if (merged[k] === '' && form.credentials[k] === '') merged[k] = (editing.credentials || {})[k] || ''; });
-        payload.credentials = merged;
-        await base44.entities.PaymentProvider.update(editing.id, payload);
-      } else {
-        await base44.entities.PaymentProvider.create(payload);
+      const toEncrypt = Object.fromEntries(Object.entries(form.credentials).filter(([, v]) => v));
+      let encrypted = {};
+      if (Object.keys(toEncrypt).length > 0) {
+        const { data, error } = await supabase.functions.invoke('encrypt-gateway-credentials', { body: toEncrypt });
+        if (error) throw error;
+        if (data.error) throw new Error(data.error);
+        encrypted = data;
       }
+      const payload = { tenant_id: store.id, gateway: form.provider, is_active: form.is_active, status: 'configured', ...encrypted };
+      const { error: writeError } = editing
+        ? await supabase.from('vendor_payment_gateways').update(payload).eq('id', editing.id)
+        : await supabase.from('vendor_payment_gateways').insert(payload);
+      if (writeError) throw writeError;
       setFormOpen(false);
-      load();
+      await load();
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement");
     } finally { setSaving(false); }
   };
 
   const remove = async (p) => {
-    if (!confirm(`Supprimer la connexion ${p.provider} ?`)) return;
-    await base44.entities.PaymentProvider.delete(p.id);
+    if (!confirm(`Supprimer la connexion ${p.gateway} ?`)) return;
+    const { error } = await supabase.from('vendor_payment_gateways').delete().eq('id', p.id);
+    if (error) { alert(error.message); return; }
     setProviders((l) => l.filter((x) => x.id !== p.id));
   };
 
   const toggleActive = async (p) => {
-    await base44.entities.PaymentProvider.update(p.id, { is_active: !p.is_active });
+    const { error } = await supabase.from('vendor_payment_gateways').update({ is_active: !p.is_active }).eq('id', p.id);
+    if (error) { alert(error.message); return; }
     setProviders((l) => l.map((x) => (x.id === p.id ? { ...x, is_active: !x.is_active } : x)));
   };
 
@@ -101,7 +100,7 @@ export default function Payments() {
       <div className="max-w-md mx-auto mt-20 text-center">
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Créez d'abord votre boutique</h1>
-        <Link to="/store-setup" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d] mt-3">Configurer ma boutique</Link>
+        <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d] mt-3">Configurer ma boutique</Link>
       </div>
     );
   }
@@ -127,8 +126,8 @@ export default function Payments() {
         <div className="mb-4 rounded-lg border border-[#008060]/20 bg-[#008060]/[0.04] p-4 flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-[#008060] shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-[#202223]">Isolation stricte par boutique</p>
-            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants PSP sont rattachés à votre boutique et ne sont visibles que par vous. Ils ne sont jamais exposés au client final — seul un traitement serveur les utilise pour encaisser les paiements.</p>
+            <p className="text-sm font-semibold text-[#202223]">Chiffrées, propres à votre boutique</p>
+            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants sont chiffrés côté serveur avant d'être enregistrés et ne sont jamais renvoyés en clair — même à vous, une fois saisis. Un traitement de paiement réel côté checkout n'est pas encore branché (voir la note ci-dessous) ; ceci enregistre déjà la connexion en toute sécurité.</p>
           </div>
         </div>
 
@@ -144,13 +143,13 @@ export default function Payments() {
         ) : (
           <div className="space-y-3">
             {providers.map((p) => {
-              const meta = PROVIDERS.find((x) => x.value === p.provider) || { label: p.provider, hint: '' };
+              const meta = PROVIDERS.find((x) => x.value === p.gateway) || { label: p.gateway, hint: '' };
               return (
                 <div key={p.id} className="bg-white rounded-xl border border-[#E1E1E1] p-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-lg bg-[#008060]/10 flex items-center justify-center shrink-0"><CreditCard className="w-5 h-5 text-[#008060]" /></div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#202223] flex items-center gap-2">{meta.label} <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${p.mode === 'live' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-amber-500/10 text-amber-600'}`}>{p.mode === 'live' ? 'Production' : 'Test'}</span></p>
+                      <p className="text-sm font-semibold text-[#202223]">{meta.label}</p>
                       <p className="text-xs text-[#6D7175] truncate">{meta.hint}</p>
                     </div>
                   </div>
@@ -166,39 +165,27 @@ export default function Payments() {
         )}
       </div>
 
-      {/* Modal form */}
       {formOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setFormOpen(false)}>
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E1E1E1]">
-              <h2 className="text-base font-bold text-[#202223]">{editing ? 'Modifier la connexion' : 'Connecter un PSP'}</h2>
+              <h2 className="text-base font-bold text-[#202223]">{editing ? 'Mettre à jour la connexion' : 'Connecter un PSP'}</h2>
               <button onClick={() => setFormOpen(false)} className="text-[#6D7175] hover:text-[#202223]"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-5 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#202223] mb-1.5">Fournisseur</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {PROVIDERS.map((p) => (
-                    <button key={p.value} type="button" onClick={() => set({ provider: p.value, credentials: { secret_key: '', public_key: '', webhook_secret: '', merchant_id: '' } })} className={`flex flex-col items-start gap-0.5 p-3 rounded-lg border text-left ${form.provider === p.value ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:bg-black/[0.02]'}`}>
-                      <span className="text-sm font-semibold text-[#202223]">{p.label}</span>
-                      <span className="text-[11px] text-[#6D7175]">{p.hint}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
+              {!editing && (
                 <div>
-                  <label className="block text-xs font-semibold text-[#202223] mb-1.5">Nom affiché</label>
-                  <input value={form.display_name} onChange={(e) => set({ display_name: e.target.value })} placeholder={activeProvider?.label} className={inputCls} />
+                  <label className="block text-xs font-semibold text-[#202223] mb-1.5">Fournisseur</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {PROVIDERS.map((p) => (
+                      <button key={p.value} type="button" onClick={() => set({ provider: p.value })} className={`flex flex-col items-start gap-0.5 p-3 rounded-lg border text-left ${form.provider === p.value ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:bg-black/[0.02]'}`}>
+                        <span className="text-sm font-semibold text-[#202223]">{p.label}</span>
+                        <span className="text-[11px] text-[#6D7175]">{p.hint}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-[#202223] mb-1.5">Mode</label>
-                  <select value={form.mode} onChange={(e) => set({ mode: e.target.value })} className={inputCls}>
-                    <option value="test">Test</option>
-                    <option value="live">Production</option>
-                  </select>
-                </div>
-              </div>
+              )}
               <div className="space-y-3">
                 {activeProvider?.fields.map((f) => (
                   <div key={f}>

@@ -11,6 +11,18 @@ const REASON_LABELS = {
   extension_disallows_registration: 'Cette extension n\u2019autorise pas l\u2019enregistrement automatique.',
 };
 
+// Extracts the real error message our Edge Functions return (a JSON body
+// like {"error": "..."}) instead of supabase-js's generic "Edge Function
+// returned a non-2xx status code" - that generic text was the entire
+// visible error, hiding what actually went wrong.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 // Native `domains` table: one row per connected/purchased domain
 // (domain_name/type/dns_status/ssl_status), not a single store.domain field.
 // There's no delete policy for authenticated users on this table (by
@@ -25,8 +37,13 @@ export default function Domains() {
   const [domain, setDomain] = useState('');
   const [buying, setBuying] = useState(false);
   const [searchDomain, setSearchDomain] = useState('');
-  const [domainResult, setDomainResult] = useState(null);
+  const [domainResults, setDomainResults] = useState([]);
   const [checking, setChecking] = useState(false);
+  const [buyTarget, setBuyTarget] = useState(null);
+  const [buyStep, setBuyStep] = useState(1);
+  const [billingName, setBillingName] = useState('');
+  const [billingEmail, setBillingEmail] = useState('');
+  const [billingAck, setBillingAck] = useState(false);
 
   const loadDomains = useCallback(async () => {
     if (!store?.id) return;
@@ -64,7 +81,7 @@ export default function Domains() {
     setVerifyResult(null);
     try {
       const { data, error } = await supabase.functions.invoke('verify-custom-domain', { body: { domain_id: d.id } });
-      if (error) throw error;
+      if (error) throw new Error(await functionErrorMessage(error));
       setVerifyResult(data);
       await loadDomains();
     } catch (e) {
@@ -85,29 +102,31 @@ export default function Domains() {
   const checkDomain = async () => {
     if (!searchDomain) return;
     setChecking(true);
-    setDomainResult(null);
+    setDomainResults([]);
     try {
-      const { data, error } = await supabase.functions.invoke('cloudflare-domains', { body: { action: 'check', domain_name: searchDomain.trim() } });
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('cloudflare-domains', { body: { action: 'search', query: searchDomain.trim() } });
+      if (error) throw new Error(await functionErrorMessage(error));
       if (data.error) throw new Error(data.error);
-      setDomainResult(data);
+      setDomainResults(data.domains || []);
     } catch (e) {
-      setDomainResult({ name: searchDomain.trim(), registrable: false, reason: e.message || 'Erreur de vérification' });
+      setDomainResults([{ name: searchDomain.trim(), registrable: false, reason: e.message || 'Erreur de vérification' }]);
     } finally { setChecking(false); }
   };
 
-  const buyDomain = async () => {
-    if (!domainResult?.registrable || !store?.id) return;
-    if (!confirm(`Confirmer l'achat de ${domainResult.name} pour ${domainResult.price} ${domainResult.currency} ?\n\nCe montant sera facturé réellement (paiement Cloudflare de Sellia) et n'est pas remboursable une fois l'enregistrement terminé.`)) return;
+  const openBuy = (d) => { setBuyTarget(d); setBillingName(''); setBillingEmail(''); setBuyStep(1); };
+
+  const confirmBuy = async () => {
+    if (!buyTarget?.registrable || !store?.id) return;
     setBuying(true);
     try {
       const { data, error } = await supabase.functions.invoke('cloudflare-domains', {
-        body: { action: 'register', domain_name: domainResult.name, tenant_id: store.id, confirm: true },
+        body: { action: 'register', domain_name: buyTarget.name, tenant_id: store.id, confirm: true },
       });
-      if (error) throw error;
+      if (error) throw new Error(await functionErrorMessage(error));
       if (data.error) throw new Error(data.error);
-      setDomainResult(null);
+      setBuyTarget(null);
       setSearchDomain('');
+      setDomainResults([]);
       await loadDomains();
     } catch (e) {
       alert(e.message || "Échec de l'achat du domaine");
@@ -177,26 +196,30 @@ export default function Domains() {
         <div className="flex items-center gap-2 mb-3"><ShoppingCart className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Acheter un domaine via Sellia</p></div>
         <p className="text-xs text-[#6D7175] mb-3">Recherchez et achetez un domaine directement. Prix incluant 10% de surplus Sellia. Domaine géré via Cloudflare Registrar.</p>
         <div className="flex gap-2 mb-3">
-          <input value={searchDomain} onChange={(e) => setSearchDomain(e.target.value)} placeholder="rechercher un domaine..." className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
-          <button onClick={checkDomain} disabled={checking || !searchDomain} className="bg-[#202223] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-black/80 disabled:opacity-40">{checking ? 'Vérification…' : 'Vérifier'}</button>
+          <input value={searchDomain} onChange={(e) => setSearchDomain(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && checkDomain()} placeholder="ex : maboutique" className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
+          <button onClick={checkDomain} disabled={checking || !searchDomain} className="bg-[#202223] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-black/80 disabled:opacity-40">{checking ? 'Recherche…' : 'Rechercher'}</button>
         </div>
-        {domainResult && (
-          <div className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
-            <div className="flex items-center gap-3">
-              {domainResult.registrable ? <Check className="w-5 h-5 text-[#008060]" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
-              <div>
-                <p className="text-sm font-mono text-[#202223]">{domainResult.name}</p>
-                <p className="text-xs text-[#6D7175]">
-                  {domainResult.registrable
-                    ? `Disponible — ${domainResult.price} ${domainResult.currency}/an (dont ${domainResult.platform_fee} ${domainResult.currency} de frais Sellia)`
-                    : REASON_LABELS[domainResult.reason] || domainResult.reason || 'Non disponible'}
-                </p>
+        {domainResults.length > 0 && (
+          <div className="space-y-2">
+            {domainResults.map((d, i) => (
+              <div key={i} className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
+                <div className="flex items-center gap-3">
+                  {d.registrable ? <Check className="w-5 h-5 text-[#008060]" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+                  <div>
+                    <p className="text-sm font-mono text-[#202223]">{d.name}</p>
+                    <p className="text-xs text-[#6D7175]">
+                      {d.registrable
+                        ? `${d.price} ${d.currency}/an (dont ${(d.price - d.cloudflare_cost).toFixed(2)} ${d.currency} de frais Sellia)`
+                        : REASON_LABELS[d.reason] || d.reason || 'Non disponible'}
+                    </p>
+                  </div>
+                </div>
+                {d.registrable && <button onClick={() => openBuy(d)} className="bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]">Acheter</button>}
               </div>
-            </div>
-            {domainResult.registrable && <button onClick={buyDomain} disabled={buying} className="bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Acheter'}</button>}
+            ))}
           </div>
         )}
-        <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Recherche et prix en temps réel via Cloudflare Registrar. L'achat facture réellement le compte Cloudflare de Sellia et n'est pas remboursable.</p>
+        <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> Recherche et prix en temps réel via Cloudflare Registrar.</p>
       </div>
 
       {purchasedDomains.length > 0 && (
@@ -215,6 +238,40 @@ export default function Domains() {
                 {d.last_error && <span className="text-xs text-red-600">{d.last_error}</span>}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {buyTarget && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => !buying && setBuyTarget(null)}>
+          <div className="bg-white rounded-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <p className="text-sm font-bold text-[#202223] mb-1">Acheter {buyTarget.name}</p>
+            <p className="text-xs text-[#6D7175] mb-4">{buyTarget.price} {buyTarget.currency}/an, dont {(buyTarget.price - buyTarget.cloudflare_cost).toFixed(2)} {buyTarget.currency} de frais Sellia.</p>
+
+            {buyStep === 1 ? (
+              <>
+                <p className="text-xs font-semibold text-[#6D7175] mb-1">Contact registrant (obligatoire pour l'enregistrement du domaine)</p>
+                <input value={billingName} onChange={(e) => setBillingName(e.target.value)} placeholder="Nom complet" className="w-full mb-2 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
+                <input value={billingEmail} onChange={(e) => setBillingEmail(e.target.value)} type="email" placeholder="E-mail" className="w-full mb-3 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
+                <button onClick={() => setBuyStep(2)} disabled={!billingName.trim() || !billingEmail.trim()} className="w-full bg-[#202223] text-white text-sm font-medium py-2.5 rounded-full hover:bg-black/80 disabled:opacity-40">Continuer</button>
+              </>
+            ) : (
+              <>
+                <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-3">
+                  <p className="text-xs text-amber-800 leading-relaxed">
+                    <strong>Facturation actuelle :</strong> cet achat est traité via le compte Cloudflare de Sellia — le paiement d'un vrai compte-marchand-par-marchand n'est pas encore branché sur cette plateforme. Le montant n'est pas remboursable une fois l'enregistrement terminé.
+                  </p>
+                </div>
+                <label className="flex items-start gap-2 text-xs text-[#202223] mb-4 cursor-pointer">
+                  <input type="checkbox" checked={billingAck} onChange={(e) => setBillingAck(e.target.checked)} className="mt-0.5" />
+                  Je comprends et j'accepte ces conditions pour {billingName} ({billingEmail}).
+                </label>
+                <div className="flex gap-2">
+                  <button onClick={() => setBuyStep(1)} className="flex-1 text-sm font-medium text-[#6D7175] border border-[#E1E1E1] rounded-full py-2.5 hover:bg-black/5">Retour</button>
+                  <button onClick={confirmBuy} disabled={buying || !billingAck} className="flex-1 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Confirmer l\u2019achat'}</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

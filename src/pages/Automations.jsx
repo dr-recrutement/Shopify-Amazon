@@ -5,7 +5,7 @@ import {
   ShoppingCart, UserPlus, PackageCheck, Truck, Box, Hand,
   Mail, Tag, TicketPercent, Bell, RefreshCw, Clock,
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 const TRIGGERS = [
@@ -117,7 +117,12 @@ export default function Automations() {
     if (!store?.id) return;
     setLoading(true);
     try {
-      setAutomations(await base44.entities.Automation.filter({ store_id: store.id }, '-created_date', 100));
+      const { data, error } = await supabase.from('automations').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(100);
+      if (error) throw error;
+      setAutomations(data || []);
+    } catch (e) {
+      console.error('Failed to load automations:', e);
+      setAutomations([]);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -126,23 +131,24 @@ export default function Automations() {
   const save = async (data) => {
     setSaving(true);
     try {
-      if (editing) {
-        await base44.entities.Automation.update(editing.id, data);
-      } else {
-        await base44.entities.Automation.create({ ...data, store_id: store.id });
-      }
+      const { error } = editing
+        ? await supabase.from('automations').update(data).eq('id', editing.id)
+        : await supabase.from('automations').insert({ ...data, tenant_id: store.id });
+      if (error) throw error;
       setShowEditor(false); setEditing(null); load();
     } catch (e) { alert('Erreur : ' + (e.message)); } finally { setSaving(false); }
   };
 
   const toggle = async (a) => {
-    await base44.entities.Automation.update(a.id, { enabled: !a.enabled });
+    const { error } = await supabase.from('automations').update({ enabled: !a.enabled }).eq('id', a.id);
+    if (error) { alert(error.message); return; }
     load();
   };
 
   const remove = async (a) => {
     if (!confirm(`Supprimer l'automatisation \u00ab ${a.name} \u00bb ?`)) return;
-    await base44.entities.Automation.delete(a.id);
+    const { error } = await supabase.from('automations').delete().eq('id', a.id);
+    if (error) { alert(error.message); return; }
     load();
   };
 

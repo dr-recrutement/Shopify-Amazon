@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ShoppingCart, X, Loader2, AlertCircle, Trash2, ArrowRight, ArrowLeft, Check,
@@ -378,15 +378,41 @@ export default function Storefront() {
 
 function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
-  const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : 'cod');
+  const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : activeGateways?.includes('stripe') ? 'stripe' : 'cod');
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [error, setError] = useState('');
+  const [stripeReady, setStripeReady] = useState(false);
+  const cardElementRef = useRef(null);
+  const stripeRef = useRef(null);
+  const cardRef = useRef(null);
+
+  // Stripe Elements needs its Card field mounted in the DOM before the
+  // customer clicks pay (they need to type into it) - only the publishable
+  // key is needed for that, no order/PaymentIntent yet.
+  useEffect(() => {
+    if (paymentMethod !== 'stripe' || !activeGateways?.includes('stripe') || stripeRef.current) return;
+    (async () => {
+      try {
+        await loadScript('https://js.stripe.com/v3/');
+        const { data, error: keyError } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'get_public_key', tenant_id: store.id } });
+        if (keyError || data?.error) throw new Error(data?.error || keyError.message);
+        stripeRef.current = window.Stripe(data.publishable_key);
+        const elements = stripeRef.current.elements();
+        cardRef.current = elements.create('card', { style: { base: { fontSize: '14px' } } });
+        if (cardElementRef.current) cardRef.current.mount(cardElementRef.current);
+        setStripeReady(true);
+      } catch (e) {
+        setError(e.message || 'Impossible de charger Stripe.');
+      }
+    })();
+  }, [paymentMethod, activeGateways, store.id]);
 
   const PAYMENT_METHODS = [
     ...(activeGateways?.includes('flutterwave') ? [{ id: 'flutterwave', label: 'Carte bancaire / Mobile Money', desc: 'Paiement immédiat sécurisé via Flutterwave', icon: CreditCard }] : []),
     ...(activeGateways?.includes('paystack') ? [{ id: 'paystack', label: 'Carte bancaire', desc: 'Paiement immédiat sécurisé via Paystack', icon: CreditCard }] : []),
+    ...(activeGateways?.includes('stripe') ? [{ id: 'stripe', label: 'Carte bancaire (Stripe)', desc: 'Visa, Mastercard, Amex', icon: CreditCard }] : []),
     { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
     { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
     { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
@@ -452,6 +478,31 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
 
       if (cart?.id) {
         await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);
+      }
+
+      if (paymentMethod === 'stripe') {
+        if (!stripeReady || !stripeRef.current || !cardRef.current) throw new Error('Le module de paiement Stripe n\u2019est pas encore prêt.');
+        const { data, error: initError } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'create_intent', order_id: order.id } });
+        if (initError) throw initError;
+        if (data.error) throw new Error(data.error);
+
+        const { paymentIntent, error: confirmError } = await stripeRef.current.confirmCardPayment(data.client_secret, {
+          payment_method: { card: cardRef.current, billing_details: { name: `${form.first_name} ${form.last_name}`.trim(), email: form.email } },
+        });
+        if (confirmError) throw new Error(confirmError.message);
+
+        // Same rule as every other gateway here: the client-side
+        // confirmation result is not trusted alone - re-fetch the
+        // PaymentIntent from Stripe's own API server-side before marking
+        // the order paid.
+        const { data: v, error: vErr } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'verify', order_id: order.id, payment_intent_id: paymentIntent.id } });
+        if (vErr) throw vErr;
+        if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
+
+        setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+        setDone(true);
+        onDone();
+        return;
       }
 
       if (paymentMethod === 'flutterwave') {
@@ -619,6 +670,13 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
                 );
               })}
             </div>
+            {paymentMethod === 'stripe' && (
+              <div className="mt-3 p-3.5 border border-border rounded-lg bg-white">
+                <label className="block text-xs font-semibold text-foreground mb-2">Numéro de carte</label>
+                <div ref={cardElementRef} className="px-3 py-3 border border-border rounded-md" />
+                {!stripeReady && <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> Chargement du module de paiement sécurisé…</p>}
+              </div>
+            )}
           </section>
 
           {error && <p className="text-sm text-destructive font-medium bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}

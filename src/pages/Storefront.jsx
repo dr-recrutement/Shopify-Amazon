@@ -7,6 +7,7 @@ import {
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme } from '@/lib/themes';
+import { applySEO, applyStoreJsonLd, applyProductListJsonLd } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 
 const CART_KEY = 'sellia_cart_session';
@@ -130,6 +131,28 @@ export default function Storefront() {
       return s;
     });
   }, [theme, products, articles, collections, reviews, store]);
+
+  useEffect(() => {
+    if (!store) return;
+    const heroSection = theme.sections.find((s) => s.type === 'header');
+    const heroBanner = theme.sections.find((s) => s.type === 'hero');
+    const description = heroBanner?.props?.subtitle
+      || `${store.name} — boutique en ligne${store.sector ? ` de ${store.sector}` : ''}${store.country ? ` basée en ${store.country}` : ''}. Livraison et paiement sécurisé.`;
+    const url = `${window.location.origin}/store/${slug}`;
+    applySEO({
+      title: `${store.name} — Boutique en ligne`,
+      description,
+      image: heroBanner?.props?.image || heroSection?.props?.logoImage,
+      url,
+      countryCode: store.country,
+    });
+    applyStoreJsonLd({ name: store.name, description, url, logo: heroSection?.props?.logoImage, currency: store.currency });
+    if (products.length > 0) {
+      applyProductListJsonLd(products.map((p) => ({
+        title: p.name, image: p.images?.[0], _price: (p.price_cents || 0) / 100, _currency: store.currency || p.currency,
+      })), url);
+    }
+  }, [store, theme, products, slug]);
 
   const saveCart = async (items) => {
     const subtotal = items.reduce((s, i) => s + i.line_total, 0);

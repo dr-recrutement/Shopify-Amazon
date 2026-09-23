@@ -31,7 +31,7 @@ export default function LandingFooter() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           <div className="col-span-2">
             <div className="flex items-center gap-2.5">
-              <img src={BRAND.logo} alt="Sellia" className="h-9 w-auto object-contain" />
+              <span className="inline-flex items-center bg-white rounded-lg px-2 py-1.5"><img src={BRAND.logo} alt="Sellia" className="h-6 w-auto object-contain" /></span>
               <span className="font-landing font-bold text-lg text-background">Sellia</span>
             </div>
             <p className="mt-4 text-sm text-background/70 max-w-xs">La plateforme e-commerce premium pour les marchands du monde entier. Lancez votre boutique, vendez au monde.</p>

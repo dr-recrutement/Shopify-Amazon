@@ -234,7 +234,7 @@ export default function AdminLayout() {
           <Menu className="w-5 h-5" />
         </button>
         <Link to="/dashboard" className="flex items-center gap-2 shrink-0">
-          <img src={BRAND.logo} alt="Sellia" className="h-8 w-8 object-contain" />
+          <span className="bg-white rounded-md p-1 inline-flex items-center"><img src={BRAND.logo} alt="Sellia" className="h-6 w-6 object-contain" /></span>
           <span className="flex flex-col leading-none">
             <span className="font-bold text-base tracking-tight text-white">Sellia</span>
             <span className="text-[9px] font-medium text-white/55">by Liafrik</span>

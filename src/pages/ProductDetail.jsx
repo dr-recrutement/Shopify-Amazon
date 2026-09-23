@@ -98,7 +98,7 @@ export default function ProductDetail() {
     setAdding(true);
     try {
       const sessionId = getCartSessionId();
-      const { data: existingCart } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'active').maybeSingle();
+      const { data: existingCart } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
       const items = [...(existingCart?.items || [])];
       const variantId = selectedVariant?.id || null;
       const variantTitle = selectedVariant?.title || null;
@@ -114,7 +114,7 @@ export default function ProductDetail() {
       if (existingCart?.id) {
         await supabase.from('abandoned_carts').update({ items, total_cents: Math.round(subtotal * 100), last_activity_at: new Date().toISOString() }).eq('id', existingCart.id);
       } else {
-        await supabase.from('abandoned_carts').insert({ tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'active' });
+        await supabase.from('abandoned_carts').insert({ tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'open' });
       }
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);

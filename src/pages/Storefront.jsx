@@ -110,7 +110,7 @@ export default function Storefront() {
     if (!store?.id) return;
     const sessionId = getCartSessionId();
     try {
-      const { data } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'active').maybeSingle();
+      const { data } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
       if (data) {
         setCart(data);
         setCartCount((data.items || []).reduce((s, i) => s + i.quantity, 0));
@@ -198,7 +198,7 @@ export default function Storefront() {
       return data;
     }
     const { data, error } = await supabase.from('abandoned_carts').insert({
-      tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'active',
+      tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'open',
     }).select().single();
     if (error) throw error;
     return data;
@@ -487,7 +487,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       });
 
       if (cart?.id) {
-        await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);
+        await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
       }
 
       if (paymentMethod === 'stripe') {

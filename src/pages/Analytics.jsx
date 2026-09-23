@@ -41,7 +41,7 @@ export default function Analytics() {
       } else {
         setItems([]);
       }
-      const { data: carts } = await supabase.from('abandoned_carts').select('id').eq('tenant_id', store.id).eq('status', 'active');
+      const { data: carts } = await supabase.from('abandoned_carts').select('id').eq('tenant_id', store.id).eq('status', 'open');
       setAbandonedCarts(carts || []);
     } catch (e) {
       console.error('Failed to load analytics:', e);

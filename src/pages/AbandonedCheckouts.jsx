@@ -24,7 +24,11 @@ export default function AbandonedCheckouts() {
       .order('created_at', { ascending: false })
       .limit(200);
     if (error) { console.error('Failed to load abandoned carts:', error); setCarts([]); return; }
-    setCarts((data || []).filter((c) => c.status === 'abandoned' || !c.status).map((c) => ({
+    // Real allowed values are open/recovered/ignored (not "abandoned") -
+    // a cart counts as abandoned here once it's been inactive a while,
+    // not by a stored status value that doesn't exist.
+    const oneHourAgo = Date.now() - 3600000;
+    setCarts((data || []).filter((c) => c.status === 'open' && new Date(c.last_activity_at || c.created_at).getTime() < oneHourAgo).map((c) => ({
       ...c,
       total: (c.total_cents || 0) / 100,
       created_date: c.created_at,
@@ -42,7 +46,7 @@ export default function AbandonedCheckouts() {
 
   const convert = async (cart) => {
     if (!confirm('Marquer ce panier comme converti en commande ?')) return;
-    const { error } = await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);
+    const { error } = await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
     if (error) { alert(error.message); return; }
     await load();
   };

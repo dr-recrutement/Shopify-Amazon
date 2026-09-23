@@ -40,7 +40,7 @@ export default function CartPage() {
       setActiveGateways((gatewaysRes.data || []).map((g) => g.gateway));
 
       const sessionId = getCartSessionId();
-      const { data: cartData } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', tenant.id).eq('status', 'active').maybeSingle();
+      const { data: cartData } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', tenant.id).eq('status', 'open').maybeSingle();
       setCart(cartData || null);
       setError(null);
     } catch (e) {

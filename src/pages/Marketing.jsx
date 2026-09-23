@@ -28,10 +28,11 @@ export default function Marketing() {
     if (!store?.id) return;
     setLoading(true);
     try {
+      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
       const [o, c, ca] = await Promise.all([
         supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500),
         supabase.from('customers').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200),
-        supabase.from('abandoned_carts').select('*').eq('tenant_id', store.id).eq('status', 'abandoned').order('created_at', { ascending: false }).limit(50),
+        supabase.from('abandoned_carts').select('*').eq('tenant_id', store.id).eq('status', 'open').lt('last_activity_at', oneHourAgo).order('created_at', { ascending: false }).limit(50),
       ]);
       setOrders(o.data || []); setCustomers(c.data || []); setCarts(ca.data || []);
     } finally { setLoading(false); }

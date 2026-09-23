@@ -4,6 +4,8 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import DiscountForm from '@/components/admin/DiscountForm';
 import { formatMoney } from '@/lib/world/currencies';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 import {
   Tag, Loader2, ArrowLeft, AlertCircle, Plus, Pencil, Trash2, Percent, DollarSign, Truck,
 } from 'lucide-react';
@@ -72,6 +74,13 @@ export default function Discounts() {
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Créez d'abord votre boutique</h1>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d] mt-3">Configurer ma boutique</Link>
+      </div>
+    );
+  }
+  if (!hasFeature(store.plan, 'discounts')) {
+    return (
+      <div className="max-w-md mx-auto mt-20">
+        <PaywallCard requiredPlan="growth" title="Les codes promo nécessitent le plan Growth" description="Créez des réductions et codes promo pour booster vos ventes. Passez au plan Growth ou supérieur pour y accéder." />
       </div>
     );
   }

@@ -14,7 +14,7 @@ export default function AuthLayout({ title, subtitle, footer, children }) {
 
       <div className="relative w-full max-w-md py-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-14 mb-4 px-2">
+          <div className="inline-flex items-center justify-center h-16 mb-4 px-5 py-3 bg-white rounded-2xl shadow-lg">
             <img src={BRAND.logo} alt={BRAND.name} className="h-full w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>

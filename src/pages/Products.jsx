@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
 import { formatMoney } from '@/lib/world/currencies';
+import { getFeatureValue } from '@/lib/plans';
 import {
   Plus, Search, Loader2, Package, Pencil, Trash2, ArrowLeft, AlertCircle,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ export default function Products() {
   const { store, loading: storeLoading } = useCurrentStore();
   const location = useLocation();
   const [products, setProducts] = useState([]);
+  const productLimit = store ? getFeatureValue(store.plan, 'products') : Infinity;
   const [loading, setLoading] = useState(false);
   const [q, setQ] = useState(() => new URLSearchParams(window.location.search).get('q') || '');
   const [status, setStatus] = useState('all');
@@ -96,7 +98,10 @@ export default function Products() {
           <Link to="/dashboard" className="text-[#6D7175] hover:text-[#202223]"><ArrowLeft className="w-5 h-5" /></Link>
           <div className="min-w-0">
             <h1 className="text-base font-bold text-[#202223] flex items-center gap-2"><Package className="w-4 h-4 text-[#008060]" /> Produits</h1>
-            <p className="text-xs text-[#6D7175] truncate">{store.name} · {store.currency}</p>
+            <p className="text-xs text-[#6D7175] truncate">
+              {store.name} · {store.currency}
+              {Number.isFinite(productLimit) && <span className={products.length >= productLimit ? 'text-red-500 font-semibold' : ''}> · {products.length}/{productLimit} produits</span>}
+            </p>
           </div>
         </div>
         <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-[#00694d] shrink-0">

@@ -8,7 +8,7 @@ export const PLANS = {
     tagline: 'Pour lancer votre première boutique',
     limits: {
       stores: 1,
-      products: 50,
+      products: 20,
       users: 1,
       themes: 'basic',
       editor: false,
@@ -34,7 +34,7 @@ export const PLANS = {
     tagline: 'Pour les marchands en croissance',
     limits: {
       stores: 1,
-      products: 1000,
+      products: 60,
       users: 3,
       themes: 'premium',
       editor: true,
@@ -60,7 +60,7 @@ export const PLANS = {
     tagline: 'Pour les marchands établis',
     limits: {
       stores: 2,
-      products: Infinity,
+      products: 150,
       users: 10,
       themes: 'premium',
       editor: true,

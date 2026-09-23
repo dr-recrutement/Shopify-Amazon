@@ -6,6 +6,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package } from 'lucide-react';
 import { formatMoney } from '@/lib/world/currencies';
+import { getFeatureValue, getPlan } from '@/lib/plans';
 
 const STATUSES = [
   { value: 'active', label: 'Actif' },
@@ -197,6 +198,23 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
     if (!form.title) return;
     setSaving(true);
     try {
+      if (isNew) {
+        // Real plan enforcement: Starter/Growth/Pro/Enterprise each cap
+        // the product count differently (src/lib/plans.js) - this was
+        // declared but never actually checked anywhere before, so every
+        // plan could create unlimited products regardless of what the
+        // pricing page promised.
+        const limit = getFeatureValue(store.plan, 'products');
+        if (Number.isFinite(limit)) {
+          const { count, error: countError } = await supabase.from('products').select('id', { count: 'exact', head: true }).eq('tenant_id', store.id);
+          if (countError) throw countError;
+          if ((count || 0) >= limit) {
+            setSaving(false);
+            alert(`Limite atteinte : le plan ${getPlan(store.plan).name} autorise ${limit} produits maximum. Passez à un plan supérieur dans Paramètres → Plan pour en ajouter davantage.`);
+            return;
+          }
+        }
+      }
       // Native `products` columns only carry name/description/price_cents/
       // currency/stock/status/images/sku/compare_at_price_cents/variants -
       // the rest (vendor, product_type, tags, barcode, weight,

@@ -8,33 +8,33 @@ import {
 } from 'lucide-react';
 
 const PROVIDERS = [
-  { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Cartes internationales', live: true },
-  { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Cartes + Mobile Money', live: true },
-  { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Ouest & du Sud', live: true },
-  { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Portefeuille international' },
-  { value: 'adyen', label: 'Adyen', logo: 'adyen.png', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Entreprise, multi-devises' },
-  { value: 'braintree', label: 'Braintree', logo: 'braintree.jpg', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Groupe PayPal' },
-  { value: 'square', label: 'Square', logo: 'square.jpg', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Cartes & point de vente' },
-  { value: 'klarna', label: 'Klarna', logo: 'klarna.jpg', region: 'Europe', fields: ['api_secret', 'api_key'], hint: 'Paiement en plusieurs fois' },
-  { value: 'alipay', label: 'Alipay', logo: 'alipay.png', region: 'Asie', fields: ['api_secret', 'api_key'], hint: 'Portefeuille chinois' },
-  { value: 'grabpay', label: 'GrabPay', logo: 'grabpay.webp', region: 'Asie', fields: ['api_secret', 'api_key'], hint: 'Asie du Sud-Est' },
-  { value: 'payunit', label: 'Payunit', logo: 'payunit.png', region: 'Afrique', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Mobile Money (CEMAC)' },
-  { value: 'wave', label: 'Wave', logo: 'wave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money (Afrique de l\u2019Ouest)' },
-  { value: 'mtn-momo', label: 'MTN MoMo', logo: 'mtn-momo.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
-  { value: 'orange-money', label: 'Orange Money', logo: 'orange-money.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
-  { value: 'airtel-money', label: 'Airtel Money', logo: 'airtel-money.jpg', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
-  { value: 'mpesa', label: 'M-Pesa', logo: 'mpesa.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money (Afrique de l\u2019Est)' },
-  { value: 'cellulant', label: 'Cellulant', logo: 'cellulant.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur panafricain' },
-  { value: 'cinetpay', label: 'CinetPay', logo: 'cinetpay.webp', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur (CEMAC/UEMOA)' },
-  { value: 'kkiapay', label: 'Kkiapay', logo: 'kkiapay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur (Bénin & région)' },
-  { value: 'azipay', label: 'AziPay', logo: 'azipay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
-  { value: 'touchpay', label: 'TouchPay', logo: 'touchpay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
-  { value: 'pesapal', label: 'Pesapal', logo: 'pesapal.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Est' },
-  { value: 'payfast', label: 'PayFast', logo: 'payfast.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique du Sud' },
-  { value: 'yoco', label: 'Yoco', logo: 'yoco.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique du Sud' },
-  { value: 'mercadopago', label: 'Mercado Pago', logo: 'mercadopago.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Amérique latine' },
-  { value: 'pagseguro', label: 'PagSeguro', logo: 'pagseguro.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Brésil' },
-  { value: 'ebanx', label: 'EBANX', logo: 'ebanx.jpg', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Amérique latine' },
+  { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Clé secrète (sk_live_...)', api_key: 'Clé publique (pk_live_...)' }, hint: 'Cartes internationales', live: true },
+  { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (FLWSECK-...)', api_key: 'Public Key (FLWPUBK-...)' }, hint: 'Cartes + Mobile Money', live: true },
+  { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (sk_live_...)', api_key: 'Public Key (pk_live_...)' }, hint: 'Afrique de l\u2019Ouest & du Sud', live: true },
+  { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Client Secret', api_key: 'Client ID' }, hint: 'Portefeuille international' },
+  { value: 'adyen', label: 'Adyen', logo: 'adyen.png', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'API Key', api_key: 'Client Key', client_id: 'Merchant Account' }, hint: 'Entreprise, multi-devises' },
+  { value: 'braintree', label: 'Braintree', logo: 'braintree.jpg', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'Private Key', api_key: 'Public Key', client_id: 'Merchant ID' }, hint: 'Groupe PayPal' },
+  { value: 'square', label: 'Square', logo: 'square.jpg', region: 'Mondial', fields: ['api_secret', 'client_id'], labels: { api_secret: 'Access Token', client_id: 'Location ID' }, hint: 'Cartes & point de vente' },
+  { value: 'klarna', label: 'Klarna', logo: 'klarna.jpg', region: 'Europe', fields: ['api_key', 'api_secret'], labels: { api_key: 'Username (UID)', api_secret: 'Password (API key)' }, hint: 'Paiement en plusieurs fois' },
+  { value: 'alipay', label: 'Alipay', logo: 'alipay.png', region: 'Asie', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'App ID', api_secret: 'Clé privée de l\u2019application', api_key: 'Clé publique Alipay' }, hint: 'Portefeuille chinois' },
+  { value: 'grabpay', label: 'GrabPay', logo: 'grabpay.webp', region: 'Asie', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Partner ID', api_secret: 'Partner Secret', api_key: 'Merchant ID' }, hint: 'Asie du Sud-Est' },
+  { value: 'payunit', label: 'Payunit', logo: 'payunit.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'API Username', api_secret: 'API Password' }, hint: 'Mobile Money (CEMAC)' },
+  { value: 'wave', label: 'Wave', logo: 'wave.png', region: 'Afrique', fields: ['api_secret'], labels: { api_secret: 'API Key (Bearer token)' }, hint: 'Mobile Money (Afrique de l\u2019Ouest)' },
+  { value: 'mtn-momo', label: 'MTN MoMo', logo: 'mtn-momo.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'Subscription Key', client_id: 'API User (UUID)', api_secret: 'API Key' }, hint: 'Mobile Money (Open API)' },
+  { value: 'orange-money', label: 'Orange Money', logo: 'orange-money.png', region: 'Afrique', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Client ID', api_secret: 'Client Secret', api_key: 'Merchant Key' }, hint: 'Mobile Money' },
+  { value: 'airtel-money', label: 'Airtel Money', logo: 'airtel-money.jpg', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Client ID', api_secret: 'Client Secret' }, hint: 'Mobile Money' },
+  { value: 'mpesa', label: 'M-Pesa', logo: 'mpesa.png', region: 'Afrique', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Consumer Key', api_secret: 'Consumer Secret', api_key: 'Shortcode / Passkey' }, hint: 'Mobile Money (Daraja API)' },
+  { value: 'cellulant', label: 'Cellulant', logo: 'cellulant.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Client ID', api_secret: 'Client Secret' }, hint: 'Agrégateur panafricain (Tingg)' },
+  { value: 'cinetpay', label: 'CinetPay', logo: 'cinetpay.webp', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'Site ID', api_secret: 'Clé secrète' }, hint: 'Agrégateur (CEMAC/UEMOA)' },
+  { value: 'kkiapay', label: 'Kkiapay', logo: 'kkiapay.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'Public Key', client_id: 'Private Key', api_secret: 'Secret Key' }, hint: 'Agrégateur (Bénin & région)' },
+  { value: 'azipay', label: 'AziPay', logo: 'azipay.png', region: 'Afrique', fields: ['api_key', 'api_secret'], labels: { api_key: 'API Key', api_secret: 'Clé secrète' }, hint: 'Mobile Money' },
+  { value: 'touchpay', label: 'TouchPay', logo: 'touchpay.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'ID Agent / Marchand', api_secret: 'Clé API' }, hint: 'Mobile Money' },
+  { value: 'pesapal', label: 'Pesapal', logo: 'pesapal.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Consumer Key', api_secret: 'Consumer Secret' }, hint: 'Afrique de l\u2019Est' },
+  { value: 'payfast', label: 'PayFast', logo: 'payfast.png', region: 'Afrique', fields: ['client_id', 'api_key', 'api_secret'], labels: { client_id: 'Merchant ID', api_key: 'Merchant Key', api_secret: 'Passphrase' }, hint: 'Afrique du Sud' },
+  { value: 'yoco', label: 'Yoco', logo: 'yoco.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key', api_key: 'Public Key' }, hint: 'Afrique du Sud' },
+  { value: 'mercadopago', label: 'Mercado Pago', logo: 'mercadopago.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Access Token', api_key: 'Public Key' }, hint: 'Amérique latine' },
+  { value: 'pagseguro', label: 'PagSeguro', logo: 'pagseguro.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Token', api_key: 'E-mail du compte' }, hint: 'Brésil' },
+  { value: 'ebanx', label: 'EBANX', logo: 'ebanx.jpg', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Integration Key', api_key: 'Public Integration Key' }, hint: 'Amérique latine' },
 ];
 const REGIONS = ['Tous', 'Mondial', 'Afrique', 'Europe', 'Asie', 'Amérique latine'];
 const FIELD_LABELS = { api_secret: 'Clé secrète', api_key: 'Clé publique / API key', client_id: 'Identifiant client / marchand' };
@@ -229,7 +229,7 @@ export default function Payments() {
               <div className="space-y-3">
                 {activeProvider?.fields.map((f) => (
                   <div key={f}>
-                    <label className="block text-xs font-semibold text-[#202223] mb-1.5">{FIELD_LABELS[f]}</label>
+                    <label className="block text-xs font-semibold text-[#202223] mb-1.5">{activeProvider?.labels?.[f] || FIELD_LABELS[f]}</label>
                     <div className="relative">
                       <input type={show[f] ? 'text' : 'password'} value={form.credentials[f] || ''} onChange={(e) => setCred(f, e.target.value)} className={inputCls + ' pr-9'} placeholder={editing ? '•••••••• (inchangé si vide)' : ''} />
                       <button type="button" onClick={() => setShow((s) => ({ ...s, [f]: !s[f] }))} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6D7175] hover:text-[#202223]">{show[f] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>

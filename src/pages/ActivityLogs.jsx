@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { Package, ShoppingCart, Users, Activity as ActivityIcon, Loader2, ArrowLeft } from 'lucide-react';
 
@@ -17,6 +17,9 @@ function relTime(d) {
   return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
+// No updated_at column exists on products/orders/customers here, so this
+// can genuinely only ever say "Créé" - not silently claiming to track
+// edits it can't actually see.
 export default function ActivityLogs() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [items, setItems] = useState([]);
@@ -27,16 +30,18 @@ export default function ActivityLogs() {
     setLoading(true);
     try {
       const [products, orders, customers] = await Promise.all([
-        base44.entities.Product.filter({ store_id: store.id }, '-updated_date', 25),
-        base44.entities.Order.filter({ store_id: store.id }, '-updated_date', 25),
-        base44.entities.Customer.filter({ store_id: store.id }, '-updated_date', 25),
+        supabase.from('products').select('id, name, created_at').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(25),
+        supabase.from('orders').select('id, customer_email, created_at').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(25),
+        supabase.from('customers').select('id, name, email, created_at').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(25),
       ]);
       const merged = [
-        ...(products || []).map((p) => ({ type: 'product', id: p.id, label: p.title || 'Produit', at: p.updated_date, created: p.created_date, isNew: p.created_date === p.updated_date })),
-        ...(orders || []).map((o) => ({ type: 'order', id: o.id, label: o.order_number || `Commande ${o.id.slice(0, 6)}`, at: o.updated_date, created: o.created_date, isNew: o.created_date === o.updated_date })),
-        ...(customers || []).map((c) => ({ type: 'customer', id: c.id, label: [c.first_name, c.last_name].filter(Boolean).join(' ') || c.email || 'Client', at: c.updated_date, created: c.created_date, isNew: c.created_date === c.updated_date })),
+        ...(products.data || []).map((p) => ({ type: 'product', id: p.id, label: p.name || 'Produit', at: p.created_at })),
+        ...(orders.data || []).map((o) => ({ type: 'order', id: o.id, label: `Commande #${o.id.slice(0, 8).toUpperCase()}${o.customer_email ? ` · ${o.customer_email}` : ''}`, at: o.created_at })),
+        ...(customers.data || []).map((c) => ({ type: 'customer', id: c.id, label: c.name || c.email || 'Client', at: c.created_at })),
       ].sort((a, b) => new Date(b.at) - new Date(a.at)).slice(0, 40);
       setItems(merged);
+    } catch (e) {
+      console.error('Failed to load activity:', e);
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -68,7 +73,7 @@ export default function ActivityLogs() {
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${COLORS[it.type]}`}><Icon className="w-4 h-4" /></div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-[#202223] truncate">{it.label}</p>
-                  <p className="text-[11px] text-[#6D7175]">{it.isNew ? 'Créé' : 'Modifié'}</p>
+                  <p className="text-[11px] text-[#6D7175]">Créé</p>
                 </div>
                 <span className="text-[11px] text-[#6D7175] shrink-0">{relTime(it.at)}</span>
               </div>

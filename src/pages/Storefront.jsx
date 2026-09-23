@@ -81,6 +81,11 @@ export default function Storefront() {
         setLoading(false);
         return;
       }
+      if (tenant.status === 'trial' && tenant.trial_ends_at && new Date(tenant.trial_ends_at) < new Date()) {
+        setError({ trialExpired: true });
+        setLoading(false);
+        return;
+      }
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
       const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, gatewaysRes] = await Promise.all([
@@ -274,8 +279,8 @@ export default function Storefront() {
   if (error) return (
     <div className="max-w-md mx-auto mt-24 text-center">
       <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-      <h1 className="text-lg font-bold text-foreground">{error.suspended ? 'Boutique temporairement indisponible' : 'Boutique introuvable'}</h1>
-      <p className="text-sm text-muted-foreground mt-1">{error.suspended ? (error.reason || 'Cette boutique est actuellement suspendue.') : error}</p>
+      <h1 className="text-lg font-bold text-foreground">{error.suspended ? 'Boutique temporairement indisponible' : error.trialExpired ? "Période d'essai terminée" : 'Boutique introuvable'}</h1>
+      <p className="text-sm text-muted-foreground mt-1">{error.suspended ? (error.reason || 'Cette boutique est actuellement suspendue.') : error.trialExpired ? "La période d'essai gratuit du marchand est terminée. La boutique sera de nouveau accessible dès la souscription d'un abonnement." : error}</p>
       <Link to="/" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-4">Retour à l'accueil</Link>
     </div>
   );

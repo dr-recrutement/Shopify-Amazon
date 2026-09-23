@@ -8,11 +8,35 @@ import {
 } from 'lucide-react';
 
 const PROVIDERS = [
-  { value: 'stripe', label: 'Stripe', fields: ['api_secret', 'api_key'], hint: 'Cartes internationales' },
-  { value: 'flutterwave', label: 'Flutterwave', fields: ['api_secret', 'api_key'], hint: 'Cartes + Mobile Money (Afrique)' },
-  { value: 'paystack', label: 'Paystack', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Ouest & du Sud' },
-  { value: 'payunit', label: 'Payunit', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Mobile Money (CEMAC)' },
+  { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Cartes internationales', live: true },
+  { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Cartes + Mobile Money', live: true },
+  { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Ouest & du Sud', live: true },
+  { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Portefeuille international' },
+  { value: 'adyen', label: 'Adyen', logo: 'adyen.png', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Entreprise, multi-devises' },
+  { value: 'braintree', label: 'Braintree', logo: 'braintree.jpg', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Groupe PayPal' },
+  { value: 'square', label: 'Square', logo: 'square.jpg', region: 'Mondial', fields: ['api_secret', 'api_key'], hint: 'Cartes & point de vente' },
+  { value: 'klarna', label: 'Klarna', logo: 'klarna.jpg', region: 'Europe', fields: ['api_secret', 'api_key'], hint: 'Paiement en plusieurs fois' },
+  { value: 'alipay', label: 'Alipay', logo: 'alipay.png', region: 'Asie', fields: ['api_secret', 'api_key'], hint: 'Portefeuille chinois' },
+  { value: 'grabpay', label: 'GrabPay', logo: 'grabpay.webp', region: 'Asie', fields: ['api_secret', 'api_key'], hint: 'Asie du Sud-Est' },
+  { value: 'payunit', label: 'Payunit', logo: 'payunit.png', region: 'Afrique', fields: ['api_secret', 'api_key', 'client_id'], hint: 'Mobile Money (CEMAC)' },
+  { value: 'wave', label: 'Wave', logo: 'wave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money (Afrique de l\u2019Ouest)' },
+  { value: 'mtn-momo', label: 'MTN MoMo', logo: 'mtn-momo.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
+  { value: 'orange-money', label: 'Orange Money', logo: 'orange-money.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
+  { value: 'airtel-money', label: 'Airtel Money', logo: 'airtel-money.jpg', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
+  { value: 'mpesa', label: 'M-Pesa', logo: 'mpesa.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money (Afrique de l\u2019Est)' },
+  { value: 'cellulant', label: 'Cellulant', logo: 'cellulant.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur panafricain' },
+  { value: 'cinetpay', label: 'CinetPay', logo: 'cinetpay.webp', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur (CEMAC/UEMOA)' },
+  { value: 'kkiapay', label: 'Kkiapay', logo: 'kkiapay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Agrégateur (Bénin & région)' },
+  { value: 'azipay', label: 'AziPay', logo: 'azipay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
+  { value: 'touchpay', label: 'TouchPay', logo: 'touchpay.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Mobile Money' },
+  { value: 'pesapal', label: 'Pesapal', logo: 'pesapal.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique de l\u2019Est' },
+  { value: 'payfast', label: 'PayFast', logo: 'payfast.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique du Sud' },
+  { value: 'yoco', label: 'Yoco', logo: 'yoco.png', region: 'Afrique', fields: ['api_secret', 'api_key'], hint: 'Afrique du Sud' },
+  { value: 'mercadopago', label: 'Mercado Pago', logo: 'mercadopago.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Amérique latine' },
+  { value: 'pagseguro', label: 'PagSeguro', logo: 'pagseguro.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Brésil' },
+  { value: 'ebanx', label: 'EBANX', logo: 'ebanx.jpg', region: 'Amérique latine', fields: ['api_secret', 'api_key'], hint: 'Amérique latine' },
 ];
+const REGIONS = ['Tous', 'Mondial', 'Afrique', 'Europe', 'Asie', 'Amérique latine'];
 const FIELD_LABELS = { api_secret: 'Clé secrète', api_key: 'Clé publique / API key', client_id: 'Identifiant client / marchand' };
 const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 
@@ -28,6 +52,7 @@ export default function Payments() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [regionFilter, setRegionFilter] = useState('Tous');
   const [editing, setEditing] = useState(null);
   const [show, setShow] = useState({});
 
@@ -147,9 +172,11 @@ export default function Payments() {
               return (
                 <div key={p.id} className="bg-white rounded-xl border border-[#E1E1E1] p-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-[#008060]/10 flex items-center justify-center shrink-0"><CreditCard className="w-5 h-5 text-[#008060]" /></div>
+                    <div className="w-10 h-10 rounded-lg bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">
+                      {meta.logo ? <img src={`/payment-logos/${meta.logo}`} alt="" className="w-full h-full object-contain p-1" /> : <CreditCard className="w-5 h-5 text-[#008060]" />}
+                    </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#202223]">{meta.label}</p>
+                      <p className="text-sm font-semibold text-[#202223] flex items-center gap-1.5">{meta.label}{meta.live && <span className="text-[9px] font-bold text-[#008060] bg-[#008060]/10 px-1.5 py-0.5 rounded-full">Paiement réel</span>}</p>
                       <p className="text-xs text-[#6D7175] truncate">{meta.hint}</p>
                     </div>
                   </div>
@@ -176,14 +203,27 @@ export default function Payments() {
               {!editing && (
                 <div>
                   <label className="block text-xs font-semibold text-[#202223] mb-1.5">Fournisseur</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {PROVIDERS.map((p) => (
-                      <button key={p.value} type="button" onClick={() => set({ provider: p.value })} className={`flex flex-col items-start gap-0.5 p-3 rounded-lg border text-left ${form.provider === p.value ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:bg-black/[0.02]'}`}>
-                        <span className="text-sm font-semibold text-[#202223]">{p.label}</span>
-                        <span className="text-[11px] text-[#6D7175]">{p.hint}</span>
+                  <div className="flex gap-1.5 flex-wrap mb-2.5">
+                    {REGIONS.map((r) => (
+                      <button key={r} type="button" onClick={() => setRegionFilter(r)} className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${regionFilter === r ? 'bg-[#202223] text-white border-[#202223]' : 'border-[#E1E1E1] text-[#6D7175] hover:bg-black/5'}`}>{r}</button>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
+                    {PROVIDERS.filter((p) => regionFilter === 'Tous' || p.region === regionFilter).map((p) => (
+                      <button key={p.value} type="button" onClick={() => set({ provider: p.value })} className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left ${form.provider === p.value ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:bg-black/[0.02]'}`}>
+                        <div className="w-8 h-8 rounded-md bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">
+                          <img src={`/payment-logos/${p.logo}`} alt="" className="w-full h-full object-contain p-0.5" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-semibold text-[#202223] block truncate">{p.label}</span>
+                          <span className="text-[10px] text-[#6D7175] block truncate">{p.hint}</span>
+                        </div>
                       </button>
                     ))}
                   </div>
+                  {!activeProvider?.live && (
+                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave et Paystack le sont actuellement).</p>
+                  )}
                 </div>
               )}
               <div className="space-y-3">

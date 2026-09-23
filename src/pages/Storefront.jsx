@@ -38,6 +38,17 @@ function loadScript(src) {
   return scriptPromises[src];
 }
 
+// Real inventory tracking - only called once a sale is truly confirmed
+// (manual payment methods at order creation, card payments only after
+// server-side verification succeeds) so stock never drops for an order
+// that was abandoned or declined. Non-fatal: a stock-sync hiccup
+// shouldn't block an already-committed/paid order from completing.
+async function decrementStockForItems(items) {
+  await Promise.all((items || []).map((it) =>
+    supabase.rpc('decrement_stock', { p_product_id: it.product_id, p_variant_id: it.variant_id || null, p_quantity: it.quantity }).catch(() => {})
+  ));
+}
+
 export default function Storefront() {
   const { slug } = useParams();
   const [store, setStore] = useState(null);
@@ -503,6 +514,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
         if (vErr) throw vErr;
         if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
 
+        await decrementStockForItems(items);
         setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
         setDone(true);
         onDone();
@@ -531,6 +543,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
               const { data: v, error: vErr } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id: response.transaction_id, tx_ref: response.tx_ref } });
               if (vErr) throw vErr;
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
+              await decrementStockForItems(items);
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
               setDone(true);
               onDone();
@@ -565,6 +578,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
                 const { data: v, error: vErr } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'verify', reference: response.reference } });
                 if (vErr) throw vErr;
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
+                await decrementStockForItems(items);
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
                 setDone(true);
                 onDone();
@@ -581,6 +595,7 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
         return;
       }
 
+      await decrementStockForItems(items);
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
       onDone();

@@ -1,16 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FileBarChart, Loader2, AlertCircle, TrendingUp, Package, Users, Download } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar } from 'recharts';
 
 const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
 
 export default function Reports() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [orders, setOrders] = useState([]);
+  const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,11 +22,18 @@ export default function Reports() {
     setLoading(true);
     try {
       const [o, p, c] = await Promise.all([
-        base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500),
-        base44.entities.Product.filter({ store_id: store.id }, '-created_date', 100),
-        base44.entities.Customer.filter({ store_id: store.id }, '-created_date', 200),
+        supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500),
+        supabase.from('products').select('id').eq('tenant_id', store.id).limit(100),
+        supabase.from('customers').select('id').eq('tenant_id', store.id).limit(200),
       ]);
-      setOrders(o); setProducts(p); setCustomers(c);
+      setOrders(o.data || []); setProducts(p.data || []); setCustomers(c.data || []);
+      const orderIds = (o.data || []).map((x) => x.id);
+      if (orderIds.length > 0) {
+        const { data: its } = await supabase.from('order_items').select('*').in('order_id', orderIds);
+        setItems(its || []);
+      } else {
+        setItems([]);
+      }
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -38,12 +47,12 @@ export default function Reports() {
       map.set(`${d.getFullYear()}-${d.getMonth()}`, { revenue: 0, orders: 0 });
     }
     orders.forEach((o) => {
-      if (!o.created_date) return;
-      const d = new Date(o.created_date);
+      if (!o.created_at) return;
+      const d = new Date(o.created_at);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       if (map.has(key)) {
         const cur = map.get(key);
-        cur.revenue += o.payment_status === 'paid' ? (o.total || 0) : 0;
+        cur.revenue += !NOT_PAID.has(o.status) ? (o.total_cents || 0) / 100 : 0;
         cur.orders += 1;
       }
     });
@@ -55,18 +64,16 @@ export default function Reports() {
 
   const productPerf = useMemo(() => {
     const acc = new Map();
-    orders.forEach((o) => {
-      (o.items || []).forEach((it) => {
-        const key = it.product_id || it.title;
-        if (!key) return;
-        const cur = acc.get(key) || { nom: it.title, ventes: 0, revenu: 0 };
-        cur.ventes += it.quantity || 0;
-        cur.revenu += it.total || 0;
-        acc.set(key, cur);
-      });
+    items.forEach((it) => {
+      const key = it.product_id || it.product_name;
+      if (!key) return;
+      const cur = acc.get(key) || { nom: it.product_name, ventes: 0, revenu: 0 };
+      cur.ventes += it.quantity || 0;
+      cur.revenu += ((it.price_cents || 0) * (it.quantity || 0)) / 100;
+      acc.set(key, cur);
     });
     return Array.from(acc.values()).sort((a, b) => b.revenu - a.revenu).slice(0, 10);
-  }, [orders]);
+  }, [items]);
 
   const statusBreakdown = useMemo(() => {
     const m = {};
@@ -75,8 +82,8 @@ export default function Reports() {
   }, [orders]);
 
   const totals = useMemo(() => {
-    const paid = orders.filter((o) => o.payment_status === 'paid');
-    const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
+    const paid = orders.filter((o) => !NOT_PAID.has(o.status));
+    const revenue = paid.reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
     const aov = paid.length ? revenue / paid.length : 0;
     return { revenue, orders: orders.length, aov, customers: customers.length, products: products.length };
   }, [orders, customers, products]);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, TrendingUp, Percent, ShoppingBag, Loader2, AlertCircle, Activity, Clock, DollarSign } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import StatCard from '@/components/admin/StatCard';
@@ -18,45 +18,37 @@ const STATUS_COLORS = {
   pending: '#F59E0B', paid: '#008060', processing: '#3B82F6', fulfilled: '#8B5CF6',
   shipped: '#0EA5E9', delivered: '#10B981', cancelled: '#EF4444', refunded: '#6B7280',
 };
+const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
 
 export default function Analytics() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [carts, setCarts] = useState([]);
+  const [items, setItems] = useState([]);
+  const [abandonedCarts, setAbandonedCarts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [live, setLive] = useState(true);
 
   const load = useCallback(async () => {
     if (!store?.id) return;
     setLoading(true);
     try {
-      const [ord, prod, crt] = await Promise.all([
-        base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500),
-        base44.entities.Product.filter({ store_id: store.id }, '-created_date', 200),
-        base44.entities.Cart.filter({ store_id: store.id, status: 'active' }, '-created_date', 50),
-      ]);
-      setOrders(ord);
-      setProducts(prod);
-      setCarts(crt);
+      const { data: ord, error: ordError } = await supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500);
+      if (ordError) throw ordError;
+      setOrders(ord || []);
+      const orderIds = (ord || []).map((o) => o.id);
+      if (orderIds.length > 0) {
+        const { data: its } = await supabase.from('order_items').select('*').in('order_id', orderIds);
+        setItems(its || []);
+      } else {
+        setItems([]);
+      }
+      const { data: carts } = await supabase.from('abandoned_carts').select('id').eq('tenant_id', store.id).eq('status', 'active');
+      setAbandonedCarts(carts || []);
+    } catch (e) {
+      console.error('Failed to load analytics:', e);
     } finally { setLoading(false); }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
-
-  // Real-time subscription
-  useEffect(() => {
-    if (!store?.id) return;
-    const unsub = base44.entities.Order.subscribe((event) => {
-      setOrders((prev) => {
-        if (event.type === 'create') return [event.data, ...prev];
-        if (event.type === 'update') return prev.map((o) => (o.id === event.data.id ? event.data : o));
-        if (event.type === 'delete') return prev.filter((o) => o.id !== event.data.id);
-        return prev;
-      });
-    });
-    return unsub;
-  }, [store?.id]);
 
   const monthly = useMemo(() => {
     const now = new Date();
@@ -66,10 +58,10 @@ export default function Analytics() {
       map.set(`${d.getFullYear()}-${d.getMonth()}`, 0);
     }
     orders.forEach((o) => {
-      if (!o.created_date) return;
-      const d = new Date(o.created_date);
+      if (!o.created_at || NOT_PAID.has(o.status)) return;
+      const d = new Date(o.created_at);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
-      if (map.has(key)) map.set(key, map.get(key) + (o.total || 0));
+      if (map.has(key)) map.set(key, map.get(key) + (o.total_cents || 0) / 100);
     });
     return Array.from(map.entries()).map(([k, v]) => {
       const [, m] = k.split('-');
@@ -85,24 +77,24 @@ export default function Analytics() {
       map.set(d.toDateString(), { jour: DAY_LABELS[d.getDay()], commandes: 0, revenu: 0 });
     }
     orders.forEach((o) => {
-      if (!o.created_date) return;
-      const d = new Date(o.created_date).toDateString();
+      if (!o.created_at) return;
+      const d = new Date(o.created_at).toDateString();
       if (map.has(d)) {
         const cur = map.get(d);
         cur.commandes += 1;
-        cur.revenu += o.total || 0;
+        if (!NOT_PAID.has(o.status)) cur.revenu += (o.total_cents || 0) / 100;
       }
     });
     return Array.from(map.values()).map((v) => ({ ...v, revenu: Math.round(v.revenu / 1000) }));
   }, [orders]);
 
   const totals = useMemo(() => {
-    const paid = orders.filter((o) => o.payment_status === 'paid');
-    const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
-    const customers = new Set(orders.map((o) => o.customer_id).filter(Boolean)).size;
+    const paid = orders.filter((o) => !NOT_PAID.has(o.status));
+    const revenue = paid.reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
+    const customers = new Set(orders.map((o) => o.customer_email).filter(Boolean)).size;
     const todayKey = new Date().toDateString();
-    const todayOrders = orders.filter((o) => o.created_date && new Date(o.created_date).toDateString() === todayKey);
-    const todayRevenue = todayOrders.reduce((s, o) => s + (o.total || 0), 0);
+    const todayOrders = orders.filter((o) => o.created_at && new Date(o.created_at).toDateString() === todayKey);
+    const todayRevenue = todayOrders.filter((o) => !NOT_PAID.has(o.status)).reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
     const pending = orders.filter((o) => o.status === 'pending' || o.status === 'processing').length;
     const aov = paid.length > 0 ? revenue / paid.length : 0;
     return { revenue, orders: orders.length, customers, todayRevenue, todayOrders: todayOrders.length, pending, aov };
@@ -110,32 +102,30 @@ export default function Analytics() {
 
   const bestSellers = useMemo(() => {
     const acc = new Map();
-    orders.forEach((o) => {
-      (o.items || []).forEach((it) => {
-        const key = it.product_id || it.title;
-        if (!key) return;
-        const cur = acc.get(key) || { nom: it.title, ventes: 0, revenu: 0 };
-        cur.ventes += it.quantity || 0;
-        cur.revenu += it.total || 0;
-        acc.set(key, cur);
-      });
+    items.forEach((it) => {
+      const key = it.product_id || it.product_name;
+      if (!key) return;
+      const cur = acc.get(key) || { nom: it.product_name, ventes: 0, revenu: 0 };
+      cur.ventes += it.quantity || 0;
+      cur.revenu += ((it.price_cents || 0) * (it.quantity || 0)) / 100;
+      acc.set(key, cur);
     });
     const list = Array.from(acc.values()).sort((a, b) => b.ventes - a.ventes).slice(0, 6);
     const max = list[0]?.ventes || 1;
     return list.map((p) => ({ ...p, pct: Math.round((p.ventes / max) * 100) }));
-  }, [orders]);
+  }, [items]);
 
   const funnel = useMemo(() => {
     const visits = Math.max(orders.length * 8, orders.length, 1);
     const productViews = Math.round(visits * 0.45);
-    const carts = orders.length + (carts?.length || 0);
+    const cartsCount = orders.length + abandonedCarts.length;
     return [
       { etape: 'Visites', valeur: visits },
       { etape: 'Vues produit', valeur: productViews },
-      { etape: 'Paniers', valeur: carts },
+      { etape: 'Paniers', valeur: cartsCount },
       { etape: 'Commandes', valeur: orders.length },
     ];
-  }, [orders, carts]);
+  }, [orders, abandonedCarts]);
 
   const conversion = funnel[0].valeur > 0 ? ((orders.length / funnel[0].valeur) * 100).toFixed(2) : '0';
   const recentOrders = orders.slice(0, 5);
@@ -162,7 +152,7 @@ export default function Analytics() {
           </div>
         </div>
         <button onClick={load} className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/30 rounded-full px-3 py-1.5 hover:bg-[#008060]/5">
-          <Activity className={`w-3.5 h-3.5 ${live ? 'animate-pulse' : ''}`} /> {live ? 'En direct' : 'Actualiser'}
+          <Activity className="w-3.5 h-3.5" /> Actualiser
         </button>
       </div>
 
@@ -286,11 +276,11 @@ export default function Analytics() {
               {recentOrders.map((o) => (
                 <Link key={o.id} to="/orders" className="flex items-center justify-between p-2.5 rounded-lg hover:bg-[#F4F4F4] transition">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-[#202223] truncate">{o.order_number || o.customer_email || 'Commande'}</p>
-                    <p className="text-xs text-[#6D7175]">{o.created_date ? new Date(o.created_date).toLocaleDateString('fr-FR') : ''}</p>
+                    <p className="text-sm font-medium text-[#202223] truncate">{'#' + o.id.slice(0, 8).toUpperCase() + (o.customer_email ? ` · ${o.customer_email}` : '')}</p>
+                    <p className="text-xs text-[#6D7175]">{o.created_at ? new Date(o.created_at).toLocaleDateString('fr-FR') : ''}</p>
                   </div>
                   <div className="text-right shrink-0 ml-3">
-                    <p className="text-sm font-semibold text-[#202223]">{formatMoney(o.total || 0, o.currency || store.currency)}</p>
+                    <p className="text-sm font-semibold text-[#202223]">{formatMoney((o.total_cents || 0) / 100, o.currency || store.currency)}</p>
                     <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: (STATUS_COLORS[o.status] || '#6D7175') + '20', color: STATUS_COLORS[o.status] || '#6D7175' }}>{o.status}</span>
                   </div>
                 </Link>

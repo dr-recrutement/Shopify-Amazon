@@ -1,46 +1,54 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { BarChart3, TrendingUp, Package, Loader2, AlertTriangle, Award } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts';
 
 export default function ProductAnalytics() {
   const { store, loading } = useCurrentStore();
-  const [orders, setOrders] = useState([]);
+  const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
 
   const load = useCallback(async () => {
     if (!store?.id) return;
-    const [o, p] = await Promise.all([
-      base44.entities.Order.filter({ store_id: store.id }, '-created_date', 500),
-      base44.entities.Product.filter({ store_id: store.id }, '-created_date', 500),
+    const { data: ord } = await supabase.from('orders').select('id').eq('tenant_id', store.id).limit(500);
+    const orderIds = (ord || []).map((o) => o.id);
+    const [itemsRes, productsRes] = await Promise.all([
+      orderIds.length > 0 ? supabase.from('order_items').select('*').in('order_id', orderIds) : Promise.resolve({ data: [] }),
+      supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500),
     ]);
-    setOrders(o); setProducts(p);
+    setItems(itemsRes.data || []);
+    setProducts(productsRes.data || []);
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
 
   const bestSellers = useMemo(() => {
     const acc = new Map();
-    orders.forEach((o) => (o.items || []).forEach((it) => {
-      const key = it.product_id || it.title;
+    items.forEach((it) => {
+      const key = it.product_id || it.product_name;
       if (!key) return;
-      const cur = acc.get(key) || { title: it.title, qty: 0, revenue: 0 };
-      cur.qty += it.quantity || 0; cur.revenue += it.total || 0;
+      const cur = acc.get(key) || { title: it.product_name, qty: 0, revenue: 0 };
+      cur.qty += it.quantity || 0;
+      cur.revenue += ((it.price_cents || 0) * (it.quantity || 0)) / 100;
       acc.set(key, cur);
-    }));
+    });
     return Array.from(acc.values()).sort((a, b) => b.qty - a.qty).slice(0, 10);
-  }, [orders]);
+  }, [items]);
 
   const stockTrends = useMemo(() => {
     return products.map((p) => {
-      const stock = p.variants?.length ? p.variants.reduce((s, v) => s + (v.stock || 0), 0) : 0;
-      return { name: p.title.length > 15 ? p.title.slice(0, 15) + '…' : p.title, stock, price: p.price };
+      const stock = p.variants?.length ? p.variants.reduce((s, v) => s + (v.stock || 0), 0) : (p.stock || 0);
+      return { name: p.name.length > 15 ? p.name.slice(0, 15) + '…' : p.name, stock, price: (p.price_cents || 0) / 100 };
     }).sort((a, b) => b.stock - a.stock).slice(0, 8);
   }, [products]);
 
-  const lowStock = useMemo(() => products.flatMap((p) => (p.variants || []).map((v) => ({ title: p.title, variant: v.title, stock: v.stock || 0 })).concat([{ title: p.title, variant: '—', stock: 0 }])).filter((r) => r.stock <= 5).sort((a, b) => a.stock - b.stock), [products]);
+  const lowStock = useMemo(() => products.flatMap((p) => (
+    p.variants?.length
+      ? p.variants.map((v) => ({ title: p.name, variant: v.title, stock: v.stock || 0 }))
+      : [{ title: p.name, variant: '—', stock: p.stock || 0 }]
+  )).filter((r) => r.stock <= 5).sort((a, b) => a.stock - b.stock), [products]);
 
   const totalRevenue = bestSellers.reduce((s, p) => s + p.revenue, 0);
   const totalUnits = bestSellers.reduce((s, p) => s + p.qty, 0);
@@ -108,14 +116,14 @@ export default function ProductAnalytics() {
             {products.length === 0 ? (
               <tr><td colSpan={6} className="px-4 py-8 text-center text-[#6D7175]">Aucun produit.</td></tr>
             ) : products.map((p) => {
-              const sold = bestSellers.find((b) => b.title === p.title)?.qty || 0;
-              const revenue = bestSellers.find((b) => b.title === p.title)?.revenue || 0;
+              const sold = bestSellers.find((b) => b.title === p.name)?.qty || 0;
+              const revenue = bestSellers.find((b) => b.title === p.name)?.revenue || 0;
               const visits = Math.max(sold * 8, sold * 3 + 15, 20);
               const conversion = visits > 0 ? ((sold / visits) * 100).toFixed(1) : '0.0';
               return (
                 <tr key={p.id} className="border-t border-[#E1E1E1] hover:bg-[#F4F4F4]">
-                  <td className="px-4 py-3 font-medium text-[#202223]">{p.title}</td>
-                  <td className="px-4 py-3 text-right text-[#6D7175]">{formatMoney(p.price || 0, store?.currency)}</td>
+                  <td className="px-4 py-3 font-medium text-[#202223]">{p.name}</td>
+                  <td className="px-4 py-3 text-right text-[#6D7175]">{formatMoney((p.price_cents || 0) / 100, store?.currency)}</td>
                   <td className="px-4 py-3 text-right font-bold text-[#202223]">{sold}</td>
                   <td className="px-4 py-3 text-right text-[#6D7175]">{formatMoney(revenue, store?.currency)}</td>
                   <td className="px-4 py-3 text-right text-[#6D7175]">{visits}</td>

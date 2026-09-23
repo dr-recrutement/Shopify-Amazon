@@ -141,10 +141,18 @@ function ImageReplace({ sectionId, path, onUpload, onSetUrl }) {
   );
 }
 
-function Img({ src, className, fittingType = 'fill', editor, sectionId, path, onUpload, onSetUrl }) {
+// Predefined logo dimensions the merchant picks from in the editor,
+// instead of freehand sizing that's easy to get wrong.
+const LOGO_SIZES = {
+  small: 'h-6 sm:h-7 w-20 sm:w-24',
+  medium: 'h-8 sm:h-9 w-24 sm:w-32',
+  large: 'h-10 sm:h-12 w-32 sm:w-40',
+};
+
+function Img({ src, className, fittingType = 'fill', zoom, editor, sectionId, path, onUpload, onSetUrl }) {
   return (
-    <div className={`relative ${className}`}>
-      <Image src={src} className="w-full h-full" fittingType={fittingType} />
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image src={src} className="w-full h-full" fittingType={fittingType} zoom={zoom} />
       {editor && <ImageReplace sectionId={sectionId} path={path} onUpload={onUpload} onSetUrl={onSetUrl} />}
     </div>
   );
@@ -208,7 +216,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                 style={{ borderColor: p.border, background: c.bg || p.bg, justifyContent: c.align === 'center' ? 'center' : 'space-between', gap: c.align === 'center' ? '2rem' : undefined }}
               >
                 {c.logoImage
-                  ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className="h-8 sm:h-9 w-24 sm:w-32" fittingType="fit" {...ip} path="logoImage" /></span>
+                  ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className={LOGO_SIZES[c.logoSize] || LOGO_SIZES.medium} fittingType="fit" zoom={c.logoZoom} {...ip} path="logoImage" /></span>
                   : <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={`font-bold tracking-[0.25em] text-sm sm:text-base ${storefront ? 'cursor-pointer' : ''}`} style={{ fontFamily: theme.fonts?.heading, color: c.textColor || p.dark }}>{c.logo}</span>}
                 <nav className="hidden sm:flex gap-6 text-xs font-medium">{(c.links || []).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
                 <nav className="sm:hidden flex gap-3 text-[11px] font-medium">{(c.links || []).slice(0, 3).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
@@ -218,7 +226,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
           case 'hero':
             return wrap(s, (
               <div className="relative">
-                <Img src={c.image} className="h-[300px] sm:h-[460px]" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} {...ip} path="image" />
+                <Img src={c.image} className="h-[300px] sm:h-[460px]" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} zoom={c.imageZoom} {...ip} path="image" />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0) 70%)' }} />
                 <div className="absolute inset-0 flex items-center">
                   <div className="p-6 sm:p-14 max-w-xl" style={{ textAlign: c.align }}>
@@ -328,7 +336,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 items-center max-w-5xl mx-auto">
-                  <div className={rev ? 'sm:order-2' : ''}><Img src={c.image} className="aspect-square rounded-2xl overflow-hidden" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} {...ip} path="image" /></div>
+                  <div className={rev ? 'sm:order-2' : ''}><Img src={c.image} className="aspect-square rounded-2xl overflow-hidden" fittingType={c.imageFit === 'contain' ? 'fit' : 'fill'} zoom={c.imageZoom} {...ip} path="image" /></div>
                   <div className={rev ? 'sm:order-1' : ''}>
                     <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                     <p className="mt-4 text-sm sm:text-base leading-relaxed" style={{ color: p.muted }}>{c.text}</p>

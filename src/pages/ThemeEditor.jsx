@@ -221,6 +221,30 @@ function ScalarInput({ value, onChange, fieldKey }) {
     );
   }
   if (fieldKey === 'iconImage' && typeof value === 'string') return <IconImageField value={value} onSetUrl={onChange} />;
+  if (fieldKey === 'imageZoom' && typeof value === 'number') {
+    return (
+      <div className="flex items-center gap-2">
+        <input type="range" min="1" max="2" step="0.05" value={value} onChange={(e) => onChange(+e.target.value)} className="flex-1 accent-[#008060]" />
+        <span className="text-xs font-mono text-[#6D7175] w-10 text-right">{Math.round(value * 100)}%</span>
+      </div>
+    );
+  }
+  if (fieldKey === 'logoZoom' && typeof value === 'number') {
+    return (
+      <div className="flex items-center gap-2">
+        <input type="range" min="1" max="2" step="0.05" value={value} onChange={(e) => onChange(+e.target.value)} className="flex-1 accent-[#008060]" />
+        <span className="text-xs font-mono text-[#6D7175] w-10 text-right">{Math.round(value * 100)}%</span>
+      </div>
+    );
+  }
+  if (fieldKey === 'logoSize') {
+    const sizeLabels = { small: 'Petit', medium: 'Moyen', large: 'Grand' };
+    return (
+      <select value={value ?? 'medium'} onChange={(e) => onChange(e.target.value)} className={inputCls}>
+        {Object.entries(sizeLabels).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    );
+  }
   if (isImage(value) || (IMAGE_KEYS.has(fieldKey) && typeof value === 'string')) return <ImageField value={value} onSetUrl={onChange} />;
   if (typeof value === 'number') return <input type="number" value={value} onChange={(e) => onChange(+e.target.value)} className={inputCls} />;
   if (typeof value === 'boolean') return <label className="flex items-center gap-2 text-xs text-[#202223] cursor-pointer"><input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="accent-[#008060]" /> {value ? 'Oui' : 'Non'}</label>;

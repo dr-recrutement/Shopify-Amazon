@@ -23,6 +23,7 @@ const Image = React.forwardRef(
     {
       src: source,
       fittingType = "fill",
+      zoom,
       originWidth,
       originHeight,
       focalPointX,
@@ -96,7 +97,7 @@ const Image = React.forwardRef(
             {...restProps}
             data-error-image={isErrorMode || undefined}
             className="w-full h-full absolute inset-0"
-            style={{ objectFit: fittingType === "fit" ? "contain" : "cover" }}
+            style={{ objectFit: fittingType === "fit" ? "contain" : "cover", transform: zoom && zoom !== 1 ? `scale(${zoom})` : undefined }}
           />
         </span>
       )
@@ -116,6 +117,7 @@ const Image = React.forwardRef(
         ref={ref}
         src={src}
         parsed={parsed}
+        zoom={zoom}
         onSourceChange={replaceSource}
         fittingType={fittingType}
         focalPoint={focalPoint}

@@ -261,15 +261,19 @@ export function migrateTheme(theme) {
         if (Array.isArray(props.links)) {
           props.links = props.links.map((l) => (typeof l === 'string' ? { label: l, url: '#' } : l));
         }
+        if (props.logoSize === undefined) props.logoSize = 'medium';
+        if (props.logoZoom === undefined) props.logoZoom = 1;
         break;
       case 'testimonials':
         if (props.displayMode === undefined) props.displayMode = 'grid';
         break;
       case 'hero':
         if (props.imageFit === undefined) props.imageFit = 'cover';
+        if (props.imageZoom === undefined) props.imageZoom = 1;
         break;
       case 'imageText':
         if (props.imageFit === undefined) props.imageFit = 'cover';
+        if (props.imageZoom === undefined) props.imageZoom = 1;
         if (props.stats === undefined) props.stats = [];
         break;
       case 'trustbar':

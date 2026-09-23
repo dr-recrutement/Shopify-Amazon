@@ -1,8 +1,9 @@
 import React from "react";
+import { BRAND } from "@/lib/brand";
 
 const AUTH_BG = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1920&q=80';
 
-export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
+export default function AuthLayout({ title, subtitle, footer, children }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden">
       {/* Shopping background */}
@@ -13,8 +14,8 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
 
       <div className="relative w-full max-w-md py-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 backdrop-blur border border-white/20 mb-4">
-            <Icon className="w-7 h-7 text-white" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center h-14 mb-4 px-2">
+            <img src={BRAND.logo} alt={BRAND.name} className="h-full w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
           {subtitle && <p className="text-white/70 mt-2">{subtitle}</p>}

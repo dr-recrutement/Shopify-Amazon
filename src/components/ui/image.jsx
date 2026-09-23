@@ -67,7 +67,7 @@ const Image = React.forwardRef(
       // click-to-edit toolbar keys its "Replace Image" action off the DOM
       // tag being `img`, so a placeholder div would be unrecoverable in the
       // editor. FALLBACK_IMAGE_URL doubles as the "no image chosen" graphic.
-      return <img ref={ref} src={FALLBACK_IMAGE_URL} {...imageProps} data-empty-image />
+      return <img ref={ref} src={FALLBACK_IMAGE_URL} {...imageProps} data-empty-image style={{ objectFit: fittingType === 'fit' ? 'contain' : 'cover', ...imageProps.style }} />
     }
 
     // A failed transform retries the underlying original as a plain image.
@@ -75,10 +75,30 @@ const Image = React.forwardRef(
     const parsed = mode === IMAGE_LOAD_MODE.OPTIMIZED ? parsedSource : null
 
     if (!parsed) {
+      // Every image this app actually uploads (Supabase Storage) lands
+      // here - parseWixMediaUrl only ever matches the old Base44/Wix media
+      // hosts, so this branch is the real, common path now, not a rare
+      // fallback. It used to render a bare <img> with no object-fit at
+      // all, so the browser's default (stretch-to-fill) distorted every
+      // logo/photo whose aspect ratio didn't exactly match its container -
+      // wrapped the same way ResponsiveImage renders a parsed image so
+      // fittingType behaves identically either way: "fit" letterboxes
+      // (object-contain, the right choice for a logo), "fill" crops
+      // (object-cover, the right choice for a hero/product photo).
       const isErrorMode = mode === IMAGE_LOAD_MODE.FALLBACK
       const imageSrc = isErrorMode ? FALLBACK_IMAGE_URL : getOriginalImageUrl(src, parsedSource)
+      const { className: wrapperClassName, style: wrapperStyle, ...restProps } = imageProps
       return (
-        <img ref={ref} src={imageSrc} {...imageProps} data-error-image={isErrorMode || undefined} />
+        <span className={["inline-block relative overflow-hidden", wrapperClassName].filter(Boolean).join(" ")} style={wrapperStyle}>
+          <img
+            ref={ref}
+            src={imageSrc}
+            {...restProps}
+            data-error-image={isErrorMode || undefined}
+            className="w-full h-full absolute inset-0"
+            style={{ objectFit: fittingType === "fit" ? "contain" : "cover" }}
+          />
+        </span>
       )
     }
 

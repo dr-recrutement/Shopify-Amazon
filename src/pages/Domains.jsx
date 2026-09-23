@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2, RefreshCcw } from 'lucide-react';
+import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2, RefreshCcw, Lock, Unlock } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
@@ -45,6 +45,7 @@ export default function Domains() {
   const [billingEmail, setBillingEmail] = useState('');
   const [billingAck, setBillingAck] = useState(false);
   const [purchaseFinalizing, setPurchaseFinalizing] = useState(false);
+  const [transferTarget, setTransferTarget] = useState(null);
 
   const loadDomains = useCallback(async () => {
     if (!store?.id) return;
@@ -282,15 +283,23 @@ export default function Domains() {
           <div className="flex items-center gap-2 mb-3"><Globe className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Domaines achetés via Sellia</p></div>
           <div className="space-y-2">
             {purchasedDomains.map((d) => (
-              <div key={d.id} className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
-                <div>
-                  <p className="text-sm font-mono text-[#202223]">{d.domain_name}</p>
-                  <p className="text-xs text-[#6D7175]">
-                    {d.dns_status === 'verified' ? 'Actif' : `Statut : ${d.dns_status || 'en cours'}`}
-                    {d.price_cents ? ` · ${(d.price_cents / 100).toFixed(2)} ${d.currency || 'USD'} payé` : ''}
-                  </p>
+              <div key={d.id} className="bg-[#F4F4F4] rounded-lg px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-mono text-[#202223]">{d.domain_name}</p>
+                    <p className="text-xs text-[#6D7175]">
+                      {d.dns_status === 'verified' ? 'Actif' : `Statut : ${d.dns_status || 'en cours'}`}
+                      {d.price_cents ? ` · ${(d.price_cents / 100).toFixed(2)} ${d.currency || 'USD'} payé` : ''}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {d.last_error && <span className="text-xs text-red-600">{d.last_error}</span>}
+                    {d.dns_status === 'verified' && (
+                      <button onClick={() => setTransferTarget(transferTarget?.id === d.id ? null : d)} className="text-xs font-semibold text-[#6D7175] border border-[#E1E1E1] rounded-full px-3 py-1.5 hover:bg-white flex items-center gap-1"><RefreshCcw className="w-3.5 h-3.5" /> Transférer</button>
+                    )}
+                  </div>
                 </div>
-                {d.last_error && <span className="text-xs text-red-600">{d.last_error}</span>}
+                {transferTarget?.id === d.id && <TransferOutPanel domain={d} store={store} />}
               </div>
             ))}
           </div>
@@ -329,6 +338,72 @@ export default function Domains() {
             )}
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+// Real Cloudflare Registrar transfer-out: unlock so the domain can be moved
+// to another registrar. The auth/EPP code itself has no confirmed API
+// endpoint in Cloudflare's current docs (it's a Cloudflare-dashboard-only
+// action for a good reason - it's effectively a password for moving the
+// domain), so this is honest about that instead of guessing at an endpoint
+// for something this sensitive.
+function TransferOutPanel({ domain, store }) {
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('domain-transfer-out', { body: { action: 'get_status', domain_name: domain.domain_name, tenant_id: store.id } });
+      if (error) throw new Error(await functionErrorMessage(error));
+      if (data.error) throw new Error(data.error);
+      setStatus(data);
+    } catch (e) {
+      setStatus({ error: e.message });
+    } finally { setLoading(false); }
+  }, [domain.domain_name, store.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const toggleLock = async (locked) => {
+    if (!locked && !confirm(`Déverrouiller ${domain.domain_name} ? Un domaine déverrouillé peut être transféré vers un autre registrar par toute personne disposant du code d'autorisation. Ne le laissez pas déverrouillé plus longtemps que nécessaire.`)) return;
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('domain-transfer-out', { body: { action: 'set_lock', domain_name: domain.domain_name, tenant_id: store.id, locked } });
+      if (error) throw new Error(await functionErrorMessage(error));
+      if (data.error) throw new Error(data.error);
+      await load();
+    } catch (e) {
+      alert(e.message || "Échec de l'opération");
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <div className="mt-3 pt-3 border-t border-[#E1E1E1] text-xs">
+      {loading ? (
+        <p className="text-[#6D7175] flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Vérification du statut…</p>
+      ) : status?.error ? (
+        <p className="text-red-600">{status.error}</p>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <p className="text-[#6D7175]">
+              {status.locked ? <span className="inline-flex items-center gap-1"><Lock className="w-3.5 h-3.5" /> Verrouillé — transfert impossible</span> : <span className="inline-flex items-center gap-1 text-amber-600 font-semibold"><Unlock className="w-3.5 h-3.5" /> Déverrouillé — transférable</span>}
+              {status.expires_at && ` · Expire le ${new Date(status.expires_at).toLocaleDateString('fr-FR')}`}
+            </p>
+            <button onClick={() => toggleLock(!status.locked)} disabled={busy} className="text-xs font-semibold text-[#008060] border border-[#008060]/30 rounded-full px-3 py-1 hover:bg-[#008060]/5 disabled:opacity-40">
+              {busy ? '…' : status.locked ? 'Déverrouiller pour transfert' : 'Reverrouiller'}
+            </button>
+          </div>
+          {!status.locked && (
+            <p className="text-[#6D7175] mt-2 leading-relaxed">
+              Domaine déverrouillé. Pour obtenir le code d'autorisation (EPP/auth code) nécessaire au nouveau registrar, connectez-vous au tableau de bord Cloudflare de Sellia → Registrar → {domain.domain_name} → Transfer out. Ce code n'est pas accessible par API pour des raisons de sécurité.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CreditCard, Check, Loader2, Download, Calendar, AlertCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { PLANS, PLAN_ORDER, getPlan } from '@/lib/plans';
 import { formatMoney } from '@/lib/world/currencies';
@@ -29,8 +29,10 @@ export default function Billing() {
 
   const load = useCallback(async () => {
     if (!store?.id) return;
-    const ps = await base44.entities.Payment.filter({ store_id: store.id }, '-created_date', 50);
-    setPayments(ps);
+    // No dedicated payments/invoice table exists yet - this shows the real
+    // trial/plan state (from tenants), honestly with an empty payment
+    // history rather than fabricated invoice rows.
+    setPayments([]);
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
@@ -39,8 +41,11 @@ export default function Billing() {
     if (!store?.id) return;
     setChanging(planId);
     try {
-      await base44.entities.Store.update(store.id, { plan: planId, plan_status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() });
+      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() }).eq('id', store.id);
+      if (error) throw error;
       window.location.reload();
+    } catch (e) {
+      alert(e.message || 'Échec du changement de plan');
     } finally { setChanging(null); }
   };
 
@@ -101,7 +106,7 @@ export default function Billing() {
       <h2 className="text-sm font-bold text-[#202223] mb-3 flex items-center gap-2"><Calendar className="w-4 h-4" /> Historique des paiements</h2>
       <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
         {payments.length === 0 ? (
-          <div className="p-8 text-center text-sm text-[#6D7175]">Aucun paiement enregistré. Votre essai gratuit de 14 jours est actif.</div>
+          <div className="p-8 text-center text-sm text-[#6D7175]">Aucun historique de facturation disponible pour l'instant — le suivi des paiements d'abonnement n'est pas encore branché sur cette plateforme.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]">

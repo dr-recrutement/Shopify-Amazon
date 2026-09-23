@@ -1,33 +1,54 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { Search, Sparkles, Loader2, Check, ArrowLeft, Package, Copy, AlertCircle } from 'lucide-react';
 
+// SEO title/description stored in products.metafields.seo (no dedicated
+// seo column exists). Uses the real ai-assistant Edge Function (merchant's
+// own configured key, falling back to Sellia's shared one) instead of the
+// dead base44 function.
 export default function SeoIa() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(null);
-  const [results, setResults] = useState({}); // productId -> {seo_title, seo_description, keywords}
+  const [results, setResults] = useState({});
   const [batch, setBatch] = useState({ running: false, done: 0, total: 0 });
 
   const load = useCallback(async () => {
     if (!store?.id) return;
     setLoading(true);
-    try { setProducts(await base44.entities.Product.filter({ store_id: store.id }, '-updated_date', 200)); }
-    finally { setLoading(false); }
+    try {
+      const { data, error } = await supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200);
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (e) {
+      console.error('Failed to load products:', e);
+    } finally { setLoading(false); }
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
 
+  const parseSeoResult = (text) => {
+    // Best-effort parse of the free-form AI text into {title, description}.
+    const titleMatch = text.match(/titre[^:]*:\s*(.+)/i);
+    const descMatch = text.match(/meta[- ]?description[^:]*:\s*(.+)/i);
+    return {
+      seo_title: titleMatch ? titleMatch[1].trim() : text.split('\n')[0]?.slice(0, 60) || '',
+      seo_description: descMatch ? descMatch[1].trim() : text.split('\n').slice(1).join(' ').slice(0, 155),
+      raw: text,
+    };
+  };
+
   const generateOne = async (p) => {
     setBusy(p.id);
     try {
-      const input = `${p.title}. ${(p.description || '').replace(/<[^>]+>/g, '').slice(0, 200)}`;
-      const res = await base44.functions.invoke('aiAssistant', { task: 'seo', input, context: store?.name || '' });
-      if (res.data?.error) throw new Error(res.data.error);
-      setResults((r) => ({ ...r, [p.id]: res.data.result }));
+      const input = `${p.name}. ${(p.description || '').replace(/<[^>]+>/g, '').slice(0, 200)}`;
+      const { data, error } = await supabase.functions.invoke('ai-assistant', { body: { tenant_id: store.id, task: 'seo', input, context: store?.name || '' } });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      setResults((r) => ({ ...r, [p.id]: parseSeoResult(data.result) }));
     } catch (e) {
       setResults((r) => ({ ...r, [p.id]: { erreur: e.message } }));
     } finally { setBusy(null); }
@@ -38,13 +59,17 @@ export default function SeoIa() {
     if (!r || r.erreur) return;
     setBusy(p.id + 'apply');
     try {
-      await base44.entities.Product.update(p.id, { seo: { title: r.seo_title, description: r.seo_description } });
-      setProducts((l) => l.map((x) => (x.id === p.id ? { ...x, seo: { title: r.seo_title, description: r.seo_description } } : x)));
+      const nextMetafields = { ...(p.metafields || {}), seo: { title: r.seo_title, description: r.seo_description } };
+      const { error } = await supabase.from('products').update({ metafields: nextMetafields }).eq('id', p.id);
+      if (error) throw error;
+      setProducts((l) => l.map((x) => (x.id === p.id ? { ...x, metafields: nextMetafields } : x)));
+    } catch (e) {
+      alert(e.message || "Échec de l'application");
     } finally { setBusy(null); }
   };
 
   const runBatch = async () => {
-    const targets = products.filter((p) => !p.seo?.title);
+    const targets = products.filter((p) => !p.metafields?.seo?.title);
     setBatch({ running: true, done: 0, total: targets.length });
     for (let i = 0; i < targets.length; i++) {
       await generateOne(targets[i]);
@@ -66,7 +91,7 @@ export default function SeoIa() {
     );
   }
 
-  const optimized = products.filter((p) => p.seo?.title).length;
+  const optimized = products.filter((p) => p.metafields?.seo?.title).length;
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
@@ -99,8 +124,8 @@ export default function SeoIa() {
                   <div className="flex items-start gap-2.5 min-w-0">
                     <Package className="w-4 h-4 text-[#6D7175] mt-0.5 shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#202223] truncate">{p.title}</p>
-                      {p.seo?.title ? (
+                      <p className="text-sm font-semibold text-[#202223] truncate">{p.name}</p>
+                      {p.metafields?.seo?.title ? (
                         <p className="text-[11px] text-[#008060] mt-0.5 flex items-center gap-1"><Check className="w-3 h-3" /> SEO appliqué</p>
                       ) : (
                         <p className="text-[11px] text-[#6D7175] mt-0.5">SEO non configuré</p>

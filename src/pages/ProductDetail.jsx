@@ -81,10 +81,11 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!store || !product) return;
+    const seo = product.metafields?.seo;
     const plainDesc = (product.description || '').replace(/<[^>]*>/g, '').slice(0, 160) || `${product.name} — ${store.name}`;
     applySEO({
-      title: `${product.name} — ${store.name}`,
-      description: plainDesc,
+      title: seo?.title || `${product.name} — ${store.name}`,
+      description: seo?.description || plainDesc,
       image: product.images?.[0],
       url: `${window.location.origin}/store/${slug}/products/${productId}`,
       countryCode: store.country,

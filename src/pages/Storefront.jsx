@@ -76,6 +76,11 @@ export default function Storefront() {
         .from('tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
       if (!tenant) throw new Error("Cette boutique n'existe pas.");
+      if (tenant.suspended_at) {
+        setError({ suspended: true, reason: tenant.suspended_reason });
+        setLoading(false);
+        return;
+      }
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
       const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, gatewaysRes] = await Promise.all([
@@ -269,8 +274,8 @@ export default function Storefront() {
   if (error) return (
     <div className="max-w-md mx-auto mt-24 text-center">
       <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-      <h1 className="text-lg font-bold text-foreground">Boutique introuvable</h1>
-      <p className="text-sm text-muted-foreground mt-1">{error}</p>
+      <h1 className="text-lg font-bold text-foreground">{error.suspended ? 'Boutique temporairement indisponible' : 'Boutique introuvable'}</h1>
+      <p className="text-sm text-muted-foreground mt-1">{error.suspended ? (error.reason || 'Cette boutique est actuellement suspendue.') : error}</p>
       <Link to="/" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-4">Retour à l'accueil</Link>
     </div>
   );

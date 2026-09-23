@@ -4,7 +4,7 @@ import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
@@ -314,6 +314,12 @@ export default function AdminLayout() {
 
         {/* Content */}
         <main className="flex-1 min-w-0 overflow-y-auto">
+          {store?.suspended_at && (
+            <div className="bg-red-50 border-b border-red-200 px-4 py-2.5 flex items-center gap-2 text-sm text-red-700">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span><strong>Boutique suspendue.</strong> {store.suspended_reason || 'Votre vitrine publique est actuellement indisponible pour vos clients.'} Contactez le support pour résoudre la situation.</span>
+            </div>
+          )}
           <Outlet />
         </main>
       </div>

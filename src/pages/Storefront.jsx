@@ -473,23 +473,17 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
         try { await supabase.from('discount_codes').update({ used_count: (discount.used_count || 0) + 1 }).eq('id', discount.id); } catch { /* non-fatal */ }
       }
 
-      const { data: existing } = await supabase.from('customers').select('id, orders_count, total_spent_cents').eq('tenant_id', store.id).eq('email', form.email).maybeSingle();
-      if (existing) {
-        await supabase.from('customers').update({
-          orders_count: (existing.orders_count || 0) + 1,
-          total_spent_cents: (existing.total_spent_cents || 0) + Math.round(total * 100),
-          phone: form.phone || undefined,
-        }).eq('id', existing.id);
-      } else {
-        await supabase.from('customers').insert({
-          tenant_id: store.id,
-          name: `${form.first_name} ${form.last_name}`.trim(),
-          email: form.email,
-          phone: form.phone,
-          orders_count: 1,
-          total_spent_cents: Math.round(total * 100),
-        });
-      }
+      // Server-side upsert (SECURITY DEFINER RPC) instead of a direct
+      // select+insert/update on customers - that table has no broad anon
+      // read/write policy anymore (see the isolation fix migration), so
+      // this is the only way a guest checkout can record itself.
+      await supabase.rpc('upsert_guest_customer', {
+        p_tenant_id: store.id,
+        p_email: form.email,
+        p_name: `${form.first_name} ${form.last_name}`.trim(),
+        p_phone: form.phone,
+        p_spend_delta_cents: Math.round(total * 100),
+      });
 
       if (cart?.id) {
         await supabase.from('abandoned_carts').update({ status: 'converted' }).eq('id', cart.id);

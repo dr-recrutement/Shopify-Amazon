@@ -18,14 +18,15 @@ const TASKS = [
   { id: 'abandoned_email', label: 'E-mail panier abandonn\u00e9', icon: ShoppingCart, placeholder: 'Ex : Boutique de mode premium AfriStyle', hint: 'E-mail de r\u00e9cup\u00e9ration de panier' },
 ];
 
-function ResultCard({ result }) {
+function ResultCard({ result, provider }) {
   const [copied, setCopied] = useState(false);
   const text = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
   const copy = () => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); };
+  const providerLabel = { gemini: 'votre cl\u00e9 Gemini', claude: 'votre cl\u00e9 Claude', openai: 'votre cl\u00e9 ChatGPT', sellia: "l'IA int\u00e9gr\u00e9e Sellia" }[provider];
   return (
     <div className="mt-4 rounded-xl border border-[#E1E1E1] bg-white overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2.5 bg-[#F4F4F4] border-b border-[#E1E1E1]">
-        <span className="flex items-center gap-1.5 text-xs font-bold text-[#008060]"><Sparkles className="w-3.5 h-3.5" /> R\u00e9sultat IA</span>
+        <span className="flex items-center gap-1.5 text-xs font-bold text-[#008060]"><Sparkles className="w-3.5 h-3.5" /> R\u00e9sultat{providerLabel ? ` \u2014 g\u00e9n\u00e9r\u00e9 via ${providerLabel}` : ''}</span>
         <button onClick={copy} className="flex items-center gap-1.5 text-xs font-semibold text-[#6D7175] hover:text-[#008060]">
           {copied ? <><Check className="w-3.5 h-3.5 text-[#008060]" /> Copi\u00e9</> : <><Copy className="w-3.5 h-3.5" /> Copier</>}
         </button>
@@ -41,6 +42,7 @@ export default function AssistantIA() {
   const [input, setInput] = useState('');
   const [loadingAI, setLoadingAI] = useState(false);
   const [result, setResult] = useState(null);
+  const [resultProvider, setResultProvider] = useState(null);
   const [history, setHistory] = useState([]);
   const inputRef = useRef(null);
 
@@ -52,6 +54,7 @@ export default function AssistantIA() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setResult(data.result);
+      setResultProvider(data.provider);
       setHistory((h) => [{ task, input, result: data.result, at: Date.now() }, ...h].slice(0, 8));
     } catch (e) {
       setResult({ erreur: e.message });
@@ -115,7 +118,7 @@ export default function AssistantIA() {
               <p className="text-sm text-[#6D7175]">L\u2019IA r\u00e9dige votre contenu\u2026</p>
             </div>
           )}
-          {!loadingAI && result && <ResultCard result={result} />}
+          {!loadingAI && result && <ResultCard result={result} provider={resultProvider} />}
         </div>
 
         <div className="space-y-4">

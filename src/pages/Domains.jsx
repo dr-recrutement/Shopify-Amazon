@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2, RefreshCcw, Lock, Unlock } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { hasFeature } from '@/lib/plans';
 
 const SELLIA_SUBDOMAIN = 'sellia.app';
 const REASON_LABELS = {
@@ -61,6 +62,11 @@ export default function Domains() {
 
   const connectDomain = async () => {
     if (!domain || !store?.id) return;
+    // Real plan enforcement: custom domains require Pro or above.
+    if (!hasFeature(store.plan, 'custom_domain')) {
+      alert(`Les domaines personnalisés nécessitent le plan Pro ou supérieur. Passez à niveau dans Paramètres → Plan.`);
+      return;
+    }
     setConnecting(true);
     try {
       const { error } = await supabase.from('domains').insert({

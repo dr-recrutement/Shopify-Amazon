@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 
 const TASKS = [
   { id: 'product_description', label: 'Description produit', icon: Package, placeholder: 'Ex : Sac \u00e0 main en cuir v\u00e9ritable, fait main \u00e0 Dakar, doublure satin\u00e9e\u2026', hint: 'G\u00e9n\u00e8re titre, description, r\u00e9sum\u00e9 et tags' },
@@ -68,6 +70,13 @@ export default function AssistantIA() {
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Configurez votre boutique</h1>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] mt-3">Configurer</Link>
+      </div>
+    );
+  }
+  if (!hasFeature(store.plan, 'ai_assistant')) {
+    return (
+      <div className="max-w-md mx-auto mt-20">
+        <PaywallCard requiredPlan="pro" title="Sellia Assistant nécessite le plan Pro" description="Générez descriptions produit, SEO, campagnes e-mail et plus avec l'IA intégrée Sellia ou votre propre clé. Passez au plan Pro pour y accéder." />
       </div>
     );
   }

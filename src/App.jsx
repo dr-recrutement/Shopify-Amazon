@@ -10,6 +10,7 @@ import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
 import Landing from '@/pages/Landing';
 import Storefront from '@/pages/Storefront';
+import ProductDetail from '@/pages/ProductDetail';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
       {/* Public routes */}
       <Route path="/" element={<Landing />} />
       <Route path="/store/:slug" element={<Storefront />} />
+      <Route path="/store/:slug/products/:productId" element={<ProductDetail />} />
       <Route path="/store/:slug/blog/:handle" element={<ArticleDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

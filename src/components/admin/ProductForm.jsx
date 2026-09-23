@@ -79,6 +79,7 @@ function generateVariants(options, basePrice) {
     return acc.flatMap((c) => vals.map((v) => [...c, v]));
   }, []);
   return combos.map((c) => ({
+    id: crypto.randomUUID(),
     title: c.join(' / '),
     sku: '',
     price: basePrice || 0,

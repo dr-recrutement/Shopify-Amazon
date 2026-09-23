@@ -275,17 +275,32 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="hidden sm:flex items-center gap-1 text-xs font-semibold" style={{ color: primary }}>Tout voir <ArrowRight className="w-3.5 h-3.5" /></button>
                 </div>
                 <div className={`grid grid-cols-2 sm:grid-cols-${c.columns || 4} gap-4`}>
-                  {(c.products || []).map((pr, i) => (
-                    <div key={i} className="group rounded-xl overflow-hidden transition hover:shadow-lg" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
-                      <Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} />
-                      <div className="p-3">
-                        {pr.rating ? <Stars n={pr.rating} color={accent} /> : null}
-                        <p className="text-sm font-semibold mt-1.5" style={{ color: p.text }}>{pr.title}</p>
-                        <p className="text-sm font-bold mt-1" style={{ color: accent }}>{pr.price}</p>
-                        <button onClick={(e) => { if (onAddToCart) { e.stopPropagation(); onAddToCart(pr); } }} className={`mt-3 w-full text-xs font-semibold py-2 sellia-btn transition ${storefront ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} style={{ background: primary, color: p.primaryText }}>Ajouter au panier</button>
+                  {(c.products || []).map((pr, i) => {
+                    const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
+                    return (
+                      <div key={i} className="group rounded-xl overflow-hidden transition hover:shadow-lg" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                        {detailHref ? (
+                          <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
+                        ) : (
+                          <Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} />
+                        )}
+                        <div className="p-3">
+                          {pr.rating ? <Stars n={pr.rating} color={accent} /> : null}
+                          {detailHref ? (
+                            <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block text-sm font-semibold mt-1.5 hover:underline" style={{ color: p.text }}>{pr.title}</a>
+                          ) : (
+                            <p className="text-sm font-semibold mt-1.5" style={{ color: p.text }}>{pr.title}</p>
+                          )}
+                          <p className="text-sm font-bold mt-1" style={{ color: accent }}>{pr.price}</p>
+                          {pr._hasVariants && detailHref ? (
+                            <a href={detailHref} onClick={(e) => e.stopPropagation()} className={`mt-3 block text-center w-full text-xs font-semibold py-2 sellia-btn transition ${storefront ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} style={{ background: primary, color: p.primaryText }}>Choisir les options</a>
+                          ) : (
+                            <button onClick={(e) => { if (onAddToCart) { e.stopPropagation(); onAddToCart(pr); } }} className={`mt-3 w-full text-xs font-semibold py-2 sellia-btn transition ${storefront ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} style={{ background: primary, color: p.primaryText }}>Ajouter au panier</button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ));

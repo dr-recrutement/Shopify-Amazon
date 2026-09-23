@@ -117,6 +117,7 @@ export default function Storefront() {
       title: p.name,
       price: formatMoney((p.price_cents || 0) / 100, store?.currency || p.currency),
       _price: (p.price_cents || 0) / 100,
+      _hasVariants: (p.variants || []).length > 0,
     }));
     const posts = articles.map((a) => ({
       _id: a.id,
@@ -195,12 +196,13 @@ export default function Storefront() {
   const addToCart = async (product) => {
     try {
       const items = [...(cart?.items || [])];
-      const existing = items.find((i) => i.product_id === product._id);
+      const key = `${product._id}::${product._variantId || ''}`;
+      const existing = items.find((i) => `${i.product_id}::${i.variant_id || ''}` === key);
       if (existing) {
         existing.quantity += 1;
         existing.line_total = existing.price * existing.quantity;
       } else {
-        items.push({ product_id: product._id, title: product.title, image: product.image, price: product._price, quantity: 1, line_total: product._price });
+        items.push({ product_id: product._id, variant_id: product._variantId || null, variant_title: product._variantTitle || null, title: product.title, image: product.image, price: product._price, quantity: 1, line_total: product._price });
       }
       const updated = await saveCart(items);
       setCart(updated);
@@ -211,10 +213,10 @@ export default function Storefront() {
     }
   };
 
-  const updateQty = async (productId, delta) => {
+  const updateQty = async (productId, delta, variantId = null) => {
     if (!cart) return;
     const items = [...(cart.items || [])];
-    const item = items.find((i) => i.product_id === productId);
+    const item = items.find((i) => i.product_id === productId && (i.variant_id || null) === variantId);
     if (!item) return;
     item.quantity = Math.max(1, item.quantity + delta);
     item.line_total = item.price * item.quantity;
@@ -223,9 +225,9 @@ export default function Storefront() {
     setCartCount(items.reduce((s, i) => s + i.quantity, 0));
   };
 
-  const removeFromCart = async (productId) => {
+  const removeFromCart = async (productId, variantId = null) => {
     if (!cart) return;
-    const items = (cart.items || []).filter((i) => i.product_id !== productId);
+    const items = (cart.items || []).filter((i) => !(i.product_id === productId && (i.variant_id || null) === variantId));
     const updated = await saveCart(items);
     setCart(updated);
     setCartCount(items.reduce((s, i) => s + i.quantity, 0));
@@ -301,20 +303,21 @@ export default function Storefront() {
               ) : (
                 <div className="px-4 py-4 space-y-3">
                   {(cart.items || []).map((item) => (
-                    <div key={item.product_id} className="flex gap-3 pb-3 border-b border-border/60">
+                    <div key={`${item.product_id}-${item.variant_id || 'base'}`} className="flex gap-3 pb-3 border-b border-border/60">
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-surface shrink-0 border border-border">
                         {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{item.title}</p>
+                        {item.variant_title && <p className="text-xs text-muted-foreground">{item.variant_title}</p>}
                         <p className="text-xs text-muted-foreground mt-0.5">{formatMoney(item.price, store.currency)} / unité</p>
                         <div className="flex items-center gap-3 mt-2">
                           <div className="inline-flex items-center border border-border rounded-full overflow-hidden">
-                            <button onClick={() => updateQty(item.product_id, -1)} className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:bg-surface"><Minus className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => updateQty(item.product_id, -1, item.variant_id || null)} className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:bg-surface"><Minus className="w-3.5 h-3.5" /></button>
                             <span className="w-8 text-center text-sm font-semibold text-foreground">{item.quantity}</span>
-                            <button onClick={() => updateQty(item.product_id, 1)} className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:bg-surface"><Plus className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => updateQty(item.product_id, 1, item.variant_id || null)} className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:bg-surface"><Plus className="w-3.5 h-3.5" /></button>
                           </div>
-                          <button onClick={() => removeFromCart(item.product_id)} className="text-muted-foreground hover:text-destructive inline-flex items-center gap-1 text-xs font-medium"><Trash2 className="w-3.5 h-3.5" /> Retirer</button>
+                          <button onClick={() => removeFromCart(item.product_id, item.variant_id || null)} className="text-muted-foreground hover:text-destructive inline-flex items-center gap-1 text-xs font-medium"><Trash2 className="w-3.5 h-3.5" /> Retirer</button>
                         </div>
                       </div>
                       <p className="text-sm font-bold text-foreground whitespace-nowrap self-start">{formatMoney(item.line_total, store.currency)}</p>
@@ -445,7 +448,8 @@ function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, 
       const items = (cart.items || []).map((i) => ({
         order_id: order.id,
         product_id: i.product_id,
-        product_name: i.title,
+        variant_id: i.variant_id || null,
+        product_name: i.variant_title ? `${i.title} (${i.variant_title})` : i.title,
         quantity: i.quantity,
         price_cents: Math.round(i.price * 100),
       }));

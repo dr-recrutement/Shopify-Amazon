@@ -314,7 +314,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onProductSuggestions, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -375,6 +375,39 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
         </div>
         <IconImageField value={theme.cartIcon || ''} onSetUrl={onCartIcon} />
         <p className="text-[10px] text-[#6D7175] mt-1.5">Remplace l'icône panier par défaut sur la boutique et la page panier. Laisser vide pour garder l'icône standard.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Suggestions de produits</p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-[#202223] mb-3 cursor-pointer">
+          <input type="checkbox" checked={theme.productSuggestions?.enabled !== false} onChange={(e) => onProductSuggestions({ enabled: e.target.checked })} className="accent-[#008060]" />
+          Afficher « Vous aimerez aussi » sur les fiches produit
+        </label>
+        {theme.productSuggestions?.enabled !== false && (
+          <div className="space-y-3 pl-1">
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Titre de la section</label>
+              <input value={theme.productSuggestions?.title ?? 'Vous aimerez aussi'} onChange={(e) => onProductSuggestions({ title: e.target.value })} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Critère de sélection</label>
+              <select value={theme.productSuggestions?.mode ?? 'category'} onChange={(e) => onProductSuggestions({ mode: e.target.value })} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white">
+                <option value="category">Même catégorie</option>
+                <option value="random">Aléatoire</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Nombre de produits</label>
+              <div className="flex items-center gap-2">
+                <input type="range" min="2" max="8" step="1" value={theme.productSuggestions?.count ?? 4} onChange={(e) => onProductSuggestions({ count: +e.target.value })} className="flex-1 accent-[#008060]" />
+                <span className="text-xs font-mono text-[#6D7175] w-6 text-right">{theme.productSuggestions?.count ?? 4}</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <p className="text-[10px] text-[#6D7175] mt-2">Affiché en bas de chaque fiche produit, avec ajout au panier direct.</p>
       </div>
       <button onClick={onReset} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-[#6D7175] border border-[#E1E1E1] rounded-md py-2 hover:bg-black/5"><RotateCcw className="w-3.5 h-3.5" /> Réinitialiser le thème</button>
     </div>
@@ -469,6 +502,7 @@ export default function ThemeEditor() {
   const onFont = (k, v) => commit({ ...theme, fonts: { ...theme.fonts, [k]: v } });
   const onButtonStyle = (v) => commit({ ...theme, buttonStyle: v });
   const onCartIcon = (url) => commit({ ...theme, cartIcon: url });
+  const onProductSuggestions = (patch) => commit({ ...theme, productSuggestions: { ...(theme.productSuggestions || {}), ...patch } });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -604,7 +638,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onProductSuggestions={onProductSuggestions} onReset={onReset} />}
           </div>
         </div>
       </div>

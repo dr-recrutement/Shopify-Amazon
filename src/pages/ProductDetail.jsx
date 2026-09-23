@@ -31,6 +31,7 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
 
   const load = useCallback(async () => {
     if (!slug || !productId) return;
@@ -60,6 +61,46 @@ export default function ProductDetail() {
   }, [slug, productId]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Real "Vous aimerez aussi" suggestions, configured in Theme Editor
+  // (title/count/mode). "category" mode uses the real product<->category
+  // join table; falls back to random active products when the current
+  // product has no category or none share one.
+  useEffect(() => {
+    if (!store?.id || !product) { setSuggestions([]); return; }
+    const cfg = theme.productSuggestions || {};
+    if (cfg.enabled === false) { setSuggestions([]); return; }
+    const count = cfg.count || 4;
+    (async () => {
+      try {
+        let ids = [];
+        if ((cfg.mode || 'category') === 'category') {
+          const { data: myCats } = await supabase.from('product_category_assignments').select('category_id').eq('product_id', product.id);
+          const categoryIds = (myCats || []).map((c) => c.category_id);
+          if (categoryIds.length > 0) {
+            const { data: rel } = await supabase.from('product_category_assignments').select('product_id').in('category_id', categoryIds).neq('product_id', product.id);
+            ids = [...new Set((rel || []).map((r) => r.product_id))];
+          }
+        }
+        let query = supabase.from('products').select('*').eq('tenant_id', store.id).eq('status', 'active').neq('id', product.id).limit(count);
+        query = ids.length > 0 ? query.in('id', ids.slice(0, 50)) : query;
+        const { data } = await query;
+        let list = data || [];
+        if (list.length < count && ids.length === 0) {
+          // Random fallback: no category match (or "random" mode) - just
+          // pull other active products from the same store.
+          const { data: rnd } = await supabase.from('products').select('*').eq('tenant_id', store.id).eq('status', 'active').neq('id', product.id).limit(count * 2);
+          list = rnd || [];
+        }
+        // Simple shuffle so the same handful of products don't always show
+        // in the same order every visit.
+        setSuggestions(list.sort(() => Math.random() - 0.5).slice(0, count));
+      } catch (e) {
+        console.error('Failed to load product suggestions:', e);
+        setSuggestions([]);
+      }
+    })();
+  }, [store?.id, product, theme.productSuggestions]);
 
   const options = product?.metafields?.options || [];
   const variants = product?.variants || [];
@@ -219,6 +260,25 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
+
+      {suggestions.length > 0 && (
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 pb-12 pt-4 border-t" style={{ borderColor: p.border }}>
+          <h2 className="text-lg sm:text-xl font-bold mt-8 mb-5" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{theme.productSuggestions?.title || 'Vous aimerez aussi'}</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {suggestions.map((sp) => (
+              <Link key={sp.id} to={`/store/${slug}/products/${sp.id}`} className="group rounded-xl overflow-hidden transition hover:shadow-lg" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                <div className="aspect-square overflow-hidden" style={{ background: p.surface }}>
+                  {sp.images?.[0] && <img src={sp.images[0]} alt={sp.name} className="w-full h-full object-cover group-hover:scale-105 transition" />}
+                </div>
+                <div className="p-3">
+                  <p className="text-sm font-semibold truncate" style={{ color: p.text }}>{sp.name}</p>
+                  <p className="text-sm font-bold mt-1" style={{ color: theme.palette.primary }}>{formatMoney((sp.price_cents || 0) / 100, store.currency)}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

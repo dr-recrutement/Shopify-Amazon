@@ -250,7 +250,7 @@ export function cloneTheme(id) {
 // already made.
 export function migrateTheme(theme) {
   if (!theme || !Array.isArray(theme.sections)) return theme;
-  const t = { buttonStyle: 'rounded', ...theme };
+  const t = { buttonStyle: 'rounded', productSuggestions: { enabled: true, title: 'Vous aimerez aussi', mode: 'category', count: 4 }, ...theme };
   t.sections = theme.sections.map((s) => {
     const props = { ...(s.props || {}) };
     switch (s.type) {

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { UsersRound, Plus, Trash2, Loader2, Crown, User } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { getFeatureValue, getPlan } from '@/lib/plans';
 
 export default function StaffManagement() {
   const { store } = useCurrentStore();
@@ -30,6 +31,13 @@ export default function StaffManagement() {
 
   const invite = async () => {
     if (!store?.id || !email.trim()) return;
+    // Real plan enforcement (same pattern as the product limit in
+    // ProductForm.jsx): each plan caps team size differently.
+    const limit = getFeatureValue(store.plan, 'users');
+    if (Number.isFinite(limit) && staff.length >= limit) {
+      setError(`Limite atteinte : le plan ${getPlan(store.plan).name} autorise ${limit} membre(s) maximum. Passez à un plan supérieur dans Paramètres → Plan.`);
+      return;
+    }
     setBusy(true); setError('');
     try {
       const { data, error: inviteError } = await supabase.functions.invoke('invite-staff', { body: { tenant_id: store.id, email: email.trim(), role } });

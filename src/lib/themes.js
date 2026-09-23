@@ -21,7 +21,8 @@ export const THEMES = [
     name: 'Aurora',
     category: 'E-commerce',
     description: 'Boutique de mode afro-premium, élégante et artisanale.',
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Fraunces", "Playfair Display", serif', body: 'Inter, system-ui, sans-serif' },
+    buttonStyle: 'pill',
     palette: { primary: '#1B1B1B', primaryText: '#FFFFFF', accent: '#C8A06A', bg: '#FAF7F2', surface: '#FFFFFF', text: '#2B2B2B', muted: '#8A8278', border: '#E7E1D8', dark: '#1B1B1B' },
     sections: [
       { id: 'aurora-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Livraison gratuite partout en Afrique dès 50 000 FCFA — Paiement Mobile Money accepté', bg: '#1B1B1B', text: '#FFFFFF' } },
@@ -42,7 +43,8 @@ export const THEMES = [
     name: 'Nexus',
     category: 'Business',
     description: 'Plateforme SaaS B2B pour entrepreneurs africains.',
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Space Grotesk", system-ui, sans-serif', body: '"DM Sans", system-ui, sans-serif' },
+    buttonStyle: 'rounded',
     palette: { primary: '#1E40AF', primaryText: '#FFFFFF', accent: '#0EA5E9', bg: '#F8FAFC', surface: '#FFFFFF', text: '#0F172A', muted: '#64748B', border: '#E2E8F0', dark: '#0F172A' },
     sections: [
       { id: 'nexus-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Plateforme tout-en-un pour entrepreneurs africains — Essai gratuit de 14 jours', bg: '#1E40AF', text: '#FFFFFF' } },
@@ -62,7 +64,8 @@ export const THEMES = [
     name: 'Inkwell',
     category: 'Blog',
     description: 'Magazine lifestyle éditorial aux accents africains.',
-    fonts: { heading: '"Playfair Display", Georgia, serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Playfair Display", Georgia, serif', body: '"Lora", Georgia, serif' },
+    buttonStyle: 'square',
     palette: { primary: '#111827', primaryText: '#FFFFFF', accent: '#D97706', bg: '#FBF9F6', surface: '#FFFFFF', text: '#1F2937', muted: '#6B7280', border: '#E5E7EB', dark: '#111827' },
     sections: [
       { id: 'inkwell-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Nouveaux articles chaque semaine — Abonnez-vous à la newsletter', bg: '#111827', text: '#FFFFFF' } },
@@ -79,7 +82,8 @@ export const THEMES = [
     name: 'Studio',
     category: 'Portfolio',
     description: 'Portfolio créatif avec galerie de projets.',
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Bricolage Grotesque", system-ui, sans-serif', body: '"Work Sans", system-ui, sans-serif' },
+    buttonStyle: 'square',
     palette: { primary: '#C2410C', primaryText: '#FFFFFF', accent: '#92400E', bg: '#FDF6F0', surface: '#FFFFFF', text: '#292524', muted: '#78716C', border: '#E7E0D8', dark: '#292524' },
     sections: [
       { id: 'studio-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Studio créatif — Disponible pour de nouveaux projets', bg: '#292524', text: '#FFFFFF' } },
@@ -98,7 +102,8 @@ export const THEMES = [
     name: 'Savor',
     category: 'Restaurant',
     description: 'Restaurant gastronomique africain moderne.',
-    fonts: { heading: '"Playfair Display", Georgia, serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Cormorant Garamond", Georgia, serif', body: '"Work Sans", system-ui, sans-serif' },
+    buttonStyle: 'rounded',
     palette: { primary: '#1F2937', primaryText: '#FFFFFF', accent: '#B45309', bg: '#FAF6F0', surface: '#FFFFFF', text: '#292524', muted: '#78716C', border: '#E7E0D8', dark: '#1F2937' },
     sections: [
       { id: 'savor-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Réservations ouvertes — Réservez votre table en ligne', bg: '#1F2937', text: '#FFFFFF' } },
@@ -117,7 +122,8 @@ export const THEMES = [
     name: 'Bloom',
     category: 'E-commerce',
     description: 'Cosmétiques et soins naturels, beauté afro-premium.',
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Cormorant Garamond", Georgia, serif', body: '"DM Sans", system-ui, sans-serif' },
+    buttonStyle: 'pill',
     palette: { primary: '#7C2D4A', primaryText: '#FFFFFF', accent: '#C9904B', bg: '#FBF6F1', surface: '#FFFFFF', text: '#3A2A2E', muted: '#9A8784', border: '#EDE2DA', dark: '#3A2A2E' },
     sections: [
       { id: 'bloom-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Livraison gratuite dès 35 000 FCFA — Paiement Mobile Money accepté', bg: '#7C2D4A', text: '#FFFFFF' } },
@@ -138,7 +144,8 @@ export const THEMES = [
     name: 'Heritage',
     category: 'E-commerce',
     description: 'Décor et artisanat africain pour la maison.',
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Lora", Georgia, serif', body: '"Work Sans", system-ui, sans-serif' },
+    buttonStyle: 'rounded',
     palette: { primary: '#5B3A29', primaryText: '#FFFFFF', accent: '#C2410C', bg: '#F7F2EC', surface: '#FFFFFF', text: '#3B2E26', muted: '#8C7A6B', border: '#E7DDD2', dark: '#3B2E26' },
     sections: [
       { id: 'heritage-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Mobilier et décor faits main — Pièces uniques livrées partout en Afrique', bg: '#3B2E26', text: '#FFFFFF' } },
@@ -159,7 +166,8 @@ export const THEMES = [
     name: 'Souk',
     category: 'Marketplace',
     description: "Marketplace multi-vendeurs premium pour l'Afrique.",
-    fonts: { heading: 'Inter, system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    fonts: { heading: '"Plus Jakarta Sans", system-ui, sans-serif', body: 'Inter, system-ui, sans-serif' },
+    buttonStyle: 'rounded',
     palette: { primary: '#1E3A5F', primaryText: '#FFFFFF', accent: '#D4AF37', bg: '#F4F6F9', surface: '#FFFFFF', text: '#233040', muted: '#6B7A89', border: '#E2E7EC', dark: '#1E3A5F' },
     sections: [
       { id: 'souk-ann', type: 'announcement', label: 'Annonce', visible: true, props: { style: 'fixed', message: 'Des milliers de vendeurs vérifiés — Paiement sécurisé, garantie acheteur', bg: '#1E3A5F', text: '#FFFFFF' } },

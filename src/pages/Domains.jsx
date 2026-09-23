@@ -44,6 +44,7 @@ export default function Domains() {
   const [billingName, setBillingName] = useState('');
   const [billingEmail, setBillingEmail] = useState('');
   const [billingAck, setBillingAck] = useState(false);
+  const [purchaseFinalizing, setPurchaseFinalizing] = useState(false);
 
   const loadDomains = useCallback(async () => {
     if (!store?.id) return;
@@ -119,19 +120,64 @@ export default function Domains() {
     if (!buyTarget?.registrable || !store?.id) return;
     setBuying(true);
     try {
-      const { data, error } = await supabase.functions.invoke('cloudflare-domains', {
-        body: { action: 'register', domain_name: buyTarget.name, tenant_id: store.id, confirm: true },
+      // Real billing first: the merchant pays Sellia (via Sellia's own
+      // Payunit account) for the domain price before anything is
+      // registered - redirects to Payunit's hosted payment page. The
+      // actual Cloudflare purchase only happens after that payment is
+      // independently confirmed (see the payunit_return handler below),
+      // never on faith that the redirect alone means paid.
+      const { data, error } = await supabase.functions.invoke('payunit-platform-billing', {
+        body: {
+          action: 'initiate',
+          tenant_id: store.id,
+          domain_name: buyTarget.name,
+          amount: buyTarget.price,
+          currency: buyTarget.currency,
+          email: billingEmail,
+          name: billingName,
+        },
       });
       if (error) throw new Error(await functionErrorMessage(error));
       if (data.error) throw new Error(data.error);
-      setBuyTarget(null);
-      setSearchDomain('');
-      setDomainResults([]);
-      await loadDomains();
+      sessionStorage.setItem('sellia_pending_domain_purchase', JSON.stringify({ name: buyTarget.name, price: buyTarget.price, currency: buyTarget.currency }));
+      window.location.href = data.transaction_url;
     } catch (e) {
-      alert(e.message || "Échec de l'achat du domaine");
-    } finally { setBuying(false); }
+      alert(e.message || "Échec de l'initialisation du paiement");
+      setBuying(false);
+    }
   };
+
+  // Handles the return from Payunit's hosted payment page
+  // (?payunit_return=1&tx=...&domain=...). Verifies the transaction against
+  // Payunit's own status endpoint (never the URL params alone) before
+  // registering the domain via Cloudflare.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payunit_return') !== '1' || !store?.id) return;
+    const tx = params.get('tx');
+    const domainName = params.get('domain');
+    window.history.replaceState({}, '', window.location.pathname);
+    if (!tx || !domainName) return;
+    (async () => {
+      setPurchaseFinalizing(true);
+      try {
+        const { data: v, error: vErr } = await supabase.functions.invoke('payunit-platform-billing', { body: { action: 'verify', transaction_id: tx } });
+        if (vErr) throw new Error(await functionErrorMessage(vErr));
+        if (!v.paid) throw new Error(`Paiement non confirmé (statut : ${v.status}). Le domaine n'a pas été acheté.`);
+        const { data: reg, error: regErr } = await supabase.functions.invoke('cloudflare-domains', {
+          body: { action: 'register', domain_name: domainName, tenant_id: store.id, confirm: true },
+        });
+        if (regErr) throw new Error(await functionErrorMessage(regErr));
+        if (reg.error) throw new Error(`Paiement confirmé mais l'enregistrement du domaine a échoué : ${reg.error}. Contactez le support avec la référence ${tx}.`);
+        sessionStorage.removeItem('sellia_pending_domain_purchase');
+        setBuyTarget(null);
+        await loadDomains();
+        alert(`${domainName} a été acheté avec succès !`);
+      } catch (e) {
+        alert(e.message || "Échec de la finalisation de l'achat");
+      } finally { setPurchaseFinalizing(false); }
+    })();
+  }, [store?.id, loadDomains]);
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
 
@@ -139,6 +185,15 @@ export default function Domains() {
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+      {purchaseFinalizing && (
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center">
+            <Loader2 className="w-8 h-8 text-[#008060] animate-spin mx-auto mb-3" />
+            <p className="text-sm font-semibold text-[#202223]">Vérification du paiement et enregistrement du domaine…</p>
+            <p className="text-xs text-[#6D7175] mt-1">Ne fermez pas cette page.</p>
+          </div>
+        </div>
+      )}
       <div className="flex items-center gap-2 mb-6">
         <Globe className="w-5 h-5 text-[#6D7175]" />
         <h1 className="text-xl font-bold text-[#202223]">Domaines et DNS</h1>
@@ -257,9 +312,9 @@ export default function Domains() {
               </>
             ) : (
               <>
-                <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-3">
-                  <p className="text-xs text-amber-800 leading-relaxed">
-                    <strong>Facturation actuelle :</strong> cet achat est traité via le compte Cloudflare de Sellia — le paiement d'un vrai compte-marchand-par-marchand n'est pas encore branché sur cette plateforme. Le montant n'est pas remboursable une fois l'enregistrement terminé.
+                <div className="rounded-lg bg-[#008060]/5 border border-[#008060]/20 p-3 mb-3">
+                  <p className="text-xs text-[#202223] leading-relaxed">
+                    Vous allez être redirigé vers une page de paiement sécurisée Payunit pour régler <strong>{buyTarget.price} {buyTarget.currency}</strong>. Le domaine n'est enregistré qu'une fois ce paiement confirmé. Non remboursable une fois l'enregistrement terminé.
                   </p>
                 </div>
                 <label className="flex items-start gap-2 text-xs text-[#202223] mb-4 cursor-pointer">
@@ -268,7 +323,7 @@ export default function Domains() {
                 </label>
                 <div className="flex gap-2">
                   <button onClick={() => setBuyStep(1)} className="flex-1 text-sm font-medium text-[#6D7175] border border-[#E1E1E1] rounded-full py-2.5 hover:bg-black/5">Retour</button>
-                  <button onClick={confirmBuy} disabled={buying || !billingAck} className="flex-1 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Achat…' : 'Confirmer l\u2019achat'}</button>
+                  <button onClick={confirmBuy} disabled={buying || !billingAck} className="flex-1 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Redirection…' : 'Payer et acheter'}</button>
                 </div>
               </>
             )}

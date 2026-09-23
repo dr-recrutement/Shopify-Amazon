@@ -43,7 +43,8 @@ import ActivityLogs from '@/pages/ActivityLogs';
 import SeoIa from '@/pages/SeoIa';
 import Onboarding from '@/pages/Onboarding';
 import ArticleDetail from '@/pages/ArticleDetail';
-import Team from '@/pages/Team';
+// Team.jsx (still on base44, StaffManagement.jsx covers this now) - import
+// removed, /team redirects to /settings instead of crashing.
 import Reports from '@/pages/Reports';
 import Settings from '@/pages/Settings';
 import Billing from '@/pages/Billing';
@@ -123,7 +124,7 @@ const AuthenticatedApp = () => {
           <Route path="/store-preview" element={<StorePreview />} />
           <Route path="/activity-logs" element={<ActivityLogs />} />
           <Route path="/seo-ia" element={<SeoIa />} />
-          <Route path="/team" element={<Team />} />
+          <Route path="/team" element={<Navigate to="/settings" replace />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/billing" element={<Billing />} />

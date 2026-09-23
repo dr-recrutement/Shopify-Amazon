@@ -37,7 +37,7 @@ export default function Chat() {
   useEffect(() => { load(); }, [load]);
 
   const filtered = messages.filter((m) => {
-    if (filter === 'unread' && m.status !== 'unread' && m.status) return false;
+    if (filter === 'unread' && m.status !== 'new' && m.status) return false;
     if (filter === 'archived' && m.status !== 'archived') return false;
     if (search && !m.name?.toLowerCase().includes(search.toLowerCase()) && !m.message?.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
@@ -52,7 +52,7 @@ export default function Chat() {
 
   const openMessage = (m) => {
     setSelected(m);
-    if (!m.status || m.status === 'unread') setStatus(m, 'read');
+    if (!m.status || m.status === 'new') setStatus(m, 'read');
   };
 
   const remove = async (m) => {
@@ -63,7 +63,7 @@ export default function Chat() {
     if (selected?.id === m.id) setSelected(null);
   };
 
-  const unreadCount = messages.filter((m) => !m.status || m.status === 'unread').length;
+  const unreadCount = messages.filter((m) => !m.status || m.status === 'new').length;
 
   if (storeLoading || loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
   if (!store) {
@@ -106,7 +106,7 @@ export default function Chat() {
               <p className="text-sm text-[#6D7175] text-center py-12">Aucun message.</p>
             ) : (
               filtered.map((m) => {
-                const unread = !m.status || m.status === 'unread';
+                const unread = !m.status || m.status === 'new';
                 return (
                   <button key={m.id} onClick={() => openMessage(m)} className={`w-full text-left p-3.5 border-b border-[#E1E1E1] hover:bg-[#F4F4F4] transition ${selected?.id === m.id ? 'bg-[#008060]/5' : ''}`}>
                     <div className="flex items-start gap-3">

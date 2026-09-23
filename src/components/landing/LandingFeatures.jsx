@@ -33,7 +33,7 @@ const TABS = [
     id: 'grow', label: 'Croître & Analyser', icon: TrendingUp,
     features: [
       { icon: BarChart3, title: 'Analytics temps réel', text: 'Suivez ventes, visiteurs, taux de conversion par produit et tunnel d’achat sur un tableau de bord actionnable.' },
-      { icon: Bot, title: 'Assistant IA', text: 'Générez descriptions produit, contenus SEO et thèmes entiers grâce à l’IA intégrée Sellia.' },
+      { icon: Bot, title: 'Sellia Assistant', text: 'Générez descriptions produit, contenus SEO et thèmes entiers grâce à l’IA intégrée Sellia.' },
       { icon: Megaphone, title: 'Marketing & automations', text: 'Campagnes e-mail, récupération de paniers abandonnés et automatisations déclenchées par événements.' },
       { icon: Bell, title: 'Alertes intelligentes', text: 'Notifications automatiques de stock bas, nouvelles commandes et anomalies — par e-mail ou push.' },
     ],

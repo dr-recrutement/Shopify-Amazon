@@ -28,7 +28,7 @@ const PLATFORM_LINKS = [
   { group: 'Croître', items: [
     { label: 'Analytics en temps réel', desc: 'Tableau de bord & rapports', icon: '📊', href: '#fonctionnalites' },
     { label: 'Multi-devises', desc: 'XOF, NGN, USD, EUR natifs', icon: '🌍', href: '#fonctionnalites' },
-    { label: 'Assistant IA', desc: 'Génération de contenus & thèmes', icon: '🤖', href: '#fonctionnalites' },
+    { label: 'Sellia Assistant', desc: 'Génération de contenus & thèmes', icon: '🤖', href: '#fonctionnalites' },
   ]},
 ];
 

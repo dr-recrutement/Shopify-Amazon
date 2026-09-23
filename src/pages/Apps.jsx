@@ -44,7 +44,7 @@ const INTEGRATIONS = [
   { id: 'ups', name: 'UPS', category: 'Livraison', region: 'Mondial', color: '#351C15', accent: '#FFB500', desc: 'Livraison mondiale', type: 'shipping' },
 
   // Marketing & apps (real logos where available)
-  { id: 'assistant-ia', name: 'Assistant IA', category: 'IA', region: '', color: '#008060', accent: '#FFFFFF', desc: 'Générez descriptions, SEO et campagnes', installed: true, to: '/assistant-ia', type: 'app' },
+  { id: 'assistant-ia', name: 'Sellia Assistant', category: 'IA', region: '', color: '#008060', accent: '#FFFFFF', desc: 'Générez descriptions, SEO et campagnes', installed: true, to: '/assistant-ia', type: 'app' },
   { id: 'marketing', name: 'Marketing', category: 'Marketing', region: '', color: '#0EA5E9', accent: '#FFFFFF', desc: 'Campagnes e-mail et récupération de paniers', installed: true, to: '/marketing', type: 'app' },
   { id: 'automations', name: 'Automatisations', category: 'Productivité', region: '', color: '#8B5CF6', accent: '#FFFFFF', desc: 'Automatisez e-mails et notifications', installed: true, to: '/automations', type: 'app' },
   { id: 'analytics', name: 'Analytics', category: 'Analyse', region: '', color: '#3B82F6', accent: '#FFFFFF', desc: 'Statistiques de vente en temps réel', installed: true, to: '/analytics', type: 'app' },

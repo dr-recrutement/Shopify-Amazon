@@ -18,7 +18,7 @@ const HIGHLIGHTS = [
   'Prévisualisation desktop, tablette, mobile',
   'Thèmes premium internationaux',
   'Personnalisation couleurs & typographies',
-  'Assistant IA pour générer du contenu',
+  'Sellia Assistant pour générer du contenu',
   'Publication en un clic',
 ];
 

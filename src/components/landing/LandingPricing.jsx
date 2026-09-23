@@ -20,7 +20,7 @@ const SUBSCRIPTION_PSPS = [
 const PLANS = [
   { name: 'Starter', price: 7, desc: 'Pour lancer votre première boutique.', features: ['1 boutique', '50 produits', 'Thèmes de base', 'Paiements manuels', '1 utilisateur', 'Sous-domaine sellia.app'] },
   { name: 'Growth', price: 19, desc: 'Pour les marchands en croissance.', features: ['1 000 produits', 'Tous les thèmes premium', 'Éditeur visuel', 'Paiements intégrés', 'Multi-devises', 'Analytics de base', '3 utilisateurs'], highlight: true },
-  { name: 'Pro', price: 39, desc: 'Pour les marchands établis.', features: ['Produits illimités', 'Assistant IA', 'Analytics avancées', 'Domaine personnalisé', '2 boutiques', '10 utilisateurs', 'Accès API'] },
+  { name: 'Pro', price: 39, desc: 'Pour les marchands établis.', features: ['Produits illimités', 'Sellia Assistant', 'Analytics avancées', 'Domaine personnalisé', '2 boutiques', '10 utilisateurs', 'Accès API'] },
   { name: 'Enterprise', price: 129, desc: 'Pour les places de marché.', features: ['Boutiques illimitées', 'Marketplace multi-vendeurs', 'Headless commerce', 'Automations & workflows', 'Utilisateurs illimités', 'Support 24/7', 'SLA 99,9 %'] },
 ];
 

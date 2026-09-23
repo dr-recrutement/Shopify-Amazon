@@ -22,7 +22,7 @@ const CATEGORIES = [
   ] },
   { id: 'theme', label: 'Thèmes et design', icon: BookOpen, articles: [
     { t: 'Personnaliser votre thème', body: 'Modifiez les couleurs, polices, sections et contenu via l\'éditeur visuel avec aperçu en temps réel.' },
-    { t: 'Utiliser l\'Assistant IA', body: 'Générez automatiquement du contenu premium adapté à votre commerce avec un seul clic.' },
+    { t: 'Utiliser l\'Sellia Assistant', body: 'Générez automatiquement du contenu premium adapté à votre commerce avec un seul clic.' },
   ] },
 ];
 

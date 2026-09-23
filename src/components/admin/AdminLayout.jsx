@@ -50,7 +50,7 @@ const NAV_GROUPS = [
   {
     title: 'IA & Croissance',
     items: [
-      { label: 'Assistant IA', to: '/assistant-ia', icon: Bot },
+      { label: 'Sellia Assistant', to: '/assistant-ia', icon: Bot },
       { label: 'Marketing', to: '/marketing', icon: Megaphone },
       { label: 'Rapports', to: '/reports', icon: FileBarChart },
       { label: 'Analyses produits', to: '/product-analytics', icon: TrendingUp },

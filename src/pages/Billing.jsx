@@ -14,7 +14,7 @@ const planFeatures = (plan) => {
   if (l.editor) feats.push('Éditeur visuel');
   if (l.payments === 'integrated') feats.push('Paiements intégrés');
   if (l.multi_currency) feats.push('Multi-devises');
-  if (l.ai_assistant) feats.push('Assistant IA');
+  if (l.ai_assistant) feats.push('Sellia Assistant');
   if (l.custom_domain) feats.push('Domaine personnalisé');
   if (l.discounts) feats.push('Réductions');
   if (l.marketplace) feats.push('Marketplace');

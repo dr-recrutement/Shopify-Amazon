@@ -4,7 +4,7 @@ import {
   Bot, Loader2, AlertCircle, Sparkles, Copy, Check,
   Package, Search, Megaphone, Mail, Share2, Store, Lightbulb, ShoppingCart,
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
 const TASKS = [
@@ -48,10 +48,11 @@ export default function AssistantIA() {
     if (!input.trim()) { inputRef.current?.focus(); return; }
     setLoadingAI(true); setResult(null);
     try {
-      const res = await base44.functions.invoke('aiAssistant', { task, input, context: store?.name || '' });
-      if (res.data?.error) throw new Error(res.data.error);
-      setResult(res.data.result);
-      setHistory((h) => [{ task, input, result: res.data.result, at: Date.now() }, ...h].slice(0, 8));
+      const { data, error } = await supabase.functions.invoke('ai-assistant', { body: { tenant_id: store.id, task, input, context: store?.name || '' } });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      setResult(data.result);
+      setHistory((h) => [{ task, input, result: data.result, at: Date.now() }, ...h].slice(0, 8));
     } catch (e) {
       setResult({ erreur: e.message });
     } finally { setLoadingAI(false); }
@@ -77,7 +78,7 @@ export default function AssistantIA() {
           <Bot className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-[#202223]">Assistant IA</h1>
+          <h1 className="text-xl font-bold text-[#202223]">Sellia Assistant</h1>
           <p className="text-xs text-[#6D7175]">G\u00e9n\u00e9rez du contenu premium pour votre boutique en quelques secondes.</p>
         </div>
       </div>

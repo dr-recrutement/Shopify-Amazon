@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { COUNTRIES } from '@/lib/world/countries';
 import { CURRENCIES } from '@/lib/world/currencies';
+import { getFeatureValue } from '@/lib/plans';
 
 const fld = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 const lbl = 'text-xs font-semibold text-[#6D7175] mb-1 block';
@@ -74,7 +75,7 @@ export function SettingsPlan() {
     } catch (e) { alert(e.message || "Échec du changement de plan"); } finally { setBusy(null); }
   };
   if (!store) return null;
-  return <div className={card}><h2 className={ttl}>Plan</h2><p className="text-xs text-[#6D7175] mb-4">Tous les plans incluent 14 jours d'essai gratuit. Sans carte bancaire.</p><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">{plans.map(([id, name, price]) => (<div key={id} className={`rounded-xl border-2 p-4 ${store.plan === id ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1]'}`}><p className="text-sm font-bold text-[#202223]">{name}</p><p className="text-2xl font-bold text-[#202223]">${price}<span className="text-xs font-normal text-[#6D7175]">/mois</span></p><button onClick={() => change(id)} disabled={store.plan === id || busy === id} className="w-full mt-3 text-xs font-semibold py-2 rounded-full bg-[#008060] text-white disabled:opacity-40">{store.plan === id ? 'Actuel' : 'Choisir'}</button></div>))}</div><p className="text-[11px] text-[#6D7175] mt-3">Un changement de plan ici relance une période d'essai de 14 jours. Pour toute question de facturation, contactez le support.</p></div>;
+  return <div className={card}><h2 className={ttl}>Plan</h2><p className="text-xs text-[#6D7175] mb-4">Tous les plans incluent 14 jours d'essai gratuit. Sans carte bancaire.</p><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">{plans.map(([id, name, price]) => { const limit = getFeatureValue(id, 'products'); return (<div key={id} className={`rounded-xl border-2 p-4 ${store.plan === id ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1]'}`}><p className="text-sm font-bold text-[#202223]">{name}</p><p className="text-2xl font-bold text-[#202223]">${price}<span className="text-xs font-normal text-[#6D7175]">/mois</span></p><p className="text-[11px] text-[#6D7175] mt-1">{Number.isFinite(limit) ? `${limit} produits` : 'Produits illimités'}</p><button onClick={() => change(id)} disabled={store.plan === id || busy === id} className="w-full mt-3 text-xs font-semibold py-2 rounded-full bg-[#008060] text-white disabled:opacity-40">{store.plan === id ? 'Actuel' : 'Choisir'}</button></div>); })}</div><p className="text-[11px] text-[#6D7175] mt-3">Un changement de plan ici relance une période d'essai de 14 jours. Pour toute question de facturation, contactez le support.</p></div>;
 }
 
 export function SettingsBilling() { return <div className={card}><h2 className={ttl}>Facturation</h2><p className="text-sm text-[#6D7175] mb-4">Gérez votre abonnement, vos factures et votre méthode de paiement.</p><Link to="/billing" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Aller à la facturation →</Link></div>; }

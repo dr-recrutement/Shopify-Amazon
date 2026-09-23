@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, ArrowRight, Star, Smartphone } from 'lucide-react';
+import { Check, ArrowRight, Star } from 'lucide-react';
 
 // Real subscription payment logos — same local assets and uniform white-
 // tile treatment as LandingPSPs.jsx, replacing the previous near-black
@@ -63,7 +63,7 @@ export default function LandingPricing() {
           {PLANS.map((p) => {
             const displayPrice = annual ? Math.round(p.price * (1 - ANNUAL_DISCOUNT)) : p.price;
             return (
-              <div key={p.name} className={`relative rounded-2xl border-2 p-6 flex flex-col transition-shadow hover:shadow-lg ${p.highlight ? 'border-[#008060] bg-white shadow-xl lg:scale-[1.04] lg:-translate-y-1' : 'border-[#E1E1E1] bg-white'}`}>
+              <div key={p.name} className={`relative border-2 p-6 flex flex-col transition-shadow hover:shadow-lg ${p.highlight ? 'border-[#008060] bg-white shadow-xl lg:scale-[1.04] lg:-translate-y-1' : 'border-[#E1E1E1] bg-white'}`}>
                 {p.highlight && <span className="self-start mb-3 text-[11px] font-bold bg-[#008060] text-white px-3 py-1 rounded-full">Le plus populaire</span>}
                 <h3 className="font-landing font-bold text-xl text-[#202223]">{p.name}</h3>
                 <p className="mt-1.5 text-sm text-[#6D7175] leading-relaxed min-h-[40px]">{p.desc}</p>
@@ -118,23 +118,7 @@ export default function LandingPricing() {
             </div>
           </div>
           <div className="relative">
-            <div className="w-[280px] h-[560px] rounded-[2.5rem] bg-[#0A0A0A] p-3 shadow-2xl">
-              <div className="w-full h-full rounded-[2rem] bg-white overflow-hidden relative">
-                <div className="h-6 bg-[#0A0A0A] flex items-center justify-center"><div className="w-20 h-5 bg-[#0A0A0A] rounded-b-xl" /></div>
-                <div className="h-32 bg-gradient-to-br from-[#008060] to-[#2EE6A8] flex items-center justify-center">
-                  <div className="text-white text-center"><p className="text-xs opacity-80">Boutique</p><p className="text-lg font-bold">Mode Wax Dakar</p></div>
-                </div>
-                <div className="p-3 space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex gap-2">
-                      <div className="w-16 h-16 rounded-lg bg-[#F4F4F4] shrink-0" />
-                      <div className="flex-1 py-1"><div className="h-3 w-3/4 bg-[#E1E1E1] rounded mb-1.5" /><div className="h-2 w-1/2 bg-[#F4F4F4] rounded mb-1.5" /><div className="h-4 w-16 bg-[#008060]/20 rounded" /></div>
-                    </div>
-                  ))}
-                </div>
-                <div className="absolute bottom-3 left-3 right-3 bg-[#008060] text-white text-center py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-1.5"><Smartphone className="w-4 h-4" /> Payer 45 000 FCFA</div>
-              </div>
-            </div>
+            <img src="/marketing/mobile-showcase.png" alt="Application mobile Sellia" className="w-full max-w-md lg:max-w-lg h-auto object-contain" />
           </div>
         </div>
       </div>

@@ -290,7 +290,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -343,6 +343,14 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onReset }) {
             </button>
           ))}
         </div>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Icône du panier</p>
+        </div>
+        <IconImageField value={theme.cartIcon || ''} onSetUrl={onCartIcon} />
+        <p className="text-[10px] text-[#6D7175] mt-1.5">Remplace l'icône panier par défaut sur la boutique et la page panier. Laisser vide pour garder l'icône standard.</p>
       </div>
       <button onClick={onReset} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-[#6D7175] border border-[#E1E1E1] rounded-md py-2 hover:bg-black/5"><RotateCcw className="w-3.5 h-3.5" /> Réinitialiser le thème</button>
     </div>
@@ -436,6 +444,7 @@ export default function ThemeEditor() {
   const onPalette = (k, v) => commit({ ...theme, palette: { ...theme.palette, [k]: v } });
   const onFont = (k, v) => commit({ ...theme, fonts: { ...theme.fonts, [k]: v } });
   const onButtonStyle = (v) => commit({ ...theme, buttonStyle: v });
+  const onCartIcon = (url) => commit({ ...theme, cartIcon: url });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -571,7 +580,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onReset={onReset} />}
           </div>
         </div>
       </div>

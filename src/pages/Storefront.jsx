@@ -12,7 +12,7 @@ import { formatMoney } from '@/lib/world/currencies';
 
 const CART_KEY = 'sellia_cart_session';
 
-function getCartSessionId() {
+export function getCartSessionId() {
   let id = localStorage.getItem(CART_KEY);
   if (!id) { id = crypto.randomUUID(); localStorage.setItem(CART_KEY, id); }
   return id;
@@ -283,7 +283,7 @@ export default function Storefront() {
   return (
     <div className="min-h-screen bg-white">
       <button onClick={() => setCartOpen(true)} className="fixed bottom-5 right-5 z-40 bg-foreground text-background rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2">
-        <ShoppingCart className="w-5 h-5" />
+        {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
         {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
       </button>
 
@@ -375,6 +375,7 @@ export default function Storefront() {
                 <button onClick={() => { setCartOpen(false); setCheckoutOpen(true); }} className="w-full bg-brand text-brand-foreground font-semibold py-3.5 rounded-full text-sm hover:bg-brand/90 transition-colors flex items-center justify-center gap-2 mt-1">
                   Passer à la commande <ArrowRight className="w-4 h-4" />
                 </button>
+                <Link to={`/store/${slug}/cart`} onClick={() => setCartOpen(false)} className="w-full block text-center text-xs font-medium text-foreground hover:underline">Voir le panier complet</Link>
                 <button onClick={() => setCartOpen(false)} className="w-full text-center text-xs font-medium text-muted-foreground hover:text-foreground">Continuer mes achats</button>
               </div>
             )}
@@ -390,7 +391,7 @@ export default function Storefront() {
   );
 }
 
-function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
+export function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
   const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : activeGateways?.includes('stripe') ? 'stripe' : 'cod');
   const [placing, setPlacing] = useState(false);

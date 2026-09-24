@@ -12,6 +12,18 @@ import { formatMoney } from '@/lib/world/currencies';
 
 const CART_KEY = 'sellia_cart_session';
 
+// supabase-js's own error object only carries a generic "Edge Function
+// returned a non-2xx status code" - the real message is in the
+// function's own JSON error body, same pattern used everywhere else this
+// session.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 export function getCartSessionId() {
   let id = localStorage.getItem(CART_KEY);
   if (!id) { id = crypto.randomUUID(); localStorage.setItem(CART_KEY, id); }
@@ -447,7 +459,8 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       try {
         await loadScript('https://js.stripe.com/v3/');
         const { data, error: keyError } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'get_public_key', tenant_id: store.id } });
-        if (keyError || data?.error) throw new Error(data?.error || keyError.message);
+        if (keyError) throw new Error(await functionErrorMessage(keyError));
+        if (data?.error) throw new Error(data.error);
         stripeRef.current = window.Stripe(data.publishable_key);
         const elements = stripeRef.current.elements();
         cardRef.current = elements.create('card', { style: { base: { fontSize: '14px' } } });
@@ -528,7 +541,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       if (paymentMethod === 'stripe') {
         if (!stripeReady || !stripeRef.current || !cardRef.current) throw new Error('Le module de paiement Stripe n\u2019est pas encore prêt.');
         const { data, error: initError } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'create_intent', order_id: order.id } });
-        if (initError) throw initError;
+        if (initError) throw new Error(await functionErrorMessage(initError));
         if (data.error) throw new Error(data.error);
 
         const { paymentIntent, error: confirmError } = await stripeRef.current.confirmCardPayment(data.client_secret, {
@@ -541,7 +554,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         // PaymentIntent from Stripe's own API server-side before marking
         // the order paid.
         const { data: v, error: vErr } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'verify', order_id: order.id, payment_intent_id: paymentIntent.id } });
-        if (vErr) throw vErr;
+        if (vErr) throw new Error(await functionErrorMessage(vErr));
         if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
 
         await decrementStockForItems(items);
@@ -553,7 +566,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
       if (paymentMethod === 'flutterwave') {
         const { data, error: initError } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'initiate', order_id: order.id } });
-        if (initError) throw initError;
+        if (initError) throw new Error(await functionErrorMessage(initError));
         if (data.error) throw new Error(data.error);
         await loadScript('https://checkout.flutterwave.com/v3.js');
         setPlacing(false);
@@ -571,7 +584,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             setPlacing(true);
             try {
               const { data: v, error: vErr } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id: response.transaction_id, tx_ref: response.tx_ref } });
-              if (vErr) throw vErr;
+              if (vErr) throw new Error(await functionErrorMessage(vErr));
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
               await decrementStockForItems(items);
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
@@ -590,7 +603,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
       if (paymentMethod === 'paystack') {
         const { data, error: initError } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'initiate', order_id: order.id } });
-        if (initError) throw initError;
+        if (initError) throw new Error(await functionErrorMessage(initError));
         if (data.error) throw new Error(data.error);
         await loadScript('https://js.paystack.co/v1/inline.js');
         setPlacing(false);
@@ -606,7 +619,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             (async () => {
               try {
                 const { data: v, error: vErr } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'verify', reference: response.reference } });
-                if (vErr) throw vErr;
+                if (vErr) throw new Error(await functionErrorMessage(vErr));
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
                 await decrementStockForItems(items);
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());

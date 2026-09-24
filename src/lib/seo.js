@@ -63,7 +63,7 @@ export function langForCountry(countryCode) {
  * language/region this content targets, not a promise of a real
  * translation.
  */
-export function applySEO({ title, description, image, url, countryCode, type = 'website' }) {
+export function applySEO({ title, description, image, url, countryCode, type = 'website', favicon }) {
   if (title) document.title = title;
   setMeta('name', 'description', description);
   setMeta('property', 'og:title', title);
@@ -82,6 +82,11 @@ export function applySEO({ title, description, image, url, countryCode, type = '
   document.documentElement.lang = lang;
   setLink('alternate', canonicalUrl, { hreflang: lang });
   setLink('alternate', canonicalUrl, { hreflang: 'x-default' });
+
+  // A merchant's storefront gets its own favicon when they've set one in
+  // Theme Editor - otherwise leaves Sellia's own favicon (set in
+  // index.html) alone, rather than blanking the tab icon.
+  if (favicon) setLink('icon', favicon);
 }
 
 export function applyStoreJsonLd({ name, description, url, logo, currency }) {

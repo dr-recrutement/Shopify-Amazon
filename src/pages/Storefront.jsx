@@ -227,6 +227,7 @@ export default function Storefront() {
       image: heroBanner?.props?.image || heroSection?.props?.logoImage,
       url,
       countryCode: store.country,
+      favicon: theme.favicon,
     });
     applyStoreJsonLd({ name: store.name, description, url, logo: heroSection?.props?.logoImage, currency: store.currency });
     if (products.length > 0) {

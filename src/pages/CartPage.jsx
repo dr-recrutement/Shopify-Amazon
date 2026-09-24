@@ -52,8 +52,8 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!store) return;
-    applySEO({ title: `Panier — ${store.name}`, description: `Votre panier sur ${store.name}.`, url: window.location.href, countryCode: store.country });
-  }, [store]);
+    applySEO({ title: `Panier — ${store.name}`, description: `Votre panier sur ${store.name}.`, url: window.location.href, countryCode: store.country, favicon: theme.favicon });
+  }, [store, theme]);
 
   const saveCart = async (items) => {
     const subtotal = items.reduce((s, i) => s + i.line_total, 0);

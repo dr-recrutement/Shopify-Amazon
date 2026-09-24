@@ -331,7 +331,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onProductSuggestions, onCardStyle, onCartPosition, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -427,6 +427,14 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
         </div>
         <IconImageField value={theme.cartIcon || ''} onSetUrl={onCartIcon} />
         <p className="text-[10px] text-[#6D7175] mt-1.5">Remplace l'icône panier par défaut sur la boutique et la page panier. Laisser vide pour garder l'icône standard.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Favicon</p>
+        </div>
+        <IconImageField value={theme.favicon || ''} onSetUrl={onFavicon} />
+        <p className="text-[10px] text-[#6D7175] mt-1.5">Icône affichée dans l'onglet du navigateur sur votre boutique. Idéalement une image carrée. Laisser vide pour garder le favicon Sellia par défaut.</p>
       </div>
       <div>
         <div className="flex items-center gap-2 mb-3">
@@ -554,6 +562,7 @@ export default function ThemeEditor() {
   const onFont = (k, v) => commit({ ...theme, fonts: { ...theme.fonts, [k]: v } });
   const onButtonStyle = (v) => commit({ ...theme, buttonStyle: v });
   const onCartIcon = (url) => commit({ ...theme, cartIcon: url });
+  const onFavicon = (url) => commit({ ...theme, favicon: url });
   const onProductSuggestions = (patch) => commit({ ...theme, productSuggestions: { ...(theme.productSuggestions || {}), ...patch } });
   const onCardStyle = (v) => commit({ ...theme, productCardStyle: v });
   const onCartPosition = (v) => commit({ ...theme, cartPosition: v });
@@ -692,7 +701,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onReset={onReset} />}
           </div>
         </div>
       </div>

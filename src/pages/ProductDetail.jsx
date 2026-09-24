@@ -135,8 +135,9 @@ export default function ProductDetail() {
       url: `${window.location.origin}/store/${slug}/products/${productId}`,
       countryCode: store.country,
       type: 'product',
+      favicon: theme.favicon,
     });
-  }, [store, product, slug, productId]);
+  }, [store, product, slug, productId, theme]);
 
   const addToCart = async () => {
     if (!inStock || !store) return;

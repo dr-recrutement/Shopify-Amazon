@@ -23,7 +23,7 @@ export function getCartSessionId() {
 // their script has loaded. Cached by src so re-opening checkout doesn't
 // re-inject the tag.
 const scriptPromises = {};
-function loadScript(src) {
+export function loadScript(src) {
   if (scriptPromises[src]) return scriptPromises[src];
   scriptPromises[src] = new Promise((resolve, reject) => {
     const existing = document.querySelector(`script[src="${src}"]`);

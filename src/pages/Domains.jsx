@@ -3,6 +3,7 @@ import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, 
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { hasFeature } from '@/lib/plans';
+import PlatformPaymentPicker from '@/components/PlatformPaymentPicker';
 
 const SELLIA_SUBDOMAIN = 'sellia.app';
 const REASON_LABELS = {
@@ -36,7 +37,7 @@ export default function Domains() {
   const [verifying, setVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState(null);
   const [domain, setDomain] = useState('');
-  const [buying, setBuying] = useState(false);
+  const [buying] = useState(false);
   const [searchDomain, setSearchDomain] = useState('');
   const [domainResults, setDomainResults] = useState([]);
   const [checking, setChecking] = useState(false);
@@ -123,35 +124,34 @@ export default function Domains() {
 
   const openBuy = (d) => { setBuyTarget(d); setBillingName(''); setBillingEmail(''); setBuyStep(1); };
 
-  const confirmBuy = async () => {
-    if (!buyTarget?.registrable || !store?.id) return;
-    setBuying(true);
+  const [showPaymentPicker, setShowPaymentPicker] = useState(false);
+
+  // Actually registers the domain via Cloudflare - only ever called once
+  // payment is independently confirmed paid (by whichever provider the
+  // merchant picked), never on faith that a redirect/popup closing means
+  // paid.
+  const registerDomainAfterPayment = async (domainName) => {
+    setPurchaseFinalizing(true);
     try {
-      // Real billing first: the merchant pays Sellia (via Sellia's own
-      // Payunit account) for the domain price before anything is
-      // registered - redirects to Payunit's hosted payment page. The
-      // actual Cloudflare purchase only happens after that payment is
-      // independently confirmed (see the payunit_return handler below),
-      // never on faith that the redirect alone means paid.
-      const { data, error } = await supabase.functions.invoke('payunit-platform-billing', {
-        body: {
-          action: 'initiate',
-          tenant_id: store.id,
-          domain_name: buyTarget.name,
-          amount: buyTarget.price,
-          currency: buyTarget.currency,
-          email: billingEmail,
-          name: billingName,
-        },
+      const { data: reg, error: regErr } = await supabase.functions.invoke('cloudflare-domains', {
+        body: { action: 'register', domain_name: domainName, tenant_id: store.id, confirm: true },
       });
-      if (error) throw new Error(await functionErrorMessage(error));
-      if (data.error) throw new Error(data.error);
-      sessionStorage.setItem('sellia_pending_domain_purchase', JSON.stringify({ name: buyTarget.name, price: buyTarget.price, currency: buyTarget.currency }));
-      window.location.href = data.transaction_url;
+      if (regErr) throw new Error(await functionErrorMessage(regErr));
+      if (reg.error) throw new Error(`Paiement confirmé mais l'enregistrement du domaine a échoué : ${reg.error}. Contactez le support.`);
+      sessionStorage.removeItem('sellia_pending_domain_purchase');
+      setBuyTarget(null);
+      setShowPaymentPicker(false);
+      await loadDomains();
+      alert(`${domainName} a été acheté avec succès !`);
     } catch (e) {
-      alert(e.message || "Échec de l'initialisation du paiement");
-      setBuying(false);
-    }
+      alert(e.message || "Échec de la finalisation de l'achat");
+    } finally { setPurchaseFinalizing(false); }
+  };
+
+  const confirmBuy = () => {
+    if (!buyTarget?.registrable || !store?.id) return;
+    sessionStorage.setItem('sellia_pending_domain_purchase', JSON.stringify({ name: buyTarget.name, price: buyTarget.price, currency: buyTarget.currency }));
+    setShowPaymentPicker(true);
   };
 
   // Handles the return from Payunit's hosted payment page
@@ -171,15 +171,7 @@ export default function Domains() {
         const { data: v, error: vErr } = await supabase.functions.invoke('payunit-platform-billing', { body: { action: 'verify', transaction_id: tx } });
         if (vErr) throw new Error(await functionErrorMessage(vErr));
         if (!v.paid) throw new Error(`Paiement non confirmé (statut : ${v.status}). Le domaine n'a pas été acheté.`);
-        const { data: reg, error: regErr } = await supabase.functions.invoke('cloudflare-domains', {
-          body: { action: 'register', domain_name: domainName, tenant_id: store.id, confirm: true },
-        });
-        if (regErr) throw new Error(await functionErrorMessage(regErr));
-        if (reg.error) throw new Error(`Paiement confirmé mais l'enregistrement du domaine a échoué : ${reg.error}. Contactez le support avec la référence ${tx}.`);
-        sessionStorage.removeItem('sellia_pending_domain_purchase');
-        setBuyTarget(null);
-        await loadDomains();
-        alert(`${domainName} a été acheté avec succès !`);
+        await registerDomainAfterPayment(domainName);
       } catch (e) {
         alert(e.message || "Échec de la finalisation de l'achat");
       } finally { setPurchaseFinalizing(false); }
@@ -338,17 +330,29 @@ export default function Domains() {
                 </label>
                 <div className="flex gap-2">
                   <button onClick={() => setBuyStep(1)} className="flex-1 text-sm font-medium text-[#6D7175] border border-[#E1E1E1] rounded-full py-2.5 hover:bg-black/5">Retour</button>
-                  <button onClick={confirmBuy} disabled={buying || !billingAck} className="flex-1 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">{buying ? 'Redirection…' : 'Payer et acheter'}</button>
+                  <button onClick={confirmBuy} disabled={!billingAck} className="flex-1 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40">Payer et acheter</button>
                 </div>
               </>
             )}
           </div>
         </div>
       )}
+      {showPaymentPicker && buyTarget && (
+        <PlatformPaymentPicker
+          amount={buyTarget.price}
+          currency={buyTarget.currency}
+          purpose="domain"
+          reference={`domain-${store.id}-${buyTarget.name}-${Date.now()}`}
+          email={billingEmail}
+          name={billingName}
+          tenantId={store.id}
+          onCancel={() => setShowPaymentPicker(false)}
+          onSuccess={() => registerDomainAfterPayment(buyTarget.name)}
+        />
+      )}
     </div>
   );
 }
-
 // Real Cloudflare Registrar transfer-out: unlock so the domain can be moved
 // to another registrar. The auth/EPP code itself has no confirmed API
 // endpoint in Cloudflare's current docs (it's a Cloudflare-dashboard-only

@@ -335,6 +335,22 @@ export default function AdminLayout() {
               </div>
             );
           })()}
+          {!store?.suspended_at && store?.plan_status !== 'trial' && store?.subscription_ends_at && (() => {
+            const daysLeft = Math.ceil((new Date(store.subscription_ends_at) - new Date()) / 86400000);
+            const expired = daysLeft <= 0;
+            if (daysLeft > 7) return null;
+            return (
+              <div className={`border-b px-4 py-2.5 flex items-center gap-2 text-sm ${expired ? 'bg-red-50 border-red-200 text-red-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>
+                  {expired
+                    ? <><strong>Abonnement expiré.</strong> Votre vitrine publique est actuellement indisponible pour vos clients.</>
+                    : <><strong>Abonnement</strong> — expire dans {daysLeft} jour{daysLeft > 1 ? 's' : ''}.</>}{' '}
+                  <Link to="/billing" className="underline font-medium">Renouveler</Link>
+                </span>
+              </div>
+            );
+          })()}
           <Outlet />
         </main>
       </div>

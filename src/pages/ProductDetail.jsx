@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus, Star } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { applySEO } from '@/lib/seo';
@@ -32,6 +32,7 @@ export default function ProductDetail() {
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   const load = useCallback(async () => {
     if (!slug || !productId) return;
@@ -49,6 +50,9 @@ export default function ProductDetail() {
       setTheme(isValidTheme(themeRes.data?.published_config) ? migrateTheme(themeRes.data.published_config) : cloneTheme(DEFAULT_THEME_ID));
       if (!productRes.data) throw new Error('Produit introuvable');
       setProduct(productRes.data);
+
+      const { data: reviewsData } = await supabase.from('product_reviews').select('*').eq('product_id', productId).eq('is_approved', true).order('created_at', { ascending: false }).limit(20);
+      setReviews(reviewsData || []);
 
       const options = productRes.data.metafields?.options || [];
       const initial = {};
@@ -203,6 +207,16 @@ export default function ProductDetail() {
 
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{product.name}</h1>
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5" style={{ color: theme.palette.primary }} fill={i < Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) ? theme.palette.primary : 'none'} />
+                ))}
+              </div>
+              <span className="text-xs" style={{ color: p.muted }}>{(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} ({reviews.length} avis)</span>
+            </div>
+          )}
           <div className="flex items-baseline gap-2 mt-3">
             <span className="text-xl font-bold" style={{ color: theme.palette.primary }}>{formatMoney(price, store.currency)}</span>
             {compareAt > price && <span className="text-sm line-through" style={{ color: p.muted }}>{formatMoney(compareAt, store.currency)}</span>}
@@ -257,6 +271,28 @@ export default function ProductDetail() {
 
           {product.description && (
             <div className="mt-8 pt-6 border-t text-sm leading-relaxed" style={{ borderColor: p.border, color: p.muted }} dangerouslySetInnerHTML={{ __html: product.description }} />
+          )}
+
+          {reviews.length > 0 && (
+            <div className="mt-8 pt-6 border-t" style={{ borderColor: p.border }}>
+              <h2 className="text-sm font-bold mb-4" style={{ color: p.dark }}>Avis clients ({reviews.length})</h2>
+              <div className="space-y-4">
+                {reviews.slice(0, 8).map((r) => (
+                  <div key={r.id} className="pb-4 border-b last:border-b-0" style={{ borderColor: p.border }}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-semibold" style={{ color: p.dark }}>{r.customer_name || 'Client vérifié'}</span>
+                      <span className="text-[11px]" style={{ color: p.muted }}>{new Date(r.created_at).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                    <div className="flex gap-0.5 mb-1.5">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <Star key={i} className="w-3 h-3" style={{ color: theme.palette.primary }} fill={i < r.rating ? theme.palette.primary : 'none'} />
+                      ))}
+                    </div>
+                    {r.comment && <p className="text-sm" style={{ color: p.muted }}>{r.comment}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>

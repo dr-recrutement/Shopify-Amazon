@@ -53,6 +53,7 @@ export default function Storefront() {
   const { slug } = useParams();
   const [store, setStore] = useState(null);
   const [products, setProducts] = useState([]);
+  const [productRatings, setProductRatings] = useState({});
   const [collections, setCollections] = useState([]);
   const [articles, setArticles] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -93,13 +94,17 @@ export default function Storefront() {
       }
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
-      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, gatewaysRes] = await Promise.all([
+      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, ratingsRes, gatewaysRes] = await Promise.all([
         supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
         supabase.from('products').select('*').eq('tenant_id', tenant.id).eq('status', 'active').order('created_at', { ascending: false }).limit(200),
         supabase.from('product_categories').select('*').eq('tenant_id', tenant.id),
         supabase.from('product_category_assignments').select('product_id, category_id'),
         supabase.from('content_pages').select('*').eq('tenant_id', tenant.id).eq('status', 'published').order('published_at', { ascending: false }).limit(20),
         supabase.from('product_reviews').select('*, products(name)').eq('tenant_id', tenant.id).eq('is_approved', true).order('created_at', { ascending: false }).limit(30),
+        // Every approved rating for every product (not just the 30 most
+        // recent reviews above) - real per-product averages need the
+        // full set, not a truncated sample.
+        supabase.from('product_reviews').select('product_id, rating').eq('tenant_id', tenant.id).eq('is_approved', true),
         supabase.from('public_active_gateways').select('gateway').eq('tenant_id', tenant.id),
       ]);
       // Some theme_configs rows predate this editor and store an
@@ -107,6 +112,13 @@ export default function Storefront() {
       // the stock default rather than crashing on the mismatch.
       setTheme(isValidTheme(themeRes.data?.published_config) ? migrateTheme(themeRes.data.published_config) : cloneTheme(DEFAULT_THEME_ID));
       setProducts(productsRes.data || []);
+      const ratingAcc = {};
+      (ratingsRes.data || []).forEach((r) => {
+        const cur = ratingAcc[r.product_id] || { sum: 0, count: 0 };
+        cur.sum += r.rating; cur.count += 1;
+        ratingAcc[r.product_id] = cur;
+      });
+      setProductRatings(ratingAcc);
       const counts = {};
       (assignRes.data || []).forEach((a) => { counts[a.category_id] = (counts[a.category_id] || 0) + 1; });
       setCollections((categoriesRes.data || []).map((c) => ({ ...c, product_count: counts[c.id] || 0 })));
@@ -137,14 +149,22 @@ export default function Storefront() {
   useEffect(() => { if (store) loadCart(); }, [store, loadCart]);
 
   const storeSections = useMemo(() => {
-    const prods = products.map((p) => ({
-      _id: p.id,
-      image: (p.images && p.images[0]) || '',
-      title: p.name,
-      price: formatMoney((p.price_cents || 0) / 100, store?.currency || p.currency),
-      _price: (p.price_cents || 0) / 100,
-      _hasVariants: (p.variants || []).length > 0,
-    }));
+    const prods = products.map((p) => {
+      const r = productRatings[p.id];
+      return {
+        _id: p.id,
+        image: (p.images && p.images[0]) || '',
+        title: p.name,
+        price: formatMoney((p.price_cents || 0) / 100, store?.currency || p.currency),
+        _price: (p.price_cents || 0) / 100,
+        _hasVariants: (p.variants || []).length > 0,
+        // Real average from approved product_reviews - not shown at all
+        // (no fake placeholder star count) when a product has zero
+        // reviews yet, rather than implying a rating that doesn't exist.
+        rating: r ? Math.round((r.sum / r.count) * 10) / 10 : undefined,
+        reviewCount: r ? r.count : 0,
+      };
+    });
     const posts = articles.map((a) => ({
       _id: a.id,
       _handle: a.slug,
@@ -180,7 +200,7 @@ export default function Storefront() {
       }
       return s;
     });
-  }, [theme, products, articles, collections, reviews, store]);
+  }, [theme, products, productRatings, articles, collections, reviews, store]);
 
   useEffect(() => {
     if (!store) return;

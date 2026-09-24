@@ -354,7 +354,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                           <Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} />
                         )}
                         <div className="p-3">
-                          {pr.rating ? <Stars n={pr.rating} color={accent} /> : null}
+                          {pr.rating ? <div className="flex items-center gap-1"><Stars n={pr.rating} color={accent} />{pr.reviewCount > 0 && <span className="text-[10px]" style={{ color: p.muted }}>({pr.reviewCount})</span>}</div> : null}
                           {detailHref ? (
                             <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block text-sm font-semibold mt-1.5 hover:underline" style={{ color: p.text }}>{pr.title}</a>
                           ) : (

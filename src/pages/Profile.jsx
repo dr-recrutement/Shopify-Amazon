@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
 import {
-  User as UserIcon, Mail, Shield, Loader2, Check, Lock, ArrowLeft, Calendar,
+  User as UserIcon, Mail, Shield, Loader2, Check, Lock, ArrowLeft, Calendar, Camera,
 } from 'lucide-react';
 
 export default function Profile() {
@@ -13,16 +13,36 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       const u = data?.user;
       setUser(u || null);
       setName(u?.user_metadata?.full_name || '');
+      setAvatarUrl(u?.user_metadata?.avatar_url || '');
       setLoading(false);
       if (u?.id) checkIsSuperAdmin(u.id).then(setIsSuperAdmin);
     }).catch(() => setLoading(false));
   }, []);
+
+  const uploadAvatar = async (file) => {
+    if (!file || !user) return;
+    setAvatarUploading(true);
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      const path = `avatars/${user.id}-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from('product-images').getPublicUrl(path);
+      const { error } = await supabase.auth.updateUser({ data: { avatar_url: pub.publicUrl } });
+      if (error) throw error;
+      setAvatarUrl(pub.publicUrl);
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de la photo");
+    } finally { setAvatarUploading(false); }
+  };
 
   const save = async () => {
     setSaving(true);
@@ -54,7 +74,15 @@ export default function Profile() {
       {/* Identity */}
       <div className="bg-white rounded-2xl border border-[#E1E1E1] p-6 mb-5">
         <div className="flex items-center gap-4 mb-5">
-          <div className="w-16 h-16 rounded-full bg-[#008060] flex items-center justify-center text-white text-xl font-bold shrink-0">{initials}</div>
+          <div className="relative shrink-0">
+            <div className="w-16 h-16 rounded-full bg-[#008060] flex items-center justify-center text-white text-xl font-bold overflow-hidden">
+              {avatarUrl ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" /> : initials}
+            </div>
+            <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border border-[#E1E1E1] flex items-center justify-center cursor-pointer hover:bg-black/5" title="Changer la photo">
+              {avatarUploading ? <Loader2 className="w-3 h-3 animate-spin text-[#008060]" /> : <Camera className="w-3 h-3 text-[#6D7175]" />}
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => uploadAvatar(e.target.files?.[0])} disabled={avatarUploading} />
+            </label>
+          </div>
           <div className="min-w-0">
             <p className="text-lg font-bold text-[#202223] truncate">{fullName || 'Sans nom'}</p>
             <p className="text-sm text-[#6D7175] truncate flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {user.email}</p>

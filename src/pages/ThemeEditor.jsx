@@ -28,8 +28,8 @@ const SECTION_CATALOG = [
   { type: 'header', label: 'En-tête', icon: PanelTop, make: () => ({ props: { logo: 'Logo', links: ['Accueil', 'Boutique'] } }) },
   { type: 'hero', label: 'Bannière', icon: ImageIcon, make: () => ({ props: { image: 'https://picsum.photos/seed/new-hero/1600/900', title: 'Nouveau titre', subtitle: 'Sous-titre', buttons: [{ label: 'Bouton', variant: 'primary' }], align: 'left' } }) },
   { type: 'trustbar', label: 'Garanties', icon: ShieldCheck, make: () => ({ props: { items: [{ icon: '✦', text: 'Atout' }] } }) },
-  { type: 'collectionList', label: 'Catégories', icon: ImageIcon, make: () => ({ props: { title: 'Catégories', columns: 4, items: [{ image: 'https://picsum.photos/seed/newcat/500/650', title: 'Catégorie', count: '0 articles' }] } }) },
-  { type: 'productGrid', label: 'Grille produits', icon: ShoppingBag, make: () => ({ props: { title: 'Nos produits', columns: 4, products: [{ image: 'https://picsum.photos/seed/np/600', title: 'Produit', price: '0 FCFA', rating: 5 }] } }) },
+  { type: 'collectionList', label: 'Catégories', icon: ImageIcon, make: () => ({ props: { title: 'Catégories', columns: 4, columnsMobile: 2, items: [{ image: 'https://picsum.photos/seed/newcat/500/650', title: 'Catégorie', count: '0 articles' }] } }) },
+  { type: 'productGrid', label: 'Grille produits', icon: ShoppingBag, make: () => ({ props: { title: 'Nos produits', columns: 4, columnsMobile: 2, products: [{ image: 'https://picsum.photos/seed/np/600', title: 'Produit', price: '0 FCFA', rating: 5 }] } }) },
   { type: 'imageText', label: 'Image + texte', icon: Columns, make: () => ({ props: { image: 'https://picsum.photos/seed/newit/800', title: 'Titre', text: 'Texte', button: 'En savoir plus', reverse: false } }) },
   { type: 'multicolumn', label: 'Colonnes', icon: Columns, make: () => ({ props: { title: 'Atouts', items: [{ icon: '✦', title: 'Point', text: 'Description' }] } }) },
   { type: 'testimonials', label: 'Avis clients', icon: Star, make: () => ({ props: { title: 'Avis', items: [{ quote: 'Excellent', author: 'Client', role: '' }] } }) },
@@ -200,6 +200,15 @@ const ENUM_OPTIONS = {
   style: ['fixed', 'scrolling'],
   imageFit: ['cover', 'contain'],
 };
+// A few field keys are shown with a real French label rather than the raw
+// camelCase prop name (unlike most fields here, which intentionally use
+// the key itself) - specifically the two "columns" fields, since without
+// this a merchant would see "columns" and "columnsMobile" side by side
+// with no indication of which screen size each one controls.
+const FIELD_LABEL_OVERRIDES = {
+  columns: 'Colonnes (desktop)',
+  columnsMobile: 'Colonnes (mobile)',
+};
 
 function ScalarInput({ value, onChange, fieldKey }) {
   const inputCls = 'w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30 focus:border-[#008060]';
@@ -242,6 +251,14 @@ function ScalarInput({ value, onChange, fieldKey }) {
     return (
       <select value={value ?? 'medium'} onChange={(e) => onChange(e.target.value)} className={inputCls}>
         {Object.entries(sizeLabels).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    );
+  }
+  if (fieldKey === 'mobileMenuStyle') {
+    const styleLabels = { dropdown: 'Menu déroulant', fullscreen: 'Plein écran' };
+    return (
+      <select value={value ?? 'dropdown'} onChange={(e) => onChange(e.target.value)} className={inputCls}>
+        {Object.entries(styleLabels).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
       </select>
     );
   }
@@ -291,7 +308,7 @@ function Inspector({ section, onSetProp }) {
         </Field>
       )}
       {Object.entries(c).map(([k, v]) => (
-        <Field key={k} label={k}>
+        <Field key={k} label={FIELD_LABEL_OVERRIDES[k] || k}>
           {Array.isArray(v) ? (
             <ArrayEditor items={v} path={k} onSet={onSetProp} />
           ) : (
@@ -314,7 +331,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onProductSuggestions, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onProductSuggestions, onCardStyle, onCartPosition, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -364,6 +381,41 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
               style={{ borderRadius: b.id === 'pill' ? '9999px' : b.id === 'square' ? '4px' : '10px' }}
             >
               {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Coins des fiches produit</p>
+        </div>
+        <div className="flex gap-2">
+          {[['rounded', 'Arrondis'], ['square', 'Angles droits']].map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => onCardStyle(id)}
+              className={`flex-1 text-xs font-semibold py-2 border transition ${(theme.productCardStyle || 'rounded') === id ? 'border-[#008060] bg-[#008060]/5 text-[#008060]' : 'border-[#E1E1E1] text-[#6D7175] hover:border-[#C9C9C9]'}`}
+              style={{ borderRadius: id === 'square' ? '4px' : '10px' }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Position du panier</p>
+        </div>
+        <div className="flex gap-2">
+          {[['bottom-right', 'En bas à droite'], ['bottom-left', 'En bas à gauche']].map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => onCartPosition(id)}
+              className={`flex-1 text-xs font-semibold py-2 rounded-md border transition ${(theme.cartPosition || 'bottom-right') === id ? 'border-[#008060] bg-[#008060]/5 text-[#008060]' : 'border-[#E1E1E1] text-[#6D7175] hover:border-[#C9C9C9]'}`}
+            >
+              {label}
             </button>
           ))}
         </div>
@@ -503,6 +555,8 @@ export default function ThemeEditor() {
   const onButtonStyle = (v) => commit({ ...theme, buttonStyle: v });
   const onCartIcon = (url) => commit({ ...theme, cartIcon: url });
   const onProductSuggestions = (patch) => commit({ ...theme, productSuggestions: { ...(theme.productSuggestions || {}), ...patch } });
+  const onCardStyle = (v) => commit({ ...theme, productCardStyle: v });
+  const onCartPosition = (v) => commit({ ...theme, cartPosition: v });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -638,7 +692,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onProductSuggestions={onProductSuggestions} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onReset={onReset} />}
           </div>
         </div>
       </div>

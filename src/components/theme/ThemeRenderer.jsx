@@ -163,6 +163,15 @@ function smColsClass(n) {
   const clamped = Math.min(6, Math.max(1, Math.round(Number(n) || 4)));
   return SM_COLS_CLASS[clamped];
 }
+// Same static-class requirement for the mobile (base, no breakpoint
+// prefix) column count - now a genuinely separate merchant-configurable
+// value from the desktop count, not the same set of images just
+// reflowing into fewer visible columns.
+const BASE_COLS_CLASS = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' };
+function baseColsClass(n) {
+  const clamped = Math.min(4, Math.max(1, Math.round(Number(n) || 2)));
+  return BASE_COLS_CLASS[clamped];
+}
 
 function Img({ src, className, fittingType = 'fill', zoom, editor, sectionId, path, onUpload, onSetUrl }) {
   return (
@@ -246,7 +255,20 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                   </button>
                 )}
-                {mobileNavOpen && (
+                {mobileNavOpen && c.mobileMenuStyle === 'fullscreen' && (
+                  <div
+                    className="sm:hidden fixed inset-0 z-40 flex flex-col justify-center items-center gap-2"
+                    style={{ background: c.bg || p.bg }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {(c.links || []).map((l, i) => (
+                      <div key={i} onClick={() => setMobileNavOpen(false)} className="px-5 py-4 text-lg font-semibold" style={{ color: c.textColor || p.dark }}>
+                        <NavLink link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.dark }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {mobileNavOpen && c.mobileMenuStyle !== 'fullscreen' && (
                   <div
                     className="sm:hidden absolute left-0 right-0 top-full border-b shadow-lg z-30 flex flex-col py-2"
                     style={{ background: c.bg || p.bg, borderColor: p.border }}
@@ -299,7 +321,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">
                 <h2 className="text-xl sm:text-3xl font-bold text-center mb-8" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
-                <div className={`grid grid-cols-2 ${smColsClass(c.columns || 4)} gap-4`}>
+                <div className={`grid ${baseColsClass(c.columnsMobile || 2)} ${smColsClass(c.columns || 4)} gap-4`}>
                   {(c.items || []).map((it, i) => (
                     <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden">
                       <Img src={it.image} className="w-full h-full" {...ip} path={`items.${i}.image`} />
@@ -321,11 +343,11 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                   <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="hidden sm:flex items-center gap-1 text-xs font-semibold" style={{ color: primary }}>Tout voir <ArrowRight className="w-3.5 h-3.5" /></button>
                 </div>
-                <div className={`grid grid-cols-2 ${smColsClass(c.columns || 4)} gap-4`}>
+                <div className={`grid ${baseColsClass(c.columnsMobile || 2)} ${smColsClass(c.columns || 4)} gap-4`}>
                   {(c.products || []).map((pr, i) => {
                     const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
                     return (
-                      <div key={i} className="group rounded-xl overflow-hidden transition hover:shadow-lg" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                      <div key={i} className={`group overflow-hidden transition hover:shadow-lg ${theme.productCardStyle === 'square' ? 'rounded-none' : 'rounded-xl'}`} style={{ background: p.surface, border: `1px solid ${p.border}` }}>
                         {detailHref ? (
                           <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
                         ) : (

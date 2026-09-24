@@ -297,7 +297,7 @@ export default function Storefront() {
 
   return (
     <div className="min-h-screen bg-white">
-      <button onClick={() => setCartOpen(true)} className="fixed bottom-5 right-5 z-40 bg-foreground text-background rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2">
+      <button onClick={() => setCartOpen(true)} className={`fixed bottom-5 z-40 bg-foreground text-background rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2 ${theme.cartPosition === 'bottom-left' ? 'left-5' : 'right-5'}`}>
         {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
         {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
       </button>

@@ -250,7 +250,7 @@ export function cloneTheme(id) {
 // already made.
 export function migrateTheme(theme) {
   if (!theme || !Array.isArray(theme.sections)) return theme;
-  const t = { buttonStyle: 'rounded', productSuggestions: { enabled: true, title: 'Vous aimerez aussi', mode: 'category', count: 4 }, ...theme };
+  const t = { buttonStyle: 'rounded', productCardStyle: 'rounded', cartPosition: 'bottom-right', productSuggestions: { enabled: true, title: 'Vous aimerez aussi', mode: 'category', count: 4 }, ...theme };
   t.sections = theme.sections.map((s) => {
     const props = { ...(s.props || {}) };
     switch (s.type) {
@@ -263,6 +263,15 @@ export function migrateTheme(theme) {
         }
         if (props.logoSize === undefined) props.logoSize = 'medium';
         if (props.logoZoom === undefined) props.logoZoom = 1;
+        if (props.mobileMenuStyle === undefined) props.mobileMenuStyle = 'dropdown';
+        break;
+      case 'productGrid':
+      case 'collectionList':
+        // Mobile column count used to just be whatever the desktop value
+        // reflowed into via a fixed breakpoint - now a genuinely separate
+        // merchant-set value, so it needs its own real default instead of
+        // silently inheriting one.
+        if (props.columnsMobile === undefined) props.columnsMobile = 2;
         break;
       case 'testimonials':
         if (props.displayMode === undefined) props.displayMode = 'grid';

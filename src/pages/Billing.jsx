@@ -3,6 +3,7 @@ import { CreditCard, Check, Loader2, Download, Calendar, AlertCircle } from 'luc
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { PLANS, PLAN_ORDER, getPlan } from '@/lib/plans';
+import PlatformPaymentPicker from '@/components/PlatformPaymentPicker';
 import { formatMoney } from '@/lib/world/currencies';
 
 const planFeatures = (plan) => {
@@ -37,15 +38,30 @@ export default function Billing() {
 
   useEffect(() => { load(); }, [load]);
 
+  const inTrial = store?.plan_status === 'trial';
+  const [payingFor, setPayingFor] = useState(null);
   const changePlan = async (planId) => {
     if (!store?.id) return;
+    if (!inTrial) { setPayingFor(planId); return; }
     setChanging(planId);
     try {
-      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'trial', trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString() }).eq('id', store.id);
+      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'trial', trial_ends_at: store.trial_ends_at || new Date(Date.now() + 14 * 86400000).toISOString() }).eq('id', store.id);
       if (error) throw error;
       window.location.reload();
     } catch (e) {
       alert(e.message || 'Échec du changement de plan');
+    } finally { setChanging(null); }
+  };
+  const onSubscriptionPaid = async () => {
+    const planId = payingFor;
+    setPayingFor(null);
+    setChanging(planId);
+    try {
+      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'active', subscription_ends_at: new Date(Date.now() + 30 * 86400000).toISOString() }).eq('id', store.id);
+      if (error) throw error;
+      window.location.reload();
+    } catch (e) {
+      alert(e.message || "Paiement confirmé mais l'activation du plan a échoué. Contactez le support.");
     } finally { setChanging(null); }
   };
 
@@ -128,6 +144,18 @@ export default function Billing() {
           </div>
         )}
       </div>
+      {payingFor && (
+        <PlatformPaymentPicker
+          amount={PLANS[payingFor]?.price || 0}
+          currency="USD"
+          purpose="subscription"
+          plan={payingFor}
+          reference={`sub-${store.id}-${payingFor}-${Date.now()}`}
+          tenantId={store.id}
+          onCancel={() => setPayingFor(null)}
+          onSuccess={onSubscriptionPaid}
+        />
+      )}
     </div>
   );
 }

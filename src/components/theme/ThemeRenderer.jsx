@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Image } from '@/components/ui/image';
-import { Upload, Link2, X, Star, Check, ArrowRight } from 'lucide-react';
+import { Upload, Link2, X, Star, Check, ArrowRight, Menu } from 'lucide-react';
 import { ensureGoogleFonts } from '@/lib/fonts';
 import { supabase } from '@/api/supabaseClient';
 
@@ -194,6 +194,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
   const storefront = mode === 'storefront';
   const visible = sections.filter((s) => s.visible);
   const firstPgId = visible.find((s) => s.type === 'productGrid')?.id;
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const wrap = (s, content) => (
     <SectionShell key={s.id} section={s} editor={editor} selectedId={selectedId} onSelect={onSelectSection}>
       {content}
@@ -227,14 +228,37 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
           case 'header':
             return wrap(s, (
               <div
-                className={`flex items-center justify-between px-5 sm:px-8 py-4 border-b ${storefront && c.sticky ? 'sticky top-0 z-30' : ''}`}
+                className={`relative flex items-center justify-between px-5 sm:px-8 py-4 border-b ${storefront && c.sticky ? 'sticky top-0 z-30' : ''}`}
                 style={{ borderColor: p.border, background: c.bg || p.bg, justifyContent: c.align === 'center' ? 'center' : 'space-between', gap: c.align === 'center' ? '2rem' : undefined }}
               >
                 {c.logoImage
                   ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className={LOGO_SIZES[c.logoSize] || LOGO_SIZES.medium} fittingType="fit" zoom={c.logoZoom} {...ip} path="logoImage" /></span>
                   : <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={`font-bold tracking-[0.25em] text-sm sm:text-base ${storefront ? 'cursor-pointer' : ''}`} style={{ fontFamily: theme.fonts?.heading, color: c.textColor || p.dark }}>{c.logo}</span>}
                 <nav className="hidden sm:flex gap-6 text-xs font-medium">{(c.links || []).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
-                <nav className="sm:hidden flex gap-3 text-[11px] font-medium">{(c.links || []).slice(0, 3).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
+                {(c.links || []).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setMobileNavOpen((v) => !v); }}
+                    className="sm:hidden p-1.5 -mr-1.5 rounded-md"
+                    style={{ color: c.textColor || p.text }}
+                    aria-label="Menu"
+                  >
+                    {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  </button>
+                )}
+                {mobileNavOpen && (
+                  <div
+                    className="sm:hidden absolute left-0 right-0 top-full border-b shadow-lg z-30 flex flex-col py-2"
+                    style={{ background: c.bg || p.bg, borderColor: p.border }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {(c.links || []).map((l, i) => (
+                      <div key={i} onClick={() => setMobileNavOpen(false)} className="px-5 py-3 text-sm font-medium border-b last:border-b-0" style={{ color: c.textColor || p.text, borderColor: p.border }}>
+                        <NavLink link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ));
 

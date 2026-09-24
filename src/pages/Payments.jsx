@@ -208,7 +208,7 @@ export default function Payments() {
                       <button key={r} type="button" onClick={() => setRegionFilter(r)} className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${regionFilter === r ? 'bg-[#202223] text-white border-[#202223]' : 'border-[#E1E1E1] text-[#6D7175] hover:bg-black/5'}`}>{r}</button>
                     ))}
                   </div>
-                  <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
                     {PROVIDERS.filter((p) => regionFilter === 'Tous' || p.region === regionFilter).map((p) => (
                       <button key={p.value} type="button" onClick={() => set({ provider: p.value })} className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left ${form.provider === p.value ? 'border-[#008060] bg-[#008060]/5' : 'border-[#E1E1E1] hover:bg-black/[0.02]'}`}>
                         <div className="w-8 h-8 rounded-md bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">

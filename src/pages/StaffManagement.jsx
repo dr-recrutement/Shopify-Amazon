@@ -92,6 +92,7 @@ export default function StaffManagement() {
       )}
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]"><tr><th className="px-4 py-3 font-semibold">Membre</th><th className="px-4 py-3 font-semibold">Rôle</th><th className="px-4 py-3 font-semibold">Statut</th><th className="px-4 py-3"></th></tr></thead>
           <tbody>
@@ -111,6 +112,7 @@ export default function StaffManagement() {
             {staff.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-sm text-[#6D7175]">Aucun membre pour le moment.</td></tr>}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

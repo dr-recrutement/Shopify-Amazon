@@ -108,6 +108,7 @@ export default function Billing() {
         {payments.length === 0 ? (
           <div className="p-8 text-center text-sm text-[#6D7175]">Aucun historique de facturation disponible pour l'instant — le suivi des paiements d'abonnement n'est pas encore branché sur cette plateforme.</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]">
               <tr><th className="px-4 py-3 font-semibold">Date</th><th className="px-4 py-3 font-semibold">Description</th><th className="px-4 py-3 font-semibold">Montant</th><th className="px-4 py-3 font-semibold">Statut</th><th className="px-4 py-3 font-semibold"></th></tr>
@@ -124,6 +125,7 @@ export default function Billing() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

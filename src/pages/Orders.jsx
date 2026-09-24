@@ -134,6 +134,7 @@ export default function Orders() {
               <p className="text-xs text-[#6D7175] mt-1">Les commandes de vos clients apparaîtront ici.</p>
             </div>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-[#FAFAFA] text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">
                 <tr>
@@ -161,6 +162,7 @@ export default function Orders() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

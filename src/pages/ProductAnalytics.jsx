@@ -110,6 +110,7 @@ export default function ProductAnalytics() {
       {/* Per-product analytics: visitors & conversion */}
       <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden mb-6">
         <h2 className="text-sm font-semibold text-[#202223] px-5 py-4 border-b border-[#E1E1E1] flex items-center gap-2"><TrendingUp className="w-4 h-4 text-[#008060]" /> Analyse par produit — visites & conversion</h2>
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]">
             <tr>
@@ -144,6 +145,7 @@ export default function ProductAnalytics() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">

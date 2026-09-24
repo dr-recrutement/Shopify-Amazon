@@ -134,6 +134,7 @@ export default function Products() {
               <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Ajouter un produit</button>
             </div>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-[#FAFAFA] text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">
                 <tr>
@@ -178,6 +179,7 @@ export default function Products() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

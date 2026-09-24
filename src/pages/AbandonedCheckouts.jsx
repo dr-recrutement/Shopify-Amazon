@@ -73,6 +73,7 @@ export default function AbandonedCheckouts() {
         {carts.length === 0 ? (
           <div className="p-10 text-center"><ShoppingCart className="w-10 h-10 text-[#C9C9C9] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Aucun panier abandonné. Tout est sous contrôle !</p></div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-[#F4F4F4] text-left text-xs text-[#6D7175]"><tr><th className="px-4 py-3 font-semibold">Client</th><th className="px-4 py-3 font-semibold">Articles</th><th className="px-4 py-3 font-semibold">Montant</th><th className="px-4 py-3 font-semibold">Date</th><th className="px-4 py-3 font-semibold text-right">Actions</th></tr></thead>
             <tbody>
@@ -96,6 +97,7 @@ export default function AbandonedCheckouts() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
       <p className="text-[11px] text-[#6D7175] mt-3 flex items-center gap-1"><Copy className="w-3 h-3" /> Pas d'envoi d'e-mail automatique pour l'instant — copiez l'adresse pour relancer le client vous-même.</p>

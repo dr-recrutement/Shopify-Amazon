@@ -102,7 +102,7 @@ export default function DiscountForm({ open, onOpenChange, store, discount, onSa
           <Field label="Limite d'utilisation" hint="0 = illimité">
             <input type="number" min="0" value={form.usage_limit} onChange={(e) => set({ usage_limit: e.target.value })} className={inputCls} />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Début"><input type="date" value={form.starts_at ? form.starts_at.slice(0, 10) : ''} onChange={(e) => set({ starts_at: e.target.value })} className={inputCls} /></Field>
             <Field label="Fin"><input type="date" value={form.ends_at ? form.ends_at.slice(0, 10) : ''} onChange={(e) => set({ ends_at: e.target.value })} className={inputCls} /></Field>
           </div>

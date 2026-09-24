@@ -263,7 +263,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         <div className="space-y-4">
           <Field label="Titre *"><input value={form.title} onChange={(e) => set({ title: e.target.value })} className={inputCls} placeholder="Ex : Boubou wax premium" /></Field>
           <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} pathPrefix={store.id} /></Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label={`Prix (${store.currency})`}><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set({ price: e.target.value })} className={inputCls} /></Field>
             <Field label="Prix barré"><input type="number" min="0" step="0.01" value={form.compare_at_price} onChange={(e) => set({ compare_at_price: e.target.value })} className={inputCls} /></Field>
           </div>
@@ -273,11 +273,11 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
               <p className="text-[11px] text-[#6D7175] mt-1">Pour les produits avec variantes, le stock est géré par variante ci-dessous.</p>
             </Field>
           )}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="SKU"><input value={form.sku} onChange={(e) => set({ sku: e.target.value })} className={inputCls} /></Field>
             <Field label="Code-barres"><input value={form.barcode || ''} onChange={(e) => set({ barcode: e.target.value })} className={inputCls} /></Field>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Statut">
               <select value={form.status} onChange={(e) => set({ status: e.target.value })} className={inputCls}>
                 {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -285,7 +285,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
             </Field>
             <Field label="Poids (kg)"><input type="number" min="0" step="0.01" value={form.weight || 0} onChange={(e) => set({ weight: e.target.value })} className={inputCls} /></Field>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Marque / Fournisseur"><input value={form.vendor} onChange={(e) => set({ vendor: e.target.value })} className={inputCls} /></Field>
             <Field label="Type de produit"><input value={form.product_type} onChange={(e) => set({ product_type: e.target.value })} className={inputCls} placeholder="Vêtement, Accessoire…" /></Field>
           </div>

@@ -149,6 +149,21 @@ const LOGO_SIZES = {
   large: 'h-10 sm:h-12 w-32 sm:w-40',
 };
 
+// Tailwind's JIT compiler only generates CSS for class names it can find
+// as complete, literal strings in the source at build time - a template-
+// string-interpolated class like `sm:grid-cols-${c.columns}` is invisible
+// to it and NEVER produces real CSS, no matter what the runtime value is.
+// That was the actual cause of "desktop column count has no effect,
+// mobile and desktop always show the same layout": the sm: breakpoint
+// class silently never existed, so only the hardcoded 2-column mobile
+// class (a real literal) ever applied, on every screen size. This map of
+// fully-written class names is what Tailwind can actually see and compile.
+const SM_COLS_CLASS = { 1: 'sm:grid-cols-1', 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-3', 4: 'sm:grid-cols-4', 5: 'sm:grid-cols-5', 6: 'sm:grid-cols-6' };
+function smColsClass(n) {
+  const clamped = Math.min(6, Math.max(1, Math.round(Number(n) || 4)));
+  return SM_COLS_CLASS[clamped];
+}
+
 function Img({ src, className, fittingType = 'fill', zoom, editor, sectionId, path, onUpload, onSetUrl }) {
   return (
     <div className={`relative overflow-hidden ${className}`}>
@@ -260,7 +275,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">
                 <h2 className="text-xl sm:text-3xl font-bold text-center mb-8" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
-                <div className={`grid grid-cols-2 sm:grid-cols-${c.columns || 4} gap-4`}>
+                <div className={`grid grid-cols-2 ${smColsClass(c.columns || 4)} gap-4`}>
                   {(c.items || []).map((it, i) => (
                     <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden">
                       <Img src={it.image} className="w-full h-full" {...ip} path={`items.${i}.image`} />
@@ -282,7 +297,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   <h2 className="text-xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                   <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="hidden sm:flex items-center gap-1 text-xs font-semibold" style={{ color: primary }}>Tout voir <ArrowRight className="w-3.5 h-3.5" /></button>
                 </div>
-                <div className={`grid grid-cols-2 sm:grid-cols-${c.columns || 4} gap-4`}>
+                <div className={`grid grid-cols-2 ${smColsClass(c.columns || 4)} gap-4`}>
                   {(c.products || []).map((pr, i) => {
                     const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
                     return (
@@ -547,7 +562,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
             const cols = c.columns || 1;
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12" style={{ background: c.background && c.background !== 'transparent' ? c.background : undefined }}>
-                <div className={`grid gap-4 max-w-5xl mx-auto grid-cols-1 sm:grid-cols-${cols}`}>
+                <div className={`grid gap-4 max-w-5xl mx-auto grid-cols-1 ${smColsClass(cols)}`}>
                   {(c.blocks || []).map((b, i) => {
                     const span = Math.min(b.span || 1, cols);
                     const spanStyle = span > 1 ? { gridColumn: `span ${span} / span ${span}` } : undefined;

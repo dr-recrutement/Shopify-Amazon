@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Loader2, X, CreditCard } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, X, CreditCard, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { loadScript } from '@/pages/Storefront';
 
@@ -22,6 +22,14 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
   const [available, setAvailable] = useState(null);
   const [busyProvider, setBusyProvider] = useState(null);
   const [error, setError] = useState('');
+  const [stripeView, setStripeView] = useState(false);
+  const [stripeReady, setStripeReady] = useState(false);
+  const [stripeSubmitting, setStripeSubmitting] = useState(false);
+  const cardElRef = useRef(null);
+  const stripeRef = useRef(null);
+  const cardRef = useRef(null);
+  const clientSecretRef = useRef(null);
+  const paymentIntentIdRef = useRef(null);
 
   useEffect(() => {
     supabase.functions.invoke('platform-billing', { body: { action: 'availability' } })
@@ -30,12 +38,51 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
   }, []);
 
   const verifyThenSucceed = async (provider, ref) => {
-    const { data, error: vErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'verify', provider, reference: ref } });
-    if (vErr || !data?.paid) { setError('Paiement non confirmé. Réessayez ou choisissez un autre moyen de paiement.'); setBusyProvider(null); return; }
+    const { data, error: vErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'verify', provider, reference: ref, payment_intent_id: paymentIntentIdRef.current } });
+    if (vErr || !data?.paid) { setError('Paiement non confirmé. Réessayez ou choisissez un autre moyen de paiement.'); setBusyProvider(null); setStripeSubmitting(false); return; }
     onSuccess({ provider, reference: ref });
   };
 
+  // Stripe Elements needs a real mounted card field, not a one-call popup
+  // like the others - this opens a dedicated inline step within the same
+  // picker instead of a separate page, so it's still a real embedded
+  // payment, just Stripe's specific shape of "no redirect".
+  const openStripe = async () => {
+    setError(''); setBusyProvider('stripe'); setStripeView(true);
+    try {
+      const { data } = await supabase.functions.invoke('platform-billing', { body: { action: 'create_intent', provider: 'stripe', amount, currency, reference, purpose } });
+      if (data?.error) throw new Error(data.error);
+      clientSecretRef.current = data.client_secret;
+      paymentIntentIdRef.current = data.payment_intent_id;
+      await loadScript('https://js.stripe.com/v3/');
+      stripeRef.current = window.Stripe(data.publishable_key);
+      const elements = stripeRef.current.elements();
+      cardRef.current = elements.create('card');
+      cardRef.current.mount(cardElRef.current);
+      setStripeReady(true);
+    } catch (e) {
+      setError(e.message || "Échec de l'initialisation de Stripe");
+      setStripeView(false);
+    } finally { setBusyProvider(null); }
+  };
+
+  const submitStripe = async () => {
+    setStripeSubmitting(true); setError('');
+    try {
+      const { error: confirmError, paymentIntent } = await stripeRef.current.confirmCardPayment(clientSecretRef.current, {
+        payment_method: { card: cardRef.current, billing_details: { name, email } },
+      });
+      if (confirmError) throw new Error(confirmError.message);
+      if (paymentIntent.status !== 'succeeded') throw new Error('Paiement non confirmé.');
+      await verifyThenSucceed('stripe', paymentIntent.id);
+    } catch (e) {
+      setError(e.message || 'Échec du paiement');
+      setStripeSubmitting(false);
+    }
+  };
+
   const pay = async (provider) => {
+    if (provider === 'stripe') { openStripe(); return; }
     setError(''); setBusyProvider(provider);
     try {
       if (provider === 'flutterwave') {
@@ -99,10 +146,6 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
         window.location.href = data.transaction_url;
         return;
       }
-      if (provider === 'stripe') {
-        setError("Le paiement par carte (Stripe) nécessite une étape supplémentaire non encore branchée ici. Choisissez un autre moyen de paiement pour l'instant.");
-        setBusyProvider(null);
-      }
     } catch (e) {
       setError(e.message || "Échec de l'initialisation du paiement");
       setBusyProvider(null);
@@ -112,14 +155,25 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
   const options = available ? Object.entries(available).filter(([, ok]) => ok) : null;
 
   return (
-    <div className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4" onClick={onCancel}>
+    <div className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4" onClick={stripeSubmitting ? undefined : onCancel}>
       <div className="bg-white rounded-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-bold text-[#202223] flex items-center gap-2"><CreditCard className="w-4 h-4 text-[#008060]" /> Choisir un moyen de paiement</p>
-          <button onClick={onCancel} className="text-[#6D7175] hover:text-[#202223]"><X className="w-4 h-4" /></button>
+          <p className="text-sm font-bold text-[#202223] flex items-center gap-2">
+            {stripeView && <button onClick={() => { setStripeView(false); setStripeReady(false); setError(''); }} className="text-[#6D7175] hover:text-[#202223]"><ArrowLeft className="w-4 h-4" /></button>}
+            <CreditCard className="w-4 h-4 text-[#008060]" /> {stripeView ? 'Carte bancaire' : 'Choisir un moyen de paiement'}
+          </p>
+          {!stripeSubmitting && <button onClick={onCancel} className="text-[#6D7175] hover:text-[#202223]"><X className="w-4 h-4" /></button>}
         </div>
 
-        {options === null ? (
+        {stripeView ? (
+          <div>
+            <div ref={cardElRef} className="px-3 py-3 border border-[#E1E1E1] rounded-lg mb-3 bg-white" />
+            {!stripeReady && <div className="flex items-center justify-center py-4"><Loader2 className="w-5 h-5 animate-spin text-[#008060]" /></div>}
+            <button onClick={submitStripe} disabled={!stripeReady || stripeSubmitting} className="w-full bg-[#008060] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40 flex items-center justify-center gap-2">
+              {stripeSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null} {stripeSubmitting ? 'Traitement…' : `Payer ${amount} ${currency}`}
+            </button>
+          </div>
+        ) : options === null ? (
           <div className="flex items-center justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-[#008060]" /></div>
         ) : options.length === 0 ? (
           <p className="text-sm text-[#6D7175] py-4">Aucun moyen de paiement n'est configuré pour l'instant. Contactez le support.</p>

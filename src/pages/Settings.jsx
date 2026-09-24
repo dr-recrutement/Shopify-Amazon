@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings as SettingsIcon, Loader2 } from 'lucide-react';
+import { Settings as SettingsIcon, Loader2, ArrowLeft } from 'lucide-react';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   SettingsGeneral, SettingsPlan,
@@ -57,6 +57,7 @@ const SECTIONS = [
 export default function Settings() {
   const { loading } = useCurrentStore();
   const [active, setActive] = useState('general');
+  const [mobileShowDetail, setMobileShowDetail] = useState(false);
 
   const ActiveComp = (() => {
     for (const g of SECTIONS) {
@@ -74,6 +75,8 @@ export default function Settings() {
     return 'Général';
   })();
 
+  const selectItem = (id) => { setActive(id); setMobileShowDetail(true); };
+
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
 
   return (
@@ -84,14 +87,20 @@ export default function Settings() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar */}
-        <aside className="lg:w-64 shrink-0">
-          <div className="bg-white rounded-xl border border-[#E1E1E1] p-2 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+        {/* Sidebar - on mobile this IS the whole screen (a list to pick
+            from) until an item is picked, then it hides entirely so the
+            content isn't squeezed under it. The old layout applied
+            desktop-only sticky/max-height classes unconditionally, so on
+            mobile the ~25-item list alone filled the viewport and the
+            actual settings content never became visible without a lot of
+            scrolling past it first. */}
+        <aside className={`lg:w-64 shrink-0 ${mobileShowDetail ? 'hidden lg:block' : 'block'}`}>
+          <div className="bg-white rounded-xl border border-[#E1E1E1] p-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] overflow-y-auto">
             {SECTIONS.map((g) => (
               <div key={g.group} className="mb-1">
                 <p className="px-3 pt-2.5 pb-1 text-[10px] font-bold text-[#6D7175] uppercase tracking-wide">{g.group}</p>
                 {g.items.map((item) => (
-                  <button key={item.id} onClick={() => setActive(item.id)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${active === item.id ? 'bg-[#008060] text-white font-semibold' : 'text-[#202223] hover:bg-black/5'}`}>
+                  <button key={item.id} onClick={() => selectItem(item.id)} className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${active === item.id ? 'bg-[#008060] text-white font-semibold' : 'text-[#202223] hover:bg-black/5'}`}>
                     {item.label}
                   </button>
                 ))}
@@ -101,7 +110,10 @@ export default function Settings() {
         </aside>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className={`flex-1 min-w-0 ${mobileShowDetail ? 'block' : 'hidden lg:block'}`}>
+          <button onClick={() => setMobileShowDetail(false)} className="lg:hidden flex items-center gap-1.5 text-sm font-semibold text-[#008060] mb-4">
+            <ArrowLeft className="w-4 h-4" /> {activeLabel}
+          </button>
           <ActiveComp />
         </div>
       </div>

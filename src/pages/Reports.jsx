@@ -4,6 +4,8 @@ import { FileBarChart, Loader2, AlertCircle, TrendingUp, Package, Users, Downloa
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar } from 'recharts';
 
 const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
@@ -105,6 +107,13 @@ export default function Reports() {
         <AlertCircle className="w-10 h-10 text-brand mx-auto mb-3" />
         <h1 className="text-lg font-bold text-foreground">Configurez votre boutique</h1>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground text-sm font-medium px-4 py-2 rounded-full hover:bg-brand/90 mt-3">Configurer</Link>
+      </div>
+    );
+  }
+  if (!hasFeature(store.plan, 'analytics')) {
+    return (
+      <div className="max-w-md mx-auto mt-20">
+        <PaywallCard requiredPlan="growth" title="Les rapports nécessitent le plan Growth" description="Consultez vos rapports de ventes et de performance détaillés. Passez au plan Growth ou supérieur pour y accéder." />
       </div>
     );
   }

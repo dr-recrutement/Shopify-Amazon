@@ -3,6 +3,8 @@ import { BarChart3, TrendingUp, Package, Loader2, AlertTriangle, Award } from 'l
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts';
 
 export default function ProductAnalytics() {
@@ -54,6 +56,13 @@ export default function ProductAnalytics() {
   const totalUnits = bestSellers.reduce((s, p) => s + p.qty, 0);
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+  if (store && !hasFeature(store.plan, 'analytics')) {
+    return (
+      <div className="max-w-md mx-auto mt-20">
+        <PaywallCard requiredPlan="growth" title="Les analyses produits nécessitent le plan Growth" description="Découvrez vos meilleurs produits et leur performance. Passez au plan Growth ou supérieur pour y accéder." />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">

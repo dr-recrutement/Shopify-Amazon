@@ -1,6 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
+// supabase-js's own error object only ever carries a generic "Edge
+// Function returned a non-2xx status code" - the real message is in the
+// function's own JSON error body, same pattern used everywhere else this
+// session (Domains.jsx, PlatformPaymentPicker.jsx, etc).
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { Search, Sparkles, Loader2, Check, ArrowLeft, Package, Copy, AlertCircle } from 'lucide-react';
 
@@ -21,7 +32,7 @@ export default function SeoIa() {
     setLoading(true);
     try {
       const { data, error } = await supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(200);
-      if (error) throw error;
+      if (error) throw new Error(await functionErrorMessage(error));
       setProducts(data || []);
     } catch (e) {
       console.error('Failed to load products:', e);

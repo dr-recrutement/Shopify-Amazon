@@ -1,6 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UsersRound, Plus, Trash2, Loader2, Crown, User } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+// supabase-js's own error object only ever carries a generic "Edge
+// Function returned a non-2xx status code" - the real message is in the
+// function's own JSON error body, same pattern used everywhere else this
+// session (Domains.jsx, PlatformPaymentPicker.jsx, etc).
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { getFeatureValue, getPlan } from '@/lib/plans';
 
@@ -41,7 +52,7 @@ export default function StaffManagement() {
     setBusy(true); setError('');
     try {
       const { data, error: inviteError } = await supabase.functions.invoke('invite-staff', { body: { tenant_id: store.id, email: email.trim(), role } });
-      if (inviteError) throw inviteError;
+      if (inviteError) throw new Error(await functionErrorMessage(inviteError));
       if (data.error) throw new Error(data.error);
       await load();
       setShowInvite(false);

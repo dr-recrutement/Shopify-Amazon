@@ -9,6 +9,19 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { hasFeature } from '@/lib/plans';
 import PaywallCard from '@/components/admin/PaywallCard';
 
+// supabase-js's own error object only ever carries a generic "Edge
+// Function returned a non-2xx status code" - the real message lives in
+// the function's own JSON error body, read here the same way this
+// pattern is used everywhere else this session (Domains.jsx,
+// PlatformPaymentPicker.jsx, etc).
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 const TASKS = [
   { id: 'product_description', label: 'Description produit', icon: Package, placeholder: 'Ex : Sac \u00e0 main en cuir v\u00e9ritable, fait main \u00e0 Dakar, doublure satin\u00e9e\u2026', hint: 'G\u00e9n\u00e8re titre, description, r\u00e9sum\u00e9 et tags' },
   { id: 'seo', label: 'Optimisation SEO', icon: Search, placeholder: 'Ex : Page collection Robes wax \u00e9t\u00e9', hint: 'Titre SEO, m\u00e9ta-description et mots-cl\u00e9s' },
@@ -53,7 +66,7 @@ export default function AssistantIA() {
     setLoadingAI(true); setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke('ai-assistant', { body: { tenant_id: store.id, task, input, context: store?.name || '' } });
-      if (error) throw error;
+      if (error) throw new Error(await functionErrorMessage(error));
       if (data.error) throw new Error(data.error);
       setResult(data.result);
       setResultProvider(data.provider);

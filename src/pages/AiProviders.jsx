@@ -3,6 +3,17 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { Loader2, Save, Check, Bot, Cpu, Sparkles, KeyRound, AlertCircle, Trash2 } from 'lucide-react';
 
+// Same generic-error gap as elsewhere this session - the real message is
+// in the function's own JSON error body, not supabase-js's own error
+// object.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 const PROVIDERS = [
   { id: 'gemini', name: 'Gemini', desc: 'Google — rapide et économique', color: '#4285F4', icon: Sparkles },
   { id: 'claude', name: 'Claude', desc: 'Anthropic — qualité rédactionnelle', color: '#D97757', icon: Bot },
@@ -41,7 +52,7 @@ export default function AiProviders() {
     setSaving(id); setSaved(null);
     try {
       const { data: enc, error: encError } = await supabase.functions.invoke('encrypt-gateway-credentials', { body: { api_key: keys[id] } });
-      if (encError) throw encError;
+      if (encError) throw new Error(await functionErrorMessage(encError));
       if (enc.error) throw new Error(enc.error);
       const { error } = await supabase.from('tenant_ai_providers').upsert(
         { tenant_id: store.id, provider: id, api_key_encrypted: enc.api_key_encrypted },

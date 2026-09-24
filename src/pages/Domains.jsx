@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Globe, Link2, Loader2, Check, ExternalLink, ShoppingCart, AlertCircle, Trash2, RefreshCcw, Lock, Unlock } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
@@ -238,10 +239,15 @@ export default function Domains() {
               </div>
             )}
           </div>
-        ) : (
+        ) : hasFeature(store?.plan, 'custom_domain') ? (
           <div className="flex gap-2">
             <input value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="mondomaine.com" className="flex-1 px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm" />
             <button onClick={connectDomain} disabled={connecting || !domain} className="bg-[#008060] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{connecting ? 'Connexion…' : 'Connecter'}</button>
+          </div>
+        ) : (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-xs text-amber-800">La connexion d'un domaine existant nécessite le plan Pro ou supérieur.</p>
+            <Link to="/settings" className="text-xs font-semibold text-[#008060] hover:underline shrink-0">Passer à niveau →</Link>
           </div>
         )}
       </div>
@@ -321,7 +327,7 @@ export default function Domains() {
               <>
                 <div className="rounded-lg bg-[#008060]/5 border border-[#008060]/20 p-3 mb-3">
                   <p className="text-xs text-[#202223] leading-relaxed">
-                    Vous allez être redirigé vers une page de paiement sécurisée Payunit pour régler <strong>{buyTarget.price} {buyTarget.currency}</strong>. Le domaine n'est enregistré qu'une fois ce paiement confirmé. Non remboursable une fois l'enregistrement terminé.
+                    Vous allez choisir un moyen de paiement sécurisé pour régler <strong>{buyTarget.price} {buyTarget.currency}</strong>. Le domaine n'est enregistré qu'une fois ce paiement confirmé. Non remboursable une fois l'enregistrement terminé.
                   </p>
                 </div>
                 <label className="flex items-start gap-2 text-xs text-[#202223] mb-4 cursor-pointer">

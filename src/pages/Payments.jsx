@@ -1,6 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
+// supabase-js's own error object only ever carries a generic "Edge
+// Function returned a non-2xx status code" - the real message is in the
+// function's own JSON error body, same pattern used everywhere else this
+// session (Domains.jsx, PlatformPaymentPicker.jsx, etc).
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   CreditCard, Plus, Pencil, Trash2, Loader2, AlertCircle, ArrowLeft,
@@ -61,7 +72,7 @@ export default function Payments() {
     setLoading(true);
     try {
       const { data, error } = await supabase.from('vendor_payment_gateways').select('*').eq('tenant_id', store.id).order('display_order', { ascending: true });
-      if (error) throw error;
+      if (error) throw new Error(await functionErrorMessage(error));
       setProviders(data || []);
     } catch (e) {
       console.error('Failed to load payment gateways:', e);

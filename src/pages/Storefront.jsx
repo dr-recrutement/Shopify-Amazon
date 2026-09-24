@@ -671,7 +671,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 <MapPin className="w-4 h-4 text-muted-foreground" />
                 <input required placeholder="Adresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="flex-1 outline-none text-sm" />
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input required placeholder="Ville" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="px-3 py-3 border border-border rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand/30 bg-white" />
                 <input required placeholder="Pays" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="px-3 py-3 border border-border rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand/30 bg-white" />
                 <input placeholder="Code postal" value={form.postal_code} onChange={(e) => setForm({ ...form, postal_code: e.target.value })} className="px-3 py-3 border border-border rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand/30 bg-white" />

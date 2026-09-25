@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Image } from '@/components/ui/image';
-import { Upload, Link2, X, Star, Check, ArrowRight, Menu } from 'lucide-react';
+import { Upload, Link2, X, Star, Check, ArrowRight, Menu, Search } from 'lucide-react';
 import { ensureGoogleFonts } from '@/lib/fonts';
 import { supabase } from '@/api/supabaseClient';
 
@@ -244,6 +244,11 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className={LOGO_SIZES[c.logoSize] || LOGO_SIZES.medium} fittingType="fit" zoom={c.logoZoom} {...ip} path="logoImage" /></span>
                   : <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={`font-bold tracking-[0.25em] text-sm sm:text-base ${storefront ? 'cursor-pointer' : ''}`} style={{ fontFamily: theme.fonts?.heading, color: c.textColor || p.dark }}>{c.logo}</span>}
                 <nav className="hidden sm:flex gap-6 text-xs font-medium">{(c.links || []).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
+                {storefront && storeSlug && (
+                  <a href={`/store/${storeSlug}/search`} onClick={(e) => e.stopPropagation()} className="p-1.5 rounded-md shrink-0" style={{ color: c.textColor || p.text }} title="Rechercher" aria-label="Rechercher">
+                    <Search className="w-4 h-4" />
+                  </a>
+                )}
                 {(c.links || []).length > 0 && (
                   <button
                     type="button"

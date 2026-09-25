@@ -38,7 +38,9 @@ export default function Billing() {
 
   useEffect(() => { load(); }, [load]);
 
-  const inTrial = store?.plan_status === 'trial';
+  // Same fix as SettingsSections.jsx: a "trial" status alone doesn't mean
+  // the trial is still active - it has to genuinely not have expired yet.
+  const inTrial = store?.plan_status === 'trial' && store?.trial_ends_at && new Date(store.trial_ends_at) > new Date();
   const [payingFor, setPayingFor] = useState(null);
   const changePlan = async (planId) => {
     if (!store?.id) return;
@@ -114,6 +116,7 @@ export default function Billing() {
               <button onClick={() => changePlan(plan.id)} disabled={active || changing === plan.id} className="w-full mt-4 text-xs font-semibold py-2.5 rounded-full transition disabled:opacity-40 bg-[#008060] text-white hover:bg-[#00694d]">
                 {changing === plan.id ? 'Changement…' : active ? 'Plan actuel' : 'Choisir ce plan'}
               </button>
+              {inTrial && !active && <button onClick={() => setPayingFor(plan.id)} disabled={changing === plan.id} className="w-full mt-1.5 text-[11px] font-medium text-[#008060] hover:underline disabled:opacity-40">Payer directement</button>}
             </div>
           );
         })}

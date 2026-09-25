@@ -1,82 +1,90 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle, Languages,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
+import { LANGUAGES } from '@/lib/i18n';
 
+// Real nav translation across 7 languages (fr/en/ar/pt/es/sw/wo) - labels
+// are translation keys resolved with t() at render time, not the raw
+// French strings baked in here, since this array is defined once at
+// module scope (before any component - and so before any i18n hook -
+// exists to translate them).
 const NAV_GROUPS = [
   {
     items: [
-      { label: 'Accueil', to: '/dashboard', icon: Home, end: true },
+      { labelKey: 'nav.home', to: '/dashboard', icon: Home, end: true },
     ],
   },
   {
-    title: 'Vendre',
+    titleKey: 'nav.group_sell',
     items: [
-      { label: 'Commandes', to: '/orders', icon: ShoppingCart, children: [
-        { label: 'Récupération panier', to: '/abandoned-checkouts', icon: ShoppingCart },
+      { labelKey: 'nav.orders', to: '/orders', icon: ShoppingCart, children: [
+        { labelKey: 'nav.abandoned_checkouts', to: '/abandoned-checkouts', icon: ShoppingCart },
       ] },
-      { label: 'Produits', to: '/products', icon: Package },
-      { label: 'Clients', to: '/customers', icon: Users },
-      { label: 'Collections', to: '/collections', icon: LayoutGrid },
-      { label: 'Avis clients', to: '/reviews', icon: Star },
-      { label: 'Croissance', to: '/growth', icon: TrendingUp },
-      { label: 'Réductions', to: '/discounts', icon: Tag },
-      { label: 'Contenu', to: '/content', icon: FileText, children: [
-        { label: 'Blog', to: '/blog', icon: BookOpen },
-        { label: 'Médias', to: '/media-library', icon: ImageIcon },
+      { labelKey: 'nav.products', to: '/products', icon: Package },
+      { labelKey: 'nav.customers', to: '/customers', icon: Users },
+      { labelKey: 'nav.collections', to: '/collections', icon: LayoutGrid },
+      { labelKey: 'nav.reviews', to: '/reviews', icon: Star },
+      { labelKey: 'nav.growth', to: '/growth', icon: TrendingUp },
+      { labelKey: 'nav.discounts', to: '/discounts', icon: Tag },
+      { labelKey: 'nav.content', to: '/content', icon: FileText, children: [
+        { labelKey: 'nav.blog', to: '/blog', icon: BookOpen },
+        { labelKey: 'nav.media_library', to: '/media-library', icon: ImageIcon },
       ] },
     ],
   },
   {
-    title: 'Canaux de vente',
+    titleKey: 'nav.group_channels',
     items: [
-      { label: 'Marchés', to: '/markets', icon: Globe },
-      { label: 'Boutique en ligne', to: '/theme-editor', icon: Store, children: [
-        { label: 'Thèmes', to: '/theme-gallery', icon: Palette },
+      { labelKey: 'nav.markets', to: '/markets', icon: Globe },
+      { labelKey: 'nav.online_store', to: '/theme-editor', icon: Store, children: [
+        { labelKey: 'nav.themes', to: '/theme-gallery', icon: Palette },
       ] },
-      { label: 'Domaines', to: '/domains', icon: Globe },
-      { label: 'Analytics', to: '/analytics', icon: BarChart3 },
-      { label: 'Aperçu boutique', to: '/store-preview', icon: Eye },
+      { labelKey: 'nav.domains', to: '/domains', icon: Globe },
+      { labelKey: 'nav.analytics', to: '/analytics', icon: BarChart3 },
+      { labelKey: 'nav.store_preview', to: '/store-preview', icon: Eye },
     ],
   },
   {
-    title: 'IA & Croissance',
+    titleKey: 'nav.group_ai',
     items: [
-      { label: 'Sellia Assistant', to: '/assistant-ia', icon: Bot },
-      { label: 'Marketing', to: '/marketing', icon: Megaphone },
-      { label: 'Rapports', to: '/reports', icon: FileBarChart },
-      { label: 'Analyses produits', to: '/product-analytics', icon: TrendingUp },
-      { label: 'Automations', to: '/automations', icon: Zap },
-      { label: 'SEO IA', to: '/seo-ia', icon: Search },
+      { labelKey: 'nav.assistant_ia', to: '/assistant-ia', icon: Bot },
+      { labelKey: 'nav.marketing', to: '/marketing', icon: Megaphone },
+      { labelKey: 'nav.reports', to: '/reports', icon: FileBarChart },
+      { labelKey: 'nav.product_analytics', to: '/product-analytics', icon: TrendingUp },
+      { labelKey: 'nav.automations', to: '/automations', icon: Zap },
+      { labelKey: 'nav.seo_ia', to: '/seo-ia', icon: Search },
     ],
   },
   {
-    title: 'Gestion',
+    titleKey: 'nav.group_management',
     items: [
-      { label: 'Comptabilité', to: '/accounting', icon: Calculator },
-      { label: 'Inventaire', to: '/inventory', icon: Boxes },
-      { label: 'Livraison', to: '/shipping-settings', icon: Truck },
+      { labelKey: 'nav.accounting', to: '/accounting', icon: Calculator },
+      { labelKey: 'nav.inventory', to: '/inventory', icon: Boxes },
+      { labelKey: 'nav.shipping', to: '/shipping-settings', icon: Truck },
     ],
   },
   {
-    title: 'Système',
+    titleKey: 'nav.group_system',
     items: [
-      { label: 'Apps', to: '/apps', icon: LayoutGrid },
-      { label: 'Activité', to: '/activity-logs', icon: Activity },
-      { label: 'Paramètres', to: '/settings', icon: SettingsIcon },
+      { labelKey: 'nav.apps', to: '/apps', icon: LayoutGrid },
+      { labelKey: 'nav.activity_logs', to: '/activity-logs', icon: Activity },
+      { labelKey: 'nav.settings', to: '/settings', icon: SettingsIcon },
     ],
   },
 ];
 
 function NavItem({ item, onNavigate }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const hasChildren = item.children && item.children.length > 0;
   const childActive = hasChildren && item.children.some((c) => location.pathname.startsWith(c.to));
@@ -96,7 +104,7 @@ function NavItem({ item, onNavigate }) {
           }
         >
           <item.icon className="w-4 h-4 opacity-70" />
-          {item.label}
+          {t(item.labelKey)}
         </NavLink>
         {hasChildren && (
           <button onClick={() => setOpen((o) => !o)} className="p-1 rounded hover:bg-black/5 text-[#6D7175]">
@@ -108,7 +116,7 @@ function NavItem({ item, onNavigate }) {
         <div className="mt-0.5 ml-2 border-l border-[#E1E1E1]">
           {item.children.map((c) => (
             <NavLink
-              key={c.label}
+              key={c.labelKey}
               to={c.to}
               onClick={onNavigate}
               className={({ isActive }) =>
@@ -118,7 +126,7 @@ function NavItem({ item, onNavigate }) {
               }
             >
               <c.icon className="w-4 h-4 opacity-60" />
-              {c.label}
+              {t(c.labelKey)}
             </NavLink>
           ))}
         </div>
@@ -128,15 +136,16 @@ function NavItem({ item, onNavigate }) {
 }
 
 function NavContent({ onNavigate, superadmin }) {
+  const { t } = useTranslation();
   return (
     <>
       {NAV_GROUPS.map((g, gi) => (
         <div key={gi} className="mb-1">
-          {g.title && (
-            <p className="px-4 pt-3 pb-1 text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">{g.title}</p>
+          {g.titleKey && (
+            <p className="px-4 pt-3 pb-1 text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">{t(g.titleKey)}</p>
           )}
           {g.items.map((item) => (
-            <NavItem key={item.label} item={item} onNavigate={onNavigate} />
+            <NavItem key={item.labelKey} item={item} onNavigate={onNavigate} />
           ))}
         </div>
       ))}
@@ -155,12 +164,15 @@ function NavContent({ onNavigate, superadmin }) {
 }
 
 export default function AdminLayout() {
+  const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [q, setQ] = useState('');
   const menuRef = useRef(null);
   const notifRef = useRef(null);
+  const langRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -176,6 +188,7 @@ export default function AdminLayout() {
     const onClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
     };
     document.addEventListener('mousedown', onClick);
     return () => document.removeEventListener('mousedown', onClick);
@@ -251,6 +264,25 @@ export default function AdminLayout() {
           <kbd className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded">⏎</kbd>
         </form>
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div className="relative" ref={langRef}>
+            <button onClick={() => setLangOpen((o) => !o)} className="p-1.5 rounded-md hover:bg-white/10 flex items-center gap-1" title={t('common.language')}>
+              <Languages className="w-5 h-5 opacity-80" />
+            </button>
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-xl border border-[#E1E1E1] shadow-2xl p-1.5 z-50 max-h-72 overflow-y-auto">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => { i18n.changeLanguage(l.code); setLangOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between ${i18n.language === l.code ? 'bg-[#008060]/10 text-[#008060] font-semibold' : 'text-[#202223] hover:bg-black/5'}`}
+                  >
+                    {l.label}
+                    {i18n.language === l.code && <span className="text-xs">✓</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="relative" ref={notifRef}>
             <button onClick={() => setNotifOpen((o) => !o)} className="relative p-1.5 rounded-md hover:bg-white/10">
               <Bell className="w-5 h-5 opacity-80" />

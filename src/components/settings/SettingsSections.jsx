@@ -68,7 +68,12 @@ export function SettingsPlan() {
   const [busy, setBusy] = useState(null);
   const [payingFor, setPayingFor] = useState(null);
   const plans = [['starter', 'Starter', 7], ['growth', 'Growth', 19], ['pro', 'Pro', 39], ['enterprise', 'Enterprise', 129]];
-  const inTrial = store?.plan_status === 'trial';
+  // A stale "trial" status with an already-passed trial_ends_at is not
+  // actually still trialing - checking only the status string (not
+  // whether time has actually run out) meant clicking a plan for an
+  // expired trial silently re-saved the same expired date and did
+  // nothing visible, no error, no payment prompt either.
+  const inTrial = store?.plan_status === 'trial' && store?.trial_ends_at && new Date(store.trial_ends_at) > new Date();
 
   // While still on the free trial, switching plans just changes which one
   // is being trialed (no payment yet - matches "14 jours d'essai gratuit,
@@ -115,6 +120,7 @@ export function SettingsPlan() {
           <p className="text-2xl font-bold text-[#202223]">${price}<span className="text-xs font-normal text-[#6D7175]">/mois</span></p>
           <p className="text-[11px] text-[#6D7175] mt-1">{Number.isFinite(limit) ? `${limit} produits` : 'Produits illimités'}</p>
           <button onClick={() => choose(id)} disabled={(store.plan === id && !inTrial) || busy === id} className="w-full mt-3 text-xs font-semibold py-2 rounded-full bg-[#008060] text-white disabled:opacity-40">{busy === id ? '…' : store.plan === id && !inTrial ? 'Actuel' : inTrial ? 'Choisir' : 'Payer et activer'}</button>
+          {inTrial && <button onClick={() => setPayingFor(id)} disabled={busy === id} className="w-full mt-1.5 text-[11px] font-medium text-[#008060] hover:underline disabled:opacity-40">Payer directement</button>}
         </div>
       ); })}
     </div>

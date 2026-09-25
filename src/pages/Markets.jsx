@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Globe, Loader2, AlertCircle, Smartphone, Store,
-  Instagram, Facebook, MessageCircle, ExternalLink, Check, Zap, Plus,
+  Globe, Loader2, AlertCircle, Store,
+  ExternalLink, Check, Zap,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
@@ -10,11 +10,6 @@ import { formatMoney } from '@/lib/world/currencies';
 
 const CHANNELS = [
   { id: 'online_store', name: 'Boutique en ligne', icon: Store, color: '#008060', desc: 'Votre site Sellia', active: true },
-  { id: 'instagram', name: 'Instagram Shopping', icon: Instagram, color: '#E1306C', desc: 'Vendez sur Instagram', active: false },
-  { id: 'facebook', name: 'Facebook Shop', icon: Facebook, color: '#1877F2', desc: 'Catalogue Facebook', active: false },
-  { id: 'whatsapp', name: 'WhatsApp Business', icon: MessageCircle, color: '#25D366', desc: 'Commandes par WhatsApp', active: false },
-  { id: 'mobile_app', name: 'App mobile', icon: Smartphone, color: '#8B5CF6', desc: 'App iOS & Android', active: false },
-  { id: 'marketplace', name: 'Marché Sellia', icon: Globe, color: '#0EA5E9', desc: 'Place de marché panafricaine', active: false },
 ];
 
 export default function Markets() {
@@ -80,29 +75,20 @@ export default function Markets() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {CHANNELS.map((ch) => (
-          <div key={ch.id} className={`rounded-xl border p-5 transition ${ch.active ? 'bg-white border-[#008060]/30' : 'bg-white border-[#E1E1E1] opacity-75'}`}>
+          <div key={ch.id} className="rounded-xl border p-5 transition bg-white border-[#008060]/30">
             <div className="flex items-start justify-between mb-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `${ch.color}15` }}>
                 <ch.icon className="w-5 h-5" style={{ color: ch.color }} />
               </div>
-              {ch.active ? (
-                <span className="flex items-center gap-1 text-[10px] font-semibold text-[#008060] bg-[#008060]/10 px-2 py-1 rounded-full"><Check className="w-3 h-3" /> Actif</span>
-              ) : (
-                <span className="text-[10px] font-semibold text-[#6D7175] bg-[#F4F4F4] px-2 py-1 rounded-full">Bientôt</span>
-              )}
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-[#008060] bg-[#008060]/10 px-2 py-1 rounded-full"><Check className="w-3 h-3" /> Actif</span>
             </div>
             <h3 className="text-sm font-bold text-[#202223]">{ch.name}</h3>
             <p className="text-xs text-[#6D7175] mt-0.5 mb-4">{ch.desc}</p>
-            {ch.active ? (
-              <Link to="/theme-editor" className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] hover:underline">Gérer →</Link>
-            ) : (
-              <button disabled className="flex items-center gap-1.5 text-xs font-semibold text-[#6D7175] cursor-not-allowed">
-                <Plus className="w-3.5 h-3.5" /> Bientôt disponible
-              </button>
-            )}
+            <Link to="/theme-editor" className="flex items-center gap-1.5 text-xs font-semibold text-[#008060] hover:underline">Gérer →</Link>
           </div>
         ))}
       </div>
+      <p className="text-xs text-[#6D7175] mt-4">D'autres canaux (Instagram, Facebook, WhatsApp, marketplace) demandent une intégration directe avec ces plateformes tierces et n'existent pas encore ici — ils n'apparaissent que lorsqu'ils sont réellement disponibles.</p>
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mt-6">
         <div className="flex items-center gap-2 mb-4">

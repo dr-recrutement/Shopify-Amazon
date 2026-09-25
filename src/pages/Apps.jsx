@@ -24,7 +24,7 @@ const INTEGRATIONS = [
   // Payments — Global (real logos)
   { id: 'stripe', name: 'Stripe', category: 'Paiements', region: 'Mondial', logo: '/payment-logos/stripe.png', desc: 'Cartes & wallets — 46 pays', type: 'payment' },
   { id: 'paypal', name: 'PayPal', category: 'Paiements', region: 'Mondial', logo: '/payment-logos/paypal.png', desc: 'PayPal, cartes, Pay Later', type: 'payment' },
-  { id: 'paddle', name: 'Paddle', category: 'Paiements', region: 'Mondial', color: '#9CE37D', accent: '#1A2B3C', desc: 'Merchant of Record — taxes incluses', type: 'payment' },
+  { id: 'paddle', name: 'Paddle', category: 'Paiements', region: 'Mondial', logo: '/app-logos/paddle.png', desc: 'Merchant of Record — taxes incluses', type: 'payment' },
   { id: 'adyen', name: 'Adyen', category: 'Paiements', region: 'Europe', logo: '/payment-logos/adyen.png', desc: 'Paiements unifiés enterprise', type: 'payment' },
   { id: 'klarna', name: 'Klarna', category: 'Paiements', region: 'Europe', logo: '/payment-logos/klarna.jpg', desc: 'Achetez maintenant, payez plus tard', type: 'payment' },
   { id: 'alipay', name: 'Alipay', category: 'Paiements', region: 'Asie', logo: '/payment-logos/alipay.png', desc: 'Paiements Chine', type: 'payment' },
@@ -39,9 +39,9 @@ const INTEGRATIONS = [
 
   // Shipping (real logos where available)
   { id: 'aramex', name: 'Aramex', category: 'Livraison', region: 'Moyen-Orient', logo: `${LOGO_BASE}/c6bba6fdc_ARMXAE_BIG-ade0e246.png`, desc: 'Livraison Moyen-Orient & Asie', type: 'shipping' },
-  { id: 'dhl', name: 'DHL Express', category: 'Livraison', region: 'Mondial', color: '#FFCC00', accent: '#D40511', desc: 'Livraison express mondiale', type: 'shipping' },
-  { id: 'fedex', name: 'FedEx', category: 'Livraison', region: 'Mondial', color: '#4D148C', accent: '#FF6600', desc: 'Livraison express & freight', type: 'shipping' },
-  { id: 'ups', name: 'UPS', category: 'Livraison', region: 'Mondial', color: '#351C15', accent: '#FFB500', desc: 'Livraison mondiale', type: 'shipping' },
+  { id: 'dhl', name: 'DHL Express', category: 'Livraison', region: 'Mondial', logo: '/app-logos/dhl.webp', desc: 'Livraison express mondiale', type: 'shipping' },
+  { id: 'fedex', name: 'FedEx', category: 'Livraison', region: 'Mondial', logo: '/app-logos/fedex.png', desc: 'Livraison express & freight', type: 'shipping' },
+  { id: 'ups', name: 'UPS', category: 'Livraison', region: 'Mondial', logo: '/app-logos/ups.png', desc: 'Livraison mondiale', type: 'shipping' },
 
   // Marketing & apps (real logos where available)
   { id: 'assistant-ia', name: 'Sellia Assistant', category: 'IA', region: '', color: '#008060', accent: '#FFFFFF', desc: 'Générez descriptions, SEO et campagnes', installed: true, to: '/assistant-ia', type: 'app' },
@@ -49,11 +49,24 @@ const INTEGRATIONS = [
   { id: 'automations', name: 'Automatisations', category: 'Productivité', region: '', color: '#8B5CF6', accent: '#FFFFFF', desc: 'Automatisez e-mails et notifications', installed: true, to: '/automations', type: 'app' },
   { id: 'analytics', name: 'Analytics', category: 'Analyse', region: '', color: '#3B82F6', accent: '#FFFFFF', desc: 'Statistiques de vente en temps réel', installed: true, to: '/analytics', type: 'app' },
   { id: 'markets', name: 'Marchés', category: 'Canaux', region: '', color: '#10B981', accent: '#FFFFFF', desc: 'Vendez sur Instagram, Facebook, WhatsApp', installed: true, to: '/markets', type: 'app' },
-  { id: 'meta-ads', name: 'Meta Ads', category: 'Publicité', region: 'Mondial', logo: `${LOGO_BASE}/a27eebef6_meta_PNG5.png`, desc: 'Publicités Facebook & Instagram', type: 'marketing' },
+  { id: 'meta-ads', name: 'Meta Ads', category: 'Publicité', region: 'Mondial', logo: '/app-logos/facebook.webp', desc: 'Publicités Facebook & Instagram', type: 'marketing' },
   { id: 'google-ads', name: 'Google Ads', category: 'Publicité', region: 'Mondial', logo: `${LOGO_BASE}/92f87bd5b_google-ads-icon-logo-symbol-free-png.webp`, desc: 'Publicités Google Shopping & Search', type: 'marketing' },
   { id: 'klaviyo', name: 'Klaviyo', category: 'E-mail', region: 'Mondial', color: '#000000', accent: '#FF6900', desc: 'E-mail & SMS marketing', type: 'marketing' },
   { id: 'mailchimp', name: 'Mailchimp', category: 'E-mail', region: 'Mondial', logo: `${LOGO_BASE}/49772f9ca_images11.png`, desc: 'E-mail marketing & automations', type: 'marketing' },
-  { id: 'tiktok-ads', name: 'TikTok Ads', category: 'Publicité', region: 'Mondial', color: '#000000', accent: '#FF0050', desc: 'Publicités TikTok Shop', type: 'marketing' },
+  { id: 'tiktok-ads', name: 'TikTok Ads', category: 'Publicité', region: 'Mondial', logo: '/app-logos/tiktok.png', desc: 'Publicités TikTok Shop', type: 'marketing' },
+  { id: 'google-analytics', name: 'Google Analytics', category: 'Analyse', region: 'Mondial', logo: '/app-logos/google-analytics.webp', desc: 'Suivi de trafic et de conversions', type: 'marketing' },
+  { id: 'zapier', name: 'Zapier', category: 'Productivité', region: 'Mondial', logo: '/app-logos/zapier.png', desc: 'Connectez Sellia à 6000+ applications', type: 'app' },
+
+  // Messaging & social channels (real logos)
+  { id: 'whatsapp', name: 'WhatsApp Business', category: 'Canaux', region: 'Mondial', logo: '/app-logos/whatsapp.png', desc: 'Commandes et support par WhatsApp', type: 'app' },
+  { id: 'instagram', name: 'Instagram Shopping', category: 'Canaux', region: 'Mondial', logo: '/app-logos/instagram.png', desc: 'Vendez directement sur Instagram', type: 'app' },
+  { id: 'facebook', name: 'Facebook Shop', category: 'Canaux', region: 'Mondial', logo: '/app-logos/facebook.webp', desc: 'Catalogue produits sur Facebook', type: 'app' },
+  { id: 'telegram', name: 'Telegram', category: 'Canaux', region: 'Mondial', logo: '/app-logos/telegram.jpg', desc: 'Notifications et support via Telegram', type: 'app' },
+
+  // Email (real logos)
+  { id: 'gmail', name: 'Gmail', category: 'E-mail', region: 'Mondial', logo: '/app-logos/gmail.webp', desc: 'Envoi de notifications via Gmail', type: 'marketing' },
+  { id: 'outlook', name: 'Outlook', category: 'E-mail', region: 'Mondial', logo: '/app-logos/outlook.png', desc: 'Envoi de notifications via Outlook', type: 'marketing' },
+  { id: 'smtp', name: 'SMTP personnalisé', category: 'E-mail', region: 'Mondial', logo: '/app-logos/smtp.jpg', desc: 'Connectez votre propre serveur SMTP', type: 'marketing' },
 ];
 
 function LogoBadge({ app }) {

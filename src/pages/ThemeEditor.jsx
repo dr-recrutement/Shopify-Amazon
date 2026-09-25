@@ -409,7 +409,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onWhatsapp, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onWhatsapp, onPopup, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -510,6 +510,54 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
           className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30"
         />
         <p className="text-[10px] text-[#6D7175] mt-1.5">Numéro avec indicatif pays. Ajoute un vrai bouton de chat flottant sur votre boutique. Laisser vide pour le masquer.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Popup d'accueil</p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-[#202223] mb-3 cursor-pointer">
+          <input type="checkbox" checked={theme.popup?.enabled === true} onChange={(e) => onPopup({ enabled: e.target.checked })} className="accent-[#008060]" />
+          Afficher un popup à l'arrivée des visiteurs
+        </label>
+        {theme.popup?.enabled && (
+          <div className="space-y-3 pl-1">
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Design</label>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[['discount', 'Code promo'], ['newsletter', 'Newsletter'], ['announcement', 'Annonce']].map(([id, label]) => (
+                  <button key={id} onClick={() => onPopup({ design: id })} className={`text-[11px] font-semibold py-2 rounded-md border transition ${(theme.popup?.design || 'discount') === id ? 'border-[#008060] bg-[#008060]/5 text-[#008060]' : 'border-[#E1E1E1] text-[#6D7175] hover:border-[#C9C9C9]'}`}>{label}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Titre</label>
+              <input value={theme.popup?.title ?? ''} onChange={(e) => onPopup({ title: e.target.value })} placeholder="-10% sur votre première commande" className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Sous-titre</label>
+              <input value={theme.popup?.subtitle ?? ''} onChange={(e) => onPopup({ subtitle: e.target.value })} placeholder="Inscrivez-vous et recevez votre code" className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+            </div>
+            {theme.popup?.design === 'discount' && (
+              <div>
+                <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Code promo affiché</label>
+                <input value={theme.popup?.discountCode ?? ''} onChange={(e) => onPopup({ discountCode: e.target.value })} placeholder="BIENVENUE10" className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+                <p className="text-[10px] text-[#6D7175] mt-1">Le code doit exister dans vos Réductions pour être valide au paiement.</p>
+              </div>
+            )}
+            {theme.popup?.design === 'announcement' && (
+              <div>
+                <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Lien du bouton</label>
+                <input value={theme.popup?.buttonUrl ?? ''} onChange={(e) => onPopup({ buttonUrl: e.target.value })} placeholder="#products" className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+              </div>
+            )}
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Apparition après (secondes)</label>
+              <input type="number" min="0" max="60" value={theme.popup?.delaySeconds ?? 3} onChange={(e) => onPopup({ delaySeconds: +e.target.value })} className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white" />
+            </div>
+          </div>
+        )}
+        <p className="text-[10px] text-[#6D7175] mt-2">Ne s'affiche qu'une fois par visiteur (7 jours), pas à chaque page.</p>
       </div>
       <div>
         <div className="flex items-center gap-2 mb-3">
@@ -658,6 +706,7 @@ export default function ThemeEditor() {
   const onCardStyle = (v) => commit({ ...theme, productCardStyle: v });
   const onCartPosition = (v) => commit({ ...theme, cartPosition: v });
   const onWhatsapp = (v) => commit({ ...theme, whatsappNumber: v });
+  const onPopup = (patch) => commit({ ...theme, popup: { ...(theme.popup || {}), ...patch } });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -793,7 +842,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onWhatsapp={onWhatsapp} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onWhatsapp={onWhatsapp} onPopup={onPopup} onReset={onReset} />}
           </div>
         </div>
       </div>

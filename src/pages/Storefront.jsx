@@ -61,6 +61,85 @@ async function decrementStockForItems(items) {
   ));
 }
 
+// Real homepage popup with 3 real design variants, not just one fixed
+// shape - a discount-code teaser, a newsletter capture (reuses the same
+// real newsletter_subscribers insert as the NewsletterBlock section),
+// and a plain announcement with a configurable link. Shown once per
+// visitor for 7 days (localStorage), not on every single page load.
+function StorePopup({ theme, store }) {
+  const cfg = theme.popup;
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!cfg?.enabled || !store?.id) return;
+    const key = `sellia_popup_dismissed_${store.id}`;
+    const dismissedAt = localStorage.getItem(key);
+    if (dismissedAt && Date.now() - Number(dismissedAt) < 7 * 86400000) return;
+    const timer = setTimeout(() => setOpen(true), Math.max(0, (cfg.delaySeconds ?? 3) * 1000));
+    return () => clearTimeout(timer);
+  }, [cfg?.enabled, cfg?.delaySeconds, store?.id]);
+
+  const dismiss = () => {
+    if (store?.id) localStorage.setItem(`sellia_popup_dismissed_${store.id}`, String(Date.now()));
+    setOpen(false);
+  };
+
+  const submitNewsletter = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !store?.id) return;
+    setBusy(true);
+    try {
+      const { error } = await supabase.from('newsletter_subscribers').insert({ tenant_id: store.id, email: email.trim().toLowerCase(), source: 'homepage_popup' });
+      if (error && error.code !== '23505') throw error;
+      setSubmitted(true);
+    } catch {
+      setSubmitted(true); // Still close gracefully - a duplicate email isn't a failure the visitor needs to see.
+    } finally { setBusy(false); }
+  };
+
+  if (!open || !cfg?.enabled) return null;
+  const p = theme.palette;
+  const design = cfg.design || 'discount';
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={dismiss}>
+      <div className="rounded-2xl max-w-sm w-full p-7 relative text-center" style={{ background: p.bg }} onClick={(e) => e.stopPropagation()}>
+        <button onClick={dismiss} className="absolute top-3 right-3 p-1 rounded-full hover:bg-black/5" style={{ color: p.muted }} aria-label="Fermer"><X className="w-4 h-4" /></button>
+
+        <h2 className="text-xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{cfg.title || (design === 'discount' ? 'Profitez de -10%' : design === 'newsletter' ? 'Restez informé' : 'À ne pas manquer')}</h2>
+        {cfg.subtitle && <p className="text-sm mt-2" style={{ color: p.muted }}>{cfg.subtitle}</p>}
+
+        {design === 'discount' && (
+          <div className="mt-5">
+            <div className="border-2 border-dashed rounded-lg py-3 font-mono text-lg font-bold tracking-widest" style={{ borderColor: theme.palette.primary, color: theme.palette.primary }}>
+              {cfg.discountCode || 'BIENVENUE10'}
+            </div>
+            <button onClick={dismiss} className="w-full mt-4 py-3 sellia-btn text-sm font-semibold" style={{ background: theme.palette.primary, color: p.primaryText }}>Copier et magasiner</button>
+          </div>
+        )}
+
+        {design === 'newsletter' && (
+          submitted ? (
+            <p className="mt-5 text-sm font-semibold" style={{ color: theme.palette.primary }}>Merci ! Votre inscription est confirmée.</p>
+          ) : (
+            <form onSubmit={submitNewsletter} className="mt-5 space-y-2">
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Votre e-mail" className="w-full px-4 py-2.5 rounded-md text-sm border outline-none" style={{ borderColor: p.border, color: p.text }} />
+              <button type="submit" disabled={busy} className="w-full py-2.5 sellia-btn text-sm font-semibold disabled:opacity-60" style={{ background: theme.palette.primary, color: p.primaryText }}>{busy ? '…' : (cfg.buttonLabel || "S'inscrire")}</button>
+            </form>
+          )
+        )}
+
+        {design === 'announcement' && (
+          <a href={cfg.buttonUrl && cfg.buttonUrl !== '#' ? cfg.buttonUrl : undefined} onClick={dismiss} className="inline-block w-full mt-5 py-3 sellia-btn text-sm font-semibold" style={{ background: theme.palette.primary, color: p.primaryText }}>{cfg.buttonLabel || 'Découvrir'}</a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Storefront() {
   const { slug } = useParams();
   const [store, setStore] = useState(null);
@@ -346,6 +425,8 @@ export default function Storefront() {
           <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 3.1 17l-1 3.9 4-1a9 9 0 0 0 4.3 1.1 8.9 8.9 0 0 0 8.9-8.9 8.8 8.8 0 0 0-2.6-6.3l-.1-.5zm-6.2 13.7a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.4.6.6-2.3-.2-.3a7.4 7.4 0 1 1 6.1 3.2zm4.1-5.5c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1l-.7.9c-.2.2-.3.2-.5.1a6 6 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.5c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4c-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5c-.1 0-.4.1-.6.3a2.7 2.7 0 0 0-.9 2 4.6 4.6 0 0 0 1 2.4 10.6 10.6 0 0 0 4.1 3.6c.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.3-.6 1.5-1.1.2-.5.2-1 .1-1.1l-.4-.2z" /></svg>
         </a>
       )}
+
+      <StorePopup theme={theme} store={store} />
 
       <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
 

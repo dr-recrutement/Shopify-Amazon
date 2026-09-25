@@ -290,6 +290,15 @@ export function migrateTheme(theme) {
         if (props.imageFit === undefined) props.imageFit = 'cover';
         if (props.imageZoom === undefined) props.imageZoom = 1;
         if (props.stats === undefined) props.stats = [];
+        if (props.button && props.buttonUrl === undefined) props.buttonUrl = '#';
+        break;
+      case 'cta':
+        if (props.buttonUrl === undefined) props.buttonUrl = '#';
+        break;
+      case 'pricing':
+        if (Array.isArray(props.plans)) {
+          props.plans = props.plans.map((pl) => (pl.url === undefined ? { ...pl, url: '#' } : pl));
+        }
         break;
       case 'trustbar':
       case 'multicolumn':

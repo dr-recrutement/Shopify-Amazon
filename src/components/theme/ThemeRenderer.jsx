@@ -423,7 +423,16 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                         ))}
                       </div>
                     )}
-                    {c.button && <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-6 text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{c.button}</button>}
+                    {c.button && (() => {
+                      const { url } = normalizeLink({ url: c.buttonUrl });
+                      const isAnchor = !url || url === '#' || url === '#products';
+                      const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                      const btnClass = 'mt-6 inline-block text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90';
+                      const btnStyle = { background: primary, color: p.primaryText };
+                      return href
+                        ? <a href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className={btnClass} style={btnStyle}>{c.button}</a>
+                        : <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className={btnClass} style={btnStyle}>{c.button}</button>;
+                    })()}
                   </div>
                 </div>
               </div>
@@ -550,7 +559,17 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                             </li>
                           ))}
                         </ul>
-                        <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-6 w-full py-2.5 sellia-btn font-semibold text-sm transition hover:opacity-90" style={hi ? { background: p.primaryText, color: primary } : { background: primary, color: p.primaryText }}>{hi ? 'Commencer' : 'Choisir'}</button>
+                        {(() => {
+                          const { url } = normalizeLink({ url: pl.url });
+                          const isAnchor = !url || url === '#' || url === '#products';
+                          const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                          const btnClass = 'mt-6 block text-center w-full py-2.5 sellia-btn font-semibold text-sm transition hover:opacity-90';
+                          const btnStyle = hi ? { background: p.primaryText, color: primary } : { background: primary, color: p.primaryText };
+                          const label = hi ? 'Commencer' : 'Choisir';
+                          return href
+                            ? <a href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className={btnClass} style={btnStyle}>{label}</a>
+                            : <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className={btnClass} style={btnStyle}>{label}</button>;
+                        })()}
                       </div>
                     );
                   })}
@@ -563,7 +582,16 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
               <div className="px-5 sm:px-10 py-16 text-center" style={{ background: primary, color: p.primaryText }}>
                 <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: theme.fonts?.heading }}>{c.title}</h2>
                 <p className="mt-3 text-sm sm:text-base opacity-90 max-w-md mx-auto">{c.subtitle}</p>
-                <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="mt-7 text-sm font-semibold px-6 py-3 sellia-btn transition hover:opacity-90" style={{ background: p.primaryText, color: primary }}>{c.buttonLabel}</button>
+                {(() => {
+                  const { url } = normalizeLink({ url: c.buttonUrl });
+                  const isAnchor = !url || url === '#' || url === '#products';
+                  const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                  const btnClass = 'mt-7 inline-block text-sm font-semibold px-6 py-3 sellia-btn transition hover:opacity-90';
+                  const btnStyle = { background: p.primaryText, color: primary };
+                  return href
+                    ? <a href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className={btnClass} style={btnStyle}>{c.buttonLabel}</a>
+                    : <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className={btnClass} style={btnStyle}>{c.buttonLabel}</button>;
+                })()}
               </div>
             ));
 
@@ -632,7 +660,14 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                       return <h2 key={i} style={{ ...spanStyle, textAlign: al }} className="text-xl sm:text-3xl font-bold self-center">{b.text}</h2>;
                     }
                     if (b.kind === 'button') {
-                      return <div key={i} style={spanStyle} className="flex"><button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90" style={{ background: primary, color: p.primaryText }}>{b.text}</button></div>;
+                      const { url: bUrl } = normalizeLink({ url: b.url });
+                      const bIsAnchor = !bUrl || bUrl === '#' || bUrl === '#products';
+                      const bHref = !bIsAnchor && storefront && storeSlug ? (bUrl.startsWith('/store/') || bUrl.startsWith('http') ? bUrl : `/store/${storeSlug}${bUrl.startsWith('/') ? bUrl : '/' + bUrl}`) : null;
+                      const bClass = 'text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90 inline-block';
+                      const bStyle = { background: primary, color: p.primaryText };
+                      return <div key={i} style={spanStyle} className="flex">{bHref
+                        ? <a href={bHref} onClick={(e) => { if (storefront) e.stopPropagation(); }} className={bClass} style={bStyle}>{b.text}</a>
+                        : <button onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className={bClass} style={bStyle}>{b.text}</button>}</div>;
                     }
                     return <p key={i} style={{ ...spanStyle, textAlign: al }} className="text-sm leading-relaxed self-center">{b.text}</p>;
                   })}

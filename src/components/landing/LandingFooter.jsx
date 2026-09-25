@@ -84,15 +84,22 @@ export default function LandingFooter() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-          <div className="col-span-2">
+        {/* Brand as a fixed-width sidebar + an evenly-spaced column grid
+            beside it, rather than mixing a col-span block into the same
+            grid as the nav columns — that previous approach needed the
+            column count to match brand-span + number of columns exactly,
+            and silently broke (last column wrapping, misaligned) the
+            moment a column was added or removed. This layout can't drift
+            out of alignment as content changes. */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="lg:w-72 shrink-0">
             <div className="flex items-center gap-2.5">
               <span className="inline-flex items-center bg-white rounded-lg px-2 py-1.5"><img src={BRAND.logo} alt="Sellia" className="h-6 w-auto object-contain" /></span>
               <span className="font-landing font-bold text-lg text-background">Sellia</span>
             </div>
-            <p className="mt-4 text-sm text-background/70 max-w-xs">La plateforme e-commerce premium pour les marchands du monde entier — une alternative complète à Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo et Wix. Lancez votre boutique, vendez au monde.</p>
+            <p className="mt-4 text-sm text-background/70 max-w-xs leading-relaxed">La plateforme e-commerce premium pour les marchands du monde entier — une alternative complète à Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo et Wix.</p>
 
-            <div className="mt-4 space-y-1.5">
+            <div className="mt-5 space-y-2">
               <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center gap-2 text-sm text-background/70 hover:text-background transition-colors">
                 <Mail className="w-3.5 h-3.5 shrink-0" /> {SUPPORT_EMAIL}
               </a>
@@ -103,31 +110,34 @@ export default function LandingFooter() {
 
             <div className="mt-5 flex items-center gap-3">
               {SOCIALS.map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} title={s.label} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} title={s.label} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
                   <s.icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
           </div>
-          {COLS.map((c) => (
-            <div key={c.title}>
-              <p className="font-landing font-semibold text-sm text-background">{c.title}</p>
-              <ul className="mt-4 space-y-2.5">
-                {c.links.map((l) => (
-                  <li key={l.label}>
-                    {l.to.startsWith('/#') ? (
-                      <a href={l.to.slice(1)} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</a>
-                    ) : (
-                      <Link to={l.to} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-10 flex-1">
+            {COLS.map((c) => (
+              <div key={c.title}>
+                <p className="font-landing font-semibold text-sm text-background">{c.title}</p>
+                <ul className="mt-4 space-y-2.5">
+                  {c.links.map((l) => (
+                    <li key={l.label}>
+                      {l.to.startsWith('/#') ? (
+                        <a href={l.to.slice(1)} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</a>
+                      ) : (
+                        <Link to={l.to} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
           <div className="flex items-center gap-5 text-xs text-background/70">
             <Link to="/login" className="hover:text-background transition-colors">Connexion</Link>

@@ -614,6 +614,14 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         if (itemsError) throw itemsError;
       }
 
+      // Fire-and-forget: a slow or failed confirmation email should never
+      // block the customer from seeing their own order confirmation.
+      // order_confirmation mode needs no merchant auth (there is none here
+      // - this is a guest checkout) and derives recipient/content entirely
+      // server-side from the real order it just created.
+      supabase.functions.invoke('send-email', { body: { mode: 'order_confirmation', tenant_id: store.id, order_id: order.id } })
+        .catch((e) => console.error('Order confirmation email failed to send:', e));
+
       if (discount?.id) {
         try { await supabase.from('discount_codes').update({ used_count: (discount.used_count || 0) + 1 }).eq('id', discount.id); } catch { /* non-fatal */ }
       }

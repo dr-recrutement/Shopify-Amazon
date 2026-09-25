@@ -86,5 +86,23 @@
     "shortcut_discounts": "Descuentos",
     "shortcut_inventory": "Inventario",
     "shortcut_theme": "Tema"
+  },
+  "products": {
+    "title": "Productos",
+    "add": "Añadir",
+    "add_product": "Añadir un producto",
+    "import_csv": "Importar (CSV)",
+    "search_placeholder": "Buscar un producto…",
+    "empty": "Sin productos",
+    "col_product": "Producto",
+    "col_status": "Estado",
+    "col_stock": "Stock",
+    "col_price": "Precio",
+    "col_margin": "Margen",
+    "status_active": "Activo",
+    "status_draft": "Borrador",
+    "status_archived": "Archivado",
+    "variants": "variante(s)",
+    "tracked": "Rastreado"
   }
 }

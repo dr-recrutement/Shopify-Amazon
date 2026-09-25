@@ -86,5 +86,23 @@
     "shortcut_discounts": "Punguzo",
     "shortcut_inventory": "Hesabu ya bidhaa",
     "shortcut_theme": "Mandhari"
+  },
+  "products": {
+    "title": "Bidhaa",
+    "add": "Ongeza",
+    "add_product": "Ongeza bidhaa",
+    "import_csv": "Leta (CSV)",
+    "search_placeholder": "Tafuta bidhaa…",
+    "empty": "Hakuna bidhaa",
+    "col_product": "Bidhaa",
+    "col_status": "Hali",
+    "col_stock": "Hesabu",
+    "col_price": "Bei",
+    "col_margin": "Faida",
+    "status_active": "Hai",
+    "status_draft": "Rasimu",
+    "status_archived": "Iliyohifadhiwa",
+    "variants": "aina",
+    "tracked": "Inafuatiliwa"
   }
 }

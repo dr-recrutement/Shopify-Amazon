@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
@@ -18,6 +19,7 @@ const STATUS_STYLE = {
 const STATUS_LABEL = { active: 'Actif', draft: 'Brouillon', archived: 'Archivé' };
 
 export default function Products() {
+  const { t } = useTranslation();
   const { store, loading: storeLoading } = useCurrentStore();
   const location = useLocation();
   const [products, setProducts] = useState([]);
@@ -165,7 +167,7 @@ export default function Products() {
         <div className="flex items-center gap-3 min-w-0">
           <Link to="/dashboard" className="text-[#6D7175] hover:text-[#202223]"><ArrowLeft className="w-5 h-5" /></Link>
           <div className="min-w-0">
-            <h1 className="text-base font-bold text-[#202223] flex items-center gap-2"><Package className="w-4 h-4 text-[#008060]" /> Produits</h1>
+            <h1 className="text-base font-bold text-[#202223] flex items-center gap-2"><Package className="w-4 h-4 text-[#008060]" /> {t('products.title')}</h1>
             <p className="text-xs text-[#6D7175] truncate">
               {store.name} · {store.currency}
               {Number.isFinite(productLimit) && <span className={products.length >= productLimit ? 'text-red-500 font-semibold' : ''}> · {products.length}/{productLimit} produits</span>}
@@ -174,11 +176,11 @@ export default function Products() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <label className="flex items-center gap-1.5 bg-white border border-[#E1E1E1] text-[#202223] text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-black/5 cursor-pointer">
-            {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} <span className="hidden sm:inline">{importing ? `Import… ${importProgress.done}/${importProgress.total}` : 'Importer (CSV)'}</span>
+            {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} <span className="hidden sm:inline">{importing ? `${t('products.import_csv')}… ${importProgress.done}/${importProgress.total}` : t('products.import_csv')}</span>
             <input type="file" accept=".csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) importCsv(f); e.target.value = ''; }} disabled={importing} />
           </label>
           <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-[#00694d]">
-            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Ajouter</span>
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t('products.add')}</span>
           </button>
         </div>
       </div>
@@ -193,7 +195,7 @@ export default function Products() {
         <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <div className="flex items-center gap-2 bg-white border border-[#E1E1E1] rounded-md px-3 flex-1">
             <Search className="w-4 h-4 text-[#6D7175]" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher un produit…" className="w-full bg-transparent py-2 text-sm outline-none" />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('products.search_placeholder')} className="w-full bg-transparent py-2 text-sm outline-none" />
           </div>
           <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-white border border-[#E1E1E1] rounded-md px-3 py-2 text-sm">
             <option value="all">Tous les statuts</option>
@@ -209,20 +211,20 @@ export default function Products() {
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <Package className="w-10 h-10 text-[#C9C9C9] mb-2" />
-              <p className="text-sm font-medium text-[#202223]">Aucun produit</p>
+              <p className="text-sm font-medium text-[#202223]">{t('products.empty')}</p>
               <p className="text-xs text-[#6D7175] mt-1 mb-4">Commencez par ajouter votre premier produit.</p>
-              <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Ajouter un produit</button>
+              <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]"><Plus className="w-4 h-4" /> {t('products.add_product')}</button>
             </div>
           ) : (
             <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-[#FAFAFA] text-[11px] font-semibold text-[#6D7175] uppercase tracking-wide">
                 <tr>
-                  <th className="text-left px-4 py-2.5">Produit</th>
-                  <th className="text-left px-4 py-2.5 hidden sm:table-cell">Statut</th>
-                  <th className="text-left px-4 py-2.5 hidden md:table-cell">Stock</th>
-                  <th className="text-right px-4 py-2.5">Prix</th>
-                  <th className="text-right px-4 py-2.5 hidden lg:table-cell">Marge</th>
+                  <th className="text-left px-4 py-2.5">{t('products.col_product')}</th>
+                  <th className="text-left px-4 py-2.5 hidden sm:table-cell">{t('products.col_status')}</th>
+                  <th className="text-left px-4 py-2.5 hidden md:table-cell">{t('products.col_stock')}</th>
+                  <th className="text-right px-4 py-2.5">{t('products.col_price')}</th>
+                  <th className="text-right px-4 py-2.5 hidden lg:table-cell">{t('products.col_margin')}</th>
                   <th className="px-4 py-2.5"></th>
                 </tr>
               </thead>
@@ -241,10 +243,10 @@ export default function Products() {
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${STATUS_STYLE[p.status] || STATUS_STYLE.draft}`}>{STATUS_LABEL[p.status] || p.status}</span>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${STATUS_STYLE[p.status] || STATUS_STYLE.draft}`}>{t(`products.status_${p.status}`, STATUS_LABEL[p.status] || p.status)}</span>
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell text-[#6D7175]">
-                      {(p.variants || []).length ? `${p.variants.length} variante(s)` : (p.track_inventory ? 'Suivi' : '—')}
+                      {(p.variants || []).length ? `${p.variants.length} ${t('products.variants')}` : (p.track_inventory ? t('products.tracked') : '—')}
                     </td>
                     <td className="px-4 py-3 text-right font-semibold text-[#202223]">
                       {formatMoney(p.price, p.currency || store.currency)}

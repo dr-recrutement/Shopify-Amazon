@@ -86,5 +86,23 @@
     "shortcut_discounts": "التخفيضات",
     "shortcut_inventory": "المخزون",
     "shortcut_theme": "القالب"
+  },
+  "products": {
+    "title": "المنتجات",
+    "add": "إضافة",
+    "add_product": "إضافة منتج",
+    "import_csv": "استيراد (CSV)",
+    "search_placeholder": "بحث عن منتج…",
+    "empty": "لا توجد منتجات",
+    "col_product": "المنتج",
+    "col_status": "الحالة",
+    "col_stock": "المخزون",
+    "col_price": "السعر",
+    "col_margin": "الهامش",
+    "status_active": "نشط",
+    "status_draft": "مسودة",
+    "status_archived": "مؤرشف",
+    "variants": "متغير(ات)",
+    "tracked": "متتبَّع"
   }
 }

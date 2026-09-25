@@ -86,5 +86,23 @@
     "shortcut_discounts": "Wanteef",
     "shortcut_inventory": "Njëg jumtukaay",
     "shortcut_theme": "Nataal bitig"
+  },
+  "products": {
+    "title": "Jumtukaay yi",
+    "add": "Yokk",
+    "add_product": "Yokk jumtukaay",
+    "import_csv": "Yóbbu (CSV)",
+    "search_placeholder": "Seet jumtukaay…",
+    "empty": "Amul jumtukaay",
+    "col_product": "Jumtukaay",
+    "col_status": "Jëmm",
+    "col_stock": "Njëg",
+    "col_price": "Njëg",
+    "col_margin": "Njëriñ",
+    "status_active": "Dafay dox",
+    "status_draft": "Bind",
+    "status_archived": "Denc",
+    "variants": "nataal yi",
+    "tracked": "Toppatoo nañu"
   }
 }

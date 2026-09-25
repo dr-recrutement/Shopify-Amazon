@@ -674,6 +674,22 @@ export default function ThemeEditor() {
   const undo = () => { if (!past.length) return; const prev = past[past.length - 1]; setPast((h) => h.slice(0, -1)); setFuture((f) => [theme, ...f]); setTheme(prev); };
   const redo = () => { if (!future.length) return; const next = future[0]; setFuture((f) => f.slice(1)); setPast((h) => [...h, theme]); setTheme(next); };
 
+  // Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (or Ctrl+Y) - the standard editor
+  // shortcut every merchant expects, not just the toolbar buttons. Skips
+  // when focus is in a text input/textarea so it doesn't fight the
+  // browser's own native undo while typing a field.
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if (e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+      else if ((e.key.toLowerCase() === 'z' && e.shiftKey) || e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [past, future, theme]);
+
   const updateSections = (fn) => commit({ ...theme, sections: fn(theme.sections) });
   const selectSection = (id) => { setSelectedId(id); setTab('section'); setRightOpen(true); };
   const toggleVisible = (id) => updateSections((s) => s.map((x) => (x.id === id ? { ...x, visible: !x.visible } : x)));

@@ -5,6 +5,7 @@ import { THEMES, cloneTheme } from '@/lib/themes';
 import ThemePreview from '@/components/theme/ThemePreview';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { toast } from '@/components/ui/use-toast';
 
 const CATEGORIES = ['Tous', 'E-commerce', 'Marketplace', 'Business', 'Blog', 'Portfolio', 'Restaurant'];
 
@@ -33,6 +34,7 @@ export default function ThemeGallery() {
   // did nothing to the data the editor reads.
   const apply = async (id) => {
     if (!store?.id) return;
+    if (!confirm("Appliquer ce thème remplacera votre thème actuel et TOUTES ses personnalisations (couleurs, sections, contenu, images). Cette action ne peut pas être annulée après avoir quitté cette page. Continuer ?")) return;
     setApplying(id);
     try {
       const fresh = cloneTheme(id);
@@ -44,7 +46,7 @@ export default function ThemeGallery() {
       setApplied(id);
       setTimeout(() => navigate('/theme-editor'), 300);
     } catch (e) {
-      alert(e.message || "Échec de l'application du thème");
+      toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de l'application du thème" });
     } finally { setApplying(null); }
   };
 

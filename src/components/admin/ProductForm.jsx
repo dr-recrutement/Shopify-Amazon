@@ -183,7 +183,8 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
     if (!open) return;
     const base = product || {
       title: '', description: '', status: 'draft', vendor: '', product_type: '',
-      price: 0, compare_at_price: 0, sku: '', images: [], tags: [],
+      price: 0, compare_at_price: 0, cost_price: '', supplier_name: '', supplier_url: '',
+      sku: '', images: [], tags: [],
       options: [], variants: [], track_inventory: true, weight: 0, barcode: '', stock: 0,
     };
     setForm({ ...base });
@@ -227,6 +228,9 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         status: form.status || 'draft',
         price_cents: Math.round((Number(form.price) || 0) * 100),
         compare_at_price_cents: Math.round((Number(form.compare_at_price) || 0) * 100),
+        cost_price_cents: form.cost_price ? Math.round(Number(form.cost_price) * 100) : null,
+        supplier_name: form.supplier_name || null,
+        supplier_url: form.supplier_url || null,
         currency: store.currency,
         sku: form.sku || '',
         stock: (form.variants || []).length === 0 ? Number(form.stock) || 0 : 0,
@@ -263,10 +267,17 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
         <div className="space-y-4">
           <Field label="Titre *"><input value={form.title} onChange={(e) => set({ title: e.target.value })} className={inputCls} placeholder="Ex : Boubou wax premium" /></Field>
           <Field label="Images"><ImagesEditor images={form.images || []} onSet={(imgs) => set({ images: imgs })} pathPrefix={store.id} /></Field>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Field label={`Prix (${store.currency})`}><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set({ price: e.target.value })} className={inputCls} /></Field>
             <Field label="Prix barré"><input type="number" min="0" step="0.01" value={form.compare_at_price} onChange={(e) => set({ compare_at_price: e.target.value })} className={inputCls} /></Field>
+            <Field label="Prix coûtant"><input type="number" min="0" step="0.01" value={form.cost_price} onChange={(e) => set({ cost_price: e.target.value })} className={inputCls} placeholder="Ce que vous payez" /></Field>
           </div>
+          {Number(form.price) > 0 && Number(form.cost_price) > 0 && (
+            <p className="text-xs text-[#6D7175] -mt-2">
+              Marge : <span className={`font-semibold ${Number(form.price) - Number(form.cost_price) >= 0 ? 'text-[#008060]' : 'text-red-600'}`}>{(Number(form.price) - Number(form.cost_price)).toFixed(2)} {store.currency}</span>
+              {' '}({(((Number(form.price) - Number(form.cost_price)) / Number(form.price)) * 100).toFixed(0)}%)
+            </p>
+          )}
           {(form.variants || []).length === 0 && (
             <Field label="Stock (quantité) — produit simple">
               <input type="number" min="0" value={form.stock || 0} onChange={(e) => set({ stock: e.target.value })} className={inputCls} placeholder="0" />
@@ -286,8 +297,12 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
             <Field label="Poids (kg)"><input type="number" min="0" step="0.01" value={form.weight || 0} onChange={(e) => set({ weight: e.target.value })} className={inputCls} /></Field>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Marque / Fournisseur"><input value={form.vendor} onChange={(e) => set({ vendor: e.target.value })} className={inputCls} /></Field>
+            <Field label="Marque"><input value={form.vendor} onChange={(e) => set({ vendor: e.target.value })} className={inputCls} /></Field>
             <Field label="Type de produit"><input value={form.product_type} onChange={(e) => set({ product_type: e.target.value })} className={inputCls} placeholder="Vêtement, Accessoire…" /></Field>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Fournisseur (dropshipping)"><input value={form.supplier_name || ''} onChange={(e) => set({ supplier_name: e.target.value })} className={inputCls} placeholder="Ex : AliExpress, grossiste local…" /></Field>
+            <Field label="Lien produit fournisseur"><input value={form.supplier_url || ''} onChange={(e) => set({ supplier_url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
           </div>
           <Field label="Tags"><input value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} placeholder="nouveauté, wax, homme (séparés par virgules)" /></Field>
           <Field label="Description"><textarea value={form.description} onChange={(e) => set({ description: e.target.value })} rows={4} className={inputCls} /></Field>

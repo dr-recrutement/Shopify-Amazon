@@ -47,6 +47,7 @@ export default function Products() {
         title: row.name,
         price: (row.price_cents || 0) / 100,
         compare_at_price: (row.compare_at_price_cents || 0) / 100,
+        cost_price: row.cost_price_cents ? row.cost_price_cents / 100 : '',
         ...(row.metafields || {}),
       })));
     } catch (e) {
@@ -142,6 +143,7 @@ export default function Products() {
                   <th className="text-left px-4 py-2.5 hidden sm:table-cell">Statut</th>
                   <th className="text-left px-4 py-2.5 hidden md:table-cell">Stock</th>
                   <th className="text-right px-4 py-2.5">Prix</th>
+                  <th className="text-right px-4 py-2.5 hidden lg:table-cell">Marge</th>
                   <th className="px-4 py-2.5"></th>
                 </tr>
               </thead>
@@ -168,6 +170,14 @@ export default function Products() {
                     <td className="px-4 py-3 text-right font-semibold text-[#202223]">
                       {formatMoney(p.price, p.currency || store.currency)}
                       {p.compare_at_price > 0 && <span className="block text-[11px] text-[#6D7175] line-through font-normal">{formatMoney(p.compare_at_price, p.currency || store.currency)}</span>}
+                    </td>
+                    <td className="px-4 py-3 text-right hidden lg:table-cell">
+                      {p.cost_price > 0 ? (
+                        <span className={`text-xs font-semibold ${p.price - p.cost_price >= 0 ? 'text-[#008060]' : 'text-red-600'}`}>
+                          {formatMoney(p.price - p.cost_price, p.currency || store.currency)}
+                          <span className="block text-[10px] font-normal text-[#6D7175]">{p.price > 0 ? (((p.price - p.cost_price) / p.price) * 100).toFixed(0) : 0}%</span>
+                        </span>
+                      ) : <span className="text-[11px] text-[#6D7175]">—</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown, ArrowRight, Globe } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
+import { COMPETITOR_LIST } from '@/lib/competitors';
 
 const LANGS = [
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
@@ -33,10 +34,21 @@ const PLATFORM_LINKS = [
 ];
 
 const RESOURCES_LINKS = [
-  { label: 'Documentation', desc: 'Guides techniques & API', to: '/support' },
-  { label: 'Centre d\u2019aide', desc: 'FAQ & tutoriels', to: '/support' },
-  { label: 'Blog', desc: 'Tendances e-commerce', to: '/blog' },
+  { label: 'Centre d\u2019aide', desc: 'FAQ & tutoriels', to: '/centre-aide' },
+  { label: 'Guides', desc: 'Tendances e-commerce & migration', to: '/guides' },
+  { label: 'À propos', desc: 'Notre mission et notre équipe', to: '/a-propos' },
+  { label: 'Contact', desc: 'Support et service client', to: '/contact' },
 ];
+
+// Comparison pages, surfaced directly in the main nav so a visitor
+// searching "alternative à Shopify" (or any of the other five) finds the
+// matching page in one click from anywhere on the site, not just via the
+// footer.
+const ALTERNATIVES_LINKS = COMPETITOR_LIST.map((c) => ({
+  label: `Alternative à ${c.name}`,
+  desc: `Sellia vs ${c.name} : comparatif complet`,
+  to: `/alternative-a-${c.slug}`,
+}));
 
 export default function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -62,6 +74,7 @@ export default function LandingNav() {
 
   const NAV_ITEMS = [
     { id: 'platform', label: 'Plateforme', mega: true, links: PLATFORM_LINKS, cols: 3 },
+    { id: 'alternatives', label: 'Alternatives', mega: false, links: ALTERNATIVES_LINKS, wide: true },
     { id: 'resources', label: 'Ressources', mega: false, links: RESOURCES_LINKS },
   ];
 
@@ -98,7 +111,7 @@ export default function LandingNav() {
                       ))}
                     </div>
                   ) : (
-                    <div className="absolute left-0 top-full mt-2 w-[320px] bg-white rounded-2xl border border-border shadow-2xl p-3">
+                    <div className={`absolute left-0 top-full mt-2 ${item.wide ? 'w-[360px]' : 'w-[320px]'} bg-white rounded-2xl border border-border shadow-2xl p-3`}>
                       {item.links.map((it) => (
                         <Link key={it.label} to={it.to} className="block px-3 py-2.5 rounded-xl hover:bg-surface transition-colors">
                           <p className="text-sm font-semibold text-foreground">{it.label}</p>

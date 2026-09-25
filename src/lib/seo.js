@@ -136,3 +136,66 @@ export function applyArticleJsonLd({ headline, description, datePublished, autho
     url,
   });
 }
+
+// Sellia's official brand entity + social profiles, for Organization schema.
+// This is the single signal (alongside identical NAP/social links in the
+// footer) that tells Google and AI answer engines "Sellia" and
+// "sellia.liafrik.com" refer to the same real company — without it, brand
+// and comparison queries have nothing consistent to anchor an entity to.
+export const ORG_URL = 'https://sellia.liafrik.com';
+export const ORG_SOCIALS = [
+  'https://www.linkedin.com/company/liafrik/',
+  'https://www.facebook.com/share/1GucXLzGvb/?mibextid=wwXIfr',
+  'https://www.instagram.com/liafrik_tech',
+  'https://www.tiktok.com/@liafriktech',
+];
+export const SUPPORT_EMAIL = 'support@liafrik.com';
+export const CS_EMAIL = 'cs@liafrik.com';
+
+/**
+ * Organization + SoftwareApplication JSON-LD, meant to run once on every
+ * page (Landing calls it, and MarketingLayout calls it for every marketing
+ * page) so the entity graph is present site-wide, not just on the home
+ * page - comparison pages in particular need it since they're the pages
+ * most likely to be the first Sellia page a crawler or AI model ever sees.
+ */
+export function applyOrganizationJsonLd() {
+  setJsonLd('sellia-jsonld-org', {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Sellia',
+    alternateName: 'Sellia by Liafrik',
+    url: ORG_URL,
+    logo: 'https://media.base44.com/images/public/6aaf8e00382d12ca2edaacca/d3d2a132c_Sellia.png',
+    description: "Sellia est la plateforme e-commerce premium pour créer, gérer et développer une boutique en ligne — une alternative complète à Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo et Wix, pensée pour les marchands du monde entier.",
+    sameAs: ORG_SOCIALS,
+    email: SUPPORT_EMAIL,
+    contactPoint: [
+      { '@type': 'ContactPoint', contactType: 'customer support', email: SUPPORT_EMAIL, availableLanguage: ['French', 'English'] },
+      { '@type': 'ContactPoint', contactType: 'customer service', email: CS_EMAIL, availableLanguage: ['French', 'English'] },
+    ],
+  });
+  setJsonLd('sellia-jsonld-software', {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Sellia',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    url: ORG_URL,
+    offers: { '@type': 'Offer', price: '7', priceCurrency: 'USD' },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '1200' },
+  });
+}
+
+export function applyFAQJsonLd(id, faqs) {
+  if (!faqs?.length) return;
+  setJsonLd(id, {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  });
+}

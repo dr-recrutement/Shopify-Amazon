@@ -43,7 +43,7 @@ export default function Support() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <a href="mailto:support@sellia.liafrik.com" className="bg-white rounded-xl border border-[#E1E1E1] p-4 hover:border-[#008060] transition"><Mail className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Contacter le support</p><p className="text-xs text-[#6D7175]">Réponse sous 24h</p></a>
+        <a href="mailto:support@liafrik.com" className="bg-white rounded-xl border border-[#E1E1E1] p-4 hover:border-[#008060] transition"><Mail className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Contacter le support</p><p className="text-xs text-[#6D7175]">Réponse sous 24h</p></a>
         <div className="bg-white rounded-xl border border-[#E1E1E1] p-4"><Video className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Tutoriels vidéo</p><p className="text-xs text-[#6D7175]">Apprenez visuellement</p></div>
         <div className="bg-white rounded-xl border border-[#E1E1E1] p-4"><MessageSquare className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Communauté</p><p className="text-xs text-[#6D7175]">Échangez avec d'autres marchands</p></div>
       </div>

@@ -1,14 +1,70 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter, Linkedin, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, ArrowRight, Mail } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
+import { COMPETITOR_LIST } from '@/lib/competitors';
+import { ORG_SOCIALS, SUPPORT_EMAIL, CS_EMAIL } from '@/lib/seo';
 
+// Small inline TikTok mark — lucide-react ships no TikTok icon, and
+// pulling in a whole extra icon package for one glyph isn't worth it.
+function TikTokIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M16.6 5.82c-.85-.93-1.36-2.13-1.36-3.46h-3.1v13.6a2.75 2.75 0 1 1-2.75-2.75c.24 0 .48.03.7.08V10.3a5.85 5.85 0 0 0-.7-.04A5.85 5.85 0 1 0 15.24 16V9.4a7.14 7.14 0 0 0 4.17 1.34V7.65c-1.02 0-2-.32-2.81-.86-.36-.24-.68-.52-1-.97Z" />
+    </svg>
+  );
+}
 
+// Every link below points to a route that actually exists (App.jsx) or a
+// real in-page anchor on the landing page. Previously this column was
+// plain <span> text with no href at all, promising pages (Carrières,
+// Documentation, RGPD…) the site never actually had.
 const COLS = [
-  { title: 'Plateforme', links: ['Éditeur de boutique', 'Thèmes premium', 'Checkout', 'Paiements', 'Gestion des stocks', 'Analytics', 'Sellia Assistant'] },
-  { title: 'Solutions', links: ['Mode & Textile', 'Beauté & Cosmétiques', 'Électronique', 'Restaurant & Food', 'Marketplace', 'Multi-boutiques'] },
-  { title: 'Ressources', links: ['Documentation', 'Centre d’aide', 'Blog', 'Communauté', 'Développeurs', 'Statut système'] },
-  { title: 'Entreprise', links: ['À propos', 'Carrières', 'Partenaires', 'Contact', 'Presse', 'Sécurité'] },
-  { title: 'Légal', links: ['Conditions d’utilisation', 'Confidentialité', 'Cookies', 'RGPD', 'Mentions légales'] },
+  {
+    title: 'Plateforme',
+    links: [
+      { label: 'Éditeur de boutique', to: '/#fonctionnalites' },
+      { label: 'Thèmes premium', to: '/#fonctionnalites' },
+      { label: 'Paiements & Mobile Money', to: '/#fonctionnalites' },
+      { label: 'Sellia Assistant (IA)', to: '/#fonctionnalites' },
+      { label: 'Tarifs', to: '/#tarifs' },
+    ],
+  },
+  {
+    title: 'Alternatives',
+    links: COMPETITOR_LIST.map((c) => ({ label: `Alternative à ${c.name}`, to: `/alternative-a-${c.slug}` })),
+  },
+  {
+    title: 'Ressources',
+    links: [
+      { label: 'Centre d\u2019aide', to: '/centre-aide' },
+      { label: 'Guides', to: '/guides' },
+    ],
+  },
+  {
+    title: 'Entreprise',
+    links: [
+      { label: 'À propos', to: '/a-propos' },
+      { label: 'Carrières', to: '/carrieres' },
+      { label: 'Contact', to: '/contact' },
+    ],
+  },
+  {
+    title: 'Légal',
+    links: [
+      { label: 'Conditions d\u2019utilisation', to: '/conditions' },
+      { label: 'Confidentialité', to: '/confidentialite' },
+      { label: 'Cookies', to: '/confidentialite#cookies' },
+      { label: 'RGPD', to: '/confidentialite#rgpd' },
+      { label: 'Mentions légales', to: '/mentions-legales' },
+    ],
+  },
+];
+
+const SOCIALS = [
+  { icon: Linkedin, label: 'LinkedIn', href: ORG_SOCIALS[0] },
+  { icon: Facebook, label: 'Facebook', href: ORG_SOCIALS[1] },
+  { icon: Instagram, label: 'Instagram', href: ORG_SOCIALS[2] },
+  { icon: TikTokIcon, label: 'TikTok', href: ORG_SOCIALS[3] },
 ];
 
 export default function LandingFooter() {
@@ -34,11 +90,22 @@ export default function LandingFooter() {
               <span className="inline-flex items-center bg-white rounded-lg px-2 py-1.5"><img src={BRAND.logo} alt="Sellia" className="h-6 w-auto object-contain" /></span>
               <span className="font-landing font-bold text-lg text-background">Sellia</span>
             </div>
-            <p className="mt-4 text-sm text-background/70 max-w-xs">La plateforme e-commerce premium pour les marchands du monde entier. Lancez votre boutique, vendez au monde.</p>
-            <a href={BRAND.site} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-brand hover:opacity-80">{BRAND.site.replace('https://', '')}</a>
+            <p className="mt-4 text-sm text-background/70 max-w-xs">La plateforme e-commerce premium pour les marchands du monde entier — une alternative complète à Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo et Wix. Lancez votre boutique, vendez au monde.</p>
+
+            <div className="mt-4 space-y-1.5">
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center gap-2 text-sm text-background/70 hover:text-background transition-colors">
+                <Mail className="w-3.5 h-3.5 shrink-0" /> {SUPPORT_EMAIL}
+              </a>
+              <a href={`mailto:${CS_EMAIL}`} className="flex items-center gap-2 text-sm text-background/70 hover:text-background transition-colors">
+                <Mail className="w-3.5 h-3.5 shrink-0" /> {CS_EMAIL}
+              </a>
+            </div>
+
             <div className="mt-5 flex items-center gap-3">
-              {[Facebook, Instagram, Twitter, Linkedin].map((Ic, i) => (
-                <span key={i} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"><Ic className="w-4 h-4" /></span>
+              {SOCIALS.map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} title={s.label} className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                  <s.icon className="w-4 h-4" />
+                </a>
               ))}
             </div>
           </div>
@@ -47,7 +114,13 @@ export default function LandingFooter() {
               <p className="font-landing font-semibold text-sm text-background">{c.title}</p>
               <ul className="mt-4 space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l}><span className="text-sm text-background/70">{l}</span></li>
+                  <li key={l.label}>
+                    {l.to.startsWith('/#') ? (
+                      <a href={l.to.slice(1)} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</a>
+                    ) : (
+                      <Link to={l.to} className="text-sm text-background/70 hover:text-background transition-colors">{l.label}</Link>
+                    )}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -58,8 +131,8 @@ export default function LandingFooter() {
           <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
           <div className="flex items-center gap-5 text-xs text-background/70">
             <Link to="/login" className="hover:text-background transition-colors">Connexion</Link>
-            <span className="text-background/60">Confidentialité</span>
-            <span className="text-background/60">Conditions</span>
+            <Link to="/confidentialite" className="hover:text-background transition-colors">Confidentialité</Link>
+            <Link to="/conditions" className="hover:text-background transition-colors">Conditions</Link>
           </div>
         </div>
       </div>

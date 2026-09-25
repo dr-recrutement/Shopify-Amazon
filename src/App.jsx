@@ -45,6 +45,16 @@ import ActivityLogs from '@/pages/ActivityLogs';
 import SeoIa from '@/pages/SeoIa';
 import Onboarding from '@/pages/Onboarding';
 import ArticleDetail from '@/pages/ArticleDetail';
+import AlternativeTo from '@/pages/AlternativeTo';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import Careers from '@/pages/Careers';
+import Terms from '@/pages/Terms';
+import Privacy from '@/pages/Privacy';
+import LegalNotice from '@/pages/LegalNotice';
+import HelpCenter from '@/pages/HelpCenter';
+import Guides from '@/pages/Guides';
+import GuideArticle from '@/pages/GuideArticle';
 // Team.jsx (still on base44, StaffManagement.jsx covers this now) - import
 // removed, /team redirects to /settings instead of crashing.
 import Reports from '@/pages/Reports';
@@ -56,7 +66,6 @@ import Reviews from '@/pages/Reviews';
 import Domains from '@/pages/Domains';
 import StaffManagement from '@/pages/StaffManagement';
 import StoreSettings from '@/pages/StoreSettings';
-import Support from '@/pages/Support';
 import Blog from '@/pages/Blog';
 import ProductAnalytics from '@/pages/ProductAnalytics';
 import MediaLibrary from '@/pages/MediaLibrary';
@@ -101,6 +110,27 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
+      {/* Public marketing & content pages — no auth required, all indexable */}
+      <Route path="/a-propos" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/carrieres" element={<Careers />} />
+      <Route path="/conditions" element={<Terms />} />
+      <Route path="/confidentialite" element={<Privacy />} />
+      <Route path="/mentions-legales" element={<LegalNotice />} />
+      <Route path="/centre-aide" element={<HelpCenter />} />
+      <Route path="/guides" element={<Guides />} />
+      <Route path="/guides/:slug" element={<GuideArticle />} />
+      {/* One static route per competitor — react-router v6 can't match a
+          dynamic segment mixed with static text (e.g. "/alternative-a-:brand"
+          never matches "/alternative-a-shopify"), so each clean keyword URL
+          is declared explicitly here rather than via a single param route. */}
+      <Route path="/alternative-a-shopify" element={<AlternativeTo brand="shopify" />} />
+      <Route path="/alternative-a-bigcommerce" element={<AlternativeTo brand="bigcommerce" />} />
+      <Route path="/alternative-a-prestashop" element={<AlternativeTo brand="prestashop" />} />
+      <Route path="/alternative-a-woocommerce" element={<AlternativeTo brand="woocommerce" />} />
+      <Route path="/alternative-a-odoo" element={<AlternativeTo brand="odoo" />} />
+      <Route path="/alternative-a-wix" element={<AlternativeTo brand="wix" />} />
+
       {/* Authenticated admin routes */}
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/onboarding" element={<Onboarding />} />
@@ -138,7 +168,6 @@ const AuthenticatedApp = () => {
           <Route path="/domains" element={<Domains />} />
           <Route path="/staff-management" element={<StaffManagement />} />
           <Route path="/store-settings" element={<StoreSettings />} />
-          <Route path="/support" element={<Support />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/product-analytics" element={<ProductAnalytics />} />
           <Route path="/media-library" element={<MediaLibrary />} />

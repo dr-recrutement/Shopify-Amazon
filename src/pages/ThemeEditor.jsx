@@ -210,6 +210,75 @@ const FIELD_LABEL_OVERRIDES = {
   columnsMobile: 'Colonnes (mobile)',
 };
 
+// Real destination picker for any {label, url} pair (header/footer links,
+// hero buttons, etc). Every theme template ships these with url: '#' as a
+// placeholder - with nothing better than a raw text field to replace it,
+// merchants had no way to know what to actually type, so buttons and menu
+// items across the whole storefront pointed nowhere. Offers real
+// destinations: an actual product category or content page from this
+// store, an in-page anchor, or a typed custom URL for anything external.
+function LinkUrlField({ value, onChange }) {
+  const { store } = useCurrentStore();
+  const [categories, setCategories] = useState([]);
+  const [pages, setPages] = useState([]);
+  useEffect(() => {
+    if (!store?.id) return;
+    supabase.from('product_categories').select('id, name, slug').eq('tenant_id', store.id).then(({ data }) => setCategories(data || []));
+    supabase.from('content_pages').select('id, title, slug').eq('tenant_id', store.id).eq('status', 'published').then(({ data }) => setPages(data || []));
+  }, [store?.id]);
+
+  const current = value || '';
+  const kind = current.startsWith('/collections/') ? 'category'
+    : current.startsWith('/blog/') ? 'page'
+    : current.startsWith('#') ? 'anchor'
+    : current && current !== '#' ? 'custom' : '';
+
+  const selCls = 'w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
+
+  return (
+    <div className="space-y-1.5">
+      <select
+        value={kind}
+        onChange={(e) => {
+          const k = e.target.value;
+          if (k === 'category') onChange(categories[0] ? `/collections/${categories[0].slug || categories[0].id}` : '/collections/');
+          else if (k === 'page') onChange(pages[0] ? `/blog/${pages[0].slug}` : '/blog/');
+          else if (k === 'anchor') onChange('#products');
+          else onChange('');
+        }}
+        className={selCls}
+      >
+        <option value="">Choisir un type de lien…</option>
+        <option value="category">Une catégorie</option>
+        <option value="page">Une page de contenu</option>
+        <option value="anchor">Section produits (défilement)</option>
+        <option value="custom">URL personnalisée</option>
+      </select>
+      {kind === 'category' && (
+        <select value={current} onChange={(e) => onChange(e.target.value)} className={selCls}>
+          {categories.length === 0 && <option value={current}>Aucune catégorie créée</option>}
+          {categories.map((c) => <option key={c.id} value={`/collections/${c.slug || c.id}`}>{c.name}</option>)}
+        </select>
+      )}
+      {kind === 'page' && (
+        <select value={current} onChange={(e) => onChange(e.target.value)} className={selCls}>
+          {pages.length === 0 && <option value={current}>Aucune page publiée</option>}
+          {pages.map((p) => <option key={p.id} value={`/blog/${p.slug}`}>{p.title}</option>)}
+        </select>
+      )}
+      {kind === 'anchor' && (
+        <select value={current} onChange={(e) => onChange(e.target.value)} className={selCls}>
+          <option value="#products">Section produits</option>
+        </select>
+      )}
+      {kind === 'custom' && (
+        <input value={current} onChange={(e) => onChange(e.target.value)} placeholder="https://…" className={selCls} />
+      )}
+      {!kind && current === '#' && <p className="text-[10px] text-amber-600">Ce lien ne pointe nulle part pour l'instant — choisissez une destination ci-dessus.</p>}
+    </div>
+  );
+}
+
 function ScalarInput({ value, onChange, fieldKey }) {
   const inputCls = 'w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30 focus:border-[#008060]';
   if (fieldKey && ENUM_OPTIONS[fieldKey]) {
@@ -230,6 +299,7 @@ function ScalarInput({ value, onChange, fieldKey }) {
     );
   }
   if (fieldKey === 'iconImage' && typeof value === 'string') return <IconImageField value={value} onSetUrl={onChange} />;
+  if (fieldKey === 'url' && typeof value === 'string') return <LinkUrlField value={value} onChange={onChange} />;
   if (fieldKey === 'imageZoom' && typeof value === 'number') {
     return (
       <div className="flex items-center gap-2">

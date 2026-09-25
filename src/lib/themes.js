@@ -272,6 +272,9 @@ export function migrateTheme(theme) {
         // merchant-set value, so it needs its own real default instead of
         // silently inheriting one.
         if (props.columnsMobile === undefined) props.columnsMobile = 2;
+        if (s.type === 'collectionList' && Array.isArray(props.items)) {
+          props.items = props.items.map((it) => (it.url === undefined ? { ...it, url: '#' } : it));
+        }
         break;
       case 'testimonials':
         if (props.displayMode === undefined) props.displayMode = 'grid';
@@ -279,6 +282,9 @@ export function migrateTheme(theme) {
       case 'hero':
         if (props.imageFit === undefined) props.imageFit = 'cover';
         if (props.imageZoom === undefined) props.imageZoom = 1;
+        if (Array.isArray(props.buttons)) {
+          props.buttons = props.buttons.map((b) => (b.url === undefined ? { ...b, url: '#' } : b));
+        }
         break;
       case 'imageText':
         if (props.imageFit === undefined) props.imageFit = 'cover';

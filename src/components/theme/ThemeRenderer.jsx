@@ -294,9 +294,16 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     <h1 className="text-3xl sm:text-5xl font-bold leading-[1.1] text-white" style={{ fontFamily: theme.fonts?.heading }}>{c.title}</h1>
                     <p className="mt-4 text-sm sm:text-lg text-white/90 max-w-md">{c.subtitle}</p>
                     <div className="mt-6 flex flex-wrap gap-3">
-                      {(c.buttons || []).map((b, i) => (
-                        <button key={i} onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className="text-xs sm:text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90" style={b.variant === 'primary' ? { background: primary, color: p.primaryText } : { border: '1px solid #fff', color: '#fff' }}>{b.label}</button>
-                      ))}
+                      {(c.buttons || []).map((b, i) => {
+                        const { url } = normalizeLink({ url: b.url });
+                        const isAnchor = !url || url === '#' || url === '#products';
+                        const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                        const commonStyle = b.variant === 'primary' ? { background: primary, color: p.primaryText } : { border: '1px solid #fff', color: '#fff' };
+                        const commonClass = 'text-xs sm:text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90 inline-block';
+                        return href
+                          ? <a key={i} href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className={commonClass} style={commonStyle}>{b.label}</a>
+                          : <button key={i} onClick={(e) => { if (storefront) { e.stopPropagation(); scrollToProducts(); } }} className={commonClass} style={commonStyle}>{b.label}</button>;
+                      })}
                     </div>
                   </div>
                 </div>
@@ -322,16 +329,21 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
               <div className="px-5 sm:px-10 py-12">
                 <h2 className="text-xl sm:text-3xl font-bold text-center mb-8" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
                 <div className={`grid ${baseColsClass(c.columnsMobile || 2)} ${smColsClass(c.columns || 4)} gap-4`}>
-                  {(c.items || []).map((it, i) => (
-                    <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden">
-                      <Img src={it.image} className="w-full h-full" {...ip} path={`items.${i}.image`} />
-                      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0) 55%)' }} />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                        <p className="font-bold text-base" style={{ fontFamily: theme.fonts?.heading }}>{it.title}</p>
-                        <p className="text-xs opacity-80 mt-0.5">{it.count}</p>
-                      </div>
-                    </div>
-                  ))}
+                  {(c.items || []).map((it, i) => {
+                    const { url } = normalizeLink({ url: it.url });
+                    const detailHref = storefront && storeSlug && url && url !== '#' ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                    const CardTag = detailHref ? 'a' : 'div';
+                    return (
+                      <CardTag key={i} {...(detailHref ? { href: detailHref, onClick: (e) => e.stopPropagation() } : {})} className="relative aspect-[3/4] rounded-xl overflow-hidden block">
+                        <Img src={it.image} className="w-full h-full" {...ip} path={`items.${i}.image`} />
+                        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0) 55%)' }} />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                          <p className="font-bold text-base" style={{ fontFamily: theme.fonts?.heading }}>{it.title}</p>
+                          <p className="text-xs opacity-80 mt-0.5">{it.count}</p>
+                        </div>
+                      </CardTag>
+                    );
+                  })}
                 </div>
               </div>
             ));

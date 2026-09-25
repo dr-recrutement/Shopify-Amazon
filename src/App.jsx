@@ -11,6 +11,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Landing from '@/pages/Landing';
 import Storefront from '@/pages/Storefront';
 import ProductDetail from '@/pages/ProductDetail';
+import CategoryPage from '@/pages/CategoryPage';
 import CartPage from '@/pages/CartPage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
       <Route path="/store/:slug" element={<Storefront />} />
       <Route path="/store/:slug/cart" element={<CartPage />} />
       <Route path="/store/:slug/products/:productId" element={<ProductDetail />} />
+      <Route path="/store/:slug/collections/:categoryId" element={<CategoryPage />} />
       <Route path="/store/:slug/blog/:handle" element={<ArticleDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

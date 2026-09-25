@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ShoppingCart, X, Loader2, AlertCircle, Trash2, ArrowRight, ArrowLeft, Check,
-  Minus, Plus, Tag, Truck, MapPin, Mail, Phone, ShieldCheck, Lock, CreditCard,
+  Minus, Plus, Tag, Truck, MapPin, Mail, Phone, ShieldCheck, Lock, CreditCard, Star,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
@@ -439,12 +439,94 @@ export default function Storefront() {
   );
 }
 
+// Real review submission, right where it actually makes sense: order
+// confirmation, the one moment a real order_id (required - these are
+// verified-purchase reviews, not open to anyone) is genuinely known.
+// Low-friction by design: tap a star to submit immediately, an optional
+// comment field appears after rating rather than blocking the rating
+// itself behind a longer form.
+function ReviewPrompt({ tenantId, order }) {
+  const [ratings, setRatings] = useState({});
+  const [comments, setComments] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [busy, setBusy] = useState(null);
+
+  const submit = async (item) => {
+    const key = `${item.product_id}-${item.variant_id || ''}`;
+    const rating = ratings[key];
+    if (!rating) return;
+    setBusy(key);
+    try {
+      const { error } = await supabase.from('product_reviews').insert({
+        tenant_id: tenantId,
+        product_id: item.product_id,
+        order_id: order.id,
+        customer_name: 'Client vérifié',
+        rating,
+        comment: comments[key]?.trim() || null,
+      });
+      if (error) throw error;
+      setSubmitted((s) => ({ ...s, [key]: true }));
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de l'avis");
+    } finally { setBusy(null); }
+  };
+
+  return (
+    <div className="mt-6 pt-5 border-t border-border">
+      <p className="text-sm font-semibold text-foreground mb-3">Comment était votre commande ?</p>
+      <div className="space-y-3">
+        {order.items.map((item) => {
+          const key = `${item.product_id}-${item.variant_id || ''}`;
+          const rating = ratings[key];
+          const isSubmitted = submitted[key];
+          return (
+            <div key={key} className="flex items-start gap-2.5">
+              {item.image && <img src={item.image} alt="" className="w-9 h-9 rounded-lg object-cover shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-foreground truncate">{item.title}</p>
+                {isSubmitted ? (
+                  <p className="text-[11px] text-emerald-600 mt-0.5">Merci pour votre avis !</p>
+                ) : (
+                  <>
+                    <div className="flex gap-0.5 mt-1">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <button key={i} onClick={() => setRatings((r) => ({ ...r, [key]: i + 1 }))} disabled={busy === key}>
+                          <Star className={`w-4 h-4 ${rating && i < rating ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground'}`} />
+                        </button>
+                      ))}
+                    </div>
+                    {rating > 0 && (
+                      <div className="flex gap-1.5 mt-1.5">
+                        <input
+                          value={comments[key] || ''}
+                          onChange={(e) => setComments((c) => ({ ...c, [key]: e.target.value }))}
+                          placeholder="Un commentaire (optionnel)"
+                          className="flex-1 text-xs px-2 py-1.5 border border-border rounded-md outline-none focus:ring-1 focus:ring-brand/40"
+                        />
+                        <button onClick={() => submit(item)} disabled={busy === key} className="text-xs font-semibold text-white bg-brand px-3 py-1.5 rounded-md hover:bg-brand/90 disabled:opacity-50 shrink-0">
+                          {busy === key ? '…' : 'Publier'}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
   const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : activeGateways?.includes('stripe') ? 'stripe' : 'cod');
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [completedOrder, setCompletedOrder] = useState(null);
   const [error, setError] = useState('');
   const [stripeReady, setStripeReady] = useState(false);
   const cardElementRef = useRef(null);
@@ -505,6 +587,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         payment_gateway: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
       }).select().single();
       if (orderError) throw orderError;
+      setCompletedOrder({ id: order.id, items: cart.items || [] });
 
       const items = (cart.items || []).map((i) => ({
         order_id: order.id,
@@ -652,11 +735,16 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
   if (done) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-        <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-emerald-600" /></div>
-          <h2 className="font-heading font-bold text-lg text-foreground">Commande confirmée !</h2>
-          <p className="text-sm text-muted-foreground mt-1.5">Votre commande {orderNumber} a bien été reçue.</p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto py-8">
+        <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl my-auto">
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-emerald-600" /></div>
+            <h2 className="font-heading font-bold text-lg text-foreground">Commande confirmée !</h2>
+            <p className="text-sm text-muted-foreground mt-1.5">Votre commande {orderNumber} a bien été reçue.</p>
+          </div>
+          {completedOrder && completedOrder.items.length > 0 && (
+            <ReviewPrompt tenantId={store.id} order={completedOrder} />
+          )}
           <button onClick={onClose} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
         </div>
       </div>

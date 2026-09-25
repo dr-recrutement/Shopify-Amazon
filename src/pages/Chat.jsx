@@ -2,22 +2,34 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MessageSquare, Loader2, AlertCircle, Mail, Trash2,
-  Inbox, Clock, Archive, Search,
+  Inbox, Clock, Archive, Search, Send,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 
+// Real message from the function's own JSON error body - same pattern
+// used everywhere an edge function is called this session.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 // Native contact_messages: id/tenant_id/name/email/message/source/status/
-// created_at - no subject/reply/replied_at columns, and no email-sending
-// backend exists anywhere in this app (same gap noted for the newsletter
-// and abandoned-cart reminders). Replying opens the merchant's own email
-// client via mailto: (real, works immediately) instead of pretending
-// Sellia sends the email itself.
+// created_at - no subject/reply/replied_at columns. Replying now sends a
+// real email (send-email Edge Function, Resend) directly from the app -
+// mailto: kept as a secondary option for replying from the merchant's
+// own email client instead, not the only way to reply anymore.
 export default function Chat() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const [replying, setReplying] = useState(false);
+  const [replySent, setReplySent] = useState(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
 
@@ -52,7 +64,26 @@ export default function Chat() {
 
   const openMessage = (m) => {
     setSelected(m);
+    setReplyText('');
+    setReplySent(false);
     if (!m.status || m.status === 'new') setStatus(m, 'read');
+  };
+
+  const sendReply = async () => {
+    if (!replyText.trim() || !selected?.email || !store?.id) return;
+    setReplying(true);
+    try {
+      const html = `<div style="font-family:sans-serif;max-width:480px;margin:0 auto">${replyText.trim().split('\n').map((l) => `<p>${l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('')}<hr style="margin:16px 0;border:none;border-top:1px solid #E1E1E1" /><p style="color:#6D7175;font-size:12px">En réponse à votre message : « ${selected.message.slice(0, 200)} »</p></div>`;
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: { tenant_id: store.id, to: selected.email, subject: `Re: votre message à ${store.name}`, html, from_name: store.name },
+      });
+      if (error) throw new Error(await functionErrorMessage(error));
+      if (data?.error) throw new Error(data.error);
+      setReplyText('');
+      setReplySent(true);
+    } catch (e) {
+      alert(e.message || "Échec de l'envoi de la réponse");
+    } finally { setReplying(false); }
   };
 
   const remove = async (m) => {
@@ -158,10 +189,27 @@ export default function Chat() {
                 </div>
               </div>
               {selected.email && (
-                <div className="p-3 border-t border-[#E1E1E1]">
-                  <a href={`mailto:${selected.email}?subject=${encodeURIComponent(`Re: votre message à ${store.name}`)}`} className="w-full flex items-center justify-center gap-1.5 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-md hover:bg-[#00694d]">
-                    <Mail className="w-4 h-4" /> Répondre par e-mail
-                  </a>
+                <div className="p-3 border-t border-[#E1E1E1] space-y-2">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    placeholder="Écrivez votre réponse…"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#008060]/30"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={sendReply}
+                      disabled={!replyText.trim() || replying}
+                      className="flex-1 flex items-center justify-center gap-1.5 bg-[#008060] text-white text-sm font-medium py-2.5 rounded-md hover:bg-[#00694d] disabled:opacity-40"
+                    >
+                      {replying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} {replying ? 'Envoi…' : 'Envoyer'}
+                    </button>
+                    <a href={`mailto:${selected.email}?subject=${encodeURIComponent(`Re: votre message à ${store.name}`)}`} className="flex items-center justify-center px-3 border border-[#E1E1E1] rounded-md text-[#6D7175] hover:bg-black/5" title="Répondre depuis votre propre client e-mail">
+                      <Mail className="w-4 h-4" />
+                    </a>
+                  </div>
+                  {replySent && <p className="text-xs text-emerald-600">Réponse envoyée à {selected.email}.</p>}
                 </div>
               )}
             </>

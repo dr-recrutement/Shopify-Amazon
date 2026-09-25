@@ -49,11 +49,16 @@ const INTEGRATIONS = [
   { id: 'automations', name: 'Automatisations', category: 'Productivité', region: '', color: '#8B5CF6', accent: '#FFFFFF', desc: 'Automatisez e-mails et notifications', installed: true, to: '/automations', type: 'app' },
   { id: 'analytics', name: 'Analytics', category: 'Analyse', region: '', color: '#3B82F6', accent: '#FFFFFF', desc: 'Statistiques de vente en temps réel', installed: true, to: '/analytics', type: 'app' },
   { id: 'markets', name: 'Marchés', category: 'Canaux', region: '', color: '#10B981', accent: '#FFFFFF', desc: 'Vendez sur Instagram, Facebook, WhatsApp', installed: true, to: '/markets', type: 'app' },
-  { id: 'meta-ads', name: 'Meta Ads', category: 'Publicité', region: 'Mondial', logo: '/app-logos/facebook.webp', desc: 'Publicités Facebook & Instagram', type: 'marketing' },
-  { id: 'google-ads', name: 'Google Ads', category: 'Publicité', region: 'Mondial', logo: `${LOGO_BASE}/92f87bd5b_google-ads-icon-logo-symbol-free-png.webp`, desc: 'Publicités Google Shopping & Search', type: 'marketing' },
-  { id: 'klaviyo', name: 'Klaviyo', category: 'E-mail', region: 'Mondial', color: '#000000', accent: '#FF6900', desc: 'E-mail & SMS marketing', type: 'marketing' },
-  { id: 'mailchimp', name: 'Mailchimp', category: 'E-mail', region: 'Mondial', logo: `${LOGO_BASE}/49772f9ca_images11.png`, desc: 'E-mail marketing & automations', type: 'marketing' },
-  { id: 'tiktok-ads', name: 'TikTok Ads', category: 'Publicité', region: 'Mondial', logo: '/app-logos/tiktok.png', desc: 'Publicités TikTok Shop', type: 'marketing' },
+  // Marketing/email/analytics — Meta Ads, Google Ads, Klaviyo, Mailchimp
+  // and TikTok Ads used to be listed here, but "Connecter" only ever
+  // routed to Sellia's own internal Marketing page (real customer/cart
+  // segments, but genuinely nothing to do with any of these specific
+  // platforms) - each would need a real OAuth/API partnership with
+  // Meta/Google/TikTok/Klaviyo/Intuit that doesn't exist. Removed rather
+  // than leave cards that don't do what they say, same standard just
+  // applied to the other integrations. Sellia's real built-in marketing
+  // tools (abandoned cart recovery, customer segments) stay reachable
+  // from the sidebar, on their own terms.
 
   // Messaging channel (real, functional: configured in Paramètres →
   // Boutique, adds a real floating chat button on the storefront - not

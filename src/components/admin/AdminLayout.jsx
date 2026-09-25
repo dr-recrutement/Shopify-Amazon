@@ -5,7 +5,7 @@ import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle, Languages,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle, Languages, ClipboardList,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
@@ -34,6 +34,7 @@ const NAV_GROUPS = [
       { labelKey: 'nav.customers', to: '/customers', icon: Users },
       { labelKey: 'nav.collections', to: '/collections', icon: LayoutGrid },
       { labelKey: 'nav.reviews', to: '/reviews', icon: Star },
+      { labelKey: 'nav.forms', to: '/form-submissions', icon: ClipboardList },
       { labelKey: 'nav.growth', to: '/growth', icon: TrendingUp },
       { labelKey: 'nav.discounts', to: '/discounts', icon: Tag },
       { labelKey: 'nav.content', to: '/content', icon: FileText, children: [

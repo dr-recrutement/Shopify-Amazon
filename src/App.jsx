@@ -36,6 +36,7 @@ import Automations from '@/pages/Automations';
 import Accounting from '@/pages/Accounting';
 import Markets from '@/pages/Markets';
 import Chat from '@/pages/Chat';
+import FormSubmissions from '@/pages/FormSubmissions';
 import Apps from '@/pages/Apps';
 import Payments from '@/pages/Payments';
 import Superadmin from '@/pages/Superadmin';
@@ -152,6 +153,7 @@ const AuthenticatedApp = () => {
           <Route path="/accounting" element={<Accounting />} />
           <Route path="/markets" element={<Markets />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/form-submissions" element={<FormSubmissions />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/superadmin" element={<Superadmin />} />

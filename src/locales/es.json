@@ -34,7 +34,8 @@
     "group_system": "Sistema",
     "apps": "Aplicaciones",
     "activity_logs": "Actividad",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "forms": "Formularios"
   },
   "common": {
     "save": "Guardar",

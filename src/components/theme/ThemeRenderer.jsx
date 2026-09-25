@@ -100,6 +100,73 @@ function NewsletterBlock({ c, p, primary, primaryText, headingFont, storefront, 
   );
 }
 
+// Real generic form: lets a merchant build a proper professional showcase
+// site (contact, quote request, booking...) with real configurable
+// fields, not just the fixed newsletter-only signup above. Submissions
+// land in form_submissions (RLS: anon insert, owner-only read), viewable
+// in the admin.
+function FormBlock({ c, p, primary, primaryText, headingFont, storefront, tenantId }) {
+  const fields = c.fields || [];
+  const [values, setValues] = useState({});
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const setField = (name, v) => setValues((old) => ({ ...old, [name]: v }));
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!tenantId) return;
+    setBusy(true);
+    setError('');
+    try {
+      const { error: insertError } = await supabase.from('form_submissions').insert({
+        tenant_id: tenantId,
+        form_name: c.formName || c.title || 'Formulaire',
+        data: values,
+      });
+      if (insertError) throw insertError;
+      setDone(true);
+      setValues({});
+    } catch (err) {
+      setError(err.message || "Échec de l'envoi");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const fieldCls = 'w-full px-4 py-2.5 rounded-md text-sm border outline-none';
+  const fieldStyle = { borderColor: p.border, background: p.surface, color: p.text };
+  return (
+    <div className="px-5 sm:px-10 py-14">
+      <div className="max-w-lg mx-auto text-center mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: headingFont, color: p.dark }}>{c.title}</h2>
+        {c.subtitle && <p className="mt-3 text-sm" style={{ color: p.muted }}>{c.subtitle}</p>}
+      </div>
+      {done ? (
+        <p className="text-center text-sm font-semibold max-w-lg mx-auto" style={{ color: primary }}>{c.successMessage || 'Merci, votre message a bien été envoyé !'}</p>
+      ) : (
+        <form onSubmit={storefront ? submit : (e) => e.preventDefault()} className="max-w-lg mx-auto space-y-3">
+          {fields.map((f, i) => (
+            <div key={i}>
+              <label className="block text-xs font-semibold mb-1" style={{ color: p.text }}>{f.label}{f.required && ' *'}</label>
+              {f.type === 'textarea' ? (
+                <textarea required={f.required} rows={4} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
+              ) : f.type === 'select' ? (
+                <select required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle}>
+                  <option value="">—</option>
+                  {(f.options || []).map((o, oi) => <option key={oi} value={o}>{o}</option>)}
+                </select>
+              ) : (
+                <input type={f.type || 'text'} required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
+              )}
+            </div>
+          ))}
+          <button type="submit" disabled={busy || fields.length === 0} className="w-full py-3 sellia-btn text-sm font-semibold transition hover:opacity-90 disabled:opacity-60" style={{ background: primary, color: primaryText }}>{busy ? '…' : c.buttonLabel || 'Envoyer'}</button>
+          {error && <p className="text-xs text-red-500 text-center">{error}</p>}
+        </form>
+      )}
+    </div>
+  );
+}
+
 function ImageReplace({ sectionId, path, onUpload, onSetUrl }) {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -602,6 +669,9 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
 
           case 'newsletter':
             return wrap(s, <NewsletterBlock c={c} p={p} primary={primary} primaryText={p.primaryText} headingFont={theme.fonts?.heading} storefront={storefront} tenantId={tenantId} />);
+
+          case 'form':
+            return wrap(s, <FormBlock c={c} p={p} primary={primary} primaryText={p.primaryText} headingFont={theme.fonts?.heading} storefront={storefront} tenantId={tenantId} />);
 
           case 'footer':
             return wrap(s, (

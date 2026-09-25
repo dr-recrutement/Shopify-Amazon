@@ -18,7 +18,7 @@ const CUSTOM_KEY = 'sellia_theme_custom';
 
 const SECTION_ICONS = {
   announcement: Bell, header: PanelTop, hero: ImageIcon, productGrid: ShoppingBag,
-  imageText: Columns, multicolumn: Columns, testimonials: Star, blogList: FileText,
+  imageText: Columns, multicolumn: Columns, testimonials: Star, blogList: FileText, form: FileText,
   gallery: ImageIcon, cta: Megaphone, newsletter: Mail, footer: LayoutGrid,
   collectionList: ImageIcon, trustbar: ShieldCheck, menu: UtensilsCrossed, pricing: Tag, iconGrid: Grid3x3, custom: Shapes,
 };
@@ -41,6 +41,14 @@ const SECTION_CATALOG = [
   { type: 'custom', label: 'Section libre', icon: Shapes, make: () => ({ props: { columns: 2, background: 'transparent', blocks: [{ kind: 'heading', text: 'Titre', image: '', align: 'left', span: 2 }, { kind: 'text', text: 'Votre texte libre ici.', image: '', align: 'left', span: 1 }, { kind: 'image', text: '', image: '', align: 'left', span: 1 }, { kind: 'button', text: 'Bouton', image: '', align: 'left', span: 1 }] } }) },
   { type: 'cta', label: "Appel à l'action", icon: Megaphone, make: () => ({ props: { title: 'Prêt ?', subtitle: '', buttonLabel: 'Commencer', buttonHref: '#' } }) },
   { type: 'newsletter', label: 'Newsletter', icon: Mail, make: () => ({ props: { title: 'Newsletter', subtitle: '', placeholder: 'Votre e-mail', buttonLabel: "S'inscrire" } }) },
+  { type: 'form', label: 'Formulaire', icon: FileText, make: () => ({ props: {
+    title: 'Contactez-nous', subtitle: 'Nous vous répondrons rapidement.', formName: 'Contact', buttonLabel: 'Envoyer', successMessage: 'Merci, votre message a bien été envoyé !',
+    fields: [
+      { name: 'name', label: 'Nom', type: 'text', required: true },
+      { name: 'email', label: 'E-mail', type: 'email', required: true },
+      { name: 'message', label: 'Message', type: 'textarea', required: true },
+    ],
+  } }) },
   { type: 'footer', label: 'Pied de page', icon: LayoutGrid, make: () => ({ props: { logo: 'Logo', description: '', columns: [{ title: 'Liens', links: [] }], social: [], copyright: '© 2026' } }) },
 ];
 

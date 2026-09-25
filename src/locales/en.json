@@ -34,7 +34,8 @@
     "group_system": "System",
     "apps": "Apps",
     "activity_logs": "Activity",
-    "settings": "Settings"
+    "settings": "Settings",
+    "forms": "Forms"
   },
   "common": {
     "save": "Save",

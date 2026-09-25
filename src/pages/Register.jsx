@@ -55,12 +55,22 @@ export default function Register() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { phone, country } },
+        options: {
+          data: { phone, country },
+          // Supabase's default "Confirm signup" email template sends a
+          // clickable link (not a 6-digit code) unless the project's
+          // template was specifically customized to include {{ .Token }} -
+          // there's no way to confirm that from here, so this flow is
+          // built around what actually arrives by default: a link.
+          // detectSessionInUrl (already set on the client) picks up the
+          // session automatically once the visitor lands back here.
+          emailRedirectTo: window.location.origin + postAuthDestination,
+        },
       });
       if (signUpError) throw signUpError;
       if (data.session) {
         // Email confirmation is disabled for this project: the account is
-        // already active and signed in, so there's no code to verify.
+        // already active and signed in, so there's nothing to wait for.
         window.location.href = postAuthDestination;
         return;
       }
@@ -94,11 +104,11 @@ export default function Register() {
       const { error: resendError } = await supabase.auth.resend({ type: "signup", email });
       if (resendError) throw resendError;
       toast({
-        title: "Code envoyé",
-        description: "Vérifiez votre e-mail pour le nouveau code.",
+        title: "E-mail renvoyé",
+        description: "Vérifiez votre boîte de réception.",
       });
     } catch (err) {
-      setError(err.message || "Impossible de renvoyer le code");
+      setError(err.message || "Impossible de renvoyer l'e-mail");
     }
   };
 
@@ -113,50 +123,51 @@ export default function Register() {
     return (
       <AuthLayout
         icon={Mail}
-        title="Verify your email"
-        subtitle={`We sent a code to ${email}`}
+        title="Vérifiez votre e-mail"
+        subtitle={`Un lien de confirmation a été envoyé à ${email}`}
       >
         {error && (
           <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
             {error}
           </div>
         )}
-        <div className="flex justify-center mb-6">
-          <InputOTP
-            maxLength={6}
-            value={otpCode}
-            onChange={setOtpCode}
-            autoFocus
-            autoComplete="one-time-code"
-          >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-        </div>
-        <Button
-          className="w-full h-12 font-medium rounded-full"
-          onClick={handleVerify}
-          disabled={loading || otpCode.length < 6}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Verifying...
-            </>
-          ) : (
-            "Verify"
-          )}
-        </Button>
+        <p className="text-sm text-muted-foreground text-center mb-6">
+          Cliquez sur le lien reçu par e-mail pour activer votre compte. Vous serez redirigé automatiquement.
+        </p>
+        <details className="mb-2">
+          <summary className="text-xs text-center text-muted-foreground cursor-pointer hover:text-foreground">Vous avez reçu un code à 6 chiffres à la place ?</summary>
+          <div className="mt-4">
+            <div className="flex justify-center mb-4">
+              <InputOTP
+                maxLength={6}
+                value={otpCode}
+                onChange={setOtpCode}
+                autoComplete="one-time-code"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+            <Button
+              className="w-full h-11 font-medium rounded-full"
+              onClick={handleVerify}
+              disabled={loading || otpCode.length < 6}
+              variant="outline"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Valider le code"}
+            </Button>
+          </div>
+        </details>
         <p className="text-center text-sm text-muted-foreground mt-4">
-          Didn't receive the code?{" "}
+          Rien reçu ?{" "}
           <button onClick={handleResend} className="text-primary font-medium hover:underline">
-            Resend
+            Renvoyer l'e-mail
           </button>
         </p>
       </AuthLayout>

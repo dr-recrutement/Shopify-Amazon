@@ -24,7 +24,7 @@ function StoreCard({ store }) {
         <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-        <span className="ml-2 flex-1 truncate text-[10px] font-mono text-[#9AA5B5]">{store.name.toLowerCase().replace(/\s/g, '-')}.sellia.app</span>
+        <span className="ml-2 flex-1 truncate text-[10px] font-mono text-[#9AA5B5]">sellia.liafrik.com/store/{store.name.toLowerCase().replace(/\s/g, '-')}</span>
       </div>
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={store.image} alt={store.name} className="w-full h-full object-cover" />

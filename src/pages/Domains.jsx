@@ -6,7 +6,7 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { hasFeature } from '@/lib/plans';
 import PlatformPaymentPicker from '@/components/PlatformPaymentPicker';
 
-const SELLIA_SUBDOMAIN = 'sellia.app';
+const SELLIA_DOMAIN = 'sellia.liafrik.com';
 const REASON_LABELS = {
   domain_unavailable: 'Ce domaine est déjà pris.',
   extension_not_supported_via_api: 'Cette extension (TLD) n\u2019est pas encore disponible via achat automatique.',
@@ -181,7 +181,11 @@ export default function Domains() {
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
 
-  const subdomain = store?.slug ? `${store.slug}.${SELLIA_SUBDOMAIN}` : null;
+  // The real routing is path-based (sellia.liafrik.com/store/:slug), not
+  // a literal per-merchant subdomain - this used to build a
+  // slug.sellia.app URL that pointed nowhere real on either count (wrong
+  // domain and a routing style this platform doesn't use).
+  const storeUrl = store?.slug ? `${SELLIA_DOMAIN}/store/${store.slug}` : null;
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
@@ -201,10 +205,10 @@ export default function Domains() {
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">
         <div className="flex items-center gap-2 mb-3"><Check className="w-4 h-4 text-[#008060]" /><p className="text-sm font-bold text-[#202223]">Domaine Sellia (inclus)</p></div>
-        {subdomain ? (
+        {storeUrl ? (
           <div className="flex items-center justify-between bg-[#F4F4F4] rounded-lg px-4 py-3">
-            <div><p className="text-sm font-mono text-[#202223]">{subdomain}</p><p className="text-xs text-[#6D7175]">Sous-domaine gratuit — actif</p></div>
-            <a href={`https://${subdomain}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs font-semibold text-[#008060] hover:underline">Visiter <ExternalLink className="w-3.5 h-3.5" /></a>
+            <div><p className="text-sm font-mono text-[#202223]">{storeUrl}</p><p className="text-xs text-[#6D7175]">Adresse gratuite — active</p></div>
+            <a href={`https://${storeUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs font-semibold text-[#008060] hover:underline">Visiter <ExternalLink className="w-3.5 h-3.5" /></a>
           </div>
         ) : <p className="text-sm text-[#6D7175]">Configurez votre boutique pour obtenir un sous-domaine.</p>}
       </div>

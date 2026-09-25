@@ -56,7 +56,7 @@ export default function LandingShowcase() {
                 <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                 <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
-                <span className="ml-3 text-[11px] font-mono text-muted-foreground">dashboard.sellia.app</span>
+                <span className="ml-3 text-[11px] font-mono text-muted-foreground">sellia.liafrik.com</span>
               </div>
               <div className="aspect-[16/10]">
                 <Image src={DASHBOARD_IMG} alt="Dashboard Sellia" fittingType="fill" className="w-full h-full" />

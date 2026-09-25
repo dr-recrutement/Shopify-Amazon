@@ -5,6 +5,7 @@ import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { hasFeature } from '@/lib/plans';
 import PlatformPaymentPicker from '@/components/PlatformPaymentPicker';
+import { toast } from '@/components/ui/use-toast';
 
 const SELLIA_DOMAIN = 'sellia.liafrik.com';
 const REASON_LABELS = {
@@ -66,7 +67,7 @@ export default function Domains() {
     if (!domain || !store?.id) return;
     // Real plan enforcement: custom domains require Pro or above.
     if (!hasFeature(store.plan, 'custom_domain')) {
-      alert(`Les domaines personnalisés nécessitent le plan Pro ou supérieur. Passez à niveau dans Paramètres → Plan.`);
+      toast({ variant: 'destructive', title: 'Plan requis', description: "Les domaines personnalisés nécessitent le plan Pro ou supérieur. Passez à niveau dans Paramètres → Plan." });
       return;
     }
     setConnecting(true);
@@ -82,7 +83,7 @@ export default function Domains() {
       setDomain('');
       await loadDomains();
     } catch (e) {
-      alert(e.message || 'Échec de la connexion du domaine');
+      toast({ variant: 'destructive', title: 'Erreur', description: e.message || 'Échec de la connexion du domaine' });
     } finally { setConnecting(false); }
   };
 
@@ -103,7 +104,7 @@ export default function Domains() {
     if (!confirm('Déconnecter ce domaine ?')) return;
     const { error } = await supabase.from('domains').delete().eq('id', d.id);
     if (error) {
-      alert("Ce domaine ne peut pas être retiré directement (contactez le support) : " + error.message);
+      toast({ variant: 'destructive', title: 'Suppression impossible', description: "Ce domaine ne peut pas être retiré directement (contactez le support) : " + error.message });
       return;
     }
     await loadDomains();
@@ -143,9 +144,9 @@ export default function Domains() {
       setBuyTarget(null);
       setShowPaymentPicker(false);
       await loadDomains();
-      alert(`${domainName} a été acheté avec succès !`);
+      toast({ title: 'Domaine acheté', description: `${domainName} a été acheté avec succès !` });
     } catch (e) {
-      alert(e.message || "Échec de la finalisation de l'achat");
+      toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de la finalisation de l'achat" });
     } finally { setPurchaseFinalizing(false); }
   };
 
@@ -174,7 +175,7 @@ export default function Domains() {
         if (!v.paid) throw new Error(`Paiement non confirmé (statut : ${v.status}). Le domaine n'a pas été acheté.`);
         await registerDomainAfterPayment(domainName);
       } catch (e) {
-        alert(e.message || "Échec de la finalisation de l'achat");
+        toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de la finalisation de l'achat" });
       } finally { setPurchaseFinalizing(false); }
     })();
   }, [store?.id, loadDomains]);
@@ -397,7 +398,7 @@ function TransferOutPanel({ domain, store }) {
       if (data.error) throw new Error(data.error);
       await load();
     } catch (e) {
-      alert(e.message || "Échec de l'opération");
+      toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de l'opération" });
     } finally { setBusy(false); }
   };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
@@ -142,7 +143,7 @@ export default function Products() {
   const remove = async (p) => {
     if (!confirm(`Supprimer « ${p.title} » ?`)) return;
     const { error } = await supabase.from('products').delete().eq('id', p.id);
-    if (error) { alert(error.message); return; }
+    if (error) { toast({ variant: 'destructive', title: 'Erreur', description: error.message }); return; }
     setProducts((l) => l.filter((x) => x.id !== p.id));
   };
 

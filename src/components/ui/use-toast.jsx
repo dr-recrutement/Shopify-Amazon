@@ -2,7 +2,10 @@
 import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 20;
-const TOAST_REMOVE_DELAY = 1000000;
+// Was 1000000 (~16.7 minutes) - unmodified shadcn boilerplate default,
+// meaning every toast would sit on screen until manually dismissed
+// instead of disappearing on its own like a toast is supposed to.
+const TOAST_REMOVE_DELAY = 5000;
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",

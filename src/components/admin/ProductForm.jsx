@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { X, Loader2, Plus, Trash2, ChevronDown, ChevronRight, Package } from 'lucide-react';
 import { formatMoney } from '@/lib/world/currencies';
 import { getFeatureValue, getPlan } from '@/lib/plans';
+import { toast } from '@/components/ui/use-toast';
 
 const STATUSES = [
   { value: 'active', label: 'Actif' },
@@ -211,7 +212,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
           if (countError) throw countError;
           if ((count || 0) >= limit) {
             setSaving(false);
-            alert(`Limite atteinte : le plan ${getPlan(store.plan).name} autorise ${limit} produits maximum. Passez à un plan supérieur dans Paramètres → Plan pour en ajouter davantage.`);
+            toast({ variant: 'destructive', title: 'Limite de plan atteinte', description: `Le plan ${getPlan(store.plan).name} autorise ${limit} produits maximum. Passez à un plan supérieur dans Paramètres → Plan pour en ajouter davantage.` });
             return;
           }
         }
@@ -254,7 +255,7 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
       onSaved();
       onOpenChange(false);
     } catch (e) {
-      alert(e.message || "Échec de l'enregistrement du produit");
+      toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de l'enregistrement du produit" });
     } finally { setSaving(false); }
   };
 

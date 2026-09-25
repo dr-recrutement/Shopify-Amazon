@@ -7,7 +7,7 @@ import {
   Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
   Palette, Image as ImageIcon, LayoutGrid, ShoppingBag, FileText, Star, Mail,
   Megaphone, PanelTop, Columns, Bell, Loader2, ShieldCheck,
-  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket,
+  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket, Copy,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
@@ -679,6 +679,20 @@ export default function ThemeEditor() {
   const toggleVisible = (id) => updateSections((s) => s.map((x) => (x.id === id ? { ...x, visible: !x.visible } : x)));
   const onDragEnd = (res) => { if (!res.destination) return; updateSections((s) => { const a = [...s]; const [m] = a.splice(res.source.index, 1); a.splice(res.destination.index, 0, m); return a; }); };
   const removeSection = (id) => { updateSections((s) => s.filter((x) => x.id !== id)); if (selectedId === id) setSelectedId(null); };
+  const duplicateSection = (id) => {
+    updateSections((s) => {
+      const idx = s.findIndex((x) => x.id === id);
+      if (idx === -1) return s;
+      // A shallow copy would share the same `props` object reference with
+      // the original - editing the duplicate would silently mutate the
+      // original section too. JSON round-trip is a safe deep clone here
+      // since section data is always plain JSON (no functions/dates).
+      const copy = { ...JSON.parse(JSON.stringify(s[idx])), id: nid(s[idx].type) };
+      const next = [...s];
+      next.splice(idx + 1, 0, copy);
+      return next;
+    });
+  };
   const addSection = (def) => {
     const id = nid(def.type);
     updateSections((s) => [...s, { id, type: def.type, label: def.label, visible: true, ...def.make() }]);
@@ -794,7 +808,8 @@ export default function ThemeEditor() {
                             <Ic className={`w-3.5 h-3.5 ${!s.visible ? 'opacity-40' : 'opacity-70'}`} />
                             <span className={`flex-1 truncate ${!s.visible ? 'opacity-40' : ''}`}>{s.label}</span>
                             <button onClick={(e) => { e.stopPropagation(); toggleVisible(s.id); }} className="opacity-0 group-hover:opacity-100">{s.visible ? <Eye className="w-3.5 h-3.5 text-[#6D7175]" /> : <EyeOff className="w-3.5 h-3.5 text-[#6D7175]" />}</button>
-                            <button onClick={(e) => { e.stopPropagation(); removeSection(s.id); }} className="opacity-0 group-hover:opacity-100"><Trash2 className="w-3.5 h-3.5 text-[#6D7175] hover:text-red-500" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); duplicateSection(s.id); }} className="opacity-0 group-hover:opacity-100" title="Dupliquer"><Copy className="w-3.5 h-3.5 text-[#6D7175] hover:text-[#008060]" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); removeSection(s.id); }} className="opacity-0 group-hover:opacity-100" title="Supprimer"><Trash2 className="w-3.5 h-3.5 text-[#6D7175] hover:text-red-500" /></button>
                           </div>
                         )}
                       </Draggable>

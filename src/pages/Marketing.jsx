@@ -10,12 +10,21 @@ import { formatMoney } from '@/lib/world/currencies';
 
 const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
 
-// Real data (orders/customers/abandoned_carts), but honest about the one
-// thing that isn't real: no email-sending backend exists anywhere in this
-// app (same gap as Chat.jsx replies and newsletter notifications) - the
-// old code called base44.integrations.Core.SendEmail and showed a fake
-// "Envoyé !" toast regardless. Buttons here say plainly that this isn't
-// wired yet instead of pretending an email went out.
+// Real message from the function's own JSON error body - same pattern
+// used everywhere an edge function is called this session.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
+// Real data (orders/customers/abandoned_carts) AND real sending: the
+// send-email Edge Function (Resend, platform-wide key in
+// platform_secrets) actually sends now - the old code called
+// base44.integrations.Core.SendEmail and showed a fake "Envoyé !" toast
+// regardless of whether anything went out; this genuinely does.
 export default function Marketing() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [orders, setOrders] = useState([]);
@@ -23,6 +32,7 @@ export default function Marketing() {
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState('');
+  const [sending, setSending] = useState(null);
 
   const load = useCallback(async () => {
     if (!store?.id) return;
@@ -46,7 +56,46 @@ export default function Marketing() {
   const avgOrderValue = paidOrders.length > 0 ? totalRevenue / paidOrders.length : 0;
   const abandonedValue = carts.reduce((s, c) => s + (c.total_cents || 0) / 100, 0);
 
-  const showNotice = (text) => { setNotice(text); setTimeout(() => setNotice(''), 5000); };
+  // Real segments per campaign, computed from the same real data already
+  // loaded - not a placeholder count.
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
+  const sixtyDaysAgo = new Date(Date.now() - 60 * 86400000);
+  const orderedCustomerIds = new Set(paidOrders.map((o) => o.customer_id).filter(Boolean));
+  const newCustomers = marketingCustomers.filter((c) => new Date(c.created_at) > sevenDaysAgo);
+  const winbackCustomers = marketingCustomers.filter((c) => {
+    if (!orderedCustomerIds.has(c.id)) return false;
+    const lastOrder = paidOrders.filter((o) => o.customer_id === c.id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+    return lastOrder && new Date(lastOrder.created_at) < sixtyDaysAgo;
+  });
+  const abandonedEmails = [...new Set(carts.map((c) => c.email).filter(Boolean))];
+
+  const showNotice = (text) => { setNotice(text); setTimeout(() => setNotice(''), 6000); };
+
+  const sendCampaign = async (campaign) => {
+    const recipients = campaign.id === 'abandoned' ? abandonedEmails
+      : campaign.id === 'newsletter' ? marketingCustomers.map((c) => c.email)
+      : campaign.id === 'welcome' ? newCustomers.map((c) => c.email)
+      : winbackCustomers.map((c) => c.email);
+    if (recipients.length === 0) return;
+    setSending(campaign.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: {
+          tenant_id: store.id,
+          to: recipients,
+          subject: campaign.subject,
+          html: campaign.html,
+          from_name: store.name,
+          campaign_id: campaign.id,
+        },
+      });
+      if (error) throw new Error(await functionErrorMessage(error));
+      if (data?.error) throw new Error(data.error);
+      showNotice(`E-mail envoyé à ${recipients.length} destinataire(s).`);
+    } catch (e) {
+      showNotice(e.message || "Échec de l'envoi");
+    } finally { setSending(null); }
+  };
 
   if (storeLoading || loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
   if (!store) {
@@ -60,10 +109,10 @@ export default function Marketing() {
   }
 
   const campaigns = [
-    { id: 'abandoned', icon: ShoppingCart, title: 'Récupération de paniers abandonnés', desc: 'Relancez les clients qui n\u2019ont pas finalisé leur commande.', stat: `${carts.length} panier(s) · ${formatMoney(abandonedValue, store.currency)}`, color: '#E67E22' },
-    { id: 'newsletter', icon: Mail, title: 'Newsletter produits', desc: `Envoyez un e-mail à vos ${marketingCustomers.length} client(s) contactable(s).`, stat: `${marketingCustomers.length} contact(s)`, color: '#008060' },
-    { id: 'welcome', icon: Users, title: 'E-mail de bienvenue', desc: 'Souhaitez la bienvenue aux nouveaux clients et offrez un code promo.', stat: `${customers.length} client(s) au total`, color: '#8B5CF6', soon: true },
-    { id: 'winback', icon: TrendingUp, title: 'Réactivation clients', desc: 'Réengagez les clients qui n\u2019ont pas commandé depuis 60+ jours.', stat: 'Automatisation IA', color: '#0EA5E9', soon: true },
+    { id: 'abandoned', icon: ShoppingCart, title: 'Récupération de paniers abandonnés', desc: 'Relancez les clients qui n\u2019ont pas finalisé leur commande.', stat: `${carts.length} panier(s) · ${formatMoney(abandonedValue, store.currency)}`, color: '#E67E22', count: abandonedEmails.length, subject: `Vous avez oublié quelque chose chez ${store.name}`, html: `<p>Bonjour,</p><p>Vous avez laissé des articles dans votre panier chez <strong>${store.name}</strong>. Ils vous attendent toujours !</p><p><a href="https://sellia.liafrik.com/store/${store.slug}/cart">Finaliser ma commande</a></p>` },
+    { id: 'newsletter', icon: Mail, title: 'Newsletter produits', desc: `Envoyez un e-mail à vos ${marketingCustomers.length} client(s) contactable(s).`, stat: `${marketingCustomers.length} contact(s)`, color: '#008060', count: marketingCustomers.length, subject: `Nouveautés chez ${store.name}`, html: `<p>Bonjour,</p><p>Découvrez nos derniers produits chez <strong>${store.name}</strong> !</p><p><a href="https://sellia.liafrik.com/store/${store.slug}">Visiter la boutique</a></p>` },
+    { id: 'welcome', icon: Users, title: 'E-mail de bienvenue', desc: 'Souhaitez la bienvenue aux clients inscrits ces 7 derniers jours.', stat: `${newCustomers.length} nouveau(x) client(s)`, color: '#8B5CF6', count: newCustomers.length, subject: `Bienvenue chez ${store.name} !`, html: `<p>Bonjour,</p><p>Merci de nous avoir rejoint ! Nous sommes ravis de vous compter parmi nos clients.</p><p><a href="https://sellia.liafrik.com/store/${store.slug}">Découvrir la boutique</a></p>` },
+    { id: 'winback', icon: TrendingUp, title: 'Réactivation clients', desc: 'Réengagez les clients qui n\u2019ont pas commandé depuis 60+ jours.', stat: `${winbackCustomers.length} client(s) inactif(s)`, color: '#0EA5E9', count: winbackCustomers.length, subject: `On vous a manqué chez ${store.name}`, html: `<p>Bonjour,</p><p>Ça fait un moment ! Revenez découvrir nos nouveautés chez <strong>${store.name}</strong>.</p><p><a href="https://sellia.liafrik.com/store/${store.slug}">Revenir sur la boutique</a></p>` },
   ];
 
   return (
@@ -76,9 +125,9 @@ export default function Marketing() {
         </div>
       </div>
 
-      <div className="mb-4 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-xs text-amber-800">Les données ci-dessous (paniers, clients, panier moyen) sont réelles. L'envoi effectif d'e-mails n'est pas encore branché à un service d'envoi sur cette plateforme.</p>
+      <div className="mb-4 flex items-start gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+        <AlertTriangle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+        <p className="text-xs text-blue-800">Envoi réel activé (Resend). Si un envoi échoue en indiquant que ce n'est pas configuré, contactez le support — la clé d'envoi de la plateforme doit être ajoutée côté serveur.</p>
       </div>
 
       {notice && (
@@ -109,17 +158,13 @@ export default function Marketing() {
               </div>
             </div>
             <div className="mt-4 flex justify-end">
-              {c.soon ? (
-                <span className="text-xs font-medium text-[#6D7175] bg-[#F4F4F4] px-3 py-1.5 rounded-full">Bientôt</span>
-              ) : (
-                <button
-                  onClick={() => showNotice("L'envoi d'e-mails n'est pas encore configuré sur cette plateforme. Contactez vos clients par un autre moyen pour l'instant.")}
-                  disabled={c.id === 'abandoned' ? !carts.length : !marketingCustomers.length}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-1.5 rounded-full hover:bg-[#00694d] disabled:opacity-40"
-                >
-                  <Send className="w-3.5 h-3.5" /> Envoyer
-                </button>
-              )}
+              <button
+                onClick={() => sendCampaign(c)}
+                disabled={!c.count || sending === c.id}
+                className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-1.5 rounded-full hover:bg-[#00694d] disabled:opacity-40"
+              >
+                {sending === c.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />} Envoyer
+              </button>
             </div>
           </div>
         ))}

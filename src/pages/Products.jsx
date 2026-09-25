@@ -5,8 +5,9 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import ProductForm from '@/components/admin/ProductForm';
 import { formatMoney } from '@/lib/world/currencies';
 import { getFeatureValue } from '@/lib/plans';
+import Papa from 'papaparse';
 import {
-  Plus, Search, Loader2, Package, Pencil, Trash2, ArrowLeft, AlertCircle,
+  Plus, Search, Loader2, Package, Pencil, Trash2, ArrowLeft, AlertCircle, Upload,
 } from 'lucide-react';
 
 const STATUS_STYLE = {
@@ -69,6 +70,72 @@ export default function Products() {
   });
 
   const openNew = () => { setEditing(null); setFormOpen(true); };
+  const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState({ done: 0, total: 0 });
+  const [importResult, setImportResult] = useState(null);
+
+  // Real CSV import - the practical need for dropshippers importing a
+  // supplier's product catalog rather than re-typing each item one at a
+  // time. Expected headers (case-insensitive, extras ignored): name,
+  // price, description, cost_price, sku, stock, images (semicolon- or
+  // comma-separated URLs), supplier_name, supplier_url.
+  const importCsv = (file) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        const rows = results.data;
+        if (rows.length === 0) { setImportResult({ ok: 0, failed: 0, errors: ['Fichier vide ou illisible.'] }); return; }
+        const limit = productLimit;
+        const remaining = Number.isFinite(limit) ? Math.max(0, limit - products.length) : rows.length;
+        if (remaining < rows.length) {
+          setImportResult({ ok: 0, failed: rows.length, errors: [`Limite de plan atteinte : ${remaining} produit(s) seulement peuvent être ajoutés.`] });
+          return;
+        }
+        setImporting(true);
+        setImportProgress({ done: 0, total: rows.length });
+        let ok = 0; const errors = [];
+        const findCol = (row, ...names) => {
+          const key = Object.keys(row).find((k) => names.includes(k.trim().toLowerCase()));
+          return key ? row[key] : undefined;
+        };
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const name = findCol(row, 'name', 'title', 'nom')?.trim();
+          const priceRaw = findCol(row, 'price', 'prix');
+          if (!name || !priceRaw) { errors.push(`Ligne ${i + 2} : nom ou prix manquant`); setImportProgress({ done: i + 1, total: rows.length }); continue; }
+          const imagesRaw = findCol(row, 'images', 'image') || '';
+          const costRaw = findCol(row, 'cost_price', 'prix_coutant', 'cost');
+          try {
+            const { error } = await supabase.from('products').insert({
+              tenant_id: store.id,
+              name,
+              description: findCol(row, 'description') || '',
+              price_cents: Math.round(parseFloat(priceRaw) * 100) || 0,
+              cost_price_cents: costRaw ? Math.round(parseFloat(costRaw) * 100) : null,
+              sku: findCol(row, 'sku') || '',
+              stock: parseInt(findCol(row, 'stock', 'quantity', 'quantite'), 10) || 0,
+              images: imagesRaw.split(/[;,]/).map((s) => s.trim()).filter(Boolean),
+              supplier_name: findCol(row, 'supplier_name', 'fournisseur') || null,
+              supplier_url: findCol(row, 'supplier_url', 'lien_fournisseur') || null,
+              status: 'draft',
+              currency: store.currency,
+            });
+            if (error) throw error;
+            ok++;
+          } catch (e) {
+            errors.push(`Ligne ${i + 2} (${name}) : ${e.message}`);
+          }
+          setImportProgress({ done: i + 1, total: rows.length });
+        }
+        setImporting(false);
+        setImportResult({ ok, failed: errors.length, errors });
+        if (ok > 0) load();
+      },
+      error: (err) => setImportResult({ ok: 0, failed: 1, errors: [err.message] }),
+    });
+  };
+
   const openEdit = (p) => { setEditing(p); setFormOpen(true); };
   const remove = async (p) => {
     if (!confirm(`Supprimer « ${p.title} » ?`)) return;
@@ -105,10 +172,22 @@ export default function Products() {
             </p>
           </div>
         </div>
-        <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-[#00694d] shrink-0">
-          <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Ajouter</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <label className="flex items-center gap-1.5 bg-white border border-[#E1E1E1] text-[#202223] text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-black/5 cursor-pointer">
+            {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} <span className="hidden sm:inline">{importing ? `Import… ${importProgress.done}/${importProgress.total}` : 'Importer (CSV)'}</span>
+            <input type="file" accept=".csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) importCsv(f); e.target.value = ''; }} disabled={importing} />
+          </label>
+          <button onClick={openNew} className="flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-3 sm:px-4 py-2 rounded-md hover:bg-[#00694d]">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Ajouter</span>
+          </button>
+        </div>
       </div>
+      {importResult && (
+        <div className={`px-4 sm:px-6 py-2.5 text-xs border-b ${importResult.failed > 0 ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-[#008060]/5 border-[#008060]/20 text-[#008060]'}`}>
+          {importResult.ok} produit(s) importé(s){importResult.failed > 0 ? `, ${importResult.failed} échec(s)` : ''}.
+          {importResult.errors?.length > 0 && <span> {importResult.errors.slice(0, 2).join(' · ')}</span>}
+        </div>
+      )}
 
       <div className="px-4 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row gap-2 mb-4">

@@ -66,12 +66,25 @@
     "logout": "Se déconnecter"
   },
   "dashboard": {
+    "welcome": "Bienvenue sur Sellia",
     "title": "Tableau de bord",
-    "welcome": "Bienvenue",
+    "revenue": "Revenu encaissé",
+    "orders": "Commandes",
+    "pending": "En attente",
+    "customers": "Clients",
+    "orders_hint": "total",
+    "pending_hint": "à traiter",
+    "customers_hint": "enregistrés",
+    "recent_sales": "Ventes récentes",
     "shortcuts": "Raccourcis",
-    "revenue_today": "Revenu aujourd'hui",
-    "orders_today": "Commandes aujourd'hui",
+    "recent_orders": "Commandes récentes",
     "pending_orders": "Commandes en attente",
-    "total_customers": "Clients au total"
+    "add_products": "Ajoutez vos produits",
+    "shortcut_products": "Produits",
+    "shortcut_orders": "Commandes",
+    "shortcut_customers": "Clients",
+    "shortcut_discounts": "Réductions",
+    "shortcut_inventory": "Inventaire",
+    "shortcut_theme": "Thème"
   }
 }

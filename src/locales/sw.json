@@ -66,12 +66,25 @@
     "logout": "Toka"
   },
   "dashboard": {
+    "welcome": "Karibu Sellia",
     "title": "Dashibodi",
-    "welcome": "Karibu",
+    "revenue": "Mapato yaliyopokelewa",
+    "orders": "Maagizo",
+    "pending": "Yanayosubiri",
+    "customers": "Wateja",
+    "orders_hint": "jumla",
+    "pending_hint": "kushughulikiwa",
+    "customers_hint": "waliosajiliwa",
+    "recent_sales": "Mauzo ya hivi karibuni",
     "shortcuts": "Njia za mkato",
-    "revenue_today": "Mapato ya leo",
-    "orders_today": "Maagizo ya leo",
+    "recent_orders": "Maagizo ya hivi karibuni",
     "pending_orders": "Maagizo yanayosubiri",
-    "total_customers": "Jumla ya wateja"
+    "add_products": "Ongeza bidhaa zako",
+    "shortcut_products": "Bidhaa",
+    "shortcut_orders": "Maagizo",
+    "shortcut_customers": "Wateja",
+    "shortcut_discounts": "Punguzo",
+    "shortcut_inventory": "Hesabu ya bidhaa",
+    "shortcut_theme": "Mandhari"
   }
 }

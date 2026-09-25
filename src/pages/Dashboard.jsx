@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney } from '@/lib/world/currencies';
@@ -27,12 +28,12 @@ const STATUS_LABEL = {
 };
 
 const SHORTCUTS = [
-  { to: '/products', label: 'Produits', icon: Package },
-  { to: '/orders', label: 'Commandes', icon: ShoppingBag },
-  { to: '/customers', label: 'Clients', icon: Users },
-  { to: '/discounts', label: 'Réductions', icon: Tag },
-  { to: '/inventory', label: 'Inventaire', icon: Boxes },
-  { to: '/theme-editor', label: 'Thème', icon: Palette },
+  { to: '/products', labelKey: 'dashboard.shortcut_products', icon: Package },
+  { to: '/orders', labelKey: 'dashboard.shortcut_orders', icon: ShoppingBag },
+  { to: '/customers', labelKey: 'dashboard.shortcut_customers', icon: Users },
+  { to: '/discounts', labelKey: 'dashboard.shortcut_discounts', icon: Tag },
+  { to: '/inventory', labelKey: 'dashboard.shortcut_inventory', icon: Boxes },
+  { to: '/theme-editor', labelKey: 'dashboard.shortcut_theme', icon: Palette },
 ];
 const timeAgo = (d) => {
   if (!d) return '';
@@ -44,6 +45,7 @@ const timeAgo = (d) => {
 };
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { store, loading: storeLoading } = useCurrentStore();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -112,7 +114,7 @@ export default function Dashboard() {
     return (
       <div className="max-w-md mx-auto mt-20 text-center">
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
-        <h1 className="text-lg font-bold text-[#202223]">Bienvenue sur Sellia</h1>
+        <h1 className="text-lg font-bold text-[#202223]">{t('dashboard.welcome')}</h1>
         <p className="text-sm text-[#6D7175] mt-1 mb-4">Configurez votre boutique en quelques étapes simples.</p>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d]">Commencer la configuration</Link>
       </div>
@@ -124,7 +126,7 @@ export default function Dashboard() {
       <div className="flex items-center gap-2 mb-6">
         <Tag className="w-5 h-5 text-[#6D7175]" />
         <div>
-          <h1 className="text-xl font-bold text-[#202223]">Tableau de bord</h1>
+          <h1 className="text-xl font-bold text-[#202223]">{t('dashboard.title')}</h1>
           <p className="text-xs text-[#6D7175]">{store.name}</p>
         </div>
       </div>
@@ -132,15 +134,15 @@ export default function Dashboard() {
       <PlatformNews />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Wallet} label="Revenu encaissé" value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orders} commande(s)`} />
-        <StatCard icon={ShoppingBag} label="Commandes" value={String(stats.orders)} hint="total" />
-        <StatCard icon={Clock} label="En attente" value={String(stats.pending)} hint="à traiter" />
-        <StatCard icon={Users} label="Clients" value={String(stats.customers)} hint="enregistrés" />
+        <StatCard icon={Wallet} label={t('dashboard.revenue')} value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orders} commande(s)`} />
+        <StatCard icon={ShoppingBag} label={t('dashboard.orders')} value={String(stats.orders)} hint={t('dashboard.orders_hint')} />
+        <StatCard icon={Clock} label={t('dashboard.pending')} value={String(stats.pending)} hint={t('dashboard.pending_hint')} />
+        <StatCard icon={Users} label={t('dashboard.customers')} value={String(stats.customers)} hint={t('dashboard.customers_hint')} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-lg border border-[#E1E1E1] p-5 lg:col-span-2">
-          <h2 className="text-sm font-semibold text-[#202223] mb-1">Ventes récentes</h2>
+          <h2 className="text-sm font-semibold text-[#202223] mb-1">{t('dashboard.recent_sales')}</h2>
           <p className="text-xs text-[#6D7175] mb-4">7 derniers jours</p>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={salesByDay} margin={{ left: -20, right: 8, top: 4 }}>
@@ -160,12 +162,12 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white rounded-lg border border-[#E1E1E1] p-5">
-          <h2 className="text-sm font-semibold text-[#202223] mb-4">Raccourcis</h2>
+          <h2 className="text-sm font-semibold text-[#202223] mb-4">{t('dashboard.shortcuts')}</h2>
           <div className="grid grid-cols-3 gap-2">
             {SHORTCUTS.map((s) => (
               <Link key={s.to} to={s.to} className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-[#E1E1E1] py-3 hover:border-[#008060]/40 hover:bg-[#008060]/5 transition-colors">
                 <s.icon className="w-5 h-5 text-[#008060]" />
-                <span className="text-[11px] font-medium text-[#202223]">{s.label}</span>
+                <span className="text-[11px] font-medium text-[#202223]">{t(s.labelKey)}</span>
               </Link>
             ))}
           </div>
@@ -175,7 +177,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white rounded-lg border border-[#E1E1E1] p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-[#202223]">Commandes récentes</h2>
+            <h2 className="text-sm font-semibold text-[#202223]">{t('dashboard.recent_orders')}</h2>
             <Link to="/orders" className="text-xs font-semibold text-[#008060] hover:underline">Tout voir</Link>
           </div>
           {recent.length === 0 ? (
@@ -200,7 +202,7 @@ export default function Dashboard() {
 
         <div className="bg-white rounded-lg border border-[#E1E1E1] p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-[#202223]">Commandes en attente</h2>
+            <h2 className="text-sm font-semibold text-[#202223]">{t('dashboard.pending_orders')}</h2>
             <Link to="/orders" className="text-xs font-semibold text-[#008060] hover:underline">Traiter</Link>
           </div>
           {pendingList.length === 0 ? (
@@ -231,7 +233,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-lg bg-[#008060]/10 flex items-center justify-center"><Boxes className="w-5 h-5 text-[#008060]" /></div>
           <div>
-            <h2 className="text-base font-semibold text-[#202223]">Ajoutez vos produits</h2>
+            <h2 className="text-base font-semibold text-[#202223]">{t('dashboard.add_products')}</h2>
             <p className="text-sm text-[#6D7175] mt-0.5 max-w-md">Remplissez votre boutique. Ajoutez vos premiers articles pour commencer à vendre.</p>
           </div>
         </div>

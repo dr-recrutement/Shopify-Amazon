@@ -66,12 +66,25 @@
     "logout": "تسجيل الخروج"
   },
   "dashboard": {
+    "welcome": "مرحباً بك في Sellia",
     "title": "لوحة التحكم",
-    "welcome": "مرحباً",
+    "revenue": "الإيرادات المحصلة",
+    "orders": "الطلبات",
+    "pending": "قيد الانتظار",
+    "customers": "العملاء",
+    "orders_hint": "الإجمالي",
+    "pending_hint": "بحاجة للمعالجة",
+    "customers_hint": "مسجل",
+    "recent_sales": "المبيعات الأخيرة",
     "shortcuts": "اختصارات",
-    "revenue_today": "إيرادات اليوم",
-    "orders_today": "طلبات اليوم",
+    "recent_orders": "الطلبات الأخيرة",
     "pending_orders": "طلبات قيد الانتظار",
-    "total_customers": "إجمالي العملاء"
+    "add_products": "أضف منتجاتك",
+    "shortcut_products": "المنتجات",
+    "shortcut_orders": "الطلبات",
+    "shortcut_customers": "العملاء",
+    "shortcut_discounts": "التخفيضات",
+    "shortcut_inventory": "المخزون",
+    "shortcut_theme": "القالب"
   }
 }

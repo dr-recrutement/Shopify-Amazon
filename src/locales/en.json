@@ -66,12 +66,25 @@
     "logout": "Log out"
   },
   "dashboard": {
+    "welcome": "Welcome to Sellia",
     "title": "Dashboard",
-    "welcome": "Welcome",
+    "revenue": "Revenue collected",
+    "orders": "Orders",
+    "pending": "Pending",
+    "customers": "Customers",
+    "orders_hint": "total",
+    "pending_hint": "to process",
+    "customers_hint": "registered",
+    "recent_sales": "Recent sales",
     "shortcuts": "Shortcuts",
-    "revenue_today": "Revenue today",
-    "orders_today": "Orders today",
+    "recent_orders": "Recent orders",
     "pending_orders": "Pending orders",
-    "total_customers": "Total customers"
+    "add_products": "Add your products",
+    "shortcut_products": "Products",
+    "shortcut_orders": "Orders",
+    "shortcut_customers": "Customers",
+    "shortcut_discounts": "Discounts",
+    "shortcut_inventory": "Inventory",
+    "shortcut_theme": "Theme"
   }
 }

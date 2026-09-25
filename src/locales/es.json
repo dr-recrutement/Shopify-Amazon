@@ -66,12 +66,25 @@
     "logout": "Cerrar sesión"
   },
   "dashboard": {
+    "welcome": "Bienvenido a Sellia",
     "title": "Panel",
-    "welcome": "Bienvenido",
+    "revenue": "Ingresos cobrados",
+    "orders": "Pedidos",
+    "pending": "Pendiente",
+    "customers": "Clientes",
+    "orders_hint": "total",
+    "pending_hint": "por procesar",
+    "customers_hint": "registrados",
+    "recent_sales": "Ventas recientes",
     "shortcuts": "Accesos directos",
-    "revenue_today": "Ingresos de hoy",
-    "orders_today": "Pedidos de hoy",
+    "recent_orders": "Pedidos recientes",
     "pending_orders": "Pedidos pendientes",
-    "total_customers": "Total de clientes"
+    "add_products": "Añade tus productos",
+    "shortcut_products": "Productos",
+    "shortcut_orders": "Pedidos",
+    "shortcut_customers": "Clientes",
+    "shortcut_discounts": "Descuentos",
+    "shortcut_inventory": "Inventario",
+    "shortcut_theme": "Tema"
   }
 }

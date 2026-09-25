@@ -66,12 +66,25 @@
     "logout": "Genn"
   },
   "dashboard": {
+    "welcome": "Dalal ak jàmm ci Sellia",
     "title": "Tablo",
-    "welcome": "Dalal ak jàmm",
+    "revenue": "Xaalis bi am nañu",
+    "orders": "Komandu yi",
+    "pending": "Di xaar",
+    "customers": "Kiliyaan yi",
+    "orders_hint": "lépp",
+    "pending_hint": "war a def",
+    "customers_hint": "bind nañu",
+    "recent_sales": "Jaay yu mujj",
     "shortcuts": "Yoon yu gaaw",
-    "revenue_today": "Xaalis bi tey",
-    "orders_today": "Komandu bi tey",
+    "recent_orders": "Komandu yu mujj",
     "pending_orders": "Komandu yu ngi xaar",
-    "total_customers": "Kiliyaan yi lépp"
+    "add_products": "Yokk jumtukaay yi",
+    "shortcut_products": "Jumtukaay yi",
+    "shortcut_orders": "Komandu yi",
+    "shortcut_customers": "Kiliyaan yi",
+    "shortcut_discounts": "Wanteef",
+    "shortcut_inventory": "Njëg jumtukaay",
+    "shortcut_theme": "Nataal bitig"
   }
 }

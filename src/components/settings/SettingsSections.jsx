@@ -7,6 +7,16 @@ import { CURRENCIES } from '@/lib/world/currencies';
 import { getFeatureValue } from '@/lib/plans';
 import PlatformPaymentPicker from '@/components/PlatformPaymentPicker';
 
+// Real message from the function's own JSON error body - same pattern
+// used everywhere an edge function is called this session.
+async function functionErrorMessage(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch { /* fall through to the generic message below */ }
+  return error.message || 'Erreur inconnue';
+}
+
 const fld = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#008060]/30';
 const lbl = 'text-xs font-semibold text-[#6D7175] mb-1 block';
 const card = 'bg-white rounded-xl border border-[#E1E1E1] p-5';
@@ -167,6 +177,76 @@ export function SettingsTaxes() {
 
 export function SettingsLocations() { return <div className={card}><h2 className={ttl}>Emplacements</h2><p className="text-sm text-[#6D7175] mb-4">Gérez vos entrepôts et points de vente.</p><Link to="/inventory" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Voir l'inventaire →</Link></div>; }
 export function SettingsApps() { return <div className={card}><h2 className={ttl}>Applications</h2><p className="text-sm text-[#6D7175] mb-4">Installez des applications pour étendre votre boutique.</p><Link to="/apps" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Parcourir les apps →</Link></div>; }
+
+export function SettingsEmail() {
+  const { store } = useCurrentStore();
+  const [apiKey, setApiKey] = useState('');
+  const [fromEmail, setFromEmail] = useState('');
+  const [connected, setConnected] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!store?.id) return;
+    supabase.from('tenant_email_providers').select('from_email').eq('tenant_id', store.id).eq('provider', 'resend').maybeSingle()
+      .then(({ data }) => { setConnected(!!data); if (data?.from_email) setFromEmail(data.from_email); });
+  }, [store?.id]);
+
+  const save = async () => {
+    if (!apiKey.trim() || !store?.id) return;
+    setSaving(true);
+    try {
+      const { data: enc, error: encError } = await supabase.functions.invoke('encrypt-gateway-credentials', { body: { api_key: apiKey.trim() } });
+      if (encError) throw new Error(await functionErrorMessage(encError));
+      if (enc.error) throw new Error(enc.error);
+      const { error } = await supabase.from('tenant_email_providers').upsert(
+        { tenant_id: store.id, provider: 'resend', api_key_encrypted: enc.api_key_encrypted, from_email: fromEmail.trim() || null },
+        { onConflict: 'tenant_id,provider' }
+      );
+      if (error) throw error;
+      setConnected(true);
+      setApiKey('');
+    } catch (e) {
+      alert(e.message || "Échec de la connexion");
+    } finally { setSaving(false); }
+  };
+
+  const disconnect = async () => {
+    if (!store?.id || !confirm('Déconnecter votre compte Resend ? Les envois utiliseront à nouveau la clé partagée de Sellia.')) return;
+    const { error } = await supabase.from('tenant_email_providers').delete().eq('tenant_id', store.id).eq('provider', 'resend');
+    if (error) { alert(error.message); return; }
+    setConnected(false);
+  };
+
+  if (!store) return null;
+  return (
+    <div className={card}>
+      <h2 className={ttl}>E-mail (envoi)</h2>
+      <p className="text-sm text-[#6D7175] mb-4">Sellia envoie vos campagnes et notifications avec une clé partagée par défaut. Connectez votre propre compte Resend pour envoyer depuis votre propre domaine et votre propre réputation d'envoi.</p>
+      {connected ? (
+        <div className="rounded-lg bg-[#008060]/5 border border-[#008060]/20 p-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-[#202223]">Compte Resend connecté</p>
+            {fromEmail && <p className="text-xs text-[#6D7175] mt-0.5">Envoi depuis {fromEmail}</p>}
+          </div>
+          <button onClick={disconnect} className="text-xs font-semibold text-red-600 hover:underline">Déconnecter</button>
+        </div>
+      ) : (
+        <div className="space-y-3 max-w-md">
+          <div>
+            <label className="block text-xs font-semibold text-[#6D7175] mb-1">Clé API Resend</label>
+            <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="re_xxxxxxxxxxxx" className={fld} />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#6D7175] mb-1">Adresse d'envoi (optionnel)</label>
+            <input value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} placeholder="contact@votredomaine.com" className={fld} />
+            <p className="text-[10px] text-[#6D7175] mt-1">Nécessite un domaine vérifié dans votre compte Resend. Laisser vide pour utiliser l'adresse Resend par défaut.</p>
+          </div>
+          <button onClick={save} disabled={saving || !apiKey.trim()} className="text-sm font-semibold text-white bg-[#008060] px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{saving ? 'Connexion…' : 'Connecter'}</button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function SettingsSalesChannels() {
   return <div className={card}>

@@ -14,14 +14,16 @@ import {
 const MONTH_LABELS = ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Ao\u00fb', 'Sep', 'Oct', 'Nov', 'D\u00e9c'];
 const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
 
-// No cost-of-goods, tax, or discount-amount columns exist on orders/
-// products here (only shipping_cost_cents does), and no payments/payouts
-// table exists - this shows real revenue and shipping, and says plainly
-// where the rest (margin, tax breakdown, payouts) isn't tracked yet,
-// rather than fabricating numbers for columns that don't exist.
+// No tax breakdown or payouts table exists here - this shows real
+// revenue, shipping, and (now that products carry cost_price_cents) real
+// gross profit, and says plainly where the rest (tax breakdown, payouts)
+// isn't tracked yet, rather than fabricating numbers for columns that
+// don't exist.
 export default function Accounting() {
   const { store, loading: storeLoading } = useCurrentStore();
   const [orders, setOrders] = useState([]);
+  const [orderItems, setOrderItems] = useState([]);
+  const [costByProduct, setCostByProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [period, setPeriod] = useState(6);
 
@@ -31,6 +33,16 @@ export default function Accounting() {
     try {
       const { data } = await supabase.from('orders').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(1000);
       setOrders(data || []);
+      const orderIds = (data || []).map((o) => o.id);
+      if (orderIds.length > 0) {
+        const { data: items } = await supabase.from('order_items').select('order_id, product_id, quantity, price_cents').in('order_id', orderIds);
+        setOrderItems(items || []);
+        const productIds = [...new Set((items || []).map((i) => i.product_id).filter(Boolean))];
+        if (productIds.length > 0) {
+          const { data: products } = await supabase.from('products').select('id, cost_price_cents').in('id', productIds);
+          setCostByProduct(Object.fromEntries((products || []).map((p) => [p.id, p.cost_price_cents || 0])));
+        } else { setCostByProduct({}); }
+      } else { setOrderItems([]); setCostByProduct({}); }
     } finally { setLoading(false); }
   }, [store?.id]);
 
@@ -38,12 +50,21 @@ export default function Accounting() {
 
   const stats = useMemo(() => {
     const paid = orders.filter((o) => !NOT_PAID.has(o.status));
+    const paidIds = new Set(paid.map((o) => o.id));
     const revenue = paid.reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
     const shipping = paid.reduce((s, o) => s + (o.shipping_cost_cents || 0) / 100, 0);
     const netRevenue = revenue - shipping;
     const refunds = orders.filter((o) => o.status === 'refunded').reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
-    return { revenue, shipping, netRevenue, refunds, orderCount: paid.length };
-  }, [orders]);
+    // Real gross profit: revenue minus cost of goods sold (only counted
+    // for items whose product still has a cost price set - items with no
+    // known cost simply don't reduce the figure, rather than guessing).
+    const cogs = orderItems
+      .filter((i) => paidIds.has(i.order_id))
+      .reduce((s, i) => s + ((costByProduct[i.product_id] || 0) * (i.quantity || 0)) / 100, 0);
+    const grossProfit = netRevenue - cogs;
+    const hasCostData = Object.values(costByProduct).some((c) => c > 0);
+    return { revenue, shipping, netRevenue, refunds, orderCount: paid.length, cogs, grossProfit, hasCostData };
+  }, [orders, orderItems, costByProduct]);
 
   const monthly = useMemo(() => {
     const now = new Date();
@@ -116,13 +137,14 @@ export default function Accounting() {
 
       <div className="flex items-center gap-2 mb-5 p-3 rounded-xl bg-[#008060]/5 border border-[#008060]/20">
         <AlertCircle className="w-4 h-4 text-[#008060] shrink-0" />
-        <p className="text-xs text-[#202223]">Revenu et livraison sont r\u00e9els. Le co\u00fbt des marchandises, les taxes d\u00e9taill\u00e9es et les payouts ne sont pas encore suivis sur cette plateforme.</p>
+        <p className="text-xs text-[#202223]">{stats.hasCostData ? 'Revenu, livraison et b\u00e9n\u00e9fice brut (\u00e0 partir du prix co\u00fbtant renseign\u00e9 sur vos produits) sont r\u00e9els.' : 'Revenu et livraison sont r\u00e9els. Renseignez le \u00ab\u00a0Prix co\u00fbtant\u00a0\u00bb sur vos produits pour voir votre b\u00e9n\u00e9fice brut r\u00e9el ici.'} Les taxes d\u00e9taill\u00e9es et les payouts ne sont pas encore suivis sur cette plateforme.</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={Wallet} label="Chiffre d\u2019affaires" value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orderCount} commandes pay\u00e9es`} color="#008060" />
         <StatCard icon={Truck} label="Frais de livraison" value={formatMoney(stats.shipping, store.currency)} hint="collect\u00e9s" color="#0EA5E9" />
         <StatCard icon={TrendingUp} label="Revenu net" value={formatMoney(stats.netRevenue, store.currency)} hint="hors livraison" color="#8B5CF6" />
+        <StatCard icon={Calculator} label="B\u00e9n\u00e9fice brut" value={stats.hasCostData ? formatMoney(stats.grossProfit, store.currency) : '\u2014'} hint={stats.hasCostData ? `co\u00fbt marchandises\u00a0: ${formatMoney(stats.cogs, store.currency)}` : 'prix co\u00fbtant manquant'} color="#E67E22" />
       </div>
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">

@@ -54,19 +54,11 @@ const INTEGRATIONS = [
   { id: 'klaviyo', name: 'Klaviyo', category: 'E-mail', region: 'Mondial', color: '#000000', accent: '#FF6900', desc: 'E-mail & SMS marketing', type: 'marketing' },
   { id: 'mailchimp', name: 'Mailchimp', category: 'E-mail', region: 'Mondial', logo: `${LOGO_BASE}/49772f9ca_images11.png`, desc: 'E-mail marketing & automations', type: 'marketing' },
   { id: 'tiktok-ads', name: 'TikTok Ads', category: 'Publicité', region: 'Mondial', logo: '/app-logos/tiktok.png', desc: 'Publicités TikTok Shop', type: 'marketing' },
-  { id: 'google-analytics', name: 'Google Analytics', category: 'Analyse', region: 'Mondial', logo: '/app-logos/google-analytics.webp', desc: 'Suivi de trafic et de conversions', type: 'marketing' },
-  { id: 'zapier', name: 'Zapier', category: 'Productivité', region: 'Mondial', logo: '/app-logos/zapier.png', desc: 'Connectez Sellia à 6000+ applications', type: 'app' },
 
-  // Messaging & social channels (real logos)
-  { id: 'whatsapp', name: 'WhatsApp Business', category: 'Canaux', region: 'Mondial', logo: '/app-logos/whatsapp.png', desc: 'Commandes et support par WhatsApp', type: 'app' },
-  { id: 'instagram', name: 'Instagram Shopping', category: 'Canaux', region: 'Mondial', logo: '/app-logos/instagram.png', desc: 'Vendez directement sur Instagram', type: 'app' },
-  { id: 'facebook', name: 'Facebook Shop', category: 'Canaux', region: 'Mondial', logo: '/app-logos/facebook.webp', desc: 'Catalogue produits sur Facebook', type: 'app' },
-  { id: 'telegram', name: 'Telegram', category: 'Canaux', region: 'Mondial', logo: '/app-logos/telegram.jpg', desc: 'Notifications et support via Telegram', type: 'app' },
-
-  // Email (real logos)
-  { id: 'gmail', name: 'Gmail', category: 'E-mail', region: 'Mondial', logo: '/app-logos/gmail.webp', desc: 'Envoi de notifications via Gmail', type: 'marketing' },
-  { id: 'outlook', name: 'Outlook', category: 'E-mail', region: 'Mondial', logo: '/app-logos/outlook.png', desc: 'Envoi de notifications via Outlook', type: 'marketing' },
-  { id: 'smtp', name: 'SMTP personnalisé', category: 'E-mail', region: 'Mondial', logo: '/app-logos/smtp.jpg', desc: 'Connectez votre propre serveur SMTP', type: 'marketing' },
+  // Messaging channel (real, functional: configured in Paramètres →
+  // Boutique, adds a real floating chat button on the storefront - not
+  // just a card that links to a generic settings page)
+  { id: 'whatsapp', name: 'WhatsApp Business', category: 'Canaux', region: 'Mondial', logo: '/app-logos/whatsapp.png', desc: 'Bouton de chat WhatsApp sur votre boutique', type: 'whatsapp' },
 ];
 
 function LogoBadge({ app }) {
@@ -147,7 +139,7 @@ export default function Apps() {
                   </div>
                 </div>
                 <p className="text-xs text-[#6D7175] leading-relaxed mb-3">{app.desc}</p>
-                <button onClick={() => navigate(app.type === 'payment' ? '/payments' : app.type === 'shipping' ? '/shipping-settings' : app.type === 'marketing' ? '/marketing' : '/settings')} className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-2 rounded-full hover:bg-[#00694d]">
+                <button onClick={() => navigate(app.type === 'payment' ? '/payments' : app.type === 'shipping' ? '/shipping-settings' : app.type === 'marketing' ? '/marketing' : app.type === 'whatsapp' ? '/theme-editor' : '/settings')} className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#008060] px-3 py-2 rounded-full hover:bg-[#00694d]">
                   <Plus className="w-3.5 h-3.5" /> Connecter
                 </button>
               </div>

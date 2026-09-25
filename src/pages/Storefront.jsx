@@ -335,6 +335,18 @@ export default function Storefront() {
         {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
       </button>
 
+      {theme.whatsappNumber && (
+        <a
+          href={`https://wa.me/${theme.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Bonjour, j'ai une question sur ${store.name}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`fixed bottom-5 z-40 bg-[#25D366] text-white rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2 ${theme.cartPosition === 'bottom-left' ? 'right-5' : 'left-5'}`}
+          aria-label="Discuter sur WhatsApp"
+        >
+          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 3.1 17l-1 3.9 4-1a9 9 0 0 0 4.3 1.1 8.9 8.9 0 0 0 8.9-8.9 8.8 8.8 0 0 0-2.6-6.3l-.1-.5zm-6.2 13.7a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.4.6.6-2.3-.2-.3a7.4 7.4 0 1 1 6.1 3.2zm4.1-5.5c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1l-.7.9c-.2.2-.3.2-.5.1a6 6 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.5c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4c-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5c-.1 0-.4.1-.6.3a2.7 2.7 0 0 0-.9 2 4.6 4.6 0 0 0 1 2.4 10.6 10.6 0 0 0 4.1 3.6c.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.3-.6 1.5-1.1.2-.5.2-1 .1-1.1l-.4-.2z" /></svg>
+        </a>
+      )}
+
       <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
 
       {/* Cart drawer — WooCommerce style */}

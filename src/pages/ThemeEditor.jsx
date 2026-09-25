@@ -401,7 +401,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onWhatsapp, onReset }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -489,6 +489,19 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
             </button>
           ))}
         </div>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Chat WhatsApp</p>
+        </div>
+        <input
+          value={theme.whatsappNumber || ''}
+          onChange={(e) => onWhatsapp(e.target.value)}
+          placeholder="+237 6XX XXX XXX"
+          className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#008060]/30"
+        />
+        <p className="text-[10px] text-[#6D7175] mt-1.5">Numéro avec indicatif pays. Ajoute un vrai bouton de chat flottant sur votre boutique. Laisser vide pour le masquer.</p>
       </div>
       <div>
         <div className="flex items-center gap-2 mb-3">
@@ -636,6 +649,7 @@ export default function ThemeEditor() {
   const onProductSuggestions = (patch) => commit({ ...theme, productSuggestions: { ...(theme.productSuggestions || {}), ...patch } });
   const onCardStyle = (v) => commit({ ...theme, productCardStyle: v });
   const onCartPosition = (v) => commit({ ...theme, cartPosition: v });
+  const onWhatsapp = (v) => commit({ ...theme, whatsappNumber: v });
   const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
@@ -771,7 +785,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onWhatsapp={onWhatsapp} onReset={onReset} />}
           </div>
         </div>
       </div>

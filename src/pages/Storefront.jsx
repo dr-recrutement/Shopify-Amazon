@@ -161,6 +161,7 @@ export default function Storefront() {
   const [couponCode, setCouponCode] = useState('');
   const [couponMsg, setCouponMsg] = useState(null);
   const [discount, setDiscount] = useState(null);
+  const [payunitReturn, setPayunitReturn] = useState(null); // null | 'checking' | { paid: bool, orderNumber }
 
   const loadStore = useCallback(async () => {
     if (!slug) return;
@@ -241,6 +242,34 @@ export default function Storefront() {
   }, [store?.id]);
 
   useEffect(() => { loadStore(); }, [loadStore]);
+
+  // Real return handling for Payunit's redirect-based checkout - the
+  // customer lands back here (not inside the now-unmounted checkout
+  // modal) after paying on Payunit's own hosted page, so verification and
+  // the confirmation experience live at this top level instead.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payunit_return') !== '1') return;
+    const orderId = params.get('order') || sessionStorage.getItem('sellia_payunit_pending_order');
+    if (!orderId) return;
+    setPayunitReturn('checking');
+    supabase.functions.invoke('payunit-checkout', { body: { action: 'verify', order_id: orderId } })
+      .then(async ({ data, error }) => {
+        if (error) throw new Error(await functionErrorMessage(error));
+        const paid = data?.status === 'paid';
+        if (paid) {
+          localStorage.removeItem(CART_KEY);
+          setCart(null);
+          setCartCount(0);
+        }
+        setPayunitReturn({ paid, orderNumber: '#' + orderId.slice(0, 8).toUpperCase() });
+        sessionStorage.removeItem('sellia_payunit_pending_order');
+      })
+      .catch((e) => setPayunitReturn({ paid: false, error: e.message }));
+    // Clean the query string so refreshing the page doesn't re-verify.
+    window.history.replaceState({}, '', window.location.pathname);
+  }, []);
+
   useEffect(() => { if (store) loadCart(); }, [store, loadCart]);
 
   const storeSections = useMemo(() => {
@@ -447,6 +476,33 @@ export default function Storefront() {
       )}
 
       <StorePopup theme={theme} store={store} />
+
+      {payunitReturn && (
+        <div className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-7 text-center">
+            {payunitReturn === 'checking' ? (
+              <>
+                <Loader2 className="w-8 h-8 animate-spin text-[#008060] mx-auto mb-3" />
+                <p className="text-sm font-semibold text-[#202223]">Vérification de votre paiement…</p>
+              </>
+            ) : payunitReturn.paid ? (
+              <>
+                <Check className="w-10 h-10 text-[#008060] mx-auto mb-3" />
+                <p className="text-base font-bold text-[#202223]">Paiement confirmé !</p>
+                <p className="text-xs text-[#6D7175] mt-1">Commande {payunitReturn.orderNumber}</p>
+                <button onClick={() => setPayunitReturn(null)} className="mt-5 w-full bg-[#008060] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#00694d]">Continuer</button>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
+                <p className="text-base font-bold text-[#202223]">Paiement non confirmé</p>
+                <p className="text-xs text-[#6D7175] mt-1">{payunitReturn.error || "Le paiement n'a pas pu être vérifié. Contactez le marchand si le montant a été débité."}</p>
+                <button onClick={() => setPayunitReturn(null)} className="mt-5 w-full bg-[#202223] text-white text-sm font-semibold py-2.5 rounded-full hover:opacity-90">Fermer</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <ErrorBoundary>
         <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
@@ -843,6 +899,19 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           onClose: () => {},
         });
         handler.openIframe();
+        return;
+      }
+
+      if (paymentMethod === 'payunit') {
+        const { data, error: initError } = await supabase.functions.invoke('payunit-checkout', { body: { action: 'initiate', order_id: order.id } });
+        if (initError) throw new Error(await functionErrorMessage(initError));
+        if (data.error) throw new Error(data.error);
+        // Payunit's own hosted page - a real redirect, not an inline
+        // popup like the other 3. Cart is intentionally left untouched
+        // (not cleared here) so the return handler below can still find
+        // the pending order after the round trip.
+        sessionStorage.setItem('sellia_payunit_pending_order', order.id);
+        window.location.href = data.transaction_url;
         return;
       }
 

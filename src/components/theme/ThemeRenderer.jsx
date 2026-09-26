@@ -526,6 +526,57 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
               </div>
             ));
 
+          case 'brandSpotlight':
+            return wrap(s, (
+              <div className="px-5 sm:px-10 py-12">
+                <div className="flex items-end justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title}</h2>
+                    {c.subtitle && <p className="text-sm mt-1 max-w-lg" style={{ color: p.muted }}>{c.subtitle}</p>}
+                  </div>
+                  {(() => {
+                    const { url } = normalizeLink({ url: c.url });
+                    const isAnchor = !url || url === '#' || url === '#products';
+                    const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                    return href
+                      ? <a href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className="hidden sm:inline-block text-xs font-semibold px-4 py-2 rounded-full border shrink-0" style={{ borderColor: p.border, color: p.text }}>{c.linkLabel || 'Voir tout'}</a>
+                      : null;
+                  })()}
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-6 items-stretch">
+                  <div className="rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto" style={{ background: p.surface }}>
+                    <Img src={c.image} className="w-full h-full" {...ip} path="image" />
+                  </div>
+                  <div className="overflow-x-auto -mx-1 px-1">
+                    <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
+                      {(c.products || []).map((pr, i) => {
+                        const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
+                        return (
+                          <div key={i} className="relative w-36 sm:w-44 shrink-0 rounded-xl overflow-hidden" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                            {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} />}
+                            {detailHref ? (
+                              <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
+                            ) : (
+                              <Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} />
+                            )}
+                            <div className="p-2.5">
+                              {pr.rating ? <Stars n={pr.rating} color={accent} /> : null}
+                              {detailHref ? (
+                                <a href={detailHref} onClick={(e) => e.stopPropagation()} className="block text-xs font-semibold mt-1 truncate hover:underline" style={{ color: p.text }}>{pr.title}</a>
+                              ) : (
+                                <p className="text-xs font-semibold mt-1 truncate" style={{ color: p.text }}>{pr.title}</p>
+                              )}
+                              <p className="text-xs font-bold mt-0.5" style={{ color: accent }}>{pr.price}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ));
+
           case 'multicolumn':
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">

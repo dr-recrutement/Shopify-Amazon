@@ -284,6 +284,9 @@ export default function Storefront() {
       if (s.type === 'productGrid' && prods.length > 0) {
         return { ...s, props: { ...s.props, products: prods.slice(0, s.props?.columns ? s.props.columns * 2 : 8) } };
       }
+      if (s.type === 'brandSpotlight' && prods.length > 0) {
+        return { ...s, props: { ...s.props, products: prods.slice(0, 6) } };
+      }
       if (s.type === 'blogList' && posts.length > 0) {
         return { ...s, props: { ...s.props, posts: posts.slice(0, 3) } };
       }

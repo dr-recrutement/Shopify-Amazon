@@ -258,6 +258,14 @@ export default function Storefront() {
         if (error) throw new Error(await functionErrorMessage(error));
         const paid = data?.status === 'paid';
         if (paid) {
+          // Real success path for Payunit, same as every other gateway's
+          // own success point - was missing entirely (stock never
+          // decremented, cart never marked recovered for a real Payunit
+          // sale) until caught here.
+          const { data: orderItemsRows } = await supabase.from('order_items').select('product_id, variant_id, quantity').eq('order_id', orderId);
+          await decrementStockForItems(orderItemsRows || []);
+          const sessionId = getCartSessionId();
+          await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('session_id', sessionId).eq('status', 'open');
           localStorage.removeItem(CART_KEY);
           setCart(null);
           setCartCount(0);
@@ -802,9 +810,11 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         p_spend_delta_cents: Math.round(total * 100),
       });
 
-      if (cart?.id) {
-        await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
-      }
+      // Cart is marked recovered at each real payment-success point below
+      // (not here) - marking it immediately after order creation would
+      // flag it recovered even if the payment itself then fails (card
+      // declined, gateway timeout), wrongly excluding a genuinely
+      // abandoned cart from ever getting a real reminder.
 
       if (paymentMethod === 'stripe') {
         if (!stripeReady || !stripeRef.current || !cardRef.current) throw new Error('Le module de paiement Stripe n’est pas encore prêt.');
@@ -825,6 +835,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         if (vErr) throw new Error(await functionErrorMessage(vErr));
         if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
 
+        if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
         await decrementStockForItems(items);
         setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
         setDone(true);
@@ -854,6 +865,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               const { data: v, error: vErr } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id: response.transaction_id, tx_ref: response.tx_ref } });
               if (vErr) throw new Error(await functionErrorMessage(vErr));
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
+              if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
               await decrementStockForItems(items);
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
               setDone(true);
@@ -889,6 +901,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 const { data: v, error: vErr } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'verify', reference: response.reference } });
                 if (vErr) throw new Error(await functionErrorMessage(vErr));
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
+                if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
                 await decrementStockForItems(items);
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
                 setDone(true);
@@ -919,6 +932,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         return;
       }
 
+      if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
       await decrementStockForItems(items);
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);

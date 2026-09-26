@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 
 const TRIGGERS = [
   { id: 'cart_abandoned', label: 'Panier abandonné', icon: ShoppingCart },
@@ -164,6 +166,13 @@ export default function Automations() {
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Configurez votre boutique</h1>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d] mt-3">Configurer</Link>
+      </div>
+    );
+  }
+  if (!hasFeature(store.plan, 'automations')) {
+    return (
+      <div className="max-w-md mx-auto mt-20">
+        <PaywallCard requiredPlan="enterprise" title="Les automatisations nécessitent le plan Enterprise" description="Automatisez vos workflows (relances, notifications, actions déclenchées). Passez au plan Enterprise pour y accéder." />
       </div>
     );
   }

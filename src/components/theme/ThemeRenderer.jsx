@@ -57,16 +57,23 @@ export function getWishlistSessionId() {
   return id;
 }
 
-export function WishlistHeart({ tenantId, productId }) {
-  const [saved, setSaved] = useState(false);
+export function WishlistHeart({ tenantId, productId, initialSaved }) {
+  const [saved, setSaved] = useState(!!initialSaved);
   const [busy, setBusy] = useState(false);
   const sessionId = getWishlistSessionId();
 
   useEffect(() => {
+    // If the parent already batch-fetched the wishlist (productGrid/
+    // brandSpotlight - avoids one network round-trip PER card, which
+    // was a real N+1: 20 products meant 20 separate queries just to
+    // know which hearts should start filled), trust that and skip the
+    // individual lookup entirely. Only product pages, with a single
+    // heart, still look their own status up directly.
+    if (initialSaved !== undefined) { setSaved(!!initialSaved); return; }
     if (!tenantId || !productId) return;
     supabase.from('wishlists').select('id').eq('tenant_id', tenantId).eq('session_id', sessionId).eq('product_id', productId).maybeSingle()
       .then(({ data }) => setSaved(!!data));
-  }, [tenantId, productId, sessionId]);
+  }, [tenantId, productId, sessionId, initialSaved]);
 
   const toggle = async (e) => {
     e.preventDefault();
@@ -330,6 +337,17 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
   const visible = sections.filter((s) => s.visible);
   const firstPgId = visible.find((s) => s.type === 'productGrid')?.id;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  // One batch fetch for the whole page's wishlist status instead of one
+  // network round-trip per product card (was a real N+1: 20 products on
+  // a category page meant 20 separate queries just to know which hearts
+  // start filled).
+  const [savedWishlistIds, setSavedWishlistIds] = useState(null);
+  useEffect(() => {
+    if (!storefront || !tenantId) return;
+    const sessionId = getWishlistSessionId();
+    supabase.from('wishlists').select('product_id').eq('tenant_id', tenantId).eq('session_id', sessionId)
+      .then(({ data }) => setSavedWishlistIds(new Set((data || []).map((w) => w.product_id))));
+  }, [storefront, tenantId]);
   const wrap = (s, content) => (
     <SectionShell key={s.id} section={s} editor={editor} selectedId={selectedId} onSelect={onSelectSection}>
       {content}
@@ -508,7 +526,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                             )}
                           </div>
                         )}
-                        {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} />}
+                        {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} initialSaved={savedWishlistIds ? savedWishlistIds.has(pr._id) : false} />}
                         {detailHref ? (
                           <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
                         ) : (
@@ -562,7 +580,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                         const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
                         return (
                           <div key={i} className="relative w-36 sm:w-44 shrink-0 rounded-xl overflow-hidden" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
-                            {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} />}
+                            {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} initialSaved={savedWishlistIds ? savedWishlistIds.has(pr._id) : false} />}
                             {detailHref ? (
                               <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
                             ) : (

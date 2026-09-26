@@ -57,6 +57,22 @@ const isColor = (v) => typeof v === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.
 
 let uidc = 0;
 const nid = (p) => `${p}-${++uidc}`;
+// uidc is a fresh module-level counter every page load, but an existing
+// theme's sections already carry real IDs from earlier sessions
+// (hero-1, footer-3...) - without this, a freshly-loaded editor could
+// mint a "new" id that collides with one already in the theme, and two
+// sections sharing an id breaks their independent delete/duplicate/
+// reorder (every id-keyed lookup only ever finds the first match).
+// Called whenever a theme is loaded so uidc always starts past whatever
+// is already in use.
+function seedUidFromSections(sections) {
+  let maxSeen = 0;
+  for (const s of sections || []) {
+    const m = /-(\d+)$/.exec(s.id || '');
+    if (m) maxSeen = Math.max(maxSeen, parseInt(m[1], 10));
+  }
+  uidc = Math.max(uidc, maxSeen);
+}
 
 function setByPath(obj, path, value) {
   const keys = path.split('.');
@@ -78,8 +94,16 @@ function setByPath(obj, path, value) {
 
 function loadInitial() {
   const custom = localStorage.getItem(CUSTOM_KEY);
-  if (custom) { try { return migrateTheme(JSON.parse(custom)); } catch { /* fall through */ } }
-  return cloneTheme(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME_ID);
+  if (custom) {
+    try {
+      const t = migrateTheme(JSON.parse(custom));
+      seedUidFromSections(t.sections);
+      return t;
+    } catch { /* fall through */ }
+  }
+  const t = cloneTheme(localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME_ID);
+  seedUidFromSections(t.sections);
+  return t;
 }
 
 async function uploadThemeImage(file, tenantId) {
@@ -643,7 +667,11 @@ export default function ThemeEditor() {
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
       // the stock default rather than crashing on the mismatch.
-      if (isValidTheme(data?.config)) setTheme(migrateTheme(data.config));
+      if (isValidTheme(data?.config)) {
+        const t = migrateTheme(data.config);
+        seedUidFromSections(t.sections);
+        setTheme(t);
+      }
       setThemeLoaded(true);
     });
     return () => { cancelled = true; };

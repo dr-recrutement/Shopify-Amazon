@@ -4,7 +4,7 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import {
   SettingsGeneral, SettingsPlan,
   SettingsCheckout, SettingsCustomerAccounts, SettingsShippingDelivery, SettingsTaxes,
-  SettingsLocations, SettingsApps, SettingsSalesChannels, SettingsDomains, SettingsEmail,
+  SettingsLocations, SettingsApps, SettingsSalesChannels, SettingsDomains, SettingsEmail, SettingsAiProvidersLink,
   SettingsCustomerEvents, SettingsNotifications, SettingsMetafields, SettingsLanguages,
   SettingsCustomerPrivacy, SettingsPolicies,
 } from '@/components/settings/SettingsSections';
@@ -50,6 +50,7 @@ const SECTIONS = [
   { group: 'Extensions & support', items: [
     { id: 'apps', label: 'Applications', comp: SettingsApps },
     { id: 'email', label: 'E-mail (envoi)', comp: SettingsEmail },
+    { id: 'ai-providers', label: 'Fournisseurs IA', comp: SettingsAiProvidersLink },
     { id: 'support', label: 'Support & aide', comp: Support },
     { id: 'chat', label: 'Chat clients', comp: Chat },
   ]},

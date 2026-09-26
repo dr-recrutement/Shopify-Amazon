@@ -77,7 +77,7 @@ export default function Register() {
       setShowOtp(true);
     } catch (err) {
       setError(err.message === "Signups not allowed for this instance"
-        ? "L'inscription par email n'est pas activée pour ce projet Supabase. Activez-la dans Authentication \u2192 Providers du dashboard Supabase."
+        ? "L'inscription par email n'est pas activée pour ce projet Supabase. Activez-la dans Authentication → Providers du dashboard Supabase."
         : err.message || "L'inscription a échoué");
     } finally {
       setLoading(false);

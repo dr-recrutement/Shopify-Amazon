@@ -79,7 +79,7 @@ export default function Superadmin() {
         p_tenant_id: s.id,
         p_action: next === 'suspended' ? 'suspend' : 'reactivate',
         p_status: next,
-        p_suspended_reason: next === 'suspended' ? 'Suspendu depuis la vue d\u2019ensemble' : null,
+        p_suspended_reason: next === 'suspended' ? 'Suspendu depuis la vue d’ensemble' : null,
       });
       if (error) throw error;
       setStores((l) => l.map((x) => (x.id === s.id ? { ...x, status: next } : x)));

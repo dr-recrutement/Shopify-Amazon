@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { applySEO, applyStoreJsonLd, applyProductListJsonLd } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
@@ -447,7 +448,9 @@ export default function Storefront() {
 
       <StorePopup theme={theme} store={store} />
 
-      <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
+      <ErrorBoundary>
+        <ThemeRenderer theme={theme} sections={storeSections} mode="storefront" onAddToCart={addToCart} storeSlug={slug} tenantId={store.id} />
+      </ErrorBoundary>
 
       {/* Cart drawer — WooCommerce style */}
       {cartOpen && (
@@ -671,6 +674,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     ...(activeGateways?.includes('flutterwave') ? [{ id: 'flutterwave', label: 'Carte bancaire / Mobile Money', desc: 'Paiement immédiat sécurisé via Flutterwave', icon: CreditCard }] : []),
     ...(activeGateways?.includes('paystack') ? [{ id: 'paystack', label: 'Carte bancaire', desc: 'Paiement immédiat sécurisé via Paystack', icon: CreditCard }] : []),
     ...(activeGateways?.includes('stripe') ? [{ id: 'stripe', label: 'Carte bancaire (Stripe)', desc: 'Visa, Mastercard, Amex', icon: CreditCard }] : []),
+    ...(activeGateways?.includes('payunit') ? [{ id: 'payunit', label: 'Mobile Money / Carte (Payunit)', desc: 'Orange Money, MTN MoMo, carte bancaire — paiement immédiat sécurisé', icon: Phone }] : []),
     { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
     { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
     { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
@@ -743,7 +747,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       }
 
       if (paymentMethod === 'stripe') {
-        if (!stripeReady || !stripeRef.current || !cardRef.current) throw new Error('Le module de paiement Stripe n\u2019est pas encore prêt.');
+        if (!stripeReady || !stripeRef.current || !cardRef.current) throw new Error('Le module de paiement Stripe n’est pas encore prêt.');
         const { data, error: initError } = await supabase.functions.invoke('stripe-checkout', { body: { action: 'create_intent', order_id: order.id } });
         if (initError) throw new Error(await functionErrorMessage(initError));
         if (data.error) throw new Error(data.error);

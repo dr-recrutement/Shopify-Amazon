@@ -17,8 +17,8 @@ const INTEGRATIONS = [
   { id: 'payfast', name: 'Payfast', category: 'Paiements', region: 'Afrique du Sud', logo: '/payment-logos/payfast.png', desc: 'Paiements cartes & EFT (ZA)', type: 'payment' },
   { id: 'mtn-momo', name: 'MTN MoMo', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/mtn-momo.png', desc: 'Mobile Money MTN (UG, GH, CI, CM…)', type: 'payment' },
   { id: 'orange-money', name: 'Orange Money', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/orange-money.png', desc: 'Mobile Money CI, Sénégal, Mali', type: 'payment' },
-  { id: 'wave', name: 'Wave', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/wave.png', desc: 'Mobile Money Sénégal & Côte d\u2019Ivoire', type: 'payment' },
-  { id: 'kkiapay', name: 'Kkiapay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/kkiapay.png', desc: 'Mobile Money & cartes Afrique de l\u2019Ouest', type: 'payment' },
+  { id: 'wave', name: 'Wave', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/wave.png', desc: 'Mobile Money Sénégal & Côte d’Ivoire', type: 'payment' },
+  { id: 'kkiapay', name: 'Kkiapay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/kkiapay.png', desc: 'Mobile Money & cartes Afrique de l’Ouest', type: 'payment' },
   { id: 'chapa', name: 'Chapa', category: 'Paiements', region: 'Afrique', logo: `${LOGO_BASE}/f25f8db81_Logo-Chapa-.png`, desc: 'Paiements Éthiopie — cartes & mobile', type: 'payment' },
 
   // Payments — Global (real logos)
@@ -33,8 +33,8 @@ const INTEGRATIONS = [
   { id: 'braintree', name: 'Braintree', category: 'Paiements', region: 'USA', logo: '/payment-logos/braintree.jpg', desc: 'Paiements PayPal pour développeurs', type: 'payment' },
   { id: 'mercado-pago', name: 'Mercado Pago', category: 'Paiements', region: 'Latino', logo: '/payment-logos/mercadopago.png', desc: 'Paiements Amérique Latine', type: 'payment' },
   { id: 'ebanx', name: 'EBANX', category: 'Paiements', region: 'Latino', logo: '/payment-logos/ebanx.jpg', desc: 'Paiements locaux Amérique Latine', type: 'payment' },
-  { id: 'airtel-money', name: 'Airtel Money', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/airtel-money.jpg', desc: 'Mobile Money Afrique de l\u2019Est & Centrale', type: 'payment' },
-  { id: 'cinetpay', name: 'CinetPay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/cinetpay.webp', desc: 'Agrégateur Mobile Money Afrique de l\u2019Ouest', type: 'payment' },
+  { id: 'airtel-money', name: 'Airtel Money', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/airtel-money.jpg', desc: 'Mobile Money Afrique de l’Est & Centrale', type: 'payment' },
+  { id: 'cinetpay', name: 'CinetPay', category: 'Paiements', region: 'Afrique', logo: '/payment-logos/cinetpay.webp', desc: 'Agrégateur Mobile Money Afrique de l’Ouest', type: 'payment' },
   { id: 'yoco', name: 'Yoco', category: 'Paiements', region: 'Afrique du Sud', logo: '/payment-logos/yoco.png', desc: 'Paiements carte & TPE (ZA)', type: 'payment' },
 
   // Shipping (real logos where available)

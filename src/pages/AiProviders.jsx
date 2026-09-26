@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
-import { Loader2, Save, Check, Bot, Cpu, Sparkles, KeyRound, AlertCircle, Trash2 } from 'lucide-react';
+import { Loader2, Save, Check, Bot, Cpu, Sparkles, KeyRound, AlertCircle, Trash2, ArrowLeft } from 'lucide-react';
 
 // Same generic-error gap as elsewhere this session - the real message is
 // in the function's own JSON error body, not supabase-js's own error
@@ -79,6 +80,7 @@ export default function AiProviders() {
 
   return (
     <div className="p-4 sm:p-6 max-w-3xl mx-auto">
+      <Link to="/settings" className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6D7175] hover:text-[#202223] mb-3"><ArrowLeft className="w-3.5 h-3.5" /> Paramètres</Link>
       <div className="mb-5">
         <h1 className="text-xl font-bold text-[#202223] flex items-center gap-2"><KeyRound className="w-5 h-5 text-[#008060]" /> Fournisseurs IA</h1>
         <p className="text-xs text-[#6D7175] mt-1">Configurez vos propres clés API. Sellia Assistant utilise automatiquement le premier fournisseur disponible.</p>

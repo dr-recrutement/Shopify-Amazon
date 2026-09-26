@@ -10,9 +10,9 @@ import { toast } from '@/components/ui/use-toast';
 const SELLIA_DOMAIN = 'sellia.liafrik.com';
 const REASON_LABELS = {
   domain_unavailable: 'Ce domaine est déjà pris.',
-  extension_not_supported_via_api: 'Cette extension (TLD) n\u2019est pas encore disponible via achat automatique.',
-  extension_not_supported: 'Cette extension (TLD) n\u2019est pas prise en charge par Cloudflare Registrar.',
-  extension_disallows_registration: 'Cette extension n\u2019autorise pas l\u2019enregistrement automatique.',
+  extension_not_supported_via_api: 'Cette extension (TLD) n’est pas encore disponible via achat automatique.',
+  extension_not_supported: 'Cette extension (TLD) n’est pas prise en charge par Cloudflare Registrar.',
+  extension_disallows_registration: 'Cette extension n’autorise pas l’enregistrement automatique.',
 };
 
 // Extracts the real error message our Edge Functions return (a JSON body

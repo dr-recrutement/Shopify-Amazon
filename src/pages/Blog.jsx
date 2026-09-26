@@ -29,7 +29,7 @@ export default function Blog() {
   const save = async () => {
     setBusy(true);
     try {
-      const slug = editing.slug || editing.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const slug = editing.slug || editing.title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
       const payload = {
         tenant_id: store.id,
         title: editing.title,

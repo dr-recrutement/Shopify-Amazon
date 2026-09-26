@@ -25,7 +25,7 @@ export default function CategoryPage() {
     try {
       const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
-      if (!tenant) throw new Error('Cette boutique n\u2019existe pas.');
+      if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore(tenant);
 
       const { data: themeRes } = await supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle();
@@ -35,7 +35,7 @@ export default function CategoryPage() {
       // whether the category had a slug set when the link was chosen -
       // both are tried so an older link never silently breaks.
       const { data: cat } = await supabase.from('product_categories').select('*').eq('tenant_id', tenant.id).or(`slug.eq.${categoryId},id.eq.${categoryId}`).maybeSingle();
-      if (!cat) throw new Error('Cette cat\u00e9gorie est introuvable.');
+      if (!cat) throw new Error('Cette catégorie est introuvable.');
       setCategory(cat);
 
       const { data: assignments } = await supabase.from('product_category_assignments').select('product_id').eq('category_id', cat.id);

@@ -257,6 +257,7 @@ export function SettingsLocations() {
   );
 }
 export function SettingsApps() { return <div className={card}><h2 className={ttl}>Applications</h2><p className="text-sm text-[#6D7175] mb-4">Installez des applications pour étendre votre boutique.</p><Link to="/apps" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Parcourir les apps →</Link></div>; }
+export function SettingsAiProvidersLink() { return <div className={card}><h2 className={ttl}>Fournisseurs IA</h2><p className="text-sm text-[#6D7175] mb-4">Connectez votre propre clé Gemini, Claude ou ChatGPT pour l'Assistant Sellia — sinon la clé partagée de la plateforme est utilisée.</p><Link to="/ai-providers" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Gérer les fournisseurs IA →</Link></div>; }
 
 export function SettingsEmail() {
   const { store } = useCurrentStore();

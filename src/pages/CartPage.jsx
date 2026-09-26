@@ -29,7 +29,7 @@ export default function CartPage() {
     try {
       const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
-      if (!tenant) throw new Error('Cette boutique n\u2019existe pas.');
+      if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
       const [themeRes, gatewaysRes] = await Promise.all([
@@ -84,8 +84,8 @@ export default function CartPage() {
     try {
       const { data: d } = await supabase.from('discount_codes').select('*').eq('tenant_id', store.id).eq('code', couponCode.trim().toUpperCase()).eq('is_active', true).maybeSingle();
       if (!d) { setCouponMsg({ ok: false, text: 'Code promo invalide.' }); return; }
-      if (d.max_uses && d.used_count >= d.max_uses) { setCouponMsg({ ok: false, text: 'Ce code a atteint sa limite d\u2019utilisation.' }); return; }
-      if (d.ends_at && new Date(d.ends_at) < new Date()) { setCouponMsg({ ok: false, text: 'Ce code a expir\u00e9.' }); return; }
+      if (d.max_uses && d.used_count >= d.max_uses) { setCouponMsg({ ok: false, text: 'Ce code a atteint sa limite d’utilisation.' }); return; }
+      if (d.ends_at && new Date(d.ends_at) < new Date()) { setCouponMsg({ ok: false, text: 'Ce code a expiré.' }); return; }
       const subtotal = (cart.total_cents || 0) / 100;
       if (d.min_amount_cents && subtotal * 100 < d.min_amount_cents) { setCouponMsg({ ok: false, text: `Minimum requis : ${formatMoney(d.min_amount_cents / 100, store.currency)}.` }); return; }
       let amount = 0;
@@ -93,7 +93,7 @@ export default function CartPage() {
       else if (d.discount_type === 'fixed_amount') amount = d.value;
       amount = Math.min(amount, subtotal);
       setDiscount({ ...d, amount });
-      setCouponMsg({ ok: true, text: `Code appliqu\u00e9 : -${formatMoney(amount, store.currency)}` });
+      setCouponMsg({ ok: true, text: `Code appliqué : -${formatMoney(amount, store.currency)}` });
     } catch {
       setCouponMsg({ ok: false, text: "Erreur lors de l'application du code." });
     }

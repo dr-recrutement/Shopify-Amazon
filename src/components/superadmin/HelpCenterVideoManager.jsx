@@ -73,7 +73,7 @@ export default function HelpCenterVideoManager() {
   };
 
   const removeVideo = async () => {
-    if (!video || !confirm('Supprimer la vidéo tutoriel ? Elle disparaîtra du Centre d\u2019aide.')) return;
+    if (!video || !confirm('Supprimer la vidéo tutoriel ? Elle disparaîtra du Centre d’aide.')) return;
     setUploading(true);
     try {
       await supabase.storage.from(BUCKET).remove([video.path]).catch(() => {});

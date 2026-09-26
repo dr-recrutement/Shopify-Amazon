@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 const CATEGORIES = ['annonce', 'nouveauté', 'maintenance', 'astuce'];
 
 function slugify(s) {
-  return (s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return (s || '').toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 export default function CommunicationsManager() {

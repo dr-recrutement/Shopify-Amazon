@@ -61,17 +61,17 @@ function ArticleEditor({ article, onSave, onClose, saving }) {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-white border-b border-[#E1E1E1] px-5 py-3 flex items-center justify-between z-10">
-          <h2 className="font-bold text-[#202223]">{article ? 'Modifier l\u2019article' : 'Nouvel article'}</h2>
+          <h2 className="font-bold text-[#202223]">{article ? 'Modifier l’article' : 'Nouvel article'}</h2>
           <button onClick={onClose} className="p-1.5 rounded-md hover:bg-black/5 text-[#6D7175]"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-5 space-y-4">
           <div>
             <label className="block text-xs font-semibold text-[#6D7175] mb-1">Titre</label>
-            <input value={form.title} onChange={(e) => set('title', e.target.value)} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Titre de l\u2019article" />
+            <input value={form.title} onChange={(e) => set('title', e.target.value)} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Titre de l’article" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-[#6D7175] mb-1">Extrait</label>
-            <textarea value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Court r\u00e9sum\u00e9 affich\u00e9 dans les listes" />
+            <textarea value={form.excerpt} onChange={(e) => set('excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Court résumé affiché dans les listes" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-[#6D7175] mb-1">Image de couverture</label>
@@ -82,7 +82,7 @@ function ArticleEditor({ article, onSave, onClose, saving }) {
               <div className="flex-1">
                 <input type="file" accept="image/*" onChange={(e) => uploadImage(e.target.files?.[0])} ref={fileRef} className="hidden" id="art-img" />
                 <label htmlFor="art-img" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008060] border border-[#008060]/40 rounded-md px-3 py-1.5 cursor-pointer hover:bg-[#008060]/5">
-                  {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />} {uploading ? 'T\u00e9l\u00e9versement…' : 'T\u00e9l\u00e9verser'}
+                  {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />} {uploading ? 'Téléversement…' : 'Téléverser'}
                 </label>
                 <input value={form.featured_image || ''} onChange={(e) => set('featured_image', e.target.value)} className="mt-1.5 w-full px-2 py-1.5 border border-[#E1E1E1] rounded text-[11px] font-mono" placeholder="ou colle une URL" />
               </div>
@@ -95,13 +95,13 @@ function ArticleEditor({ article, onSave, onClose, saving }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-[#6D7175] mb-1">Auteur</label>
-              <input value={form.author} onChange={(e) => set('author', e.target.value)} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Nom de l\u2019auteur" />
+              <input value={form.author} onChange={(e) => set('author', e.target.value)} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm" placeholder="Nom de l’auteur" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-[#6D7175] mb-1">Statut</label>
               <select value={form.status} onChange={(e) => set('status', e.target.value)} className="w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg-white">
                 <option value="draft">Brouillon</option>
-                <option value="published">Publi\u00e9</option>
+                <option value="published">Publié</option>
               </select>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function Content() {
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher un article" className="bg-transparent outline-none text-sm flex-1" />
         </div>
         <div className="flex items-center gap-1 bg-white border border-[#E1E1E1] rounded-md p-1">
-          {[['all', 'Tous'], ['published', 'Publi\u00e9s'], ['draft', 'Brouillons']].map(([k, l]) => (
+          {[['all', 'Tous'], ['published', 'Publiés'], ['draft', 'Brouillons']].map(([k, l]) => (
             <button key={k} onClick={() => setFilter(k)} className={`px-3 py-1.5 text-xs font-medium rounded ${filter === k ? 'bg-[#008060] text-white' : 'text-[#6D7175] hover:bg-black/5'}`}>{l}</button>
           ))}
         </div>
@@ -248,8 +248,8 @@ export default function Content() {
         <div className="bg-white rounded-xl border border-[#E1E1E1] p-12 text-center">
           <FileText className="w-10 h-10 text-[#C9C9C9] mx-auto mb-3" />
           <p className="text-sm font-medium text-[#202223]">Aucun article</p>
-          <p className="text-xs text-[#6D7175] mt-1">Cr\u00e9ez votre premier article de blog pour attirer plus de visiteurs.</p>
-          <button onClick={openNew} className="mt-4 inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Cr\u00e9er un article</button>
+          <p className="text-xs text-[#6D7175] mt-1">Créez votre premier article de blog pour attirer plus de visiteurs.</p>
+          <button onClick={openNew} className="mt-4 inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#00694d]"><Plus className="w-4 h-4" /> Créer un article</button>
         </div>
       ) : (
         <div className="space-y-2">
@@ -261,7 +261,7 @@ export default function Content() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold text-[#202223] truncate">{a.title}</p>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${a.status === 'published' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-[#F4F4F4] text-[#6D7175]'}`}>{a.status === 'published' ? 'Publi\u00e9' : 'Brouillon'}</span>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${a.status === 'published' ? 'bg-[#008060]/10 text-[#008060]' : 'bg-[#F4F4F4] text-[#6D7175]'}`}>{a.status === 'published' ? 'Publié' : 'Brouillon'}</span>
                 </div>
                 <p className="text-xs text-[#6D7175] truncate mt-0.5">{a.excerpt || a.content?.replace(/<[^>]*>/g, '').slice(0, 80) || 'Aucun contenu'}</p>
                 <div className="flex items-center gap-3 mt-1 text-[10px] text-[#6D7175]">
@@ -271,7 +271,7 @@ export default function Content() {
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleStatus(a)} title={a.status === 'published' ? 'D\u00e9publier' : 'Publier'} className="p-2 rounded-md text-[#6D7175] hover:bg-black/5">
+                <button onClick={() => toggleStatus(a)} title={a.status === 'published' ? 'Dépublier' : 'Publier'} className="p-2 rounded-md text-[#6D7175] hover:bg-black/5">
                   {a.status === 'published' ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </button>
                 <button onClick={() => openEdit(a)} className="p-2 rounded-md text-[#6D7175] hover:bg-black/5"><Pencil className="w-4 h-4" /></button>

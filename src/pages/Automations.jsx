@@ -43,7 +43,7 @@ function Editor({ automation, onSave, onClose, saving }) {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="sticky top-0 bg-white border-b border-[#E1E1E1] px-5 py-3 flex items-center justify-between">
-          <h2 className="font-bold text-[#202223]">{automation ? 'Modifier l\u2019automatisation' : 'Nouvelle automatisation'}</h2>
+          <h2 className="font-bold text-[#202223]">{automation ? 'Modifier l’automatisation' : 'Nouvelle automatisation'}</h2>
           <button onClick={onClose} className="p-1.5 rounded-md hover:bg-black/5 text-[#6D7175]"><X className="w-5 h-5" /></button>
         </div>
         <div className="p-5 space-y-4">
@@ -148,7 +148,7 @@ export default function Automations() {
   };
 
   const remove = async (a) => {
-    if (!confirm(`Supprimer l'automatisation \u00ab ${a.name} \u00bb ?`)) return;
+    if (!confirm(`Supprimer l'automatisation « ${a.name} » ?`)) return;
     const { error } = await supabase.from('automations').delete().eq('id', a.id);
     if (error) { alert(error.message); return; }
     load();

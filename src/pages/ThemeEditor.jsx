@@ -7,11 +7,12 @@ import {
   Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
   Palette, Image as ImageIcon, LayoutGrid, ShoppingBag, FileText, Star, Mail,
   Megaphone, PanelTop, Columns, Bell, Loader2, ShieldCheck,
-  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket, Copy, MapPin as MapIcon,
+  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket, Copy, MapPin as MapIcon, AlertTriangle,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const STORAGE_KEY = 'sellia_theme';
 const CUSTOM_KEY = 'sellia_theme_custom';
@@ -209,7 +210,7 @@ function ImageField({ value, onSetUrl }) {
         <div className="w-12 h-12 rounded-md overflow-hidden bg-[#F4F4F4] border border-[#E1E1E1] flex items-center justify-center">
           {value ? <img src={value} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-5 h-5 text-[#C9C9C9]" />}
         </div>
-        <span className="text-[11px] font-semibold text-[#008060]">{busy ? 'Téléversement…' : value ? 'Remplacer l\u2019image' : 'Glisse une image ou clique'}</span>
+        <span className="text-[11px] font-semibold text-[#008060]">{busy ? 'Téléversement…' : value ? 'Remplacer l’image' : 'Glisse une image ou clique'}</span>
         <span className="text-[10px] text-[#6D7175]">PNG · JPG · WEBP</span>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
       </div>
@@ -812,7 +813,7 @@ export default function ThemeEditor() {
   const onCartPosition = (v) => commit({ ...theme, cartPosition: v });
   const onWhatsapp = (v) => commit({ ...theme, whatsappNumber: v });
   const onPopup = (patch) => commit({ ...theme, popup: { ...(theme.popup || {}), ...patch } });
-  const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d\u2019origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
+  const onReset = () => { if (confirm('Réinitialiser ce thème à sa version d’origine ? Vos modifications seront perdues.')) { const fresh = cloneTheme(theme.id); commit(fresh); } };
 
   const selectedSection = theme.sections.find((s) => s.id === selectedId) || null;
   const publish = async () => {
@@ -933,7 +934,9 @@ export default function ThemeEditor() {
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" /><span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" /><span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
                 <div className="ml-3 flex-1 bg-white rounded-md px-2.5 py-1 text-[11px] text-[#6D7175] border border-[#E1E1E1] font-mono truncate">ma-boutique.com</div>
               </div>
-              <ThemeRenderer theme={theme} sections={theme.sections} mode="editor" selectedId={selectedId} onSelectSection={selectSection} onSetImage={(sid, path, url) => { updateSections((s) => s.map((x) => (x.id === sid ? { ...x, props: setByPath(x.props, path, url) } : x))); }} onUploadFile={uploadImage} />
+              <ErrorBoundary fallback={<div className="flex flex-col items-center justify-center py-16 px-4 text-center"><AlertTriangle className="w-8 h-8 text-amber-500 mb-3" /><p className="text-sm font-semibold text-[#202223]">Cette section a un problème d'affichage.</p><p className="text-xs text-[#6D7175] mt-1">Vérifiez son contenu, ou contactez le support si le problème persiste.</p></div>}>
+                <ThemeRenderer theme={theme} sections={theme.sections} mode="editor" selectedId={selectedId} onSelectSection={selectSection} onSetImage={(sid, path, url) => { updateSections((s) => s.map((x) => (x.id === sid ? { ...x, props: setByPath(x.props, path, url) } : x))); }} onUploadFile={uploadImage} />
+              </ErrorBoundary>
             </div>
           </div>
         </div>

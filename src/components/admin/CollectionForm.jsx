@@ -133,7 +133,7 @@ export default function CollectionForm({ open, onOpenChange, store, collection, 
       const payload = {
         tenant_id: store.id,
         name: form.name,
-        slug: form.name.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        slug: form.name.toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
         description: form.description || '',
         image_url: form.image_url || '',
       };

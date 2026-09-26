@@ -33,7 +33,7 @@ export default function Login() {
       window.location.href = returnTo;
     } catch (err) {
       setError(err.message === "Email logins are disabled"
-        ? "L'authentification par email n'est pas activée pour ce projet Supabase. Activez le provider « Email » dans Authentication \u2192 Providers du dashboard Supabase."
+        ? "L'authentification par email n'est pas activée pour ce projet Supabase. Activez le provider « Email » dans Authentication → Providers du dashboard Supabase."
         : err.message || "Email ou mot de passe invalide");
     } finally {
       setLoading(false);

@@ -25,7 +25,7 @@ export default function ArticleDetail() {
     try {
       const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
-      if (!tenant) throw new Error('Cette boutique n\u2019existe pas.');
+      if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore(tenant);
 
       const [themeRes, pageRes] = await Promise.all([

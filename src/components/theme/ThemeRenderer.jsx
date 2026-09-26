@@ -503,7 +503,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                             ) : (
                               <>
                                 {pr._badgeSale && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white">-{pr._badgeSale}%</span>}
-                                {pr._badgeNew && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: primary, color: primaryText }}>Nouveau</span>}
+                                {pr._badgeNew && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: primary, color: p.primaryText }}>Nouveau</span>}
                               </>
                             )}
                           </div>

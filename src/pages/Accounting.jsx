@@ -11,7 +11,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
 
-const MONTH_LABELS = ['Jan', 'F\u00e9v', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Ao\u00fb', 'Sep', 'Oct', 'Nov', 'D\u00e9c'];
+const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
 const NOT_PAID = new Set(['pending', 'cancelled', 'refunded']);
 
 // No tax breakdown or payouts table exists here - this shows real
@@ -91,7 +91,7 @@ export default function Accounting() {
 
   const exportCSV = () => {
     const rows = [
-      ['Date', 'N\u00b0 Commande', 'Statut', 'Livraison', 'Total'],
+      ['Date', 'N° Commande', 'Statut', 'Livraison', 'Total'],
       ...orders.map((o) => [
         new Date(o.created_at).toLocaleDateString(),
         '#' + o.id.slice(0, 8).toUpperCase(),
@@ -126,8 +126,8 @@ export default function Accounting() {
         <div className="flex items-center gap-2">
           <Calculator className="w-5 h-5 text-[#6D7175]" />
           <div>
-            <h1 className="text-xl font-bold text-[#202223]">Comptabilit\u00e9</h1>
-            <p className="text-xs text-[#6D7175]">Vue d\u2019ensemble financi\u00e8re de votre activit\u00e9.</p>
+            <h1 className="text-xl font-bold text-[#202223]">Comptabilité</h1>
+            <p className="text-xs text-[#6D7175]">Vue d’ensemble financière de votre activité.</p>
           </div>
         </div>
         <button onClick={exportCSV} className="flex items-center gap-1.5 text-sm font-medium text-[#202223] border border-[#E1E1E1] rounded-full px-4 py-2 hover:bg-black/5">
@@ -137,21 +137,21 @@ export default function Accounting() {
 
       <div className="flex items-center gap-2 mb-5 p-3 rounded-xl bg-[#008060]/5 border border-[#008060]/20">
         <AlertCircle className="w-4 h-4 text-[#008060] shrink-0" />
-        <p className="text-xs text-[#202223]">{stats.hasCostData ? 'Revenu, livraison et b\u00e9n\u00e9fice brut (\u00e0 partir du prix co\u00fbtant renseign\u00e9 sur vos produits) sont r\u00e9els.' : 'Revenu et livraison sont r\u00e9els. Renseignez le \u00ab\u00a0Prix co\u00fbtant\u00a0\u00bb sur vos produits pour voir votre b\u00e9n\u00e9fice brut r\u00e9el ici.'} Les taxes d\u00e9taill\u00e9es et les payouts ne sont pas encore suivis sur cette plateforme.</p>
+        <p className="text-xs text-[#202223]">{stats.hasCostData ? 'Revenu, livraison et bénéfice brut (à partir du prix coûtant renseigné sur vos produits) sont réels.' : 'Revenu et livraison sont réels. Renseignez le « Prix coûtant » sur vos produits pour voir votre bénéfice brut réel ici.'} Les taxes détaillées et les payouts ne sont pas encore suivis sur cette plateforme.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard icon={Wallet} label="Chiffre d\u2019affaires" value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orderCount} commandes pay\u00e9es`} color="#008060" />
-        <StatCard icon={Truck} label="Frais de livraison" value={formatMoney(stats.shipping, store.currency)} hint="collect\u00e9s" color="#0EA5E9" />
+        <StatCard icon={Wallet} label="Chiffre d’affaires" value={formatMoney(stats.revenue, store.currency)} hint={`${stats.orderCount} commandes payées`} color="#008060" />
+        <StatCard icon={Truck} label="Frais de livraison" value={formatMoney(stats.shipping, store.currency)} hint="collectés" color="#0EA5E9" />
         <StatCard icon={TrendingUp} label="Revenu net" value={formatMoney(stats.netRevenue, store.currency)} hint="hors livraison" color="#8B5CF6" />
-        <StatCard icon={Calculator} label="B\u00e9n\u00e9fice brut" value={stats.hasCostData ? formatMoney(stats.grossProfit, store.currency) : '\u2014'} hint={stats.hasCostData ? `co\u00fbt marchandises\u00a0: ${formatMoney(stats.cogs, store.currency)}` : 'prix co\u00fbtant manquant'} color="#E67E22" />
+        <StatCard icon={Calculator} label="Bénéfice brut" value={stats.hasCostData ? formatMoney(stats.grossProfit, store.currency) : '—'} hint={stats.hasCostData ? `coût marchandises : ${formatMoney(stats.cogs, store.currency)}` : 'prix coûtant manquant'} color="#E67E22" />
       </div>
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-sm font-bold text-[#202223]">Revenu vs Livraison</h2>
-            <p className="text-xs text-[#6D7175]">\u00c9volution mensuelle (en milliers)</p>
+            <p className="text-xs text-[#6D7175]">Évolution mensuelle (en milliers)</p>
           </div>
           <div className="flex items-center gap-1 bg-[#F4F4F4] rounded-md p-1">
             {[3, 6, 12].map((p) => (
@@ -174,7 +174,7 @@ export default function Accounting() {
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5">
         <h2 className="text-sm font-bold text-[#202223] mb-4">Ventilation</h2>
         <div className="space-y-3">
-          <LineItem label="Chiffre d\u2019affaires brut" value={formatMoney(stats.revenue, store.currency)} icon={Wallet} />
+          <LineItem label="Chiffre d’affaires brut" value={formatMoney(stats.revenue, store.currency)} icon={Wallet} />
           <LineItem label="Livraison" value={`- ${formatMoney(stats.shipping, store.currency)}`} icon={Truck} negative />
           <div className="border-t border-[#E1E1E1] pt-3">
             <LineItem label="Revenu net" value={formatMoney(stats.netRevenue, store.currency)} icon={TrendingUp} bold positive />

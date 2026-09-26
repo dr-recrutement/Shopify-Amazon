@@ -17,7 +17,7 @@ export const COMPETITORS = {
       "Les thèmes premium et la plupart des applications utiles sont facturés en plus de l'abonnement mensuel.",
     ],
     rows: [
-      { label: 'Prix d\u2019entrée', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 29$/mois + frais de transaction' },
+      { label: 'Prix d’entrée', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 29$/mois + frais de transaction' },
       { label: 'Paiements Mobile Money natifs', sellia: true, them: false },
       { label: 'Paiements sans redirection (25+ PSP)', sellia: true, them: 'Partiel (Shopify Payments limité par pays)' },
       { label: 'Multi-devises natif (XOF, NGN, USD, EUR…)', sellia: true, them: 'Via app tierce' },
@@ -38,8 +38,8 @@ export const COMPETITORS = {
       "Aucune prise en charge native des moyens de paiement mobiles utilisés en Afrique et dans les marchés émergents.",
     ],
     rows: [
-      { label: 'Prix d\u2019entrée', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 39$/mois' },
-      { label: 'Plafond de chiffre d\u2019affaires par plan', sellia: 'Aucun plafond forcé', them: 'Oui — upgrade automatique au-delà d\u2019un seuil' },
+      { label: 'Prix d’entrée', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 39$/mois' },
+      { label: 'Plafond de chiffre d’affaires par plan', sellia: 'Aucun plafond forcé', them: 'Oui — upgrade automatique au-delà d’un seuil' },
       { label: 'Paiements Mobile Money natifs', sellia: true, them: false },
       { label: 'Éditeur visuel sans code', sellia: true, them: 'Limité, orienté développeurs' },
       { label: 'Assistant IA intégré', sellia: true, them: false },
@@ -99,9 +99,9 @@ export const COMPETITORS = {
     ],
     rows: [
       { label: 'Temps de mise en ligne', sellia: 'Quelques minutes, sans code', them: 'Souvent plusieurs jours, configuration ERP' },
-      { label: 'Prix d\u2019entrée e-commerce', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de ~24$/mois/utilisateur (app payante)' },
+      { label: 'Prix d’entrée e-commerce', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de ~24$/mois/utilisateur (app payante)' },
       { label: 'Paiements Mobile Money natifs', sellia: true, them: false },
-      { label: 'Pensé pour', sellia: 'Marchands e-commerce', them: 'Entreprises ayant besoin d\u2019un ERP complet' },
+      { label: 'Pensé pour', sellia: 'Marchands e-commerce', them: 'Entreprises ayant besoin d’un ERP complet' },
       { label: 'Assistant IA intégré au e-commerce', sellia: true, them: false },
       { label: 'Essai gratuit', sellia: '14 jours, sans carte bancaire', them: 'Plan gratuit limité à 1 application' },
     ],
@@ -118,7 +118,7 @@ export const COMPETITORS = {
       "Changer de thème après le lancement est limité une fois la boutique publiée sur certains plans.",
     ],
     rows: [
-      { label: 'Prix d\u2019entrée e-commerce', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 17$/mois' },
+      { label: 'Prix d’entrée e-commerce', sellia: 'À partir de 7$/mois, tout inclus', them: 'À partir de 17$/mois' },
       { label: 'Paiements Mobile Money natifs', sellia: true, them: false },
       { label: 'Nombre de PSP disponibles', sellia: '25+', them: 'Limité selon les pays' },
       { label: 'Assistant IA orienté e-commerce', sellia: true, them: 'IA orientée design de site' },

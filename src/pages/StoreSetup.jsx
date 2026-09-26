@@ -65,7 +65,7 @@ export default function StoreSetup() {
 
   const set = (patch) => setStore({ ...form, ...patch });
 
-  const slugify = (s) => s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const slugify = (s) => s.toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   const save = async () => {
     setSaving(true);

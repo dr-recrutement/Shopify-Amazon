@@ -528,5 +528,90 @@
         }
       }
     }
+  },
+  "pages": {
+    "about": {
+      "meta_title": "Kuhusu Sellia",
+      "meta_desc": "Sellia ni jukwaa la biashara mtandaoni la kiwango cha juu lililoundwa na Liafrik ili kuwezesha mfanyabiashara yeyote kuanzisha, kusimamia na kukuza duka la mtandaoni kimataifa.",
+      "h1": "Kuhusu Sellia",
+      "hero_p": "Sellia imeundwa na Liafrik kuwapa wafanyabiashara duniani kote mbadala wa kiwango cha juu kwa majukwaa makubwa ya biashara mtandaoni — kamili zaidi kuhusu malipo ya ndani, rahisi zaidi kutumia, na iliyoundwa kuuza kimataifa tangu siku ya kwanza.",
+      "stats": [
+        {
+          "value": "12,000+",
+          "label": "wafanyabiashara amilifu"
+        },
+        {
+          "value": "25+",
+          "label": "njia za malipo zilizounganishwa"
+        },
+        {
+          "value": "7",
+          "label": "lugha zinazopatikana"
+        },
+        {
+          "value": "4.9/5",
+          "label": "kuridhika kwa wastani"
+        }
+      ],
+      "mission_h2": "Dhamira yetu",
+      "mission_p": "Kumpa kila mfanyabiashara — kutoka Abidjan hadi Paris, kutoka Lagos hadi Montreal — zana zilezile za kiwango cha juu zinazotumiwa na chapa kubwa zaidi, bila utata wa kiufundi au gharama zilizofichwa za majukwaa ya zamani.",
+      "values": [
+        {
+          "title": "Lengo la kimataifa",
+          "text": "Sellia imeundwa kuuza popote duniani: sarafu nyingi asilia, Pesa za Simu na kadi za kimataifa katika jukwaa moja."
+        },
+        {
+          "title": "Ubora kama kiwango cha kawaida",
+          "text": "Miundo mizuri, malipo bila kuelekezwa pengine, usalama na utendaji si nyongeza za kulipia — ni msingi wa kila mpango."
+        },
+        {
+          "title": "Wafanyabiashara, si tiketi za msaada",
+          "text": "Kila kipengele kinaanza na hitaji halisi la mfanyabiashara, si kipengele cha uuzaji tu."
+        },
+        {
+          "title": "AI katika huduma ya biashara",
+          "text": "Sellia Assistant huzalisha maudhui, miundo na uboreshaji wa SEO ili uweze kuzingatia bidhaa na wateja wako."
+        }
+      ],
+      "cta_h2": "Unataka kujiunga na safari ya Sellia?",
+      "cta_p": "Anzisha duka lako leo, au gundua nafasi zetu za kazi.",
+      "cta_button1": "Unda duka langu",
+      "cta_button2": "Angalia kazi"
+    },
+    "contact": {
+      "meta_title": "Wasiliana nasi",
+      "meta_desc": "Wasiliana na timu ya Sellia: msaada wa kiufundi, huduma kwa wateja au mitandao ya kijamii. Tunajibu haraka kwa wafanyabiashara wote.",
+      "h1": "Wasiliana nasi",
+      "hero_p": "Timu inayopatikana kujibu maswali yako, kabla na baada ya kujisajili.",
+      "channel1_title": "Msaada wa kiufundi",
+      "channel1_text": "Swali kuhusu duka lako, hitilafu, au kipengele fulani?",
+      "channel2_title": "Huduma kwa wateja",
+      "channel2_text": "Malipo, maagizo, akaunti yako ya mfanyabiashara.",
+      "follow_title": "Fuata Sellia",
+      "follow_p": "Habari za bidhaa, masasisho na nyuma ya pazia ya jukwaa."
+    },
+    "careers": {
+      "meta_title": "Kazi",
+      "meta_desc": "Jiunge na timu ya Liafrik inayoendeleza Sellia, jukwaa la biashara mtandaoni la kiwango cha juu. Gundua dhamira yetu na jinsi ya kuomba kazi.",
+      "h1": "Kazi katika Sellia",
+      "hero_p": "Sellia imeundwa na timu ya Liafrik. Tunakua haraka na daima tuko tayari kukutana na watu wenye vipaji — hata nje ya nafasi zetu zilizochapishwa.",
+      "reasons": [
+        {
+          "title": "Athari ya kimataifa",
+          "text": "Kazi yako inahudumia wafanyabiashara katika mabara kadhaa, tangu siku ya kwanza."
+        },
+        {
+          "title": "Bidhaa inayoenda haraka",
+          "text": "Vipengele vipya, masoko mapya, njia mpya za malipo — timu inasonga haraka na kutoa masasisho mara kwa mara."
+        },
+        {
+          "title": "Timu ya kibinadamu",
+          "text": "Katika Liafrik, kila mtu ana thamani na ana athari ya moja kwa moja na inayoonekana kwenye bidhaa."
+        }
+      ],
+      "spontaneous_h2": "Hakuna nafasi ya kazi inayolingana na wasifu wako?",
+      "spontaneous_p": "Tutumie maombi yako ya hiari — tunasoma kila ujumbe.",
+      "spontaneous_button": "Omba kwa barua pepe"
+    }
   }
 }

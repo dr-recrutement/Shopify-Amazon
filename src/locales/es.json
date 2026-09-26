@@ -528,5 +528,90 @@
         }
       }
     }
+  },
+  "pages": {
+    "about": {
+      "meta_title": "Sobre Sellia",
+      "meta_desc": "Sellia es la plataforma de e-commerce premium desarrollada por Liafrik para que cualquier comerciante pueda lanzar, gestionar y hacer crecer una tienda online a nivel internacional.",
+      "h1": "Sobre Sellia",
+      "hero_p": "Sellia está desarrollada por Liafrik para ofrecer a los comerciantes de todo el mundo una alternativa premium a las grandes plataformas de e-commerce — más completa en pagos locales, más fácil de usar, y pensada para vender a nivel internacional desde el primer día.",
+      "stats": [
+        {
+          "value": "12.000+",
+          "label": "comerciantes activos"
+        },
+        {
+          "value": "25+",
+          "label": "métodos de pago integrados"
+        },
+        {
+          "value": "7",
+          "label": "idiomas disponibles"
+        },
+        {
+          "value": "4,9/5",
+          "label": "satisfacción media"
+        }
+      ],
+      "mission_h2": "Nuestra misión",
+      "mission_p": "Dar a todo comerciante — de Abiyán a París, de Lagos a Montreal — las mismas herramientas premium que las grandes marcas, sin la complejidad técnica ni los costes ocultos de las plataformas tradicionales.",
+      "values": [
+        {
+          "title": "Una ambición global",
+          "text": "Sellia está diseñada para vender en cualquier parte del mundo: multi-moneda nativa, Mobile Money y tarjetas internacionales en una sola plataforma."
+        },
+        {
+          "title": "Lo premium como estándar",
+          "text": "Temas cuidados, checkout sin redirección, seguridad y rendimiento no son extras de pago — son la base de cada plan."
+        },
+        {
+          "title": "Comerciantes, no tickets",
+          "text": "Cada funcionalidad parte de una necesidad real del comerciante, no de una casilla de marketing."
+        },
+        {
+          "title": "La IA al servicio del comercio",
+          "text": "Sellia Assistant genera contenidos, temas y optimizaciones SEO para que te centres en tus productos y tus clientes."
+        }
+      ],
+      "cta_h2": "¿Quieres unirte a la aventura Sellia?",
+      "cta_p": "Lanza tu tienda hoy, o descubre nuestras ofertas de empleo.",
+      "cta_button1": "Crear mi tienda",
+      "cta_button2": "Ver carreras"
+    },
+    "contact": {
+      "meta_title": "Contacto",
+      "meta_desc": "Contacta con el equipo de Sellia: soporte técnico, atención al cliente o redes sociales. Respondemos rápido a todos los comerciantes.",
+      "h1": "Contáctanos",
+      "hero_p": "Un equipo disponible para responder tus preguntas, antes y después de registrarte.",
+      "channel1_title": "Soporte técnico",
+      "channel1_text": "¿Una pregunta sobre tu tienda, un error, una función?",
+      "channel2_title": "Atención al cliente",
+      "channel2_text": "Facturación, pedidos, tu cuenta de comerciante.",
+      "follow_title": "Sigue a Sellia",
+      "follow_p": "Novedades de producto, actualizaciones y detrás de escena de la plataforma."
+    },
+    "careers": {
+      "meta_title": "Empleo",
+      "meta_desc": "Únete al equipo de Liafrik que desarrolla Sellia, la plataforma de e-commerce premium. Descubre nuestra misión y cómo postular.",
+      "h1": "Empleo en Sellia",
+      "hero_p": "Sellia está desarrollada por el equipo de Liafrik. Crecemos rápido y siempre estamos atentos a perfiles con talento — incluso fuera de nuestras ofertas publicadas.",
+      "reasons": [
+        {
+          "title": "Impacto internacional",
+          "text": "Tu trabajo sirve a comerciantes en varios continentes, desde el primer día."
+        },
+        {
+          "title": "Un producto que avanza rápido",
+          "text": "Nuevas funcionalidades, nuevos mercados, nuevos métodos de pago — el equipo avanza rápido y lanza a menudo."
+        },
+        {
+          "title": "Un equipo a escala humana",
+          "text": "En Liafrik, cada persona cuenta y tiene un impacto directo y visible en el producto."
+        }
+      ],
+      "spontaneous_h2": "¿Ninguna vacante coincide con tu perfil?",
+      "spontaneous_p": "Envíanos tu candidatura espontánea — leemos todos los mensajes.",
+      "spontaneous_button": "Postular por email"
+    }
   }
 }

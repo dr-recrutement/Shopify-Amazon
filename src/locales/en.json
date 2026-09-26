@@ -528,5 +528,90 @@
         }
       }
     }
+  },
+  "pages": {
+    "about": {
+      "meta_title": "About Sellia",
+      "meta_desc": "Sellia is the premium e-commerce platform built by Liafrik so any merchant can launch, run and grow an online store internationally.",
+      "h1": "About Sellia",
+      "hero_p": "Sellia is built by Liafrik to give merchants everywhere a premium alternative to the big e-commerce platforms — more complete on local payments, simpler to use, and designed to sell internationally from day one.",
+      "stats": [
+        {
+          "value": "12,000+",
+          "label": "active merchants"
+        },
+        {
+          "value": "25+",
+          "label": "integrated payment methods"
+        },
+        {
+          "value": "7",
+          "label": "languages available"
+        },
+        {
+          "value": "4.9/5",
+          "label": "average satisfaction"
+        }
+      ],
+      "mission_h2": "Our mission",
+      "mission_p": "Give every merchant — from Abidjan to Paris, from Lagos to Montreal — the same premium tools as the biggest brands, without the technical complexity or hidden costs of legacy platforms.",
+      "values": [
+        {
+          "title": "A global ambition",
+          "text": "Sellia is built to sell anywhere in the world: native multi-currency, Mobile Money and international cards in one platform."
+        },
+        {
+          "title": "Premium as the standard",
+          "text": "Polished themes, no-redirect checkout, security and performance aren't paid add-ons — they're the baseline on every plan."
+        },
+        {
+          "title": "Merchants, not tickets",
+          "text": "Every feature starts from a real merchant need, not a marketing checkbox."
+        },
+        {
+          "title": "AI at the service of commerce",
+          "text": "Sellia Assistant generates content, themes and SEO optimizations so you can focus on your products and customers."
+        }
+      ],
+      "cta_h2": "Want to join the Sellia adventure?",
+      "cta_p": "Launch your store today, or check out our open roles.",
+      "cta_button1": "Create my store",
+      "cta_button2": "See careers"
+    },
+    "contact": {
+      "meta_title": "Contact",
+      "meta_desc": "Get in touch with the Sellia team: technical support, customer service or social media. We reply quickly to every merchant.",
+      "h1": "Contact us",
+      "hero_p": "A team available to answer your questions, before and after you sign up.",
+      "channel1_title": "Technical support",
+      "channel1_text": "A question about your store, a bug, a feature?",
+      "channel2_title": "Customer service",
+      "channel2_text": "Billing, orders, your merchant account.",
+      "follow_title": "Follow Sellia",
+      "follow_p": "Product news, updates and behind the scenes of the platform."
+    },
+    "careers": {
+      "meta_title": "Careers",
+      "meta_desc": "Join the Liafrik team building Sellia, the premium e-commerce platform. Discover our mission and how to apply.",
+      "h1": "Careers at Sellia",
+      "hero_p": "Sellia is built by the Liafrik team. We're growing fast and always keen to meet talented people — even outside our published openings.",
+      "reasons": [
+        {
+          "title": "International impact",
+          "text": "Your work serves merchants across several continents, from day one."
+        },
+        {
+          "title": "A fast-moving product",
+          "text": "New features, new markets, new payment methods — the team moves fast and ships often."
+        },
+        {
+          "title": "A human-sized team",
+          "text": "At Liafrik, every person counts and has a direct, visible impact on the product."
+        }
+      ],
+      "spontaneous_h2": "No open role matches your profile?",
+      "spontaneous_p": "Send us a spontaneous application — we read every message.",
+      "spontaneous_button": "Apply by email"
+    }
   }
 }

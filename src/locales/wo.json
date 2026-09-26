@@ -528,5 +528,90 @@
         }
       }
     }
+  },
+  "pages": {
+    "about": {
+      "meta_title": "Ci Sellia",
+      "meta_desc": "Sellia mooy plateforme e-commerce bu premium bu Liafrik sos ngir marchand kepp mën na tambali, yor te yokku boutique ci internet ci àdduna bépp.",
+      "h1": "Ci Sellia",
+      "hero_p": "Liafrik moo sos Sellia ngir jox marchand yi ci àdduna bépp alternative bu premium ci plateforme yu mag yi — mat sëkk ci fay yu ci diggante bu am, yomb jëfandikoo, te defar ngir jaay ci àdduna bépp li dale ci bis bu njëkk.",
+      "stats": [
+        {
+          "value": "12 000+",
+          "label": "marchand yu aktiif"
+        },
+        {
+          "value": "25+",
+          "label": "fecc fay yu boole"
+        },
+        {
+          "value": "7",
+          "label": "làkk yu am"
+        },
+        {
+          "value": "4,9/5",
+          "label": "bànneex bu digg"
+        }
+      ],
+      "mission_h2": "Sunu mission",
+      "mission_p": "Jox marchand bépp — Abidjan ba Paris, Lagos ba Montréal — menn menn outil premium yi marque yu mag yi jëfandikoo, te laalul complexité technique walla depense yu nëbbu ci plateforme yu bees yi.",
+      "values": [
+        {
+          "title": "Am solo ci àdduna bépp",
+          "text": "Sellia defar nañu ko ngir jaay fu nekk ci àdduna bi: xaalis yu bari ci njëkk, Mobile Money ak kart internationale ci benn plateforme."
+        },
+        {
+          "title": "Premium mooy standard",
+          "text": "Thème yu rafet, checkout bu jógul fenn, kaaraange ak performance duñu option bu fay — mooy base bu plan bépp."
+        },
+        {
+          "title": "Marchand, du ticket",
+          "text": "Fonctionnalité bépp dafay jóge ci soxla bu marchand bu wóor, du ci case marketing rekk."
+        },
+        {
+          "title": "IA ci service commerce",
+          "text": "Sellia Assistant dafay jur contenu, thème ak optimisation SEO ngir nga mën a jub sa produit ak sa client."
+        }
+      ],
+      "cta_h2": "Bëgg nga bokk ci aventure Sellia?",
+      "cta_p": "Tambali sa boutique tey, walla xool sunu offre liggéey yi.",
+      "cta_button1": "Sos sama boutique",
+      "cta_button2": "Xool liggéey yi"
+    },
+    "contact": {
+      "meta_title": "Jokkoo ak ñun",
+      "meta_desc": "Jokkoo ak équipe Sellia bi: ndimbal technique, service client walla réseaux sociaux. Dañu tontu gaaw ci marchand yépp.",
+      "h1": "Jokkoo ak ñun",
+      "hero_p": "Benn équipe am ngir tontu say laaj, virementaire sa inscription ba ci gannaaw.",
+      "channel1_title": "Ndimbal technique",
+      "channel1_text": "Benn laaj ci sa boutique, benn bug, walla benn fonctionnalité?",
+      "channel2_title": "Service client",
+      "channel2_text": "Facturation, commande yi, sa compte marchand.",
+      "follow_title": "Topp Sellia",
+      "follow_p": "Xibaar produit yi, bees yi ak li ci biir plateforme bi."
+    },
+    "careers": {
+      "meta_title": "Liggéey yi",
+      "meta_desc": "Bokk ci équipe Liafrik bi di defar Sellia, plateforme e-commerce bu premium. Xam sunu mission ak nu nga mën a postulé.",
+      "h1": "Liggéey ci Sellia",
+      "hero_p": "Sellia dafa defar ak équipe Liafrik. Dañuy yokku gaaw te dañuy seetaan ay jëfandikukat yu am talent — hoolla su fekkee amul offre publié.",
+      "reasons": [
+        {
+          "title": "Impact ci àdduna bépp",
+          "text": "Sa liggéey day jappale marchand ci plusieurs continent, li dale ci bis bu njëkk."
+        },
+        {
+          "title": "Produit buy yëngu gaaw",
+          "text": "Fonctionnalité yu bees, marché yu bees, fecc fay yu bees — équipe bi dafay yëngu gaaw te di publié bés bu nekk."
+        },
+        {
+          "title": "Équipe bu ndaw",
+          "text": "Ci Liafrik, nit kupp am solo te am impact bu jub te feeñ ci produit bi."
+        }
+      ],
+      "spontaneous_h2": "Amul poste ubbi bu mel ni say compétence?",
+      "spontaneous_p": "Yónnee nu sa candidature spontanée — dañuy jàng message bépp.",
+      "spontaneous_button": "Postulé ci email"
+    }
   }
 }

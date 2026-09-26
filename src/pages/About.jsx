@@ -23,8 +23,12 @@ export default function About() {
       description="Sellia est la plateforme e-commerce premium développée par Liafrik pour permettre à tout marchand de lancer, gérer et développer une boutique en ligne à l'international."
       url="/a-propos"
     >
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src="/marketing/hero/robinhiggins-confident-3082818_1920.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-landing font-semibold text-white text-3xl sm:text-4xl tracking-tight">À propos de Sellia</h1>
           <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">
             Sellia est développée par Liafrik pour donner aux marchands du monde entier une alternative premium aux grandes plateformes e-commerce — plus complète sur les paiements locaux, plus simple à prendre en main, et pensée pour vendre à l'international dès le premier jour.

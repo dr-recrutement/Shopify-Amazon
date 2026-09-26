@@ -15,8 +15,12 @@ export default function Careers() {
       description="Rejoignez l'équipe Liafrik qui développe Sellia, la plateforme e-commerce premium. Découvrez notre mission et comment postuler."
       url="/carrieres"
     >
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src="/marketing/hero/t_ushar-watch-3891591_1920.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-landing font-semibold text-white text-3xl sm:text-4xl tracking-tight">Carrières chez Sellia</h1>
           <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">
             Sellia est développée par l'équipe Liafrik. Nous grandissons vite et sommes toujours à l'écoute de profils talentueux — même en dehors de nos offres publiées.

@@ -18,8 +18,12 @@ export default function Security() {
       description="Découvrez comment Sellia protège les données et les paiements de vos clients : chiffrement, paiements sans stockage de carte, infrastructure cloud, conformité RGPD."
       url="/securite"
     >
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src="/marketing/hero/digitalmarketingagency-marketing-online-1427787_1920.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-2 text-xs font-semibold text-white">
             <ShieldCheck className="w-3.5 h-3.5" /> Sécurité & confiance
           </span>

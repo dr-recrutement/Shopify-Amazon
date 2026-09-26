@@ -36,6 +36,7 @@ export default function FeatureManage() {
       description="Découvrez la gestion des stocks, les paiements intégrés (Mobile Money inclus), la livraison multi-zones et les promotions de Sellia."
       url="/fonctionnalites/gerer"
       intro="Du stock au paiement jusqu'à la livraison — Sellia automatise les tâches répétitives pour que vous puissiez vous concentrer sur vos produits et vos clients."
+      heroImage="/marketing/hero/rupixen-payment-4334491_1920.jpg"
       sections={SECTIONS}
     />
   );

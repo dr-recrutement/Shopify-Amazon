@@ -10,8 +10,12 @@ export default function Guides() {
       description="Guides pratiques sur le choix d'une plateforme e-commerce, la migration vers Sellia et les paiements Mobile Money en Afrique."
       url="/guides"
     >
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src="/marketing/hero/thedigitalartist-shopping-4360296_1920.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-landing font-semibold text-white text-3xl sm:text-4xl tracking-tight">Guides Sellia</h1>
           <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">
             Choisir sa plateforme, migrer sans risque, vendre à l'international — nos guides pour e-commerçants.

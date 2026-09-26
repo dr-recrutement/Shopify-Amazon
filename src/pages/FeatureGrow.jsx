@@ -30,6 +30,7 @@ export default function FeatureGrow() {
       description="Découvrez les analytics en temps réel, le multi-devises et Sellia Assistant (IA) — les outils de croissance de la plateforme Sellia."
       url="/fonctionnalites/croitre"
       intro="Des données claires, une portée internationale native et une IA qui travaille pour vous — pour faire grandir votre boutique sans multiplier les outils."
+      heroImage="/marketing/hero/tumisu-ecommerce-3640321_1920.jpg"
       sections={SECTIONS}
     />
   );

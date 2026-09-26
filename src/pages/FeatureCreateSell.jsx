@@ -30,6 +30,7 @@ export default function FeatureCreateSell() {
       description="Découvrez l'éditeur de boutique, les thèmes premium et le checkout optimisé de Sellia — tout ce qu'il faut pour créer et vendre en ligne."
       url="/fonctionnalites/creer-vendre"
       intro="De l'éditeur visuel aux thèmes premium jusqu'au tunnel de paiement — tout ce dont vous avez besoin pour lancer une boutique qui inspire confiance dès la première visite."
+      heroImage="/marketing/hero/tungart7-woman-8656653_1920.jpg"
       sections={SECTIONS}
     />
   );

@@ -17,12 +17,18 @@ function useHashScroll() {
   }, [hash]);
 }
 
-export default function FeatureGroupPage({ eyebrow, title, description, url, intro, sections }) {
+export default function FeatureGroupPage({ eyebrow, title, description, url, intro, sections, heroImage }) {
   useHashScroll();
   return (
     <MarketingLayout title={title} description={description} url={url}>
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        {heroImage && (
+          <div className="absolute inset-0">
+            <img src={heroImage} alt="" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+          </div>
+        )}
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-2 text-xs font-semibold text-white">{eyebrow}</span>
           <h1 className="mt-6 font-landing font-semibold text-white text-3xl sm:text-4xl tracking-tight">{title}</h1>
           <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">{intro}</p>

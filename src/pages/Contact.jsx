@@ -20,8 +20,12 @@ export default function Contact() {
       description="Contactez l'équipe Sellia : support technique, service client ou réseaux sociaux. Nous répondons rapidement à tous les marchands."
       url="/contact"
     >
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src="/marketing/hero/affa_esens-alone-4502456_1920.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-landing font-semibold text-white text-3xl sm:text-4xl tracking-tight">Contactez-nous</h1>
           <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">
             Une équipe disponible pour répondre à vos questions, avant et après votre inscription.

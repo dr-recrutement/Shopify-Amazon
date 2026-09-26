@@ -24,7 +24,7 @@ const planFeatures = (plan) => {
 };
 
 export default function Billing() {
-  const { store, loading } = useCurrentStore();
+  const { store, loading, staffRole } = useCurrentStore();
   const [payments, setPayments] = useState([]);
   const [changing, setChanging] = useState(null);
 
@@ -69,6 +69,7 @@ export default function Billing() {
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
   if (!store) return <div className="max-w-md mx-auto mt-20 text-center"><AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Configurez votre boutique pour gérer l'abonnement.</p></div>;
+  if (staffRole === 'user') return <div className="max-w-md mx-auto mt-20 text-center"><AlertCircle className="w-10 h-10 text-[#6D7175] mx-auto mb-3" /><h1 className="text-lg font-bold text-[#202223]">Accès réservé</h1><p className="text-sm text-[#6D7175] mt-1">La facturation est réservée au propriétaire et aux administrateurs de la boutique.</p></div>;
 
   const currentPlan = getPlan(store.plan);
   const PLANS_LIST = PLAN_ORDER.map((id) => PLANS[id]);

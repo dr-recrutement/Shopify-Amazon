@@ -32,6 +32,7 @@ export function useCurrentStore() {
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [staffRole, setStaffRole] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -39,6 +40,7 @@ export function useCurrentStore() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setStore(null);
+        setStaffRole(null);
         setError(null);
         return;
       }
@@ -50,7 +52,35 @@ export function useCurrentStore() {
         .limit(1)
         .maybeSingle();
       if (queryError) throw queryError;
-      setStore(normalizeTenant(data));
+      if (data) {
+        setStore(normalizeTenant(data));
+        setStaffRole('owner');
+        setError(null);
+        return;
+      }
+      // Not an owner - this was the actual bug behind invited staff never
+      // seeing anything: this hook only ever looked up tenants.owner_id,
+      // with no fallback path for someone invited as staff (team_members
+      // matches by email, not a user_id column). Every page reading
+      // `store` from here would render its "configurez votre boutique"
+      // empty state for a real, logged-in staff member.
+      const { data: membership } = await supabase
+        .from('team_members')
+        .select('tenant_id, role')
+        .eq('status', 'invited')
+        .ilike('email', user.email)
+        .maybeSingle();
+      if (membership?.tenant_id) {
+        const { data: staffTenant, error: staffTenantError } = await supabase
+          .from('tenants').select('*').eq('id', membership.tenant_id).maybeSingle();
+        if (staffTenantError) throw staffTenantError;
+        setStore(normalizeTenant(staffTenant));
+        setStaffRole(membership.role || 'user');
+        setError(null);
+        return;
+      }
+      setStore(null);
+      setStaffRole(null);
       setError(null);
     } catch (e) {
       console.error('useCurrentStore: failed to load tenant:', e);
@@ -61,7 +91,11 @@ export function useCurrentStore() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
-  return { store, loading, error, reload: load };
+  // staffRole: 'owner' | 'admin' | 'user' | null - lets pages that need to
+  // restrict something to owners/admins do so (Payments, Billing, Staff
+  // management itself). Everything else keeps working exactly as before
+  // for an owner, who still gets staffRole 'owner' unconditionally.
+  return { store, loading, error, reload: load, staffRole };
 }
 
 export default useCurrentStore;

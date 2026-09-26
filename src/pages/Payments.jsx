@@ -58,7 +58,7 @@ const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg
 // a key only that function can read) - this page only ever sends
 // plaintext over HTTPS to get it encrypted, and never fetches it back.
 export default function Payments() {
-  const { store, loading: storeLoading } = useCurrentStore();
+  const { store, loading: storeLoading, staffRole } = useCurrentStore();
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -137,6 +137,15 @@ export default function Payments() {
         <AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" />
         <h1 className="text-lg font-bold text-[#202223]">Créez d'abord votre boutique</h1>
         <Link to="/onboarding" className="inline-flex items-center gap-1.5 bg-[#008060] text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-[#00694d] mt-3">Configurer ma boutique</Link>
+      </div>
+    );
+  }
+  if (staffRole === 'user') {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-[#6D7175] mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-[#202223]">Accès réservé</h1>
+        <p className="text-sm text-[#6D7175] mt-1">Les paiements sont réservés au propriétaire et aux administrateurs de la boutique.</p>
       </div>
     );
   }

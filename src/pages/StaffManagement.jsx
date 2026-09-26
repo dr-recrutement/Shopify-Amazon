@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UsersRound, Plus, Trash2, Loader2, Crown, User } from 'lucide-react';
+import { UsersRound, Plus, Trash2, Loader2, Crown, User, AlertCircle } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 // supabase-js's own error object only ever carries a generic "Edge
 // Function returned a non-2xx status code" - the real message is in the
@@ -16,7 +16,7 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { getFeatureValue, getPlan } from '@/lib/plans';
 
 export default function StaffManagement() {
-  const { store } = useCurrentStore();
+  const { store, staffRole } = useCurrentStore();
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showInvite, setShowInvite] = useState(false);
@@ -71,6 +71,15 @@ export default function StaffManagement() {
   };
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
+  if (staffRole === 'user') {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center">
+        <AlertCircle className="w-10 h-10 text-[#6D7175] mx-auto mb-3" />
+        <h1 className="text-lg font-bold text-[#202223]">Accès réservé</h1>
+        <p className="text-sm text-[#6D7175] mt-1">La gestion du personnel est réservée au propriétaire et aux administrateurs de la boutique.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">

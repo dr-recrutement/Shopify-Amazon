@@ -433,7 +433,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                       {(c.buttons || []).map((b, i) => {
                         const { url } = normalizeLink({ url: b.url });
                         const isAnchor = !url || url === '#' || url === '#products';
-                        const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                        const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                         const commonStyle = b.variant === 'primary' ? { background: primary, color: p.primaryText } : { border: '1px solid #fff', color: '#fff' };
                         const commonClass = 'text-xs sm:text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90 inline-block';
                         return href
@@ -467,7 +467,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                 <div className={`grid ${baseColsClass(c.columnsMobile || 2)} ${smColsClass(c.columns || 4)} gap-4`}>
                   {(c.items || []).map((it, i) => {
                     const { url } = normalizeLink({ url: it.url });
-                    const detailHref = storefront && storeSlug && url && url !== '#' ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                    const detailHref = storefront && storeSlug && url && url !== '#' ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                     const CardTag = detailHref ? 'a' : 'div';
                     return (
                       <CardTag key={i} {...(detailHref ? { href: detailHref, onClick: (e) => e.stopPropagation() } : {})} className="relative aspect-[3/4] rounded-xl overflow-hidden block">
@@ -546,7 +546,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   {(() => {
                     const { url } = normalizeLink({ url: c.url });
                     const isAnchor = !url || url === '#' || url === '#products';
-                    const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                    const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                     return href
                       ? <a href={href} onClick={(e) => { if (storefront) e.stopPropagation(); }} className="hidden sm:inline-block text-xs font-semibold px-4 py-2 rounded-full border shrink-0" style={{ borderColor: p.border, color: p.text }}>{c.linkLabel || 'Voir tout'}</a>
                       : null;
@@ -648,7 +648,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     {c.button && (() => {
                       const { url } = normalizeLink({ url: c.buttonUrl });
                       const isAnchor = !url || url === '#' || url === '#products';
-                      const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                      const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                       const btnClass = 'mt-6 inline-block text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90';
                       const btnStyle = { background: primary, color: p.primaryText };
                       return href
@@ -784,7 +784,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                         {(() => {
                           const { url } = normalizeLink({ url: pl.url });
                           const isAnchor = !url || url === '#' || url === '#products';
-                          const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                          const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                           const btnClass = 'mt-6 block text-center w-full py-2.5 sellia-btn font-semibold text-sm transition hover:opacity-90';
                           const btnStyle = hi ? { background: p.primaryText, color: primary } : { background: primary, color: p.primaryText };
                           const label = hi ? 'Commencer' : 'Choisir';
@@ -807,7 +807,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                 {(() => {
                   const { url } = normalizeLink({ url: c.buttonUrl });
                   const isAnchor = !url || url === '#' || url === '#products';
-                  const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
+                  const href = !isAnchor && storefront && storeSlug ? (url.startsWith('/store/') || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : `/store/${storeSlug}${url.startsWith('/') ? url : '/' + url}`) : null;
                   const btnClass = 'mt-7 inline-block text-sm font-semibold px-6 py-3 sellia-btn transition hover:opacity-90';
                   const btnStyle = { background: p.primaryText, color: primary };
                   return href
@@ -887,7 +887,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     if (b.kind === 'button') {
                       const { url: bUrl } = normalizeLink({ url: b.url });
                       const bIsAnchor = !bUrl || bUrl === '#' || bUrl === '#products';
-                      const bHref = !bIsAnchor && storefront && storeSlug ? (bUrl.startsWith('/store/') || bUrl.startsWith('http') ? bUrl : `/store/${storeSlug}${bUrl.startsWith('/') ? bUrl : '/' + bUrl}`) : null;
+                      const bHref = !bIsAnchor && storefront && storeSlug ? (bUrl.startsWith('/store/') || bUrl.startsWith('http') || bUrl.startsWith('mailto:') || bUrl.startsWith('tel:') ? bUrl : `/store/${storeSlug}${bUrl.startsWith('/') ? bUrl : '/' + bUrl}`) : null;
                       const bClass = 'text-sm font-semibold px-5 py-3 sellia-btn transition hover:opacity-90 inline-block';
                       const bStyle = { background: primary, color: p.primaryText };
                       return <div key={i} style={spanStyle} className="flex">{bHref

@@ -309,7 +309,10 @@ function LinkUrlField({ value, onChange }) {
         </select>
       )}
       {kind === 'custom' && (
-        <input value={current} onChange={(e) => onChange(e.target.value)} placeholder="https://…" className={selCls} />
+        <div>
+          <input value={current} onChange={(e) => onChange(e.target.value)} placeholder="https://…" className={selCls} />
+          <p className="text-[10px] text-[#6D7175] mt-1">Aussi utilisable pour un e-mail (mailto:contact@votresite.com) ou un appel (tel:+221771234567).</p>
+        </div>
       )}
       {!kind && current === '#' && <p className="text-[10px] text-amber-600">Ce lien ne pointe nulle part pour l'instant — choisissez une destination ci-dessus.</p>}
     </div>

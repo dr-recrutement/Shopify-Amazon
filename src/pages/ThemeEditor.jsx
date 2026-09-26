@@ -368,6 +368,19 @@ function ScalarInput({ value, onChange, fieldKey }) {
       </select>
     );
   }
+  if (fieldKey === 'type' && typeof value === 'string') {
+    // Real choice for form fields, not a free-text box the merchant had to
+    // guess valid values for - and more types than the original 4.
+    const typeLabels = {
+      text: 'Texte court', email: 'E-mail', tel: 'Téléphone', number: 'Nombre',
+      date: 'Date', textarea: 'Zone de texte', select: 'Liste déroulante', checkbox: 'Case à cocher',
+    };
+    return (
+      <select value={typeLabels[value] ? value : 'text'} onChange={(e) => onChange(e.target.value)} className={inputCls}>
+        {Object.entries(typeLabels).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    );
+  }
   if (isImage(value) || (IMAGE_KEYS.has(fieldKey) && typeof value === 'string')) return <ImageField value={value} onSetUrl={onChange} />;
   if (typeof value === 'number') return <input type="number" value={value} onChange={(e) => onChange(+e.target.value)} className={inputCls} />;
   if (typeof value === 'boolean') return <label className="flex items-center gap-2 text-xs text-[#202223] cursor-pointer"><input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="accent-[#008060]" /> {value ? 'Oui' : 'Non'}</label>;

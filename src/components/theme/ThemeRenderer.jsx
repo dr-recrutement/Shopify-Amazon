@@ -196,16 +196,25 @@ function FormBlock({ c, p, primary, primaryText, headingFont, storefront, tenant
         <form onSubmit={storefront ? submit : (e) => e.preventDefault()} className="max-w-lg mx-auto space-y-3">
           {fields.map((f, i) => (
             <div key={i}>
-              <label className="block text-xs font-semibold mb-1" style={{ color: p.text }}>{f.label}{f.required && ' *'}</label>
-              {f.type === 'textarea' ? (
-                <textarea required={f.required} rows={4} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
-              ) : f.type === 'select' ? (
-                <select required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle}>
-                  <option value="">—</option>
-                  {(f.options || []).map((o, oi) => <option key={oi} value={o}>{o}</option>)}
-                </select>
+              {f.type === 'checkbox' ? (
+                <label className="flex items-start gap-2 text-xs" style={{ color: p.text }}>
+                  <input type="checkbox" required={f.required} checked={!!values[f.name]} onChange={(e) => setField(f.name, e.target.checked)} className="mt-0.5 accent-current" style={{ color: primary }} />
+                  <span>{f.label}{f.required && ' *'}</span>
+                </label>
               ) : (
-                <input type={f.type || 'text'} required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
+                <>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: p.text }}>{f.label}{f.required && ' *'}</label>
+                  {f.type === 'textarea' ? (
+                    <textarea required={f.required} rows={4} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
+                  ) : f.type === 'select' ? (
+                    <select required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle}>
+                      <option value="">—</option>
+                      {(f.options || []).map((o, oi) => <option key={oi} value={o}>{o}</option>)}
+                    </select>
+                  ) : (
+                    <input type={f.type || 'text'} required={f.required} value={values[f.name] || ''} onChange={(e) => setField(f.name, e.target.value)} className={fieldCls} style={fieldStyle} />
+                  )}
+                </>
               )}
             </div>
           ))}
@@ -361,12 +370,12 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   ? <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={storefront ? 'cursor-pointer' : ''}><Img src={c.logoImage} className={LOGO_SIZES[c.logoSize] || LOGO_SIZES.medium} fittingType="fit" zoom={c.logoZoom} {...ip} path="logoImage" /></span>
                   : <span onClick={(e) => { if (storefront) { e.stopPropagation(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className={`font-bold tracking-[0.25em] text-sm sm:text-base ${storefront ? 'cursor-pointer' : ''}`} style={{ fontFamily: theme.fonts?.heading, color: c.textColor || p.dark }}>{c.logo}</span>}
                 <nav className="hidden sm:flex gap-6 text-xs font-medium">{(c.links || []).map((l, i) => <NavLink key={i} link={l} storefront={storefront} storeSlug={storeSlug} style={{ color: c.textColor || p.text }} />)}</nav>
-                {storefront && storeSlug && (
+                {storefront && storeSlug && c.showSearch !== false && (
                   <a href={`/store/${storeSlug}/search`} onClick={(e) => e.stopPropagation()} className="p-1.5 rounded-md shrink-0" style={{ color: c.textColor || p.text }} title="Rechercher" aria-label="Rechercher">
                     <Search className="w-4 h-4" />
                   </a>
                 )}
-                {storefront && storeSlug && (
+                {storefront && storeSlug && c.showWishlist !== false && (
                   <a href={`/store/${storeSlug}/wishlist`} onClick={(e) => e.stopPropagation()} className="p-1.5 rounded-md shrink-0" style={{ color: c.textColor || p.text }} title="Mes favoris" aria-label="Mes favoris">
                     <Heart className="w-4 h-4" />
                   </a>

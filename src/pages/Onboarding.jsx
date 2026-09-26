@@ -9,6 +9,36 @@ import { COUNTRIES } from '@/lib/world/countries';
 import { CURRENCIES } from '@/lib/world/currencies';
 import PhoneInput from '@/components/PhoneInput';
 
+function slugify(str) {
+  return (str || '').toLowerCase().trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// The exact root cause of "ma boutique n'est pas visible en ligne": this
+// is the only real onboarding flow (routed at /onboarding, linked from
+// dozens of places across the admin) and it never set tenants.slug at
+// all - a store created here had no valid URL, ever, unless a merchant
+// separately found some other settings screen to set one. Generates a
+// real, unique slug from the store name, checking for collisions against
+// what's already taken (a numeric suffix if the plain slug is used).
+async function generateUniqueSlug(name, currentTenantId) {
+  const base = slugify(name) || 'boutique';
+  let candidate = base;
+  let suffix = 1;
+  // Bounded loop (never truly infinite) - falls back to a timestamp
+  // suffix after a reasonable number of collisions rather than looping
+  // forever against a pathological name.
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const { data } = await supabase.from('tenants').select('id').eq('slug', candidate).maybeSingle();
+    if (!data || data.id === currentTenantId) return candidate;
+    suffix += 1;
+    candidate = `${base}-${suffix}`;
+  }
+  return `${base}-${Date.now()}`;
+}
+
 const STEPS = [
   { id: 'store', label: 'Votre boutique', icon: Store },
   { id: 'products', label: 'Produits', icon: Package },
@@ -66,12 +96,20 @@ export default function Onboarding() {
     try {
       if (step === 0) {
         const { data: { user } } = await supabase.auth.getUser();
+        // A store with an existing slug keeps it (don't silently change a
+        // merchant's real, possibly-already-shared URL); one with none
+        // (new store, or an existing one from before this fix) gets a
+        // real one generated now instead of staying permanently
+        // unreachable.
+        const needsSlug = !store?.slug;
+        const slug = needsSlug ? await generateUniqueSlug(f.name || store?.name || 'boutique', store?.id) : store.slug;
         const payload = {
           name: f.name || 'Ma boutique',
           country: f.country,
           currency: f.currency,
           sector: f.business_type,
           phone: phone || null,
+          ...(needsSlug ? { slug } : {}),
         };
         if (store?.id) {
           const { error } = await supabase.from('tenants').update(payload).eq('id', store.id);
@@ -79,6 +117,7 @@ export default function Onboarding() {
         } else {
           const { error } = await supabase.from('tenants').insert({
             ...payload,
+            slug,
             owner_id: user.id,
             status: 'trial',
             plan: 'growth',

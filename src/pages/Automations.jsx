@@ -192,6 +192,11 @@ export default function Automations() {
         </button>
       </div>
 
+      <div className="mb-5 p-3 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-2">
+        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <p className="text-xs text-amber-800">Seule la combinaison <strong>Panier abandonné → Envoyer un e-mail</strong> s'exécute réellement pour l'instant (vérifiée automatiquement chaque heure). Les autres déclencheurs et actions sont enregistrés mais pas encore exécutés automatiquement.</p>
+      </div>
+
       {automations.length === 0 && (
         <div className="bg-white rounded-xl border border-[#E1E1E1] p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">

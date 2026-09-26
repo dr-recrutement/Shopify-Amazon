@@ -969,7 +969,24 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-3 py-3 border border-border rounded-lg bg-white">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <input required type="email" placeholder="Adresse e-mail" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="flex-1 outline-none text-sm" />
+                <input
+                  required
+                  type="email"
+                  placeholder="Adresse e-mail"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onBlur={(e) => {
+                    // Captured as soon as they type it, not just on final
+                    // submit - the abandoned-cart trigger below can only
+                    // ever reach someone whose email it actually has, and
+                    // most real abandonment happens after this point but
+                    // before the order is placed.
+                    const email = e.target.value.trim();
+                    if (!email || !email.includes('@') || !store?.id) return;
+                    supabase.from('abandoned_carts').update({ customer_email: email }).eq('tenant_id', store.id).eq('session_id', getCartSessionId()).eq('status', 'open').then(() => {});
+                  }}
+                  className="flex-1 outline-none text-sm"
+                />
               </div>
               <div className="flex items-center gap-2 px-3 py-3 border border-border rounded-lg bg-white">
                 <Phone className="w-4 h-4 text-muted-foreground" />

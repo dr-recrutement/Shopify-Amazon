@@ -4,6 +4,33 @@ import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus, Star
 import { supabase } from '@/api/supabaseClient';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { WishlistHeart } from '@/components/theme/ThemeRenderer';
+
+// Real color swatches for a "Couleur/Color" option, not just a text
+// button like every other option - matches what a real premium storefront
+// shows (a colored circle, not the word "Rouge"). Common French/English
+// names mapped to real CSS colors; hex codes and valid CSS keywords
+// (merchants who already type "red" or "#FF0000") work automatically.
+const COLOR_NAME_MAP = {
+  rouge: 'red', bleu: 'blue', 'bleu marine': 'navy', vert: 'green', jaune: 'gold',
+  noir: 'black', blanc: 'white', gris: 'gray', rose: 'pink', violet: 'purple',
+  orange: 'orange', marron: 'brown', beige: 'beige', doré: 'goldenrod', argenté: 'silver',
+  turquoise: 'turquoise', bordeaux: 'maroon', kaki: 'darkkhaki', corail: 'coral',
+};
+function resolveSwatchColor(value) {
+  const v = (value || '').trim().toLowerCase();
+  if (/^#[0-9a-f]{3,8}$/i.test(v)) return v;
+  if (COLOR_NAME_MAP[v]) return COLOR_NAME_MAP[v];
+  // Let the browser itself judge whether the raw value is a valid CSS
+  // color keyword (covers "red", "blue", etc. typed directly) - if it
+  // isn't, the swatch is skipped entirely rather than rendering black.
+  const probe = document.createElement('div');
+  probe.style.color = '';
+  probe.style.color = v;
+  return probe.style.color ? v : null;
+}
+function isColorOption(name) {
+  return /^(couleur|color|colou?r)$/i.test((name || '').trim());
+}
 import { applySEO } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -185,6 +212,7 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen" style={{ background: p.bg, color: p.text, fontFamily: theme.fonts?.body }}>
+      {theme.customCss && <style>{theme.customCss}</style>}
       <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
         <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
           <ArrowLeft className="w-4 h-4" /> {store.name}
@@ -231,16 +259,20 @@ export default function ProductDetail() {
                 <div key={o.name}>
                   <p className="text-xs font-semibold mb-1.5" style={{ color: p.dark }}>{o.name}</p>
                   <div className="flex flex-wrap gap-2">
-                    {(o.values || []).filter(Boolean).map((v) => (
-                      <button
-                        key={v}
-                        onClick={() => setSelectedOptions((s) => ({ ...s, [o.name]: v }))}
-                        className="px-3.5 py-2 rounded-lg text-sm font-medium border-2 transition"
-                        style={selectedOptions[o.name] === v ? { borderColor: theme.palette.primary, background: theme.palette.primary + '10', color: p.dark } : { borderColor: p.border, color: p.text }}
-                      >
-                        {v}
-                      </button>
-                    ))}
+                    {(o.values || []).filter(Boolean).map((v) => {
+                      const swatch = isColorOption(o.name) ? resolveSwatchColor(v) : null;
+                      return (
+                        <button
+                          key={v}
+                          onClick={() => setSelectedOptions((s) => ({ ...s, [o.name]: v }))}
+                          className={`rounded-lg text-sm font-medium border-2 transition ${swatch ? 'w-9 h-9 p-0 flex items-center justify-center' : 'px-3.5 py-2'}`}
+                          style={selectedOptions[o.name] === v ? { borderColor: theme.palette.primary, background: swatch ? undefined : theme.palette.primary + '10', color: p.dark } : { borderColor: p.border, color: p.text }}
+                          title={v}
+                        >
+                          {swatch ? <span className="w-6 h-6 rounded-full border border-black/10" style={{ background: swatch }} /> : v}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

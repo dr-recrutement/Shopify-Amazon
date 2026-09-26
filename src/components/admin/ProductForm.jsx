@@ -243,9 +243,11 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
           barcode: form.barcode || '',
           weight: Number(form.weight) || 0,
           track_inventory: form.track_inventory !== false,
+          requires_shipping: form.requires_shipping !== false,
           tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
           options: (form.options || []).filter((o) => o.name && (o.values || []).filter(Boolean).length),
           seo: form.seo || { title: '', description: '' },
+          customFields: (form.customFields || []).filter((f) => f.key.trim()),
         },
       };
       const { error } = isNew
@@ -295,8 +297,12 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
                 {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </Field>
-            <Field label="Poids (kg)"><input type="number" min="0" step="0.01" value={form.weight || 0} onChange={(e) => set({ weight: e.target.value })} className={inputCls} /></Field>
+            <Field label="Poids (kg)"><input type="number" min="0" step="0.01" value={form.weight || 0} onChange={(e) => set({ weight: e.target.value })} className={inputCls} disabled={form.requires_shipping === false} /></Field>
           </div>
+          <label className="flex items-center gap-2 text-xs text-[#202223] cursor-pointer -mt-1">
+            <input type="checkbox" checked={form.requires_shipping !== false} onChange={(e) => set({ requires_shipping: e.target.checked })} className="accent-[#008060]" />
+            Ce produit nécessite une livraison (décochez pour un produit numérique ou un service)
+          </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Marque"><input value={form.vendor} onChange={(e) => set({ vendor: e.target.value })} className={inputCls} /></Field>
             <Field label="Type de produit"><input value={form.product_type} onChange={(e) => set({ product_type: e.target.value })} className={inputCls} placeholder="Vêtement, Accessoire…" /></Field>
@@ -306,6 +312,54 @@ export default function ProductForm({ open, onOpenChange, store, product, onSave
             <Field label="Lien produit fournisseur"><input value={form.supplier_url || ''} onChange={(e) => set({ supplier_url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
           </div>
           <Field label="Tags"><input value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} placeholder="nouveauté, wax, homme (séparés par virgules)" /></Field>
+
+          <div className="border-t border-[#E1E1E1] pt-4">
+            <p className="text-xs font-bold text-[#202223] uppercase tracking-wide mb-3">Référencement (SEO)</p>
+            <div className="space-y-3">
+              <Field label="Titre de la page">
+                <input value={form.seo?.title || ''} onChange={(e) => set({ seo: { ...(form.seo || {}), title: e.target.value } })} className={inputCls} placeholder={form.title || 'Titre du produit'} maxLength={70} />
+                <p className="text-[10px] text-[#6D7175] mt-1">{(form.seo?.title || '').length}/70 caractères</p>
+              </Field>
+              <Field label="Meta-description">
+                <textarea value={form.seo?.description || ''} onChange={(e) => set({ seo: { ...(form.seo || {}), description: e.target.value } })} rows={2} className={inputCls} maxLength={320} placeholder="Résumé affiché dans les résultats de recherche…" />
+                <p className="text-[10px] text-[#6D7175] mt-1">{(form.seo?.description || '').length}/320 caractères</p>
+              </Field>
+              <Field label="URL (handle)">
+                <div className="flex items-center text-xs">
+                  <span className="text-[#6D7175] shrink-0">/products/</span>
+                  <input value={form.seo?.handle || ''} onChange={(e) => set({ seo: { ...(form.seo || {}), handle: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-') } })} className={`${inputCls} ml-1`} placeholder={(form.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')} />
+                </div>
+              </Field>
+              {(form.seo?.title || form.title) && (
+                <div className="rounded-lg border border-[#E1E1E1] p-3 bg-[#FAFAFA]">
+                  <p className="text-[11px] text-[#6D7175] mb-1">Aperçu Google</p>
+                  <p className="text-sm text-[#1a0dab] truncate">{form.seo?.title || form.title}</p>
+                  <p className="text-xs text-[#006621]">votreboutique.com/products/{form.seo?.handle || (form.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}</p>
+                  <p className="text-xs text-[#4d5156] line-clamp-2">{form.seo?.description || (form.description || '').replace(/<[^>]*>/g, '').slice(0, 160)}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="border-t border-[#E1E1E1] pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Métadonnées personnalisées</p>
+              <button onClick={() => set({ customFields: [...(form.customFields || []), { key: '', value: '' }] })} className="text-xs font-semibold text-[#008060] hover:underline">+ Ajouter un champ</button>
+            </div>
+            {(form.customFields || []).length === 0 ? (
+              <p className="text-xs text-[#6D7175]">Aucun champ personnalisé. Utile pour des informations comme « Matière », « Instructions d'entretien », « Origine »…</p>
+            ) : (
+              <div className="space-y-2">
+                {(form.customFields || []).map((f, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input value={f.key} onChange={(e) => set({ customFields: (form.customFields || []).map((x, xi) => (xi === i ? { ...x, key: e.target.value } : x)) })} placeholder="Nom (ex : Matière)" className={`${inputCls} flex-1`} />
+                    <input value={f.value} onChange={(e) => set({ customFields: (form.customFields || []).map((x, xi) => (xi === i ? { ...x, value: e.target.value } : x)) })} placeholder="Valeur (ex : Coton bio)" className={`${inputCls} flex-1`} />
+                    <button onClick={() => set({ customFields: (form.customFields || []).filter((_, xi) => xi !== i) })} className="text-[#6D7175] hover:text-red-500 px-1"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <Field label="Description"><textarea value={form.description} onChange={(e) => set({ description: e.target.value })} rows={4} className={inputCls} /></Field>
 
           {/* Variants */}

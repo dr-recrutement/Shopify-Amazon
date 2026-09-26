@@ -242,18 +242,27 @@ export default function Storefront() {
   const storeSections = useMemo(() => {
     const prods = products.map((p) => {
       const r = productRatings[p.id];
+      const compareAt = (p.compare_at_price_cents || 0) / 100;
+      const price = (p.price_cents || 0) / 100;
+      const hasVariants = (p.variants || []).length > 0;
+      const totalStock = hasVariants ? (p.variants || []).reduce((s, v) => s + (v.stock || 0), 0) : (p.stock || 0);
       return {
         _id: p.id,
         image: (p.images && p.images[0]) || '',
         title: p.name,
-        price: formatMoney((p.price_cents || 0) / 100, store?.currency || p.currency),
-        _price: (p.price_cents || 0) / 100,
-        _hasVariants: (p.variants || []).length > 0,
+        price: formatMoney(price, store?.currency || p.currency),
+        _price: price,
+        _hasVariants: hasVariants,
         // Real average from approved product_reviews - not shown at all
         // (no fake placeholder star count) when a product has zero
         // reviews yet, rather than implying a rating that doesn't exist.
         rating: r ? Math.round((r.sum / r.count) * 10) / 10 : undefined,
         reviewCount: r ? r.count : 0,
+        // Real badges - computed from actual product data, not a manual
+        // toggle a merchant has to remember to flip for every product.
+        _badgeSale: compareAt > price ? Math.round(((compareAt - price) / compareAt) * 100) : null,
+        _badgeNew: new Date(p.created_at) > new Date(Date.now() - 14 * 86400000),
+        _badgeSoldOut: (p.metafields?.track_inventory !== false) && totalStock <= 0,
       };
     });
     const posts = articles.map((a) => ({
@@ -409,6 +418,7 @@ export default function Storefront() {
 
   return (
     <div className="min-h-screen bg-white">
+      {theme.customCss && <style>{theme.customCss}</style>}
       <button onClick={() => setCartOpen(true)} className={`fixed bottom-5 z-40 bg-foreground text-background rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2 ${theme.cartPosition === 'bottom-left' ? 'left-5' : 'right-5'}`}>
         {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
         {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}

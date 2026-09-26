@@ -487,6 +487,18 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
                     return (
                       <div key={i} className={`relative group overflow-hidden transition hover:shadow-lg ${theme.productCardStyle === 'square' ? 'rounded-none' : 'rounded-xl'}`} style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                        {theme.showProductBadges !== false && (
+                          <div className="absolute top-2 left-2 z-10 flex flex-col gap-1 items-start">
+                            {pr._badgeSoldOut ? (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#202223] text-white">Épuisé</span>
+                            ) : (
+                              <>
+                                {pr._badgeSale && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white">-{pr._badgeSale}%</span>}
+                                {pr._badgeNew && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: primary, color: primaryText }}>Nouveau</span>}
+                              </>
+                            )}
+                          </div>
+                        )}
                         {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} />}
                         {detailHref ? (
                           <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>

@@ -525,6 +525,32 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
       <div>
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Badges produit</p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-[#202223] cursor-pointer">
+          <input type="checkbox" checked={theme.showProductBadges !== false} onChange={(e) => commit({ ...theme, showProductBadges: e.target.checked })} className="accent-[#008060]" />
+          Afficher les badges Promo / Nouveau / Épuisé
+        </label>
+        <p className="text-[10px] text-[#6D7175] mt-1.5">Calculés automatiquement (prix barré, ajout récent, stock à 0) — rien à configurer produit par produit.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">CSS personnalisé</p>
+        </div>
+        <textarea
+          value={theme.customCss || ''}
+          onChange={(e) => commit({ ...theme, customCss: e.target.value })}
+          rows={5}
+          spellCheck={false}
+          className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white font-mono focus:outline-none focus:ring-2 focus:ring-[#008060]/30"
+          placeholder=".sellia-btn { border-radius: 0 !important; }"
+        />
+        <p className="text-[10px] text-[#6D7175] mt-1.5">Pour les utilisateurs avancés. Injecté directement sur votre boutique publiée.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
           <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Chat WhatsApp</p>
         </div>
         <input

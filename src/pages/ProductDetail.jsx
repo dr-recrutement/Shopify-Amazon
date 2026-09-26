@@ -59,6 +59,16 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  const loadCartCount = useCallback(async () => {
+    if (!store) return;
+    const sessionId = getCartSessionId();
+    const { data } = await supabase.from('abandoned_carts').select('items').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
+    setCartCount((data?.items || []).reduce((s, i) => s + (i.quantity || 0), 0));
+  }, [store]);
+
+  useEffect(() => { loadCartCount(); }, [loadCartCount]);
   const [suggestions, setSuggestions] = useState([]);
   const [reviews, setReviews] = useState([]);
 
@@ -192,6 +202,7 @@ export default function ProductDetail() {
       }
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
+      setCartCount((c) => c + qty);
     } catch (e) {
       alert(e.message || "Impossible d'ajouter au panier");
     } finally { setAdding(false); }
@@ -213,6 +224,15 @@ export default function ProductDetail() {
   return (
     <div className="min-h-screen" style={{ background: p.bg, color: p.text, fontFamily: theme.fonts?.body }}>
       {theme.customCss && <style>{theme.customCss}</style>}
+      <Link
+        to={`/store/${slug}/cart`}
+        className={`fixed bottom-5 z-40 rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2 ${theme.cartPosition === 'bottom-left' ? 'left-5' : 'right-5'}`}
+        style={{ background: p.dark, color: p.bg }}
+        aria-label="Voir le panier"
+      >
+        {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
+        {cartCount > 0 && <span className="absolute -top-1 -right-1 text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center" style={{ background: theme.palette.primary, color: theme.palette.primaryText }}>{cartCount}</span>}
+      </Link>
       <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
         <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
           <ArrowLeft className="w-4 h-4" /> {store.name}

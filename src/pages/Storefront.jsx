@@ -324,7 +324,7 @@ export default function Storefront() {
         return { ...s, props: { ...s.props, posts: posts.slice(0, 3) } };
       }
       if (s.type === 'collectionList' && collections.length > 0) {
-        return { ...s, props: { ...s.props, items: collections.map((c) => ({ image: c.image_url || '', title: c.name, count: `${c.product_count} article${c.product_count > 1 ? 's' : ''}` })) } };
+        return { ...s, props: { ...s.props, items: collections.map((c) => ({ image: c.image_url || '', title: c.name, count: `${c.product_count} article${c.product_count > 1 ? 's' : ''}`, url: `/collections/${c.id}` })) } };
       }
       if (s.type === 'storeLocations' && storeLocations.length > 0) {
         return { ...s, props: { ...s.props, locations: storeLocations } };
@@ -460,7 +460,7 @@ export default function Storefront() {
       {theme.customCss && <style>{theme.customCss}</style>}
       <button onClick={() => setCartOpen(true)} className={`fixed bottom-5 z-40 bg-foreground text-background rounded-full p-4 shadow-2xl hover:opacity-90 transition flex items-center gap-2 ${theme.cartPosition === 'bottom-left' ? 'left-5' : 'right-5'}`}>
         {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
-        {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-brand text-brand-foreground text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
+        {cartCount > 0 && <span className="absolute -top-1 -right-1 text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center" style={{ background: theme.palette.primary, color: theme.palette.primaryText }}>{cartCount}</span>}
       </button>
 
       {theme.whatsappNumber && (
@@ -591,7 +591,7 @@ export default function Storefront() {
                   <span className="font-heading font-bold text-foreground">Total</span>
                   <span className="font-heading font-bold text-lg text-foreground">{formatMoney(cartTotal, store.currency)}</span>
                 </div>
-                <button onClick={() => { setCartOpen(false); setCheckoutOpen(true); }} className="w-full bg-brand text-brand-foreground font-semibold py-3.5 rounded-full text-sm hover:bg-brand/90 transition-colors flex items-center justify-center gap-2 mt-1">
+                <button onClick={() => { setCartOpen(false); setCheckoutOpen(true); }} className="w-full font-semibold py-3.5 rounded-full text-sm hover:opacity-90 transition-colors flex items-center justify-center gap-2 mt-1" style={{ background: theme.palette.primary, color: theme.palette.primaryText }}>
                   Passer à la commande <ArrowRight className="w-4 h-4" />
                 </button>
                 <Link to={`/store/${slug}/cart`} onClick={() => setCartOpen(false)} className="w-full block text-center text-xs font-medium text-foreground hover:underline">Voir le panier complet</Link>
@@ -604,7 +604,7 @@ export default function Storefront() {
 
       {/* Checkout — Shopify style */}
       {checkoutOpen && (
-        <CheckoutModal store={store} cart={cart} discount={discount} discountAmount={discountAmount} activeGateways={activeGateways} onClose={() => setCheckoutOpen(false)} onDone={() => { localStorage.removeItem(CART_KEY); setCart(null); setCartCount(0); setDiscount(null); setCouponCode(''); setCheckoutOpen(false); }} />
+        <CheckoutModal store={store} cart={cart} discount={discount} discountAmount={discountAmount} activeGateways={activeGateways} theme={theme} onClose={() => setCheckoutOpen(false)} onDone={() => { localStorage.removeItem(CART_KEY); setCart(null); setCartCount(0); setDiscount(null); setCouponCode(''); setCheckoutOpen(false); }} />
       )}
     </div>
   );
@@ -616,7 +616,7 @@ export default function Storefront() {
 // Low-friction by design: tap a star to submit immediately, an optional
 // comment field appears after rating rather than blocking the rating
 // itself behind a longer form.
-function ReviewPrompt({ tenantId, order }) {
+function ReviewPrompt({ tenantId, order, theme }) {
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
   const [submitted, setSubmitted] = useState({});
@@ -675,7 +675,7 @@ function ReviewPrompt({ tenantId, order }) {
                           placeholder="Un commentaire (optionnel)"
                           className="flex-1 text-xs px-2 py-1.5 border border-border rounded-md outline-none focus:ring-1 focus:ring-brand/40"
                         />
-                        <button onClick={() => submit(item)} disabled={busy === key} className="text-xs font-semibold text-white bg-brand px-3 py-1.5 rounded-md hover:bg-brand/90 disabled:opacity-50 shrink-0">
+                        <button onClick={() => submit(item)} disabled={busy === key} className="text-xs font-semibold px-3 py-1.5 rounded-md hover:opacity-90 disabled:opacity-50 shrink-0" style={{ background: theme.palette.primary, color: theme.palette.primaryText }}>
                           {busy === key ? '…' : 'Publier'}
                         </button>
                       </div>
@@ -691,7 +691,11 @@ function ReviewPrompt({ tenantId, order }) {
   );
 }
 
-export function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, onClose, onDone }) {
+export function CheckoutModal({ store, cart, discount, discountAmount, activeGateways, theme, onClose, onDone }) {
+  // Falls back to the plain default palette rather than crashing if a
+  // caller doesn't pass theme (defensive - every real caller now does).
+  const primary = theme?.palette?.primary || '#008060';
+  const primaryText = theme?.palette?.primaryText || '#FFFFFF';
   const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
   const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : activeGateways?.includes('stripe') ? 'stripe' : 'cod');
   const [placing, setPlacing] = useState(false);
@@ -936,7 +940,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             <p className="text-sm text-muted-foreground mt-1.5">Votre commande {orderNumber} a bien été reçue.</p>
           </div>
           {completedOrder && completedOrder.items.length > 0 && (
-            <ReviewPrompt tenantId={store.id} order={completedOrder} />
+            <ReviewPrompt tenantId={store.id} order={completedOrder} theme={theme} />
           )}
           <button onClick={onClose} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
         </div>
@@ -1026,7 +1030,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           {error && <p className="text-sm text-destructive font-medium bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           {/* Pay button (mobile) */}
-          <button type="submit" disabled={placing} className="lg:hidden w-full bg-brand text-brand-foreground font-semibold py-4 rounded-full text-sm hover:bg-brand/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg">
+          <button type="submit" disabled={placing} className="lg:hidden w-full font-semibold py-4 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg" style={{ background: primary, color: primaryText }}>
             {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
           </button>
         </form>
@@ -1068,7 +1072,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               </div>
             </div>
 
-            <button type="submit" form="checkout-form" disabled={placing} className="hidden lg:flex w-full bg-brand text-brand-foreground font-semibold py-3.5 rounded-full text-sm hover:bg-brand/90 transition-colors disabled:opacity-50 items-center justify-center gap-2 mt-4">
+            <button type="submit" form="checkout-form" disabled={placing} className="hidden lg:flex w-full font-semibold py-3.5 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 items-center justify-center gap-2 mt-4" style={{ background: primary, color: primaryText }}>
               {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
             </button>
 

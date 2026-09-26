@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Image } from '@/components/ui/image';
-import { Upload, Link2, X, Star, Check, ArrowRight, Menu, Search } from 'lucide-react';
+import { Upload, Link2, X, Star, Check, ArrowRight, Menu, Search, Heart } from 'lucide-react';
 import { ensureGoogleFonts } from '@/lib/fonts';
 import { supabase } from '@/api/supabaseClient';
 
@@ -45,6 +45,56 @@ function Stars({ n, color }) {
         <Star key={i} className="w-3 h-3" style={{ color }} fill={i < n ? color : 'none'} />
       ))}
     </div>
+  );
+}
+
+// Real guest wishlist - a session_id in localStorage (same identity model
+// as the cart: no customer accounts on this storefront), not a decorative
+// heart icon. Toggled inline on every product card.
+export function getWishlistSessionId() {
+  let id = localStorage.getItem('sellia_wishlist_session');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('sellia_wishlist_session', id); }
+  return id;
+}
+
+export function WishlistHeart({ tenantId, productId }) {
+  const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const sessionId = getWishlistSessionId();
+
+  useEffect(() => {
+    if (!tenantId || !productId) return;
+    supabase.from('wishlists').select('id').eq('tenant_id', tenantId).eq('session_id', sessionId).eq('product_id', productId).maybeSingle()
+      .then(({ data }) => setSaved(!!data));
+  }, [tenantId, productId, sessionId]);
+
+  const toggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (saved) {
+        await supabase.from('wishlists').delete().eq('tenant_id', tenantId).eq('session_id', sessionId).eq('product_id', productId);
+        setSaved(false);
+      } else {
+        await supabase.from('wishlists').insert({ tenant_id: tenantId, session_id: sessionId, product_id: productId });
+        setSaved(true);
+      }
+    } catch (e2) {
+      console.error('Wishlist toggle failed:', e2);
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:scale-110 transition"
+      aria-label={saved ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+      title={saved ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+    >
+      <Heart className={`w-3.5 h-3.5 ${saved ? 'fill-red-500 text-red-500' : 'text-[#6D7175]'}`} />
+    </button>
   );
 }
 
@@ -316,6 +366,11 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                     <Search className="w-4 h-4" />
                   </a>
                 )}
+                {storefront && storeSlug && (
+                  <a href={`/store/${storeSlug}/wishlist`} onClick={(e) => e.stopPropagation()} className="p-1.5 rounded-md shrink-0" style={{ color: c.textColor || p.text }} title="Mes favoris" aria-label="Mes favoris">
+                    <Heart className="w-4 h-4" />
+                  </a>
+                )}
                 {(c.links || []).length > 0 && (
                   <button
                     type="button"
@@ -431,7 +486,8 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                   {(c.products || []).map((pr, i) => {
                     const detailHref = storefront && storeSlug && pr._id ? `/store/${storeSlug}/products/${pr._id}` : null;
                     return (
-                      <div key={i} className={`group overflow-hidden transition hover:shadow-lg ${theme.productCardStyle === 'square' ? 'rounded-none' : 'rounded-xl'}`} style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                      <div key={i} className={`relative group overflow-hidden transition hover:shadow-lg ${theme.productCardStyle === 'square' ? 'rounded-none' : 'rounded-xl'}`} style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                        {storefront && pr._id && <WishlistHeart tenantId={tenantId} productId={pr._id} />}
                         {detailHref ? (
                           <a href={detailHref} onClick={(e) => e.stopPropagation()}><Img src={pr.image} className="aspect-square" {...ip} path={`products.${i}.image`} /></a>
                         ) : (

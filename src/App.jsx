@@ -13,6 +13,7 @@ import Storefront from '@/pages/Storefront';
 import ProductDetail from '@/pages/ProductDetail';
 import CategoryPage from '@/pages/CategoryPage';
 import SearchPage from '@/pages/SearchPage';
+import WishlistPage from '@/pages/WishlistPage';
 import CartPage from '@/pages/CartPage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -105,6 +106,7 @@ const AuthenticatedApp = () => {
       <Route path="/store/:slug/products/:productId" element={<ProductDetail />} />
       <Route path="/store/:slug/collections/:categoryId" element={<CategoryPage />} />
       <Route path="/store/:slug/search" element={<SearchPage />} />
+      <Route path="/store/:slug/wishlist" element={<WishlistPage />} />
       <Route path="/store/:slug/blog/:handle" element={<ArticleDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

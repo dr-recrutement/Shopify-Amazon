@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus, Star } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
+import { WishlistHeart } from '@/components/theme/ThemeRenderer';
 import { applySEO } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -192,8 +193,9 @@ export default function ProductDetail() {
 
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
         <div>
-          <div className="aspect-square rounded-2xl overflow-hidden mb-3" style={{ background: p.surface }}>
+          <div className="relative aspect-square rounded-2xl overflow-hidden mb-3" style={{ background: p.surface }}>
             {images[activeImage] && <img src={images[activeImage]} alt={product.name} className="w-full h-full object-cover" />}
+            <WishlistHeart tenantId={store.id} productId={product.id} />
           </div>
           {images.length > 1 && (
             <div className="flex gap-2">

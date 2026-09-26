@@ -44,7 +44,7 @@ const PSPS = [
 
 function PspTile({ p, regionLabel }) {
   return (
-    <div className="flex items-center gap-3 shrink-0 px-5 py-3 rounded-xl border border-[#E1E1E1] bg-white shadow-sm min-w-[180px] h-[72px]">
+    <div className="flex items-center gap-3 shrink-0 px-4 min-w-[160px] h-[72px]">
       <div className="w-12 h-9 shrink-0 flex items-center justify-center overflow-hidden">
         {p.logo ? (
           <img src={p.logo} alt={p.name} className="max-w-full max-h-full object-contain scale-125" loading="lazy" />
@@ -68,7 +68,7 @@ export default function LandingPSPs() {
         <p className="text-xs text-[#6D7175] mt-1">{t('landing.psps.subtitle')}</p>
       </div>
       <div className="relative overflow-hidden">
-        <div className="flex gap-3 w-max animate-scroll-x">
+        <div className="flex w-max animate-scroll-x divide-x divide-[#EDEDED]">
           {list.map((p, i) => <PspTile key={i} p={p} regionLabel={regions[REGION_KEY[p.region]] || p.region} />)}
         </div>
       </div>

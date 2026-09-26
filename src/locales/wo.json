@@ -104,5 +104,429 @@
     "status_archived": "Denc",
     "variants": "nataal yi",
     "tracked": "Toppatoo nañu"
+  },
+  "landing": {
+    "nav": {
+      "group_create_sell": "Sos & Jaay",
+      "group_manage": "Yor",
+      "group_grow": "Yokku",
+      "platform_links": [
+        {
+          "label": "Editëer bii boutique",
+          "desc": "Editëer bu leer, taxawalul kod"
+        },
+        {
+          "label": "Thème yu premium",
+          "desc": "Thème yu rafet te mën nga leen soppi ni nga bëgge"
+        },
+        {
+          "label": "Checkout bu gaaw",
+          "desc": "Njëg li gaaw, ñi bàyyi paanax dañu wàññi"
+        },
+        {
+          "label": "Yoroon stock",
+          "desc": "Variante yi, wottu, alertes"
+        },
+        {
+          "label": "Fay yu boole",
+          "desc": "Mobile money, kart, wallesu — 25+ PSP"
+        },
+        {
+          "label": "Yoonu yebbi ci diggante bu bari",
+          "desc": "Njëg ci region ak réew"
+        },
+        {
+          "label": "Wàññi ak promotion",
+          "desc": "Code promo, wàññi automatik"
+        },
+        {
+          "label": "Analytics ci saa si",
+          "desc": "Dashboard ak rapport"
+        },
+        {
+          "label": "Xaalis yu bari",
+          "desc": "XOF, NGN, USD, EUR ci njëkk"
+        },
+        {
+          "label": "Sellia Assistant",
+          "desc": "Jur contenu ak thème ak IA"
+        }
+      ],
+      "resources_links": [
+        {
+          "label": "Kër njàng",
+          "desc": "FAQ ak tutoriel"
+        },
+        {
+          "label": "Guide yi",
+          "desc": "Yëngu-yëngu e-commerce ak migration"
+        },
+        {
+          "label": "Kaaraange & wóolute",
+          "desc": "Nu nu aar sa xibaar"
+        },
+        {
+          "label": "Ku nu di",
+          "desc": "Sunu misión ak sunu équipe"
+        },
+        {
+          "label": "Jokkoo ak ñun",
+          "desc": "Ndimbal ak service client"
+        }
+      ],
+      "alternatives_label": "Alternative yi",
+      "alternative_prefix": "Alternative ci",
+      "alternative_desc_template": "Sellia vs {{name}}: comparaison bu mat sëkk",
+      "tarifs": "Njëg yi",
+      "login": "Dugg",
+      "trial": "Essai bu amul fay"
+    },
+    "footer": {
+      "brand_desc": "Plateforme e-commerce bu premium bu marchand yi ci àdduna bépp — alternative bu mat sëkk ci Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo ak Wix.",
+      "col_platform": "Plateforme",
+      "col_alternatives": "Alternative yi",
+      "col_resources": "Resource yi",
+      "col_company": "Companie",
+      "col_legal": "Yoon",
+      "platform_links": [
+        "Editëer bii boutique",
+        "Thème yu premium",
+        "Fay ak Mobile Money",
+        "Sellia Assistant (IA)",
+        "Njëg yi"
+      ],
+      "company_links": [
+        "Ku nu di",
+        "Liggéey yi",
+        "Jokkoo ak ñun"
+      ],
+      "legal_links": [
+        "Sarti jëfandikoo",
+        "Sutura",
+        "Cookies",
+        "RGPD",
+        "Xibaar yoon"
+      ],
+      "cta_title": "Dangaa parey pour sos sa boutique?",
+      "cta_sub": "Seetal Sellia bu amul fay diirub fukk ak ñeent fan. Kart bank warula.",
+      "cta_button": "Tambali léegi",
+      "copyright_suffix": "Yépp sañ-sañ am nañu ko.",
+      "connexion": "Dugg",
+      "confidentialite": "Sutura",
+      "conditions": "Sart yi"
+    },
+    "hero": {
+      "badge": "Plateforme e-commerce bu àdduna bépp — 7 làkk",
+      "h1_line1": "Tambali sa boutique",
+      "h1_line2_pre": "ci internet, ",
+      "h1_highlight": "bu àdduna bépp",
+      "h1_line3": "ci ay diir yu gàtt.",
+      "p": "Sellia dafa boole editëer thème, fay yu boole, xaalis yu bari ak 25+ PSP ci àdduna bépp — pour marchand yépp. Kod amul, coppite amul.",
+      "cta1": "Sos sama boutique",
+      "cta2": "Xool njëg yi",
+      "trust1": "Xaalis yu bari (XOF, NGN, USD, EUR…)",
+      "trust2": "25+ PSP ci àdduna bépp",
+      "trust3": "Fay bu jógul fenn",
+      "trust4": "Essai bu amul fay diirub fukk ak ñeent fan"
+    },
+    "how": {
+      "eyebrow": "Nu ko def",
+      "h2": "Ñatti tàllif pour yeggle sa boutique",
+      "p": "Li dale ci inscription ba sa jaay bu njëkk, gaawa ci lu ko wax.",
+      "steps": [
+        {
+          "title": "Sos sa compte",
+          "text": "Inscris-al fu amul fay te tàllal sa boutique ci ay diir yu gàtt ak sunu assistant bu onboarding."
+        },
+        {
+          "title": "Soppi sa boutique ni nga bëgge",
+          "text": "Tàn thème bu premium, yokk say produit, say collection ak say wàññi — kod warula."
+        },
+        {
+          "title": "Jaay ci internet",
+          "text": "Nangu say fay yu njëkk, yor say commande te topp sa jëf ci saa si."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Fonctionnalité yi",
+      "h2": "Lépp lu la soxla ngir jaay ci internet",
+      "p": "Plateforme bu mat sëkk, li dale ci sos boutique ba nangu fay — ci benn outil rekk.",
+      "tabs": {
+        "create": "Sos & Soppi",
+        "sell": "Jaay & Nangu Fay",
+        "manage": "Yor & Yebbi",
+        "grow": "Yokku & Analyser"
+      },
+      "items": {
+        "create": [
+          {
+            "title": "Editëer bu leer, taxawalul kod",
+            "text": "Sos boutique bu premium te laalu kod. Xool ci computer, tablette ak téléphone ci saa si."
+          },
+          {
+            "title": "Thème yu àdduna bépp yu premium",
+            "text": "Thème yu rafet te mën nga leen soppi ak couleur sa marque, defar ngir marchand yi ci àdduna bépp."
+          },
+          {
+            "title": "Collection yu xam-xam",
+            "text": "Collection yu bopp walla automatik ak sart yu soppeeku ci tag, njëg, stock ak statut."
+          },
+          {
+            "title": "Nataal bu takkoo ci téléphone",
+            "text": "Boutique bu nekk dafa takkoo ci téléphone bu baax — fu sa client yi di jëndee."
+          }
+        ],
+        "sell": [
+          {
+            "title": "25+ PSP ci àdduna bépp",
+            "text": "Paystack, Flutterwave, M-Pesa, Stripe, PayPal, Payunit… Kart, Mobile Money ak wallesu bu jógul fenn."
+          },
+          {
+            "title": "Xaalis yu bari ak marché yu bari",
+            "text": "Jaay fu nekk ak xaalis ISO yu njëkk (XOF, NGN, USD, EUR) ak tekki ci 7 làkk."
+          },
+          {
+            "title": "Checkout bu jógul fenn",
+            "text": "Jëfandikoo bu 100% boole — say client duñu genn sa boutique mukk. Ñi bàyyi paanax dañu wàññi, conversion bu gën a bari."
+          },
+          {
+            "title": "Wàññi ak promotion",
+            "text": "Code promo, wàññi ci pourcentage walla montant fixe, walla yebbi bu amul fay ak sart automatik."
+          }
+        ],
+        "manage": [
+          {
+            "title": "Stock ak variante",
+            "text": "Wottu ci variante bépp, alerte bu stock wàcc te yor plusieurs boutique ngir bañ a jeex mukk."
+          },
+          {
+            "title": "Yoonu yebbi ci diggante bu bari",
+            "text": "Njëg ci region, réew ak diis. Yebbi bu amul fay ci sart yu sax te wottu colis yi automatik."
+          },
+          {
+            "title": "Yoroon client yi",
+            "text": "Profil client yi, istwaar jënd, adresse yu bari ak tag ngir wottu bu mat sëkk te personalisé."
+          },
+          {
+            "title": "Marché",
+            "text": "Tambali marketplace bu bari vendeur ak yoroon vendeur yi, commission ak fay yu séddoo."
+          }
+        ],
+        "grow": [
+          {
+            "title": "Analytics ci saa si",
+            "text": "Topp say jaay, say visiteur, taux conversion ci produit bépp ak jëfandikoo ci dashboard bu mën a jëfandikoo."
+          },
+          {
+            "title": "Sellia Assistant",
+            "text": "Jur description produit, contenu SEO ak thème yu mat sëkk ak IA bi nekk ci Sellia."
+          },
+          {
+            "title": "Marketing ak automatisation",
+            "text": "Campagne email, delluwaat panier yi bàyyeeku ak automatisation yu jóge ci événement."
+          },
+          {
+            "title": "Alerte yu xam-xam",
+            "text": "Notification automatik ci stock bu wàcc, commande yu bees ak anomalie — ci email walla push."
+          }
+        ]
+      },
+      "stats": [
+        {
+          "value": "25+",
+          "label": "PSP yu boole"
+        },
+        {
+          "value": "7",
+          "label": "Làkk yu njëkk"
+        },
+        {
+          "value": "4,9/5",
+          "label": "Bànneex marchand yi"
+        },
+        {
+          "value": "99,9%",
+          "label": "Am-am"
+        }
+      ]
+    },
+    "psps": {
+      "title_template": "{{n}}+ prestataire fay ci àdduna bépp",
+      "subtitle": "Nangu fay fu nekk ci àdduna bi — fay bu jógul fenn",
+      "regions": {
+        "afrique": "Afrig",
+        "europe": "Europe",
+        "asie": "Asie",
+        "usa": "Amerig",
+        "latino": "Amerig Latin",
+        "europe_usa": "Europe/Amerig"
+      }
+    },
+    "showcase": {
+      "block1_eyebrow": "Dashboard",
+      "block1_h2": "Yor sa boutique ci benn xool",
+      "block1_p": "Topp say jaay, say commande, say client ak say produit ci dashboard bu leer. Statistique ci saa si ngir jël ndogal gaaw.",
+      "block1_list": [
+        "Xaalis bu nangu ak yëngu-yëngu wer bépp",
+        "Statut commande yi ci saa si",
+        "Produit yu gën a jaay ak jëfandikoo conversion",
+        "Yoroon plusieurs boutique"
+      ],
+      "block1_cta": "Xool dashboard bi",
+      "block2_eyebrow": "Editëer thème",
+      "block2_h2": "Sos boutique bu melni yaw",
+      "block2_p": "Editëer bu leer te yomb jëfandikoo, xool ci saa si, tëj/delluwaat ak publication ci saa si.",
+      "block2_highlights": [
+        "Editëer bu leer, taxawalul kod",
+        "Xool ci computer, tablette, téléphone",
+        "Thème yu àdduna bépp yu premium",
+        "Soppi couleur ak typographie",
+        "Sellia Assistant ngir jur contenu",
+        "Publication ak benn clic"
+      ],
+      "block2_badge_title": "Editëer bu leer",
+      "block2_badge_sub": "Kod amul",
+      "block3_eyebrow": "Commerce ci téléphone",
+      "block3_h2": "Fu say client di jëndee",
+      "block3_p": "Ci lu ëpp 70% jënd yi ci internet dañu ko def ci téléphone. Thème Sellia bépp dafa takkoo ci téléphone bu baax — sa boutique dafa rafet ci smartphone, ak checkout bu gaaw te fay bu jógul fenn.",
+      "block3_badge1": "Checkout bu jógul fenn",
+      "block3_badge2": "Wottu commande",
+      "block3_cta1": "Sos sama boutique",
+      "block3_cta2": "Xool njëg yi"
+    },
+    "brands": {
+      "h2": "Solution yu bari ngir marque bépp.",
+      "p": "Tambali ci gaaw ak lu am solo, walla boole, sos te yokku ci sunu plateforme bu ubbi — bu marque yu B2C ak B2B tàn.",
+      "desktop": "Computer",
+      "mobile": "Téléphone",
+      "caption": "Defiil automatik · 12 catégorie",
+      "cta": "Tambali sa boutique",
+      "footnote": "Boutique yu 100% takkoo — computer ak téléphone, mën nga leen configuré ci bopp bopp.",
+      "categories": {
+        "mode": "Mode & Mbubb",
+        "electronique": "Electronique",
+        "beaute": "Rafet & Cosmétique",
+        "bijoux": "Bijou & Aksesuwaar",
+        "chaussures": "Dàll & Sport",
+        "maison": "Kër & Décoration",
+        "epicerie": "Njaay Lekk & Naan",
+        "livres": "Téere & Culture",
+        "restaurant": "Restaurant & Lekk",
+        "jardinerie": "Tool & Garab",
+        "sport": "Sport & Fitness",
+        "puericulture": "Xale yu ndaw & Wutu leen"
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Seedeel",
+      "h2": "Dañuy jaay ak Sellia",
+      "p": "Junni-junni marchand ci àdduna bépp wóolu nañu Sellia.",
+      "stats": [
+        {
+          "value": "12 000+",
+          "label": "Marchand yu aktiif"
+        },
+        {
+          "value": "40+",
+          "label": "Réew yu ci am"
+        },
+        {
+          "value": "8,5 M$",
+          "label": "Jaay yu def"
+        },
+        {
+          "value": "99,9 %",
+          "label": "Am-am"
+        }
+      ],
+      "items": [
+        {
+          "quote": "Tambali naa sama boutique mode wax ci benn ngoon rekk. Fay yi ci mobile money soppi nañu sama jaay — sama client yi soxlawuñu darra kopar.",
+          "role": "Sos-boutique, Boutique Mode Wax — Ndakaaru"
+        },
+        {
+          "quote": "Sellia dafay yor xaalis yu bari ci njëkk. Sama client yi ci Nigeria ak Côte d’Ivoire dañuy fay bu amul coppite, te maa ngi topp lépp ci benn dashboard.",
+          "role": "CEO, TechMart — Lagos"
+        },
+        {
+          "quote": "Editëer thème bi yomb la jëfandikoo te thème yi rafet nañu lool. Sama marque yokku na, te assistant IA bi jox na ma waxtu yu bari.",
+          "role": "Sos-boutique, Abidjan Beauty"
+        }
+      ]
+    },
+    "flags": {
+      "title": "Am na ci àdduna bépp",
+      "subtitle": "Jaay fu nekk — Sellia dafa doon plateforme bu àdduna bépp"
+    },
+    "pricing": {
+      "eyebrow": "Njëg yi",
+      "h2": "Njëg ngir marchand bépp",
+      "p": "Essai bu amul fay diirub fukk ak ñeent fan ci plan yépp. Kart bank warula.",
+      "monthly": "Wer wu wer",
+      "annual": "At mu at",
+      "most_popular": "Bi ëpp a bëgg",
+      "per_month": "/wer",
+      "billed_yearly_template": "Fay ${{amount}}/at",
+      "included": "Lu ci bokk",
+      "cta": "Tambali",
+      "note_annual": "Fay ci at — 20% wàññi bokk na ci kaw.",
+      "note_monthly": "Fay wer wu wer, mën nga soppi ci at mu at ci sa waxtu.",
+      "all_prices_usd": "Njëg yépp ci Dollar (USD).",
+      "pay_with": "Fay sa abonnement ak",
+      "mobile_title": "Jëfandikoo bu premium ci téléphone",
+      "mobile_p": "Say client dañuy jëndee ci seen téléphone, fu nekk ci àdduna bi. Checkout bu gaaw, fay bu jógul fenn, ndimbal Mobile Money ak kart.",
+      "rating_suffix": "12 000+ marchand",
+      "plans": {
+        "starter": {
+          "desc": "Ngir tambali sa boutique bu njëkk.",
+          "features": [
+            "1 boutique",
+            "20 produit",
+            "Thème yu njëkk",
+            "Fay ci loxo",
+            "1 jëfandikukat",
+            "Adresse sellia.liafrik.com"
+          ]
+        },
+        "growth": {
+          "desc": "Ngir marchand yu di yokku.",
+          "features": [
+            "60 produit",
+            "Thème yu premium yépp",
+            "Editëer bu leer",
+            "Fay yu boole",
+            "Xaalis yu bari",
+            "Analytics bu njëkk",
+            "3 jëfandikukat"
+          ]
+        },
+        "pro": {
+          "desc": "Ngir marchand yu tax nañu.",
+          "features": [
+            "150 produit",
+            "Sellia Assistant",
+            "Analytics bu jëkk",
+            "Domaine bu bopp",
+            "2 boutique",
+            "10 jëfandikukat",
+            "Api"
+          ]
+        },
+        "enterprise": {
+          "desc": "Ngir marketplace yi.",
+          "features": [
+            "Produit yu amul dayo",
+            "Boutique yu amul dayo",
+            "Marketplace bu bari vendeur",
+            "Commerce headless",
+            "Automatisation ak workflow",
+            "Jëfandikukat yu amul dayo",
+            "Ndimbal 24/7",
+            "SLA 99,9 %"
+          ]
+        }
+      }
+    }
   }
 }

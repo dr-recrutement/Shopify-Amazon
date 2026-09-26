@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const FLAGS = [
   'us','fr','gb','de','es','pt','it','nl','be','ru','se','no','fi','dk','pl','ch','at','ie','gr','cz',
   'cn','jp','kr','in','id','th','vn','my','ph','sg','hk','tw','sa','ae','qa','kw','om','jo','lb','il',
@@ -10,12 +12,13 @@ const FLAGS = [
 ];
 
 export default function LandingFlags() {
+  const { t } = useTranslation();
   const list = [...FLAGS.slice(0, 80), ...FLAGS.slice(0, 80)];
   return (
     <section className="py-10 bg-[#F8F9FA]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center mb-5">
-        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">Disponible dans le monde entier</p>
-        <p className="text-xs text-[#6D7175] mt-1">Vendez partout — Sellia est une plateforme globale</p>
+        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">{t('landing.flags.title')}</p>
+        <p className="text-xs text-[#6D7175] mt-1">{t('landing.flags.subtitle')}</p>
       </div>
       <div className="relative overflow-hidden">
         <div className="flex gap-2 w-max animate-scroll-x-slow">

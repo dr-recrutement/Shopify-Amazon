@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check, ShoppingBag, Star, Truck, ShieldCheck } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 
@@ -13,32 +14,34 @@ const PSP_LOGOS = [
   `${LOGO_BASE}/d56771535_1685814539stripe-icon-png.png`,
 ];
 
-const HIGHLIGHTS = [
-  'Éditeur visuel drag & drop',
-  'Prévisualisation desktop, tablette, mobile',
-  'Thèmes premium internationaux',
-  'Personnalisation couleurs & typographies',
-  'Sellia Assistant pour générer du contenu',
-  'Publication en un clic',
-];
-
+// This mini phone mockup shows one illustrative demo storefront ("Mode Wax
+// Dakar") as a fixed visual prop, the same way a Shopify screenshot keeps
+// its example store's own branding regardless of the page's language - so
+// this micro-copy inside the phone frame intentionally stays in French
+// rather than being wired to seven more translation keys for a decorative
+// image-like element.
 const PHONE_PRODUCTS = [
   { img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=300&q=80', name: 'Robe Wax Premium', price: '45 000 FCFA', old: '60 000', rating: 5 },
   { img: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=300&q=80', name: 'Sac à main cuir', price: '28 000 FCFA', old: '', rating: 4 },
 ];
 
 export default function LandingShowcase() {
+  const { t } = useTranslation();
+  const s = (k) => t(`landing.showcase.${k}`);
+  const list1 = t('landing.showcase.block1_list', { returnObjects: true });
+  const highlights = t('landing.showcase.block2_highlights', { returnObjects: true });
+
   return (
     <section className="py-20 lg:py-24 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-20">
         {/* Block 1 — Dashboard */}
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div className="order-2 lg:order-1">
-            <span className="text-sm font-semibold text-gold uppercase tracking-wide">Tableau de bord</span>
-            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Pilotez votre boutique en un coup d’œil</h2>
-            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">Suivez vos ventes, vos commandes, vos clients et vos produits depuis un tableau de bord clair. Des statistiques en temps réel pour des décisions rapides.</p>
+            <span className="text-sm font-semibold text-gold uppercase tracking-wide">{s('block1_eyebrow')}</span>
+            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">{s('block1_h2')}</h2>
+            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">{s('block1_p')}</p>
             <ul className="mt-6 space-y-3">
-              {['Revenu encaissé et tendances mensuelles', 'Statuts des commandes en temps réel', 'Meilleures ventes et tunnel de conversion', 'Gestion multi-boutiques'].map((f) => (
+              {list1.map((f) => (
                 <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
                   <span className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-brand-foreground" /></span>
                   {f}
@@ -46,7 +49,7 @@ export default function LandingShowcase() {
               ))}
             </ul>
             <Link to="/register" className="mt-7 inline-flex items-center gap-1.5 bg-brand text-brand-foreground font-semibold px-6 py-3 rounded-full text-sm hover:bg-brand/90 transition-colors shadow-lg shadow-brand/20">
-              Explorer le dashboard <ArrowRight className="w-3.5 h-3.5" />
+              {s('block1_cta')} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="order-1 lg:order-2 relative">
@@ -77,17 +80,17 @@ export default function LandingShowcase() {
             <div className="absolute -bottom-4 -right-2 bg-white rounded-xl border border-border shadow-xl p-3 flex items-center gap-2">
               <span className="w-9 h-9 rounded-full bg-brand-muted flex items-center justify-center text-lg">🎨</span>
               <div>
-                <p className="text-xs font-bold text-foreground">Éditeur drag & drop</p>
-                <p className="text-[10px] text-muted-foreground">Sans code</p>
+                <p className="text-xs font-bold text-foreground">{s('block2_badge_title')}</p>
+                <p className="text-[10px] text-muted-foreground">{s('block2_badge_sub')}</p>
               </div>
             </div>
           </div>
           <div>
-            <span className="text-sm font-semibold text-gold uppercase tracking-wide">Éditeur de thème</span>
-            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Créez une vitrine qui vous ressemble</h2>
-            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">Un éditeur visuel intuitif avec drag & drop, prévisualisation responsive, undo/redo et publication instantanée.</p>
+            <span className="text-sm font-semibold text-gold uppercase tracking-wide">{s('block2_eyebrow')}</span>
+            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">{s('block2_h2')}</h2>
+            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">{s('block2_p')}</p>
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {HIGHLIGHTS.map((h) => (
+              {highlights.map((h) => (
                 <li key={h} className="flex items-start gap-2.5 text-sm text-foreground">
                   <span className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shrink-0 mt-0.5"><Check className="w-3 h-3 text-brand-foreground" /></span>
                   {h}
@@ -100,19 +103,19 @@ export default function LandingShowcase() {
         {/* Block 3 — Mobile with real storefront content */}
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div className="order-2 lg:order-1 text-center lg:text-left">
-            <span className="text-sm font-semibold text-gold uppercase tracking-wide">Commerce mobile</span>
-            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">Là où vos clients achètent</h2>
-            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">Plus de 70 % des achats en ligne se font sur mobile. Chaque thème Sellia est responsive natif — votre boutique est parfaite sur smartphone, avec un checkout fluide et des paiements sans redirection.</p>
+            <span className="text-sm font-semibold text-gold uppercase tracking-wide">{s('block3_eyebrow')}</span>
+            <h2 className="mt-2 font-landing font-semibold text-2xl sm:text-[2rem] text-foreground tracking-tight">{s('block3_h2')}</h2>
+            <p className="mt-4 text-muted-foreground text-lg leading-relaxed">{s('block3_p')}</p>
             <div className="mt-6 flex flex-wrap gap-4 justify-center lg:justify-start">
-              <div className="flex items-center gap-2 text-sm text-foreground"><ShieldCheck className="w-4 h-4 text-brand" /> Checkout sans redirection</div>
-              <div className="flex items-center gap-2 text-sm text-foreground"><Truck className="w-4 h-4 text-brand" /> Suivi de commande</div>
+              <div className="flex items-center gap-2 text-sm text-foreground"><ShieldCheck className="w-4 h-4 text-brand" /> {s('block3_badge1')}</div>
+              <div className="flex items-center gap-2 text-sm text-foreground"><Truck className="w-4 h-4 text-brand" /> {s('block3_badge2')}</div>
             </div>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <Link to="/register" className="inline-flex items-center justify-center gap-1.5 bg-brand text-brand-foreground font-semibold px-6 py-3 rounded-full text-sm hover:bg-brand/90 transition-colors shadow-lg shadow-brand/20">
-                Créer ma boutique <ArrowRight className="w-3.5 h-3.5" />
+                {s('block3_cta1')} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <a href="#tarifs" className="inline-flex items-center justify-center gap-1.5 bg-white border border-border text-foreground font-semibold px-6 py-3 rounded-full text-sm hover:bg-surface transition-colors">
-                Voir les tarifs
+                {s('block3_cta2')}
               </a>
             </div>
           </div>

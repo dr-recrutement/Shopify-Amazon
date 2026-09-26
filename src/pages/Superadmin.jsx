@@ -11,6 +11,7 @@ import AuditLogViewer from '@/components/superadmin/AuditLogViewer';
 import MarketplaceModeration from '@/components/superadmin/MarketplaceModeration';
 import PlatformAnalytics from '@/components/superadmin/PlatformAnalytics';
 import PaymentsCommissions from '@/components/superadmin/PaymentsCommissions';
+import HelpCenterVideoManager from '@/components/superadmin/HelpCenterVideoManager';
 import { formatMoney } from '@/lib/world/currencies';
 import {
   ShieldCheck, Loader2, Store, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
@@ -183,9 +184,10 @@ export default function Superadmin() {
           <button onClick={() => setTab('marketplace')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'marketplace' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Marketplace</button>
           <button onClick={() => setTab('analytics')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'analytics' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Analytics</button>
           <button onClick={() => setTab('payments')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'payments' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Paiements</button>
+          <button onClick={() => setTab('help-video')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'help-video' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Tutoriel vidéo</button>
         </div>
 
-        {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : tab === 'coupons' ? <CouponsOverview /> : tab === 'comms' ? <CommunicationsManager /> : tab === 'audit' ? <AuditLogViewer /> : tab === 'marketplace' ? <MarketplaceModeration /> : tab === 'analytics' ? <PlatformAnalytics /> : tab === 'payments' ? <PaymentsCommissions /> : (
+        {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : tab === 'coupons' ? <CouponsOverview /> : tab === 'comms' ? <CommunicationsManager /> : tab === 'audit' ? <AuditLogViewer /> : tab === 'marketplace' ? <MarketplaceModeration /> : tab === 'analytics' ? <PlatformAnalytics /> : tab === 'payments' ? <PaymentsCommissions /> : tab === 'help-video' ? <HelpCenterVideoManager /> : (
         <>
         {/* Super admins */}
         <div className="bg-white rounded-xl border border-[#E1E1E1] overflow-hidden">

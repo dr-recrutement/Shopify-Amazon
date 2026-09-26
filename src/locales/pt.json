@@ -104,5 +104,429 @@
     "status_archived": "Arquivado",
     "variants": "variante(s)",
     "tracked": "Rastreado"
+  },
+  "landing": {
+    "nav": {
+      "group_create_sell": "Criar e Vender",
+      "group_manage": "Gerir",
+      "group_grow": "Crescer",
+      "platform_links": [
+        {
+          "label": "Editor de loja",
+          "desc": "Editor visual de arrastar e soltar, sem código"
+        },
+        {
+          "label": "Temas premium",
+          "desc": "Temas refinados e totalmente personalizáveis"
+        },
+        {
+          "label": "Checkout otimizado",
+          "desc": "Fluxo de compra fluido, menos abandono"
+        },
+        {
+          "label": "Gestão de stock",
+          "desc": "Variantes, monitorização, alertas"
+        },
+        {
+          "label": "Pagamentos integrados",
+          "desc": "Mobile money, cartões, transferências — 25+ PSP"
+        },
+        {
+          "label": "Envio multi-zona",
+          "desc": "Tarifas por região e país"
+        },
+        {
+          "label": "Promoções e descontos",
+          "desc": "Códigos promocionais, descontos automáticos"
+        },
+        {
+          "label": "Analítica em tempo real",
+          "desc": "Painel e relatórios"
+        },
+        {
+          "label": "Multi-moeda",
+          "desc": "XOF, NGN, USD, EUR nativos"
+        },
+        {
+          "label": "Sellia Assistant",
+          "desc": "Geração de conteúdo e temas com IA"
+        }
+      ],
+      "resources_links": [
+        {
+          "label": "Centro de ajuda",
+          "desc": "FAQ e tutoriais"
+        },
+        {
+          "label": "Guias",
+          "desc": "Tendências de e-commerce e migração"
+        },
+        {
+          "label": "Segurança e confiança",
+          "desc": "Como protegemos os seus dados"
+        },
+        {
+          "label": "Sobre nós",
+          "desc": "A nossa missão e a nossa equipa"
+        },
+        {
+          "label": "Contacto",
+          "desc": "Suporte e atendimento ao cliente"
+        }
+      ],
+      "alternatives_label": "Alternativas",
+      "alternative_prefix": "Alternativa ao",
+      "alternative_desc_template": "Sellia vs {{name}}: comparação completa",
+      "tarifs": "Preços",
+      "login": "Entrar",
+      "trial": "Teste gratuito"
+    },
+    "footer": {
+      "brand_desc": "A plataforma de e-commerce premium para comerciantes em todo o mundo — uma alternativa completa ao Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo e Wix.",
+      "col_platform": "Plataforma",
+      "col_alternatives": "Alternativas",
+      "col_resources": "Recursos",
+      "col_company": "Empresa",
+      "col_legal": "Legal",
+      "platform_links": [
+        "Editor de loja",
+        "Temas premium",
+        "Pagamentos e Mobile Money",
+        "Sellia Assistant (IA)",
+        "Preços"
+      ],
+      "company_links": [
+        "Sobre nós",
+        "Carreiras",
+        "Contacto"
+      ],
+      "legal_links": [
+        "Termos de uso",
+        "Privacidade",
+        "Cookies",
+        "RGPD",
+        "Aviso legal"
+      ],
+      "cta_title": "Pronto para lançar a sua loja?",
+      "cta_sub": "Experimente o Sellia gratuitamente durante 14 dias. Sem cartão de crédito.",
+      "cta_button": "Começar agora",
+      "copyright_suffix": "Todos os direitos reservados.",
+      "connexion": "Entrar",
+      "confidentialite": "Privacidade",
+      "conditions": "Termos"
+    },
+    "hero": {
+      "badge": "A plataforma de e-commerce global — 7 idiomas",
+      "h1_line1": "Lance a sua loja",
+      "h1_line2_pre": "online ",
+      "h1_highlight": "internacional",
+      "h1_line3": "em minutos.",
+      "p": "O Sellia reúne editor de temas, pagamentos integrados, multi-moeda e mais de 25 PSP globais — para comerciantes em todo o mundo. Sem código, sem fricção.",
+      "cta1": "Criar a minha loja",
+      "cta2": "Ver preços",
+      "trust1": "Multi-moeda (XOF, NGN, USD, EUR…)",
+      "trust2": "25+ PSP globais",
+      "trust3": "Pagamentos sem redirecionamento",
+      "trust4": "14 dias de teste gratuito"
+    },
+    "how": {
+      "eyebrow": "Como funciona",
+      "h2": "Três passos até à sua loja",
+      "p": "Do registo à sua primeira venda, mais rápido do que demora a explicar.",
+      "steps": [
+        {
+          "title": "Crie a sua conta",
+          "text": "Registe-se gratuitamente e configure a sua loja em minutos com o nosso assistente de integração."
+        },
+        {
+          "title": "Personalize a sua vitrine",
+          "text": "Escolha um tema premium, adicione os seus produtos, coleções e descontos — sem programar."
+        },
+        {
+          "title": "Venda online",
+          "text": "Receba os seus primeiros pagamentos, faça a gestão das encomendas e acompanhe o seu desempenho em tempo real."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Funcionalidades",
+      "h2": "Tudo o que precisa para vender online",
+      "p": "Uma plataforma completa, desde a criação da loja até ao recebimento — numa única ferramenta.",
+      "tabs": {
+        "create": "Criar e Personalizar",
+        "sell": "Vender e Receber",
+        "manage": "Gerir e Enviar",
+        "grow": "Crescer e Analisar"
+      },
+      "items": {
+        "create": [
+          {
+            "title": "Editor visual de arrastar e soltar",
+            "text": "Crie uma vitrine premium sem tocar em código. Pré-visualização em desktop, tablet e telemóvel em tempo real."
+          },
+          {
+            "title": "Temas premium internacionais",
+            "text": "Temas refinados e personalizáveis nas cores da sua marca, pensados para comerciantes em todo o mundo."
+          },
+          {
+            "title": "Coleções inteligentes",
+            "text": "Coleções manuais ou automáticas com regras dinâmicas de etiquetas, preço, stock e estado."
+          },
+          {
+            "title": "Design responsivo nativo",
+            "text": "Cada loja adapta-se perfeitamente ao telemóvel — onde os seus clientes realmente compram."
+          }
+        ],
+        "sell": [
+          {
+            "title": "25+ PSP globais",
+            "text": "Paystack, Flutterwave, M-Pesa, Stripe, PayPal, Payunit… Cartões, Mobile Money e transferências sem redirecionamento."
+          },
+          {
+            "title": "Multi-moeda e mercados",
+            "text": "Venda em qualquer lugar com suporte nativo a moedas ISO (XOF, NGN, USD, EUR) e tradução em 7 idiomas."
+          },
+          {
+            "title": "Checkout sem redirecionamento",
+            "text": "Um fluxo de compra 100% integrado — os seus clientes nunca saem da sua loja. Menos abandono, conversão máxima."
+          },
+          {
+            "title": "Promoções e descontos",
+            "text": "Códigos promocionais, descontos em percentagem ou valor fixo, ou envio grátis com regras automáticas."
+          }
+        ],
+        "manage": [
+          {
+            "title": "Stock e variantes",
+            "text": "Monitorização por variante, alertas de stock baixo e gestão multi-localização para nunca ficar sem stock."
+          },
+          {
+            "title": "Envio multi-zona",
+            "text": "Tarifas por região, país e peso. Envio grátis condicional e monitorização automatizada das encomendas."
+          },
+          {
+            "title": "Gestão de clientes",
+            "text": "Perfis de clientes, histórico de compras, múltiplos endereços e etiquetas para um acompanhamento completo e personalizado."
+          },
+          {
+            "title": "Marketplace",
+            "text": "Lance um marketplace multi-vendedor com gestão de vendedores, comissões e pagamentos repartidos."
+          }
+        ],
+        "grow": [
+          {
+            "title": "Analítica em tempo real",
+            "text": "Acompanhe vendas, visitantes, taxa de conversão por produto e funil de compra num painel acionável."
+          },
+          {
+            "title": "Sellia Assistant",
+            "text": "Gere descrições de produto, conteúdo de SEO e temas inteiros com a IA integrada do Sellia."
+          },
+          {
+            "title": "Marketing e automações",
+            "text": "Campanhas de e-mail, recuperação de carrinhos abandonados e automações ativadas por eventos."
+          },
+          {
+            "title": "Alertas inteligentes",
+            "text": "Notificações automáticas de stock baixo, novas encomendas e anomalias — por e-mail ou push."
+          }
+        ]
+      },
+      "stats": [
+        {
+          "value": "25+",
+          "label": "PSP integrados"
+        },
+        {
+          "value": "7",
+          "label": "Idiomas nativos"
+        },
+        {
+          "value": "4,9/5",
+          "label": "Satisfação dos comerciantes"
+        },
+        {
+          "value": "99,9%",
+          "label": "Disponibilidade"
+        }
+      ]
+    },
+    "psps": {
+      "title_template": "{{n}}+ fornecedores de pagamento globais",
+      "subtitle": "Aceite pagamentos em qualquer lugar do mundo — sem redirecionamento",
+      "regions": {
+        "afrique": "África",
+        "europe": "Europa",
+        "asie": "Ásia",
+        "usa": "EUA",
+        "latino": "América Latina",
+        "europe_usa": "Europa/EUA"
+      }
+    },
+    "showcase": {
+      "block1_eyebrow": "Painel de controlo",
+      "block1_h2": "Gira a sua loja de relance",
+      "block1_p": "Acompanhe as suas vendas, encomendas, clientes e produtos a partir de um painel claro. Estatísticas em tempo real para decisões rápidas.",
+      "block1_list": [
+        "Receita recebida e tendências mensais",
+        "Estados das encomendas em tempo real",
+        "Mais vendidos e funil de conversão",
+        "Gestão multi-loja"
+      ],
+      "block1_cta": "Explorar o painel",
+      "block2_eyebrow": "Editor de temas",
+      "block2_h2": "Crie uma vitrine que se pareça consigo",
+      "block2_p": "Um editor visual intuitivo com arrastar e soltar, pré-visualização responsiva, desfazer/refazer e publicação instantânea.",
+      "block2_highlights": [
+        "Editor visual de arrastar e soltar",
+        "Pré-visualização em desktop, tablet e telemóvel",
+        "Temas premium internacionais",
+        "Personalização de cores e tipografias",
+        "Sellia Assistant para gerar conteúdo",
+        "Publicação com um clique"
+      ],
+      "block2_badge_title": "Editor de arrastar e soltar",
+      "block2_badge_sub": "Sem código",
+      "block3_eyebrow": "Comércio móvel",
+      "block3_h2": "Onde os seus clientes compram",
+      "block3_p": "Mais de 70% das compras online são feitas no telemóvel. Cada tema Sellia é responsivo de forma nativa — a sua loja fica perfeita em smartphones, com um checkout fluido e pagamentos sem redirecionamento.",
+      "block3_badge1": "Checkout sem redirecionamento",
+      "block3_badge2": "Monitorização de encomendas",
+      "block3_cta1": "Criar a minha loja",
+      "block3_cta2": "Ver preços"
+    },
+    "brands": {
+      "h2": "Soluções infinitas para cada tipo de marca.",
+      "p": "Comece rapidamente com o essencial, ou integre, crie e escale na nossa plataforma aberta — escolhida por marcas B2C e B2B.",
+      "desktop": "Desktop",
+      "mobile": "Telemóvel",
+      "caption": "Deslocamento automático · 12 categorias",
+      "cta": "Lance a sua loja",
+      "footnote": "Lojas 100% responsivas — desktop e telemóvel, configuráveis de forma independente.",
+      "categories": {
+        "mode": "Moda e Têxtil",
+        "electronique": "Eletrónica",
+        "beaute": "Beleza e Cosmética",
+        "bijoux": "Joias e Acessórios",
+        "chaussures": "Calçado e Desporto",
+        "maison": "Casa e Decoração",
+        "epicerie": "Mercearia e Bebidas",
+        "livres": "Livros e Cultura",
+        "restaurant": "Restaurante e Comida",
+        "jardinerie": "Jardinagem e Plantas",
+        "sport": "Desporto e Fitness",
+        "puericulture": "Bebé e Puericultura"
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Testemunhos",
+      "h2": "Vendem com o Sellia",
+      "p": "Milhares de comerciantes em todo o mundo confiam no Sellia.",
+      "stats": [
+        {
+          "value": "12.000+",
+          "label": "Comerciantes ativos"
+        },
+        {
+          "value": "40+",
+          "label": "Países cobertos"
+        },
+        {
+          "value": "8,5 M$",
+          "label": "Vendas processadas"
+        },
+        {
+          "value": "99,9%",
+          "label": "Disponibilidade"
+        }
+      ],
+      "items": [
+        {
+          "quote": "Lancei a minha loja de moda wax numa tarde. Os pagamentos por mobile money transformaram as minhas vendas — os meus clientes já não precisam de dinheiro.",
+          "role": "Fundadora, Boutique Moda Wax — Dakar"
+        },
+        {
+          "quote": "O Sellia gere o multi-moeda de forma nativa. Os meus clientes na Nigéria e na Costa do Marfim pagam sem fricção, e controlo tudo a partir de um único painel.",
+          "role": "CEO, TechMart — Lagos"
+        },
+        {
+          "quote": "O editor de temas é intuitivo e os temas são lindos. A minha imagem de marca subiu de nível, e o assistente de IA poupou-me horas.",
+          "role": "Fundadora, Abidjan Beauty"
+        }
+      ]
+    },
+    "flags": {
+      "title": "Disponível em todo o mundo",
+      "subtitle": "Venda em qualquer lugar — o Sellia é uma plataforma global"
+    },
+    "pricing": {
+      "eyebrow": "Preços",
+      "h2": "Preços para todos os comerciantes",
+      "p": "14 dias de teste gratuito em todos os planos. Sem cartão de crédito.",
+      "monthly": "Mensal",
+      "annual": "Anual",
+      "most_popular": "Mais popular",
+      "per_month": "/mês",
+      "billed_yearly_template": "Faturado ${{amount}}/ano",
+      "included": "Incluído",
+      "cta": "Começar",
+      "note_annual": "Faturação anual — 20% de poupança já incluída acima.",
+      "note_monthly": "Faturação mensal, mude para anual quando quiser.",
+      "all_prices_usd": "Todos os preços em USD.",
+      "pay_with": "Pague a sua subscrição com",
+      "mobile_title": "Uma experiência móvel premium",
+      "mobile_p": "Os seus clientes compram a partir do telemóvel, em qualquer lugar do mundo. Checkout fluido, pagamentos sem redirecionamento, suporte a Mobile Money e cartões.",
+      "rating_suffix": "12.000+ comerciantes",
+      "plans": {
+        "starter": {
+          "desc": "Para lançar a sua primeira loja.",
+          "features": [
+            "1 loja",
+            "20 produtos",
+            "Temas básicos",
+            "Pagamentos manuais",
+            "1 utilizador",
+            "Endereço sellia.liafrik.com"
+          ]
+        },
+        "growth": {
+          "desc": "Para comerciantes em crescimento.",
+          "features": [
+            "60 produtos",
+            "Todos os temas premium",
+            "Editor visual",
+            "Pagamentos integrados",
+            "Multi-moeda",
+            "Analítica básica",
+            "3 utilizadores"
+          ]
+        },
+        "pro": {
+          "desc": "Para comerciantes estabelecidos.",
+          "features": [
+            "150 produtos",
+            "Sellia Assistant",
+            "Analítica avançada",
+            "Domínio personalizado",
+            "2 lojas",
+            "10 utilizadores",
+            "Acesso à API"
+          ]
+        },
+        "enterprise": {
+          "desc": "Para marketplaces.",
+          "features": [
+            "Produtos ilimitados",
+            "Lojas ilimitadas",
+            "Marketplace multi-vendedor",
+            "Comércio headless",
+            "Automações e workflows",
+            "Utilizadores ilimitados",
+            "Suporte 24/7",
+            "SLA de 99,9%"
+          ]
+        }
+      }
+    }
   }
 }

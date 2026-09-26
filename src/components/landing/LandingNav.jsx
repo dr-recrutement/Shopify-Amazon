@@ -1,62 +1,26 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Menu, X, ChevronDown, ArrowRight, Globe, Palette, Sparkles, ShoppingCart, Package, CreditCard, Truck, Tag, BarChart3, Globe2, Bot } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { COMPETITOR_LIST } from '@/lib/competitors';
+import { LANGUAGES } from '@/lib/i18n';
 
-const LANGS = [
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'pt', label: 'Português', flag: '🇵🇹' },
-  { code: 'ar', label: 'العربية', flag: '🇦🇪' },
-  { code: 'zh', label: '中文', flag: '🇨🇳' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-];
+// Real product icons instead of the previous emoji glyphs (🎨✨🛒 etc.) —
+// consistent with the icon language used everywhere else on the site
+// (LandingFeatures, LandingHero...) rather than looking like a placeholder.
+// Order matches PLATFORM_LINKS's flattened order below.
+const PLATFORM_ICONS = [Palette, Sparkles, ShoppingCart, Package, CreditCard, Truck, Tag, BarChart3, Globe2, Bot];
 
-const PLATFORM_LINKS = [
-  { group: 'Créer & Vendre', items: [
-    { label: 'Éditeur de boutique', desc: 'Éditeur visuel drag & drop, sans code', icon: '🎨', href: '#fonctionnalites' },
-    { label: 'Thèmes premium', desc: 'Des thèmes raffinés et personnalisables', icon: '✨', href: '#fonctionnalites' },
-    { label: 'Checkout optimisé', desc: 'Tunnel d\u2019achat fluide, abandon réduit', icon: '🛒', href: '#fonctionnalites' },
-  ]},
-  { group: 'Gérer', items: [
-    { label: 'Gestion des stocks', desc: 'Variantes, suivi, alertes', icon: '📦', href: '#fonctionnalites' },
-    { label: 'Paiements intégrés', desc: 'Mobile money, cartes, virements — 25+ PSP', icon: '💳', href: '#fonctionnalites' },
-    { label: 'Livraison multi-zones', desc: 'Tarifs par région & pays', icon: '🚚', href: '#fonctionnalites' },
-    { label: 'Promotions & réductions', desc: 'Codes promo, remises automatiques', icon: '🏷️', href: '#fonctionnalites' },
-  ]},
-  { group: 'Croître', items: [
-    { label: 'Analytics en temps réel', desc: 'Tableau de bord & rapports', icon: '📊', href: '#fonctionnalites' },
-    { label: 'Multi-devises', desc: 'XOF, NGN, USD, EUR natifs', icon: '🌍', href: '#fonctionnalites' },
-    { label: 'Sellia Assistant', desc: 'Génération de contenus & thèmes', icon: '🤖', href: '#fonctionnalites' },
-  ]},
-];
-
-const RESOURCES_LINKS = [
-  { label: 'Centre d\u2019aide', desc: 'FAQ & tutoriels', to: '/centre-aide' },
-  { label: 'Guides', desc: 'Tendances e-commerce & migration', to: '/guides' },
-  { label: 'À propos', desc: 'Notre mission et notre équipe', to: '/a-propos' },
-  { label: 'Contact', desc: 'Support et service client', to: '/contact' },
-];
-
-// Comparison pages, surfaced directly in the main nav so a visitor
-// searching "alternative à Shopify" (or any of the other five) finds the
-// matching page in one click from anywhere on the site, not just via the
-// footer.
-const ALTERNATIVES_LINKS = COMPETITOR_LIST.map((c) => ({
-  label: `Alternative à ${c.name}`,
-  desc: `Sellia vs ${c.name} : comparatif complet`,
-  to: `/alternative-a-${c.slug}`,
-}));
+const LANG_FLAGS = { fr: '🇫🇷', en: '🇬🇧', ar: '🇦🇪', pt: '🇵🇹', es: '🇪🇸', sw: '🇰🇪', wo: '🇸🇳' };
 
 export default function LandingNav() {
+  const { t, i18n } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(null);
   const [mobileSection, setMobileSection] = useState(null);
   const [langOpen, setLangOpen] = useState(false);
-  const [lang, setLang] = useState(LANGS[0]);
   const navRef = useRef(null);
 
   useEffect(() => {
@@ -72,10 +36,41 @@ export default function LandingNav() {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
+  // Real translated content below. Platform items now point to actual
+  // dedicated pages (with anchors for each specific item) instead of every
+  // single one collapsing to the same "#fonctionnalites" section — and use
+  // product icons (imported above) instead of emoji glyphs.
+  const platformFlat = t('landing.nav.platform_links', { returnObjects: true });
+  const PLATFORM_HREFS = [
+    '/fonctionnalites/creer-vendre#editeur-boutique', '/fonctionnalites/creer-vendre#themes-premium', '/fonctionnalites/creer-vendre#checkout-optimise',
+    '/fonctionnalites/gerer#gestion-stocks', '/fonctionnalites/gerer#paiements-integres', '/fonctionnalites/gerer#livraison-multi-zones', '/fonctionnalites/gerer#promotions-reductions',
+    '/fonctionnalites/croitre#analytics-temps-reel', '/fonctionnalites/croitre#multi-devises', '/fonctionnalites/croitre#sellia-assistant',
+  ];
+  const platformItems = platformFlat.map((it, i) => ({ ...it, to: PLATFORM_HREFS[i], Icon: PLATFORM_ICONS[i] }));
+  const PLATFORM_LINKS = [
+    { group: t('landing.nav.group_create_sell'), items: platformItems.slice(0, 3) },
+    { group: t('landing.nav.group_manage'), items: platformItems.slice(3, 7) },
+    { group: t('landing.nav.group_grow'), items: platformItems.slice(7, 10) },
+  ];
+
+  const resourcesFlat = t('landing.nav.resources_links', { returnObjects: true });
+  const RESOURCES_HREFS = ['/centre-aide', '/guides', '/securite', '/a-propos', '/contact'];
+  const RESOURCES_LINKS = resourcesFlat.map((it, i) => ({ ...it, to: RESOURCES_HREFS[i] }));
+
+  // Comparison pages, surfaced directly in the main nav so a visitor
+  // searching "alternative à Shopify" (or any of the other five) finds the
+  // matching page in one click from anywhere on the site, not just via the
+  // footer.
+  const ALTERNATIVES_LINKS = COMPETITOR_LIST.map((c) => ({
+    label: `${t('landing.nav.alternative_prefix')} ${c.name}`,
+    desc: t('landing.nav.alternative_desc_template', { name: c.name }),
+    to: `/alternative-a-${c.slug}`,
+  }));
+
   const NAV_ITEMS = [
-    { id: 'platform', label: 'Plateforme', mega: true, links: PLATFORM_LINKS, cols: 3 },
-    { id: 'alternatives', label: 'Alternatives', mega: false, links: ALTERNATIVES_LINKS, wide: true },
-    { id: 'resources', label: 'Ressources', mega: false, links: RESOURCES_LINKS },
+    { id: 'platform', label: t('landing.footer.col_platform'), mega: true, links: PLATFORM_LINKS, cols: 3 },
+    { id: 'alternatives', label: t('landing.nav.alternatives_label'), mega: false, links: ALTERNATIVES_LINKS, wide: true },
+    { id: 'resources', label: t('landing.footer.col_resources'), mega: false, links: RESOURCES_LINKS },
   ];
 
   return (
@@ -102,10 +97,10 @@ export default function LandingNav() {
                         <div key={group.group}>
                           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{group.group}</p>
                           {group.items.map((it) => (
-                            <a key={it.label} href={it.href || '#'} className="flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-surface transition-colors">
-                              <span className="text-lg leading-none mt-0.5">{it.icon}</span>
+                            <Link key={it.label} to={it.to} className="flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-surface transition-colors">
+                              <span className="w-8 h-8 rounded-lg bg-brand-muted flex items-center justify-center shrink-0 mt-0.5"><it.Icon className="w-4 h-4 text-brand" /></span>
                               <div><p className="text-sm font-semibold text-foreground">{it.label}</p><p className="text-xs text-muted-foreground">{it.desc}</p></div>
-                            </a>
+                            </Link>
                           ))}
                         </div>
                       ))}
@@ -123,26 +118,31 @@ export default function LandingNav() {
                 )}
               </div>
             ))}
-            <a href="#tarifs" className="px-3.5 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-full">Tarifs</a>
+            <a href="#tarifs" className="px-3.5 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-full">{t('landing.nav.tarifs')}</a>
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
-            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-foreground hover:text-brand transition-colors rounded-full">Se connecter</Link>
+            <Link to="/login" className="px-4 py-2 text-sm font-semibold text-foreground hover:text-brand transition-colors rounded-full">{t('landing.nav.login')}</Link>
             <Link to="/register" className="inline-flex items-center gap-1.5 bg-brand text-brand-foreground font-semibold px-5 py-2.5 rounded-full text-sm hover:bg-brand/90 transition-colors shadow-lg shadow-brand/20">
-              Essai gratuit <ArrowRight className="w-3.5 h-3.5" />
+              {t('landing.nav.trial')} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-            {/* Language selector — extreme right */}
+            {/* Language selector — extreme right. Real switch now: picking
+                a language calls i18n.changeLanguage, which re-renders every
+                component using useTranslation (this nav, the footer, and
+                the rest of the homepage) and flips the page to RTL for
+                Arabic — it used to only update local component state and
+                change nothing on the page. */}
             <div className="relative ml-1">
               <button onClick={() => setLangOpen((o) => !o)} className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-full">
                 <Globe className="w-4 h-4" />
-                <span className="text-base">{lang.flag}</span>
+                <span className="text-base">{LANG_FLAGS[i18n.language] || '🌐'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
               </button>
               {langOpen && (
                 <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-2xl border border-border shadow-2xl p-2">
-                  {LANGS.map((l) => (
-                    <button key={l.code} onClick={() => { setLang(l); setLangOpen(false); }} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-surface transition-colors ${lang.code === l.code ? 'bg-surface font-semibold text-foreground' : 'text-muted-foreground'}`}>
-                      <span className="text-base">{l.flag}</span> {l.label}
+                  {LANGUAGES.map((l) => (
+                    <button key={l.code} onClick={() => { i18n.changeLanguage(l.code); setLangOpen(false); }} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-surface transition-colors ${i18n.language === l.code ? 'bg-surface font-semibold text-foreground' : 'text-muted-foreground'}`}>
+                      <span className="text-base">{LANG_FLAGS[l.code] || '🌐'}</span> {l.label}
                     </button>
                   ))}
                 </div>
@@ -171,9 +171,9 @@ export default function LandingNav() {
                       <div key={g.group}>
                         <p className="text-[11px] font-bold text-muted-foreground uppercase mb-1.5">{g.group}</p>
                         {g.items.map((i) => (
-                          <a key={i.label} href={i.href || '#'} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 py-2 text-sm text-foreground">
-                            <span>{i.icon}</span> {i.label}
-                          </a>
+                          <Link key={i.label} to={i.to} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 py-2 text-sm text-foreground">
+                            <i.Icon className="w-4 h-4 text-brand" /> {i.label}
+                          </Link>
                         ))}
                       </div>
                     )) : item.links.map((i) => (
@@ -183,13 +183,13 @@ export default function LandingNav() {
                 )}
               </div>
             ))}
-            <a href="#tarifs" onClick={() => setMobileOpen(false)} className="block py-3 text-sm font-semibold text-foreground">Tarifs</a>
+            <a href="#tarifs" onClick={() => setMobileOpen(false)} className="block py-3 text-sm font-semibold text-foreground">{t('landing.nav.tarifs')}</a>
             <div className="flex items-center gap-2 py-2">
-              {LANGS.slice(0, 5).map((l) => <button key={l.code} onClick={() => setLang(l)} className={`text-lg px-1 ${lang.code === l.code ? 'opacity-100' : 'opacity-50'}`}>{l.flag}</button>)}
+              {LANGUAGES.map((l) => <button key={l.code} onClick={() => i18n.changeLanguage(l.code)} className={`text-lg px-1 ${i18n.language === l.code ? 'opacity-100' : 'opacity-50'}`}>{LANG_FLAGS[l.code] || '🌐'}</button>)}
             </div>
             <div className="pt-2 flex flex-col gap-2">
-              <Link to="/login" onClick={() => setMobileOpen(false)} className="py-2.5 text-center text-sm font-semibold text-foreground border border-border rounded-full">Se connecter</Link>
-              <Link to="/register" onClick={() => setMobileOpen(false)} className="py-2.5 text-center text-sm font-semibold bg-brand text-brand-foreground rounded-full">Essai gratuit</Link>
+              <Link to="/login" onClick={() => setMobileOpen(false)} className="py-2.5 text-center text-sm font-semibold text-foreground border border-border rounded-full">{t('landing.nav.login')}</Link>
+              <Link to="/register" onClick={() => setMobileOpen(false)} className="py-2.5 text-center text-sm font-semibold bg-brand text-brand-foreground rounded-full">{t('landing.nav.trial')}</Link>
             </div>
           </div>
         </div>

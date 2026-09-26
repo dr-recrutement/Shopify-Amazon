@@ -5,6 +5,10 @@
   <url><loc>https://sellia.liafrik.com/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://sellia.liafrik.com/carrieres</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://sellia.liafrik.com/centre-aide</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://sellia.liafrik.com/securite</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://sellia.liafrik.com/fonctionnalites/creer-vendre</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sellia.liafrik.com/fonctionnalites/gerer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sellia.liafrik.com/fonctionnalites/croitre</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://sellia.liafrik.com/guides</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://sellia.liafrik.com/guides/choisir-plateforme-ecommerce-afrique-2026</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://sellia.liafrik.com/guides/migrer-boutique-vers-sellia</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>

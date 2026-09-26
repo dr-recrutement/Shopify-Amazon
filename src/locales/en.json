@@ -104,5 +104,429 @@
     "status_archived": "Archived",
     "variants": "variant(s)",
     "tracked": "Tracked"
+  },
+  "landing": {
+    "nav": {
+      "group_create_sell": "Create & Sell",
+      "group_manage": "Manage",
+      "group_grow": "Grow",
+      "platform_links": [
+        {
+          "label": "Store editor",
+          "desc": "Drag & drop visual editor, no code"
+        },
+        {
+          "label": "Premium themes",
+          "desc": "Refined, fully customizable themes"
+        },
+        {
+          "label": "Optimized checkout",
+          "desc": "Smooth buying flow, less abandonment"
+        },
+        {
+          "label": "Inventory management",
+          "desc": "Variants, tracking, alerts"
+        },
+        {
+          "label": "Integrated payments",
+          "desc": "Mobile money, cards, transfers — 25+ PSPs"
+        },
+        {
+          "label": "Multi-zone shipping",
+          "desc": "Rates by region & country"
+        },
+        {
+          "label": "Promotions & discounts",
+          "desc": "Promo codes, automatic discounts"
+        },
+        {
+          "label": "Real-time analytics",
+          "desc": "Dashboard & reports"
+        },
+        {
+          "label": "Multi-currency",
+          "desc": "Native XOF, NGN, USD, EUR"
+        },
+        {
+          "label": "Sellia Assistant",
+          "desc": "AI content & theme generation"
+        }
+      ],
+      "resources_links": [
+        {
+          "label": "Help center",
+          "desc": "FAQ & tutorials"
+        },
+        {
+          "label": "Guides",
+          "desc": "E-commerce trends & migration"
+        },
+        {
+          "label": "Security & trust",
+          "desc": "How your data is protected"
+        },
+        {
+          "label": "About",
+          "desc": "Our mission and our team"
+        },
+        {
+          "label": "Contact",
+          "desc": "Support and customer service"
+        }
+      ],
+      "alternatives_label": "Alternatives",
+      "alternative_prefix": "Alternative to",
+      "alternative_desc_template": "Sellia vs {{name}}: full comparison",
+      "tarifs": "Pricing",
+      "login": "Log in",
+      "trial": "Free trial"
+    },
+    "footer": {
+      "brand_desc": "The premium e-commerce platform for merchants worldwide — a complete alternative to Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo and Wix.",
+      "col_platform": "Platform",
+      "col_alternatives": "Alternatives",
+      "col_resources": "Resources",
+      "col_company": "Company",
+      "col_legal": "Legal",
+      "platform_links": [
+        "Store editor",
+        "Premium themes",
+        "Payments & Mobile Money",
+        "Sellia Assistant (AI)",
+        "Pricing"
+      ],
+      "company_links": [
+        "About",
+        "Careers",
+        "Contact"
+      ],
+      "legal_links": [
+        "Terms of use",
+        "Privacy",
+        "Cookies",
+        "GDPR",
+        "Legal notice"
+      ],
+      "cta_title": "Ready to launch your store?",
+      "cta_sub": "Try Sellia free for 14 days. No credit card required.",
+      "cta_button": "Get started now",
+      "copyright_suffix": "All rights reserved.",
+      "connexion": "Log in",
+      "confidentialite": "Privacy",
+      "conditions": "Terms"
+    },
+    "hero": {
+      "badge": "The global e-commerce platform — 7 languages",
+      "h1_line1": "Launch your",
+      "h1_line2_pre": "online store, ",
+      "h1_highlight": "international",
+      "h1_line3": "in minutes.",
+      "p": "Sellia brings together a theme editor, integrated payments, multi-currency and 25+ global PSPs — for merchants everywhere. No code, no friction.",
+      "cta1": "Create my store",
+      "cta2": "See pricing",
+      "trust1": "Multi-currency (XOF, NGN, USD, EUR…)",
+      "trust2": "25+ global PSPs",
+      "trust3": "No-redirect payments",
+      "trust4": "14-day free trial"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "h2": "Three steps to your store",
+      "p": "From sign-up to your first sale, faster than it takes to explain it.",
+      "steps": [
+        {
+          "title": "Create your account",
+          "text": "Sign up for free and set up your store in minutes with our onboarding assistant."
+        },
+        {
+          "title": "Customize your storefront",
+          "text": "Choose a premium theme, add your products, collections and discounts — no coding required."
+        },
+        {
+          "title": "Sell online",
+          "text": "Take your first payments, manage your orders and track your performance in real time."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Features",
+      "h2": "Everything you need to sell online",
+      "p": "A complete platform, from building your store to getting paid — in a single tool.",
+      "tabs": {
+        "create": "Create & Customize",
+        "sell": "Sell & Get Paid",
+        "manage": "Manage & Ship",
+        "grow": "Grow & Analyze"
+      },
+      "items": {
+        "create": [
+          {
+            "title": "Drag & drop visual editor",
+            "text": "Build a premium storefront without touching code. Real-time desktop, tablet and mobile preview."
+          },
+          {
+            "title": "Premium international themes",
+            "text": "Refined, customizable themes in your brand colors, designed for merchants worldwide."
+          },
+          {
+            "title": "Smart collections",
+            "text": "Manual or automatic collections with dynamic rules on tags, price, stock and status."
+          },
+          {
+            "title": "Native responsive design",
+            "text": "Every store adapts perfectly to mobile — where your customers actually buy."
+          }
+        ],
+        "sell": [
+          {
+            "title": "25+ global PSPs",
+            "text": "Paystack, Flutterwave, M-Pesa, Stripe, PayPal, Payunit… Cards, Mobile Money and transfers with no redirect."
+          },
+          {
+            "title": "Multi-currency & markets",
+            "text": "Sell everywhere with native ISO currency support (XOF, NGN, USD, EUR) and translation into 7 languages."
+          },
+          {
+            "title": "No-redirect checkout",
+            "text": "A fully embedded buying flow — your customers never leave your store. Less abandonment, maximum conversion."
+          },
+          {
+            "title": "Promotions & discounts",
+            "text": "Promo codes, percentage or fixed-amount discounts, or free shipping with automatic rules."
+          }
+        ],
+        "manage": [
+          {
+            "title": "Inventory & variants",
+            "text": "Per-variant tracking, low-stock alerts and multi-location management so you never run out."
+          },
+          {
+            "title": "Multi-zone shipping",
+            "text": "Rates by region, country and weight. Conditional free shipping and automated parcel tracking."
+          },
+          {
+            "title": "Customer management",
+            "text": "Customer profiles, purchase history, multiple addresses and tags for complete, personalized follow-up."
+          },
+          {
+            "title": "Marketplace",
+            "text": "Launch a multi-vendor marketplace with vendor management, commissions and split payments."
+          }
+        ],
+        "grow": [
+          {
+            "title": "Real-time analytics",
+            "text": "Track sales, visitors, per-product conversion rate and buying funnel on an actionable dashboard."
+          },
+          {
+            "title": "Sellia Assistant",
+            "text": "Generate product descriptions, SEO content and entire themes with Sellia's built-in AI."
+          },
+          {
+            "title": "Marketing & automations",
+            "text": "Email campaigns, abandoned cart recovery and event-triggered automations."
+          },
+          {
+            "title": "Smart alerts",
+            "text": "Automatic notifications for low stock, new orders and anomalies — by email or push."
+          }
+        ]
+      },
+      "stats": [
+        {
+          "value": "25+",
+          "label": "Integrated PSPs"
+        },
+        {
+          "value": "7",
+          "label": "Native languages"
+        },
+        {
+          "value": "4.9/5",
+          "label": "Merchant satisfaction"
+        },
+        {
+          "value": "99.9%",
+          "label": "Uptime"
+        }
+      ]
+    },
+    "psps": {
+      "title_template": "{{n}}+ global payment providers",
+      "subtitle": "Accept payments anywhere in the world — with no redirect",
+      "regions": {
+        "afrique": "Africa",
+        "europe": "Europe",
+        "asie": "Asia",
+        "usa": "USA",
+        "latino": "Latin America",
+        "europe_usa": "Europe/USA"
+      }
+    },
+    "showcase": {
+      "block1_eyebrow": "Dashboard",
+      "block1_h2": "Run your store at a glance",
+      "block1_p": "Track your sales, orders, customers and products from a clear dashboard. Real-time stats for fast decisions.",
+      "block1_list": [
+        "Revenue collected and monthly trends",
+        "Real-time order statuses",
+        "Best sellers and conversion funnel",
+        "Multi-store management"
+      ],
+      "block1_cta": "Explore the dashboard",
+      "block2_eyebrow": "Theme editor",
+      "block2_h2": "Build a storefront that looks like you",
+      "block2_p": "An intuitive visual editor with drag & drop, responsive preview, undo/redo and instant publishing.",
+      "block2_highlights": [
+        "Drag & drop visual editor",
+        "Desktop, tablet, mobile preview",
+        "Premium international themes",
+        "Color & typography customization",
+        "Sellia Assistant to generate content",
+        "One-click publishing"
+      ],
+      "block2_badge_title": "Drag & drop editor",
+      "block2_badge_sub": "No code",
+      "block3_eyebrow": "Mobile commerce",
+      "block3_h2": "Where your customers buy",
+      "block3_p": "Over 70% of online purchases happen on mobile. Every Sellia theme is natively responsive — your store looks perfect on smartphones, with a smooth checkout and no-redirect payments.",
+      "block3_badge1": "No-redirect checkout",
+      "block3_badge2": "Order tracking",
+      "block3_cta1": "Create my store",
+      "block3_cta2": "See pricing"
+    },
+    "brands": {
+      "h2": "Endless solutions for every kind of brand.",
+      "p": "Get started fast with the essentials, or integrate, build and scale on our open platform — trusted by B2C and B2B brands alike.",
+      "desktop": "Desktop",
+      "mobile": "Mobile",
+      "caption": "Auto-scroll · 12 categories",
+      "cta": "Launch your store",
+      "footnote": "100% responsive stores — desktop & mobile, independently configurable.",
+      "categories": {
+        "mode": "Fashion & Textiles",
+        "electronique": "Electronics",
+        "beaute": "Beauty & Cosmetics",
+        "bijoux": "Jewelry & Accessories",
+        "chaussures": "Shoes & Sportswear",
+        "maison": "Home & Decor",
+        "epicerie": "Grocery & Drinks",
+        "livres": "Books & Culture",
+        "restaurant": "Restaurant & Food",
+        "jardinerie": "Garden & Plants",
+        "sport": "Sport & Fitness",
+        "puericulture": "Baby & Childcare"
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Testimonials",
+      "h2": "They sell with Sellia",
+      "p": "Thousands of merchants around the world trust Sellia.",
+      "stats": [
+        {
+          "value": "12,000+",
+          "label": "Active merchants"
+        },
+        {
+          "value": "40+",
+          "label": "Countries covered"
+        },
+        {
+          "value": "$8.5M",
+          "label": "Sales processed"
+        },
+        {
+          "value": "99.9%",
+          "label": "Uptime"
+        }
+      ],
+      "items": [
+        {
+          "quote": "I launched my wax fashion store in one afternoon. Mobile money payments transformed my sales — my customers no longer need cash.",
+          "role": "Founder, Wax Fashion Boutique — Dakar"
+        },
+        {
+          "quote": "Sellia handles multi-currency natively. My customers in Nigeria and Ivory Coast pay with zero friction, and I track everything from one dashboard.",
+          "role": "CEO, TechMart — Lagos"
+        },
+        {
+          "quote": "The theme editor is intuitive and the themes are gorgeous. My brand image levelled up, and the AI assistant saved me hours.",
+          "role": "Founder, Abidjan Beauty"
+        }
+      ]
+    },
+    "flags": {
+      "title": "Available worldwide",
+      "subtitle": "Sell anywhere — Sellia is a global platform"
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "h2": "Prices for every merchant",
+      "p": "14-day free trial on every plan. No credit card required.",
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "most_popular": "Most popular",
+      "per_month": "/mo",
+      "billed_yearly_template": "Billed ${{amount}}/year",
+      "included": "Included",
+      "cta": "Get started",
+      "note_annual": "Annual billing — 20% savings already included above.",
+      "note_monthly": "Monthly billing, switch to annual anytime.",
+      "all_prices_usd": "All prices in USD.",
+      "pay_with": "Pay for your subscription with",
+      "mobile_title": "A premium mobile experience",
+      "mobile_p": "Your customers buy from their phone, anywhere in the world. Smooth checkout, no-redirect payments, Mobile Money and card support.",
+      "rating_suffix": "12,000+ merchants",
+      "plans": {
+        "starter": {
+          "desc": "To launch your first store.",
+          "features": [
+            "1 store",
+            "20 products",
+            "Basic themes",
+            "Manual payments",
+            "1 user",
+            "sellia.liafrik.com address"
+          ]
+        },
+        "growth": {
+          "desc": "For growing merchants.",
+          "features": [
+            "60 products",
+            "All premium themes",
+            "Visual editor",
+            "Integrated payments",
+            "Multi-currency",
+            "Basic analytics",
+            "3 users"
+          ]
+        },
+        "pro": {
+          "desc": "For established merchants.",
+          "features": [
+            "150 products",
+            "Sellia Assistant",
+            "Advanced analytics",
+            "Custom domain",
+            "2 stores",
+            "10 users",
+            "API access"
+          ]
+        },
+        "enterprise": {
+          "desc": "For marketplaces.",
+          "features": [
+            "Unlimited products",
+            "Unlimited stores",
+            "Multi-vendor marketplace",
+            "Headless commerce",
+            "Automations & workflows",
+            "Unlimited users",
+            "24/7 support",
+            "99.9% SLA"
+          ]
+        }
+      }
+    }
   }
 }

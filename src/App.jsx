@@ -57,6 +57,10 @@ import LegalNotice from '@/pages/LegalNotice';
 import HelpCenter from '@/pages/HelpCenter';
 import Guides from '@/pages/Guides';
 import GuideArticle from '@/pages/GuideArticle';
+import Security from '@/pages/Security';
+import FeatureCreateSell from '@/pages/FeatureCreateSell';
+import FeatureManage from '@/pages/FeatureManage';
+import FeatureGrow from '@/pages/FeatureGrow';
 // Team.jsx (still on base44, StaffManagement.jsx covers this now) - import
 // removed, /team redirects to /settings instead of crashing.
 import Reports from '@/pages/Reports';
@@ -121,6 +125,10 @@ const AuthenticatedApp = () => {
       <Route path="/confidentialite" element={<Privacy />} />
       <Route path="/mentions-legales" element={<LegalNotice />} />
       <Route path="/centre-aide" element={<HelpCenter />} />
+      <Route path="/securite" element={<Security />} />
+      <Route path="/fonctionnalites/creer-vendre" element={<FeatureCreateSell />} />
+      <Route path="/fonctionnalites/gerer" element={<FeatureManage />} />
+      <Route path="/fonctionnalites/croitre" element={<FeatureGrow />} />
       <Route path="/guides" element={<Guides />} />
       <Route path="/guides/:slug" element={<GuideArticle />} />
       {/* One static route per competitor — react-router v6 can't match a

@@ -2,6 +2,13 @@
 // Every entry with a `logo` renders that image at a uniform box size; the
 // rest (no real asset available yet) fall back to the colored-initial tile
 // so the row never breaks, but they're the minority now.
+import { useTranslation } from 'react-i18next';
+
+// Maps this file's French region labels to the translated region keys in
+// landing.psps.regions - provider names themselves (Paystack, Stripe...)
+// are proper nouns and stay as-is in every language.
+const REGION_KEY = { 'Afrique': 'afrique', 'Europe': 'europe', 'Asie': 'asie', 'USA': 'usa', 'Latino': 'latino', 'Europe/USA': 'europe_usa' };
+
 const PSPS = [
   { name: 'Paystack', logo: '/payment-logos/paystack.png', color: '#011B3F', text: '#00C3F7', region: 'Afrique' },
   { name: 'Flutterwave', logo: '/payment-logos/flutterwave.png', color: '#F26B1D', text: '#FFFFFF', region: 'Afrique' },
@@ -35,7 +42,7 @@ const PSPS = [
   { name: 'EBANX', logo: '/payment-logos/ebanx.jpg', color: '#0D1B2A', text: '#00D9A3', region: 'Latino' },
 ];
 
-function PspTile({ p }) {
+function PspTile({ p, regionLabel }) {
   return (
     <div className="flex items-center gap-3 shrink-0 px-5 py-3 rounded-xl border border-[#E1E1E1] bg-white shadow-sm min-w-[180px] h-[72px]">
       <div className="w-12 h-9 shrink-0 flex items-center justify-center overflow-hidden">
@@ -45,22 +52,24 @@ function PspTile({ p }) {
           <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm" style={{ background: p.color, color: p.text }}>{p.name.charAt(0)}</div>
         )}
       </div>
-      <div className="min-w-0"><p className="text-sm font-bold text-[#202223] leading-tight truncate">{p.name}</p><p className="text-[10px] text-[#6D7175]">{p.region}</p></div>
+      <div className="min-w-0"><p className="text-sm font-bold text-[#202223] leading-tight truncate">{p.name}</p><p className="text-[10px] text-[#6D7175]">{regionLabel}</p></div>
     </div>
   );
 }
 
 export default function LandingPSPs() {
+  const { t } = useTranslation();
+  const regions = t('landing.psps.regions', { returnObjects: true });
   const list = [...PSPS, ...PSPS];
   return (
     <section className="py-12 bg-white border-y border-[#E1E1E1]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center mb-6">
-        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">{PSPS.length}+ prestataires de paiement mondiaux</p>
-        <p className="text-xs text-[#6D7175] mt-1">Acceptez les paiements partout dans le monde — sans redirection</p>
+        <p className="text-sm font-bold text-[#202223] uppercase tracking-wide">{t('landing.psps.title_template', { n: PSPS.length })}</p>
+        <p className="text-xs text-[#6D7175] mt-1">{t('landing.psps.subtitle')}</p>
       </div>
       <div className="relative overflow-hidden">
         <div className="flex gap-3 w-max animate-scroll-x">
-          {list.map((p, i) => <PspTile key={i} p={p} />)}
+          {list.map((p, i) => <PspTile key={i} p={p} regionLabel={regions[REGION_KEY[p.region]] || p.region} />)}
         </div>
       </div>
     </section>

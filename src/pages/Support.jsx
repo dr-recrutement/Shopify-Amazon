@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { LifeBuoy, Search, BookOpen, Video, MessageSquare, ChevronDown, Mail, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { LifeBuoy, Search, BookOpen, Video, MessageSquare, ChevronDown, Mail, Zap, PlayCircle } from 'lucide-react';
+import { supabase } from '@/api/supabaseClient';
 
 const CATEGORIES = [
   { id: 'start', label: 'Démarrage', icon: Zap, articles: [
@@ -30,6 +31,17 @@ export default function Support() {
   const [query, setQuery] = useState('');
   const [openCat, setOpenCat] = useState('start');
   const [openArt, setOpenArt] = useState(null);
+  const [tutorial, setTutorial] = useState(null); // { url, title } once a super admin has uploaded one
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+
+  // Public, unauthenticated-friendly read (RLS on platform_settings allows
+  // anon select) - so this loads the same way whether a merchant is
+  // logged in (Settings tab) or a visitor is on the public /centre-aide.
+  useEffect(() => {
+    supabase.from('platform_settings').select('value').eq('key', 'help_center_tutorial_video').maybeSingle()
+      .then(({ data }) => { if (data?.value?.url) setTutorial(data.value); })
+      .catch(() => {});
+  }, []);
 
   const filtered = CATEGORIES.map((c) => ({ ...c, articles: c.articles.filter((a) => !query || a.t.toLowerCase().includes(query.toLowerCase()) || a.body.toLowerCase().includes(query.toLowerCase())) })).filter((c) => c.articles.length > 0);
 
@@ -44,9 +56,24 @@ export default function Support() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <a href="mailto:support@liafrik.com" className="bg-white rounded-xl border border-[#E1E1E1] p-4 hover:border-[#008060] transition"><Mail className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Contacter le support</p><p className="text-xs text-[#6D7175]">Réponse sous 24h</p></a>
-        <div className="bg-white rounded-xl border border-[#E1E1E1] p-4"><Video className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Tutoriels vidéo</p><p className="text-xs text-[#6D7175]">Apprenez visuellement</p></div>
+        {tutorial ? (
+          <button onClick={() => setTutorialOpen(true)} className="text-left bg-white rounded-xl border border-[#E1E1E1] p-4 hover:border-[#008060] transition">
+            <Video className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Tutoriel vidéo</p><p className="text-xs text-[#6D7175]">{tutorial.title || 'Apprenez visuellement'}</p>
+          </button>
+        ) : (
+          <div className="bg-white rounded-xl border border-[#E1E1E1] p-4 opacity-70"><Video className="w-5 h-5 text-[#6D7175] mb-2" /><p className="text-sm font-bold text-[#202223]">Tutoriel vidéo</p><p className="text-xs text-[#6D7175]">Bientôt disponible</p></div>
+        )}
         <div className="bg-white rounded-xl border border-[#E1E1E1] p-4"><MessageSquare className="w-5 h-5 text-[#008060] mb-2" /><p className="text-sm font-bold text-[#202223]">Communauté</p><p className="text-xs text-[#6D7175]">Échangez avec d'autres marchands</p></div>
       </div>
+
+      {tutorialOpen && tutorial && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setTutorialOpen(false)}>
+          <div className="w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <p className="text-white text-sm font-semibold mb-2 flex items-center gap-2"><PlayCircle className="w-4 h-4" /> {tutorial.title}</p>
+            <video src={tutorial.url} controls autoPlay className="w-full rounded-xl bg-black aspect-video" />
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         {filtered.map((cat) => (

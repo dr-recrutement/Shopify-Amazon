@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Facebook, Instagram, Linkedin, ArrowRight, Mail } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { COMPETITOR_LIST } from '@/lib/competitors';
@@ -14,52 +15,6 @@ function TikTokIcon(props) {
   );
 }
 
-// Every link below points to a route that actually exists (App.jsx) or a
-// real in-page anchor on the landing page. Previously this column was
-// plain <span> text with no href at all, promising pages (Carrières,
-// Documentation, RGPD…) the site never actually had.
-const COLS = [
-  {
-    title: 'Plateforme',
-    links: [
-      { label: 'Éditeur de boutique', to: '/#fonctionnalites' },
-      { label: 'Thèmes premium', to: '/#fonctionnalites' },
-      { label: 'Paiements & Mobile Money', to: '/#fonctionnalites' },
-      { label: 'Sellia Assistant (IA)', to: '/#fonctionnalites' },
-      { label: 'Tarifs', to: '/#tarifs' },
-    ],
-  },
-  {
-    title: 'Alternatives',
-    links: COMPETITOR_LIST.map((c) => ({ label: `Alternative à ${c.name}`, to: `/alternative-a-${c.slug}` })),
-  },
-  {
-    title: 'Ressources',
-    links: [
-      { label: 'Centre d\u2019aide', to: '/centre-aide' },
-      { label: 'Guides', to: '/guides' },
-    ],
-  },
-  {
-    title: 'Entreprise',
-    links: [
-      { label: 'À propos', to: '/a-propos' },
-      { label: 'Carrières', to: '/carrieres' },
-      { label: 'Contact', to: '/contact' },
-    ],
-  },
-  {
-    title: 'Légal',
-    links: [
-      { label: 'Conditions d\u2019utilisation', to: '/conditions' },
-      { label: 'Confidentialité', to: '/confidentialite' },
-      { label: 'Cookies', to: '/confidentialite#cookies' },
-      { label: 'RGPD', to: '/confidentialite#rgpd' },
-      { label: 'Mentions légales', to: '/mentions-legales' },
-    ],
-  },
-];
-
 const SOCIALS = [
   { icon: Linkedin, label: 'LinkedIn', href: ORG_SOCIALS[0] },
   { icon: Facebook, label: 'Facebook', href: ORG_SOCIALS[1] },
@@ -68,17 +23,40 @@ const SOCIALS = [
 ];
 
 export default function LandingFooter() {
+  const { t } = useTranslation();
+
+  // Every link below points to a route that actually exists (App.jsx) or a
+  // real in-page anchor on the landing page. Previously this column was
+  // plain <span> text with no href at all, promising pages (Carrières,
+  // Documentation, RGPD…) the site never actually had.
+  const platformLabels = t('landing.footer.platform_links', { returnObjects: true });
+  const platformHrefs = ['/#fonctionnalites', '/#fonctionnalites', '/#fonctionnalites', '/#fonctionnalites', '/#tarifs'];
+  const companyLabels = t('landing.footer.company_links', { returnObjects: true });
+  const companyHrefs = ['/a-propos', '/carrieres', '/contact'];
+  const legalLabels = t('landing.footer.legal_links', { returnObjects: true });
+  const legalHrefs = ['/conditions', '/confidentialite', '/confidentialite#cookies', '/confidentialite#rgpd', '/mentions-legales'];
+  const resourcesLabels = t('landing.nav.resources_links', { returnObjects: true }).slice(0, 3); // help, guides, security
+  const resourcesHrefs = ['/centre-aide', '/guides', '/securite'];
+
+  const COLS = [
+    { title: t('landing.footer.col_platform'), links: platformLabels.map((label, i) => ({ label, to: platformHrefs[i] })) },
+    { title: t('landing.footer.col_alternatives'), links: COMPETITOR_LIST.map((c) => ({ label: `${t('landing.nav.alternative_prefix')} ${c.name}`, to: `/alternative-a-${c.slug}` })) },
+    { title: t('landing.footer.col_resources'), links: resourcesLabels.map((it, i) => ({ label: it.label, to: resourcesHrefs[i] })) },
+    { title: t('landing.footer.col_company'), links: companyLabels.map((label, i) => ({ label, to: companyHrefs[i] })) },
+    { title: t('landing.footer.col_legal'), links: legalLabels.map((label, i) => ({ label, to: legalHrefs[i] })) },
+  ];
+
   return (
     <footer className="bg-foreground text-background">
       {/* CTA strip */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="font-landing font-extrabold text-2xl text-background">Prêt à lancer votre boutique ?</h3>
-            <p className="mt-1.5 text-background/70">Essayez Sellia gratuitement pendant 14 jours. Sans carte bancaire.</p>
+            <h3 className="font-landing font-extrabold text-2xl text-background">{t('landing.footer.cta_title')}</h3>
+            <p className="mt-1.5 text-background/70">{t('landing.footer.cta_sub')}</p>
           </div>
           <Link to="/register" className="inline-flex items-center gap-2 bg-brand text-brand-foreground font-semibold px-6 py-3.5 rounded-full text-base hover:bg-brand/90 transition-colors shadow-lg shadow-brand/30 shrink-0">
-            Commencer maintenant <ArrowRight className="w-4 h-4" />
+            {t('landing.footer.cta_button')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -97,7 +75,7 @@ export default function LandingFooter() {
               <span className="inline-flex items-center bg-white rounded-lg px-2 py-1.5"><img src={BRAND.logo} alt="Sellia" className="h-6 w-auto object-contain" /></span>
               <span className="font-landing font-bold text-lg text-background">Sellia</span>
             </div>
-            <p className="mt-4 text-sm text-background/70 max-w-xs leading-relaxed">La plateforme e-commerce premium pour les marchands du monde entier — une alternative complète à Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo et Wix.</p>
+            <p className="mt-4 text-sm text-background/70 max-w-xs leading-relaxed">{t('landing.footer.brand_desc')}</p>
 
             <div className="mt-5 space-y-2">
               <a href={`mailto:${SUPPORT_EMAIL}`} className="flex items-center gap-2 text-sm text-background/70 hover:text-background transition-colors">
@@ -137,12 +115,15 @@ export default function LandingFooter() {
           </div>
         </div>
 
+        {/* Year is computed at render time (new Date().getFullYear()), so
+            this rolls over automatically every January 1st — nothing to
+            update by hand next year or any year after. */}
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. Tous droits réservés.</p>
+          <p className="text-xs text-background/60">© {new Date().getFullYear()} Sellia — {BRAND.tagline}. {t('landing.footer.copyright_suffix')}</p>
           <div className="flex items-center gap-5 text-xs text-background/70">
-            <Link to="/login" className="hover:text-background transition-colors">Connexion</Link>
-            <Link to="/confidentialite" className="hover:text-background transition-colors">Confidentialité</Link>
-            <Link to="/conditions" className="hover:text-background transition-colors">Conditions</Link>
+            <Link to="/login" className="hover:text-background transition-colors">{t('landing.footer.connexion')}</Link>
+            <Link to="/confidentialite" className="hover:text-background transition-colors">{t('landing.footer.confidentialite')}</Link>
+            <Link to="/conditions" className="hover:text-background transition-colors">{t('landing.footer.conditions')}</Link>
           </div>
         </div>
       </div>

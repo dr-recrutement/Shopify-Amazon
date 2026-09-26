@@ -5,6 +5,11 @@ import MarketingLayout from '@/components/marketing/MarketingLayout';
 import { COMPETITORS, COMPETITOR_LIST } from '@/lib/competitors';
 import { applyFAQJsonLd } from '@/lib/seo';
 
+// Same photo already used (and already verified working) as the main
+// homepage hero background — reused here for visual consistency across
+// the site rather than introducing a second, unverified image URL.
+const HERO_BG = 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80';
+
 function Cell({ value }) {
   if (value === true) return <Check className="w-5 h-5 text-[#008060] mx-auto" />;
   if (value === false) return <X className="w-5 h-5 text-red-400 mx-auto" />;
@@ -38,8 +43,12 @@ export default function AlternativeTo({ brand: brandProp }) {
   return (
     <MarketingLayout title={data.metaTitle} description={data.metaDescription} url={`/alternative-a-${data.slug}`}>
       {/* Hero */}
-      <section className="bg-[#0A0A0A] py-16 lg:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <section className="relative overflow-hidden bg-[#0A0A0A] py-16 lg:py-20">
+        <div className="absolute inset-0">
+          <img src={HERO_BG} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-[#0A0A0A]" />
+        </div>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-2 text-xs font-semibold text-white">
             Comparatif {new Date().getFullYear()}
           </span>

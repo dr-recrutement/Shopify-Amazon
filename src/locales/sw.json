@@ -104,5 +104,429 @@
     "status_archived": "Iliyohifadhiwa",
     "variants": "aina",
     "tracked": "Inafuatiliwa"
+  },
+  "landing": {
+    "nav": {
+      "group_create_sell": "Unda na Uza",
+      "group_manage": "Simamia",
+      "group_grow": "Kua",
+      "platform_links": [
+        {
+          "label": "Kihariri cha duka",
+          "desc": "Kihariri cha kubofya na kuweka, bila msimbo"
+        },
+        {
+          "label": "Miundo ya premium",
+          "desc": "Miundo mizuri inayoweza kubadilishwa kikamilifu"
+        },
+        {
+          "label": "Malipo yaliyoboreshwa",
+          "desc": "Mchakato mzuri wa ununuzi, uachaji kidogo wa vikapu"
+        },
+        {
+          "label": "Usimamizi wa bidhaa",
+          "desc": "Aina za bidhaa, ufuatiliaji, arifa"
+        },
+        {
+          "label": "Malipo yaliyounganishwa",
+          "desc": "Pesa za simu, kadi, uhamisho — zaidi ya PSP 25"
+        },
+        {
+          "label": "Usafirishaji kwa maeneo mengi",
+          "desc": "Bei kwa kanda na nchi"
+        },
+        {
+          "label": "Punguzo na ofa",
+          "desc": "Nambari za punguzo, ofa za kiotomatiki"
+        },
+        {
+          "label": "Uchambuzi wa moja kwa moja",
+          "desc": "Dashibodi na ripoti"
+        },
+        {
+          "label": "Sarafu nyingi",
+          "desc": "XOF, NGN, USD, EUR asilia"
+        },
+        {
+          "label": "Sellia Assistant",
+          "desc": "Uzalishaji wa maudhui na miundo kwa AI"
+        }
+      ],
+      "resources_links": [
+        {
+          "label": "Kituo cha msaada",
+          "desc": "Maswali yanayoulizwa mara kwa mara na mafunzo"
+        },
+        {
+          "label": "Miongozo",
+          "desc": "Mienendo ya biashara mtandaoni na uhamiaji"
+        },
+        {
+          "label": "Usalama na uaminifu",
+          "desc": "Jinsi tunavyolinda data yako"
+        },
+        {
+          "label": "Kuhusu sisi",
+          "desc": "Dhamira yetu na timu yetu"
+        },
+        {
+          "label": "Wasiliana nasi",
+          "desc": "Msaada na huduma kwa wateja"
+        }
+      ],
+      "alternatives_label": "Mbadala",
+      "alternative_prefix": "Mbadala wa",
+      "alternative_desc_template": "Sellia dhidi ya {{name}}: ulinganisho kamili",
+      "tarifs": "Bei",
+      "login": "Ingia",
+      "trial": "Jaribio la bure"
+    },
+    "footer": {
+      "brand_desc": "Jukwaa la biashara mtandaoni la kiwango cha juu kwa wafanyabiashara duniani kote — mbadala kamili wa Shopify, BigCommerce, PrestaShop, WooCommerce, Odoo na Wix.",
+      "col_platform": "Jukwaa",
+      "col_alternatives": "Mbadala",
+      "col_resources": "Rasilimali",
+      "col_company": "Kampuni",
+      "col_legal": "Kisheria",
+      "platform_links": [
+        "Kihariri cha duka",
+        "Miundo ya premium",
+        "Malipo na Pesa za Simu",
+        "Sellia Assistant (AI)",
+        "Bei"
+      ],
+      "company_links": [
+        "Kuhusu sisi",
+        "Kazi",
+        "Wasiliana nasi"
+      ],
+      "legal_links": [
+        "Masharti ya matumizi",
+        "Faragha",
+        "Vidakuzi",
+        "GDPR",
+        "Taarifa ya kisheria"
+      ],
+      "cta_title": "Uko tayari kuanzisha duka lako?",
+      "cta_sub": "Jaribu Sellia bure kwa siku 14. Hakuna kadi ya benki inayohitajika.",
+      "cta_button": "Anza sasa",
+      "copyright_suffix": "Haki zote zimehifadhiwa.",
+      "connexion": "Ingia",
+      "confidentialite": "Faragha",
+      "conditions": "Masharti"
+    },
+    "hero": {
+      "badge": "Jukwaa la biashara mtandaoni la kimataifa — lugha 7",
+      "h1_line1": "Anzisha duka lako",
+      "h1_line2_pre": "mtandaoni ",
+      "h1_highlight": "la kimataifa",
+      "h1_line3": "kwa dakika chache.",
+      "p": "Sellia inaunganisha kihariri cha miundo, malipo yaliyounganishwa, sarafu nyingi na zaidi ya PSP 25 duniani kote — kwa wafanyabiashara kila mahali. Bila msimbo, bila usumbufu.",
+      "cta1": "Unda duka langu",
+      "cta2": "Angalia bei",
+      "trust1": "Sarafu nyingi (XOF, NGN, USD, EUR…)",
+      "trust2": "Zaidi ya PSP 25 duniani kote",
+      "trust3": "Malipo bila kuelekezwa pengine",
+      "trust4": "Jaribio la bure la siku 14"
+    },
+    "how": {
+      "eyebrow": "Jinsi inavyofanya kazi",
+      "h2": "Hatua tatu kuelekea duka lako",
+      "p": "Kutoka usajili hadi mauzo yako ya kwanza, kwa muda mfupi zaidi kuliko unavyochukua kuelezea.",
+      "steps": [
+        {
+          "title": "Unda akaunti yako",
+          "text": "Jisajili bure na usanidi duka lako kwa dakika chache ukitumia msaidizi wetu wa kuanzisha."
+        },
+        {
+          "title": "Binafsisha duka lako",
+          "text": "Chagua mandhari ya premium, ongeza bidhaa zako, makusanyo yako na punguzo — bila kuandika msimbo."
+        },
+        {
+          "title": "Uza mtandaoni",
+          "text": "Pokea malipo yako ya kwanza, simamia maagizo yako na fuatilia utendaji wako kwa wakati halisi."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Vipengele",
+      "h2": "Kila kitu unachohitaji kuuza mtandaoni",
+      "p": "Jukwaa kamili, kutoka kuunda duka hadi kupokea malipo — katika chombo kimoja.",
+      "tabs": {
+        "create": "Unda na Binafsisha",
+        "sell": "Uza na Pokea Malipo",
+        "manage": "Simamia na Sambaza",
+        "grow": "Kua na Chambua"
+      },
+      "items": {
+        "create": [
+          {
+            "title": "Kihariri cha kubofya na kuweka",
+            "text": "Unda duka la premium bila kugusa msimbo. Onyesho la moja kwa moja kwenye kompyuta, kompyuta kibao na simu."
+          },
+          {
+            "title": "Miundo ya kimataifa ya premium",
+            "text": "Miundo mizuri inayoweza kubadilishwa kwa rangi za chapa yako, iliyoundwa kwa wafanyabiashara duniani kote."
+          },
+          {
+            "title": "Makusanyo mahiri",
+            "text": "Makusanyo ya mkono au ya kiotomatiki yenye sheria za kubadilika kwa lebo, bei, hisa na hali."
+          },
+          {
+            "title": "Muundo unaojirekebisha asilia",
+            "text": "Kila duka linajirekebisha kikamilifu kwenye simu — mahali ambapo wateja wako hununua kwa uhalisia."
+          }
+        ],
+        "sell": [
+          {
+            "title": "Zaidi ya PSP 25 duniani kote",
+            "text": "Paystack, Flutterwave, M-Pesa, Stripe, PayPal, Payunit… Kadi, Pesa za Simu na uhamisho bila kuelekezwa pengine."
+          },
+          {
+            "title": "Sarafu nyingi na masoko",
+            "text": "Uza kila mahali kwa usaidizi asilia wa sarafu za ISO (XOF, NGN, USD, EUR) na tafsiri katika lugha 7."
+          },
+          {
+            "title": "Malipo bila kuelekezwa pengine",
+            "text": "Mchakato wa ununuzi uliounganishwa kwa asilimia 100% — wateja wako hawaachi duka lako kamwe. Uachaji mdogo, ubadilishaji wa juu zaidi."
+          },
+          {
+            "title": "Punguzo na ofa",
+            "text": "Nambari za punguzo, punguzo la asilimia au kiasi maalum, au usafirishaji bure kwa sheria za kiotomatiki."
+          }
+        ],
+        "manage": [
+          {
+            "title": "Hisa na aina za bidhaa",
+            "text": "Ufuatiliaji kwa kila aina, arifa za hisa ndogo na usimamizi wa maeneo mengi ili usikose bidhaa kamwe."
+          },
+          {
+            "title": "Usafirishaji kwa maeneo mengi",
+            "text": "Bei kwa kanda, nchi na uzito. Usafirishaji bure wa masharti na ufuatiliaji wa kiotomatiki wa vifurushi."
+          },
+          {
+            "title": "Usimamizi wa wateja",
+            "text": "Wasifu wa wateja, historia ya ununuzi, anwani nyingi na lebo kwa ufuatiliaji kamili na wa kibinafsi."
+          },
+          {
+            "title": "Soko la mtandaoni",
+            "text": "Anzisha soko la wachuuzi wengi na usimamizi wa wachuuzi, kamisheni na mgawanyo wa malipo."
+          }
+        ],
+        "grow": [
+          {
+            "title": "Uchambuzi wa moja kwa moja",
+            "text": "Fuatilia mauzo, wageni, kiwango cha ubadilishaji kwa kila bidhaa na mchakato wa ununuzi kwenye dashibodi inayoweza kutekelezwa."
+          },
+          {
+            "title": "Sellia Assistant",
+            "text": "Zalisha maelezo ya bidhaa, maudhui ya SEO na miundo kamili kwa kutumia AI iliyojengwa ndani ya Sellia."
+          },
+          {
+            "title": "Uuzaji na uendeshaji wa kiotomatiki",
+            "text": "Kampeni za barua pepe, urejeshaji wa vikapu vilivyoachwa na uendeshaji wa kiotomatiki unaosababishwa na matukio."
+          },
+          {
+            "title": "Arifa mahiri",
+            "text": "Arifa za kiotomatiki za hisa ndogo, maagizo mapya na hitilafu — kwa barua pepe au arifa za papo hapo."
+          }
+        ]
+      },
+      "stats": [
+        {
+          "value": "25+",
+          "label": "PSP zilizounganishwa"
+        },
+        {
+          "value": "7",
+          "label": "Lugha asilia"
+        },
+        {
+          "value": "4.9/5",
+          "label": "Kuridhika kwa wafanyabiashara"
+        },
+        {
+          "value": "99.9%",
+          "label": "Muda wa upatikanaji"
+        }
+      ]
+    },
+    "psps": {
+      "title_template": "Zaidi ya watoa huduma za malipo {{n}} duniani kote",
+      "subtitle": "Pokea malipo popote duniani — bila kuelekezwa pengine",
+      "regions": {
+        "afrique": "Afrika",
+        "europe": "Ulaya",
+        "asie": "Asia",
+        "usa": "Marekani",
+        "latino": "Amerika ya Kusini",
+        "europe_usa": "Ulaya/Marekani"
+      }
+    },
+    "showcase": {
+      "block1_eyebrow": "Dashibodi",
+      "block1_h2": "Simamia duka lako kwa mtazamo mmoja",
+      "block1_p": "Fuatilia mauzo, maagizo, wateja na bidhaa zako kutoka dashibodi wazi. Takwimu za wakati halisi kwa maamuzi ya haraka.",
+      "block1_list": [
+        "Mapato yaliyopokelewa na mienendo ya kila mwezi",
+        "Hali za maagizo kwa wakati halisi",
+        "Bidhaa zinazouzwa zaidi na mchakato wa ubadilishaji",
+        "Usimamizi wa maduka mengi"
+      ],
+      "block1_cta": "Chunguza dashibodi",
+      "block2_eyebrow": "Kihariri cha miundo",
+      "block2_h2": "Unda duka linalofanana na wewe",
+      "block2_p": "Kihariri cha moja kwa moja chenye urahisi wa kubofya na kuweka, onyesho linalojirekebisha, tendua/rudia, na uchapishaji wa papo hapo.",
+      "block2_highlights": [
+        "Kihariri cha kubofya na kuweka",
+        "Onyesho kwenye kompyuta, kompyuta kibao na simu",
+        "Miundo ya kimataifa ya premium",
+        "Ubinafsishaji wa rangi na fonti",
+        "Sellia Assistant kuzalisha maudhui",
+        "Uchapishaji kwa kubofya mara moja"
+      ],
+      "block2_badge_title": "Kihariri cha kubofya na kuweka",
+      "block2_badge_sub": "Bila msimbo",
+      "block3_eyebrow": "Biashara ya simu",
+      "block3_h2": "Mahali wateja wako wananunua",
+      "block3_p": "Zaidi ya 70% ya manunuzi mtandaoni yanafanyika kwa simu. Kila mandhari ya Sellia inajirekebisha asilia — duka lako linaonekana vizuri kwenye simu janja, likiwa na malipo laini na malipo bila kuelekezwa pengine.",
+      "block3_badge1": "Malipo bila kuelekezwa pengine",
+      "block3_badge2": "Ufuatiliaji wa maagizo",
+      "block3_cta1": "Unda duka langu",
+      "block3_cta2": "Angalia bei"
+    },
+    "brands": {
+      "h2": "Suluhisho zisizo na kikomo kwa kila aina ya chapa.",
+      "p": "Anza haraka na mambo muhimu, au unganisha, unda na kua kwenye jukwaa letu huria — linalochaguliwa na chapa za B2C na B2B.",
+      "desktop": "Kompyuta",
+      "mobile": "Simu",
+      "caption": "Kusogeza kiotomatiki · Aina 12",
+      "cta": "Anzisha duka lako",
+      "footnote": "Maduka yanayojirekebisha 100% — kompyuta na simu, yanayoweza kusanidiwa kwa kujitegemea.",
+      "categories": {
+        "mode": "Mitindo na Nguo",
+        "electronique": "Vifaa vya Elektroniki",
+        "beaute": "Urembo na Vipodozi",
+        "bijoux": "Vito na Vifaa vya Ziada",
+        "chaussures": "Viatu na Michezo",
+        "maison": "Nyumba na Mapambo",
+        "epicerie": "Vyakula na Vinywaji",
+        "livres": "Vitabu na Utamaduni",
+        "restaurant": "Mgahawa na Chakula",
+        "jardinerie": "Bustani na Mimea",
+        "sport": "Michezo na Mazoezi",
+        "puericulture": "Vifaa vya Watoto"
+      }
+    },
+    "testimonials": {
+      "eyebrow": "Maoni ya wateja",
+      "h2": "Wanauza na Sellia",
+      "p": "Maelfu ya wafanyabiashara duniani kote wanaiamini Sellia.",
+      "stats": [
+        {
+          "value": "12,000+",
+          "label": "Wafanyabiashara amilifu"
+        },
+        {
+          "value": "40+",
+          "label": "Nchi zilizofikiwa"
+        },
+        {
+          "value": "$8.5M",
+          "label": "Mauzo yaliyoshughulikiwa"
+        },
+        {
+          "value": "99.9%",
+          "label": "Muda wa upatikanaji"
+        }
+      ],
+      "items": [
+        {
+          "quote": "Nilianzisha duka langu la mitindo ya wax kwa mchana mmoja. Malipo ya pesa za simu yamebadilisha mauzo yangu — wateja wangu hawahitaji tena fedha taslimu.",
+          "role": "Mwanzilishi, Boutique ya Mitindo ya Wax — Dakar"
+        },
+        {
+          "quote": "Sellia inasimamia sarafu nyingi kiasili. Wateja wangu Nigeria na Cote d'Ivoire wanalipa bila usumbufu, nami nafuatilia kila kitu kutoka dashibodi moja.",
+          "role": "Mkurugenzi Mtendaji, TechMart — Lagos"
+        },
+        {
+          "quote": "Kihariri cha miundo ni rahisi kutumia na miundo ni mizuri sana. Taswira ya chapa yangu imepanda ngazi, na msaidizi wa AI umeniokoa saa nyingi.",
+          "role": "Mwanzilishi, Abidjan Beauty"
+        }
+      ]
+    },
+    "flags": {
+      "title": "Inapatikana duniani kote",
+      "subtitle": "Uza mahali popote — Sellia ni jukwaa la kimataifa"
+    },
+    "pricing": {
+      "eyebrow": "Bei",
+      "h2": "Bei kwa kila mfanyabiashara",
+      "p": "Jaribio la bure la siku 14 kwenye mipango yote. Hakuna kadi ya benki inayohitajika.",
+      "monthly": "Kila mwezi",
+      "annual": "Kila mwaka",
+      "most_popular": "Maarufu zaidi",
+      "per_month": "/mwezi",
+      "billed_yearly_template": "Inatozwa ${{amount}}/mwaka",
+      "included": "Vilivyojumuishwa",
+      "cta": "Anza",
+      "note_annual": "Malipo ya kila mwaka — punguzo la 20% tayari limejumuishwa hapo juu.",
+      "note_monthly": "Malipo ya kila mwezi, badilisha kuwa ya kila mwaka wakati wowote.",
+      "all_prices_usd": "Bei zote kwa Dola za Marekani.",
+      "pay_with": "Lipia usajili wako kwa",
+      "mobile_title": "Uzoefu wa hali ya juu kwa simu",
+      "mobile_p": "Wateja wako wananunua kutoka kwa simu zao, popote duniani. Malipo laini, malipo bila kuelekezwa pengine, usaidizi wa Pesa za Simu na kadi.",
+      "rating_suffix": "wafanyabiashara 12,000+",
+      "plans": {
+        "starter": {
+          "desc": "Kuanzisha duka lako la kwanza.",
+          "features": [
+            "Duka 1",
+            "Bidhaa 20",
+            "Miundo ya msingi",
+            "Malipo ya mkono",
+            "Mtumiaji 1",
+            "Anwani sellia.liafrik.com"
+          ]
+        },
+        "growth": {
+          "desc": "Kwa wafanyabiashara wanaokua.",
+          "features": [
+            "Bidhaa 60",
+            "Miundo yote ya premium",
+            "Kihariri cha moja kwa moja",
+            "Malipo yaliyounganishwa",
+            "Sarafu nyingi",
+            "Uchambuzi wa msingi",
+            "Watumiaji 3"
+          ]
+        },
+        "pro": {
+          "desc": "Kwa wafanyabiashara walioimarika.",
+          "features": [
+            "Bidhaa 150",
+            "Sellia Assistant",
+            "Uchambuzi wa hali ya juu",
+            "Kikoa maalum",
+            "Maduka 2",
+            "Watumiaji 10",
+            "Ufikiaji wa API"
+          ]
+        },
+        "enterprise": {
+          "desc": "Kwa masoko ya mtandaoni.",
+          "features": [
+            "Bidhaa zisizo na kikomo",
+            "Maduka yasiyo na kikomo",
+            "Soko la wachuuzi wengi",
+            "Biashara ya headless",
+            "Uendeshaji na mifumo ya kazi ya kiotomatiki",
+            "Watumiaji wasio na kikomo",
+            "Msaada wa saa 24/7",
+            "SLA ya 99.9%"
+          ]
+        }
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import {
   Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
   Palette, Image as ImageIcon, LayoutGrid, ShoppingBag, FileText, Star, Mail,
   Megaphone, PanelTop, Columns, Bell, Loader2, ShieldCheck,
-  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket, Copy,
+  UtensilsCrossed, Tag, RotateCcw, Grid3x3, Shapes, GripVertical, ExternalLink, Rocket, Copy, MapPin as MapIcon,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
@@ -17,7 +17,7 @@ const STORAGE_KEY = 'sellia_theme';
 const CUSTOM_KEY = 'sellia_theme_custom';
 
 const SECTION_ICONS = {
-  announcement: Bell, header: PanelTop, hero: ImageIcon, productGrid: ShoppingBag, brandSpotlight: Rocket,
+  announcement: Bell, header: PanelTop, hero: ImageIcon, productGrid: ShoppingBag, brandSpotlight: Rocket, storeLocations: MapIcon,
   imageText: Columns, multicolumn: Columns, testimonials: Star, blogList: FileText, form: FileText,
   gallery: ImageIcon, cta: Megaphone, newsletter: Mail, footer: LayoutGrid,
   collectionList: ImageIcon, trustbar: ShieldCheck, menu: UtensilsCrossed, pricing: Tag, iconGrid: Grid3x3, custom: Shapes,
@@ -34,6 +34,7 @@ const SECTION_CATALOG = [
     title: 'Notre sélection', subtitle: 'Découvrez nos produits phares du moment.', image: 'https://picsum.photos/seed/brand/700/900',
     linkLabel: 'Voir tout', url: '#', products: [{ image: 'https://picsum.photos/seed/bsp/600', title: 'Produit', price: '0 FCFA', rating: 5 }],
   } }) },
+  { type: 'storeLocations', label: 'Nos boutiques', icon: MapIcon, make: () => ({ props: { title: 'Nos boutiques', locations: [] } }) },
   { type: 'imageText', label: 'Image + texte', icon: Columns, make: () => ({ props: { image: 'https://picsum.photos/seed/newit/800', title: 'Titre', text: 'Texte', button: 'En savoir plus', reverse: false } }) },
   { type: 'multicolumn', label: 'Colonnes', icon: Columns, make: () => ({ props: { title: 'Atouts', items: [{ icon: '✦', title: 'Point', text: 'Description' }] } }) },
   { type: 'testimonials', label: 'Avis clients', icon: Star, make: () => ({ props: { title: 'Avis', items: [{ quote: 'Excellent', author: 'Client', role: '' }] } }) },

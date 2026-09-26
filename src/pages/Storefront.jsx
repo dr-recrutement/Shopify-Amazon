@@ -146,6 +146,7 @@ export default function Storefront() {
   const [products, setProducts] = useState([]);
   const [productRatings, setProductRatings] = useState({});
   const [collections, setCollections] = useState([]);
+  const [storeLocations, setStoreLocations] = useState([]);
   const [articles, setArticles] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [activeGateways, setActiveGateways] = useState([]);
@@ -185,7 +186,7 @@ export default function Storefront() {
       }
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
 
-      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, ratingsRes, gatewaysRes] = await Promise.all([
+      const [themeRes, productsRes, categoriesRes, assignRes, pagesRes, reviewsRes, ratingsRes, gatewaysRes, locationsRes] = await Promise.all([
         supabase.from('theme_configs').select('published_config').eq('tenant_id', tenant.id).maybeSingle(),
         supabase.from('products').select('*').eq('tenant_id', tenant.id).eq('status', 'active').order('created_at', { ascending: false }).limit(200),
         supabase.from('product_categories').select('*').eq('tenant_id', tenant.id),
@@ -197,6 +198,7 @@ export default function Storefront() {
         // full set, not a truncated sample.
         supabase.from('product_reviews').select('product_id, rating').eq('tenant_id', tenant.id).eq('is_approved', true),
         supabase.from('public_active_gateways').select('gateway').eq('tenant_id', tenant.id),
+        supabase.from('store_locations').select('*').eq('tenant_id', tenant.id).order('position'),
       ]);
       // Some theme_configs rows predate this editor and store an
       // incompatible/empty shape there (see isValidTheme) - falls back to
@@ -216,6 +218,7 @@ export default function Storefront() {
       setArticles(pagesRes.data || []);
       setReviews(reviewsRes.data || []);
       setActiveGateways((gatewaysRes.data || []).map((g) => g.gateway));
+      setStoreLocations(locationsRes.data || []);
       setError(null);
     } catch (e) {
       setError(e.message || 'Boutique introuvable');
@@ -293,6 +296,9 @@ export default function Storefront() {
       if (s.type === 'collectionList' && collections.length > 0) {
         return { ...s, props: { ...s.props, items: collections.map((c) => ({ image: c.image_url || '', title: c.name, count: `${c.product_count} article${c.product_count > 1 ? 's' : ''}` })) } };
       }
+      if (s.type === 'storeLocations' && storeLocations.length > 0) {
+        return { ...s, props: { ...s.props, locations: storeLocations } };
+      }
       if (s.type === 'testimonials' && testimonialItems.length > 0) {
         // Real customer reviews replace the theme's example quotes. Many
         // reviews auto-switch to the scrolling banner even if the merchant
@@ -303,7 +309,7 @@ export default function Storefront() {
       }
       return s;
     });
-  }, [theme, products, productRatings, articles, collections, reviews, store]);
+  }, [theme, products, productRatings, articles, collections, reviews, store, storeLocations]);
 
   useEffect(() => {
     if (!store) return;

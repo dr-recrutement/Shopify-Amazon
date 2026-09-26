@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
@@ -175,7 +175,87 @@ export function SettingsTaxes() {
   return <div className={card}><h2 className={ttl}>Taxes et droits <SavedBadge show={saved} /></h2><label className="flex items-center justify-between mb-3"><span className="text-sm text-[#202223]">Collecter automatiquement les taxes</span><input type="checkbox" checked={enabled} onChange={(e) => patch({ taxes_auto_collect: e.target.checked })} className="accent-[#008060] w-4 h-4" /></label><p className="text-xs text-[#6D7175]">Ce réglage enregistre votre préférence. Le calcul de taxe réel selon le pays du client n'est pas encore appliqué au checkout.</p></div>;
 }
 
-export function SettingsLocations() { return <div className={card}><h2 className={ttl}>Emplacements</h2><p className="text-sm text-[#6D7175] mb-4">Gérez vos entrepôts et points de vente.</p><Link to="/inventory" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Voir l'inventaire →</Link></div>; }
+export function SettingsLocations() {
+  const { store } = useCurrentStore();
+  const [locations, setLocations] = useState([]);
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(async () => {
+    if (!store?.id) return;
+    const { data } = await supabase.from('store_locations').select('*').eq('tenant_id', store.id).order('position');
+    setLocations(data || []);
+  }, [store?.id]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const save = async () => {
+    if (!form?.name?.trim() || !form?.address?.trim() || !store?.id) return;
+    setSaving(true);
+    try {
+      const payload = { tenant_id: store.id, name: form.name.trim(), address: form.address.trim(), city: form.city || null, country: form.country || null, phone: form.phone || null, hours: form.hours || null };
+      const { error } = form.id
+        ? await supabase.from('store_locations').update(payload).eq('id', form.id)
+        : await supabase.from('store_locations').insert(payload);
+      if (error) throw error;
+      setForm(null);
+      await load();
+    } catch (e) {
+      alert(e.message || "Échec de l'enregistrement");
+    } finally { setSaving(false); }
+  };
+
+  const remove = async (id) => {
+    if (!confirm('Retirer cet emplacement ?')) return;
+    const { error } = await supabase.from('store_locations').delete().eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
+  };
+
+  return (
+    <div className={card}>
+      <h2 className={ttl}>Emplacements</h2>
+      <p className="text-sm text-[#6D7175] mb-4">Adresses physiques de vos boutiques, affichées à vos clients sur votre site (via la section « Nos boutiques » du Theme Editor). Pour vos entrepôts de stock, voir <Link to="/inventory" className="text-[#008060] hover:underline">l'inventaire</Link>.</p>
+
+      {locations.length > 0 && (
+        <div className="space-y-2 mb-4">
+          {locations.map((l) => (
+            <div key={l.id} className="flex items-start justify-between px-3 py-2.5 rounded-lg border border-[#E1E1E1]">
+              <div>
+                <p className="text-sm font-semibold text-[#202223]">{l.name}</p>
+                <p className="text-xs text-[#6D7175]">{l.address}{l.city ? `, ${l.city}` : ''}{l.country ? `, ${l.country}` : ''}</p>
+                {l.phone && <p className="text-xs text-[#6D7175]">{l.phone}</p>}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => setForm(l)} className="text-xs font-semibold text-[#008060] hover:underline">Modifier</button>
+                <button onClick={() => remove(l.id)} className="text-xs font-semibold text-red-600 hover:underline">Retirer</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {form ? (
+        <div className="space-y-2 border-t border-[#E1E1E1] pt-3">
+          <input value={form.name || ''} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nom (ex : Boutique Plateau)" className={fld} />
+          <input value={form.address || ''} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Adresse" className={fld} />
+          <div className="grid grid-cols-2 gap-2">
+            <input value={form.city || ''} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Ville" className={fld} />
+            <input value={form.country || ''} onChange={(e) => setForm({ ...form, country: e.target.value })} placeholder="Pays" className={fld} />
+          </div>
+          <input value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Téléphone (optionnel)" className={fld} />
+          <input value={form.hours || ''} onChange={(e) => setForm({ ...form, hours: e.target.value })} placeholder="Horaires (ex : Lun-Sam 9h-19h)" className={fld} />
+          <div className="flex gap-2">
+            <button onClick={save} disabled={saving} className="text-xs font-semibold text-white bg-[#008060] px-4 py-2 rounded-full hover:bg-[#00694d] disabled:opacity-40">{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
+            <button onClick={() => setForm(null)} className="text-xs font-semibold text-[#6D7175] px-4 py-2">Annuler</button>
+          </div>
+        </div>
+      ) : (
+        <button onClick={() => setForm({})} className="text-sm font-semibold text-[#008060] hover:underline">+ Ajouter un emplacement</button>
+      )}
+    </div>
+  );
+}
 export function SettingsApps() { return <div className={card}><h2 className={ttl}>Applications</h2><p className="text-sm text-[#6D7175] mb-4">Installez des applications pour étendre votre boutique.</p><Link to="/apps" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#008060] hover:underline">Parcourir les apps →</Link></div>; }
 
 export function SettingsEmail() {

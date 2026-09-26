@@ -586,6 +586,28 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
               </div>
             ));
 
+          case 'storeLocations':
+            if (!(c.locations || []).length && !editor) return null;
+            return wrap(s, (
+              <div className="px-5 sm:px-10 py-12">
+                <h2 className="text-xl sm:text-2xl font-bold text-center mb-8" style={{ fontFamily: theme.fonts?.heading, color: p.dark }}>{c.title || 'Nos boutiques'}</h2>
+                {(c.locations || []).length === 0 ? (
+                  <p className="text-center text-sm" style={{ color: p.muted }}>Ajoutez vos adresses dans Paramètres → Emplacements pour qu'elles apparaissent ici.</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+                    {(c.locations || []).map((loc, i) => (
+                      <div key={i} className="rounded-xl p-5" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+                        <p className="text-sm font-bold" style={{ color: p.dark }}>{loc.name}</p>
+                        <p className="text-xs mt-1.5" style={{ color: p.muted }}>{loc.address}{loc.city ? `, ${loc.city}` : ''}{loc.country ? `, ${loc.country}` : ''}</p>
+                        {loc.phone && <p className="text-xs mt-1" style={{ color: p.muted }}>{loc.phone}</p>}
+                        {loc.hours && <p className="text-xs mt-1" style={{ color: theme.palette.primary }}>{loc.hours}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ));
+
           case 'multicolumn':
             return wrap(s, (
               <div className="px-5 sm:px-10 py-12">

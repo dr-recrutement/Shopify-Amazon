@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Image } from '@/components/ui/image';
 import { Upload, Link2, X, Star, Check, ArrowRight, Menu, Search, Heart } from 'lucide-react';
 import { ensureGoogleFonts } from '@/lib/fonts';

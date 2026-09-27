@@ -19,9 +19,9 @@ import {
 } from 'lucide-react';
 
 const PROVIDERS = [
-  { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Clé secrète (sk_live_...)', api_key: 'Clé publique (pk_live_...)' }, hint: 'Cartes internationales', live: true },
-  { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (FLWSECK-...)', api_key: 'Public Key (FLWPUBK-...)' }, hint: 'Cartes + Mobile Money', live: true },
-  { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (sk_live_...)', api_key: 'Public Key (pk_live_...)' }, hint: 'Afrique de l’Ouest & du Sud', live: true },
+  { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Clé secrète (sk_live_...)', api_key: 'Clé publique (pk_live_...)' }, hint: 'Cartes internationales', live: true , integrated: true },
+  { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (FLWSECK-...)', api_key: 'Public Key (FLWPUBK-...)' }, hint: 'Cartes + Mobile Money', live: true , integrated: true },
+  { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (sk_live_...)', api_key: 'Public Key (pk_live_...)' }, hint: 'Afrique de l’Ouest & du Sud', live: true , integrated: true },
   { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Client Secret', api_key: 'Client ID' }, hint: 'Portefeuille international' },
   { value: 'adyen', label: 'Adyen', logo: 'adyen.png', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'API Key', api_key: 'Client Key', client_id: 'Merchant Account' }, hint: 'Entreprise, multi-devises' },
   { value: 'braintree', label: 'Braintree', logo: 'braintree.jpg', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'Private Key', api_key: 'Public Key', client_id: 'Merchant ID' }, hint: 'Groupe PayPal' },
@@ -29,7 +29,7 @@ const PROVIDERS = [
   { value: 'klarna', label: 'Klarna', logo: 'klarna.jpg', region: 'Europe', fields: ['api_key', 'api_secret'], labels: { api_key: 'Username (UID)', api_secret: 'Password (API key)' }, hint: 'Paiement en plusieurs fois' },
   { value: 'alipay', label: 'Alipay', logo: 'alipay.png', region: 'Asie', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'App ID', api_secret: 'Clé privée de l’application', api_key: 'Clé publique Alipay' }, hint: 'Portefeuille chinois' },
   { value: 'grabpay', label: 'GrabPay', logo: 'grabpay.webp', region: 'Asie', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Partner ID', api_secret: 'Partner Secret', api_key: 'Merchant ID' }, hint: 'Asie du Sud-Est' },
-  { value: 'payunit', label: 'Payunit', logo: 'payunit.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'API Username', api_secret: 'API Password' }, hint: 'Mobile Money (CEMAC)' },
+  { value: 'payunit', label: 'Payunit', logo: 'payunit.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'API Username', api_secret: 'API Password' }, hint: 'Mobile Money (CEMAC)' , integrated: true },
   { value: 'wave', label: 'Wave', logo: 'wave.png', region: 'Afrique', fields: ['api_secret'], labels: { api_secret: 'API Key (Bearer token)' }, hint: 'Mobile Money (Afrique de l’Ouest)' },
   { value: 'mtn-momo', label: 'MTN MoMo', logo: 'mtn-momo.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'Subscription Key', client_id: 'API User (UUID)', api_secret: 'API Key' }, hint: 'Mobile Money (Open API)' },
   { value: 'orange-money', label: 'Orange Money', logo: 'orange-money.png', region: 'Afrique', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Client ID', api_secret: 'Client Secret', api_key: 'Merchant Key' }, hint: 'Mobile Money' },
@@ -210,8 +210,9 @@ export default function Payments() {
                       {meta.logo ? <img src={`/payment-logos/${meta.logo}`} alt="" className="w-full h-full object-contain p-1" /> : <CreditCard className="w-5 h-5 text-[#008060]" />}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#202223] flex items-center gap-1.5">{meta.label}{meta.live && <span className="text-[9px] font-bold text-[#008060] bg-[#008060]/10 px-1.5 py-0.5 rounded-full">Paiement réel</span>}</p>
+                      <p className="text-sm font-semibold text-[#202223] flex items-center gap-1.5">{meta.label}{meta.integrated ? <span className="text-[9px] font-bold text-[#008060] bg-[#008060]/10 px-1.5 py-0.5 rounded-full">Paiement client réel</span> : <span className="text-[9px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full">Config. seulement</span>}</p>
                       <p className="text-xs text-[#6D7175] truncate">{meta.hint}</p>
+                      {!meta.integrated && <p className="text-[10px] text-amber-700 mt-0.5">Vos identifiants sont enregistrés, mais vos clients ne peuvent pas encore payer par ce moyen au paiement — l'intégration au checkout n'existe pas encore.</p>}
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -258,14 +259,14 @@ export default function Payments() {
                           <img src={`/payment-logos/${p.logo}`} alt="" className="w-full h-full object-contain p-0.5" />
                         </div>
                         <div className="min-w-0">
-                          <span className="text-xs font-semibold text-[#202223] block truncate">{p.label}</span>
+                          <span className="text-xs font-semibold text-[#202223] flex items-center gap-1 truncate">{p.label}{!p.integrated && <span className="text-[8px] font-bold text-amber-700 bg-amber-100 px-1 rounded-full shrink-0">Config.</span>}</span>
                           <span className="text-[10px] text-[#6D7175] block truncate">{p.hint}</span>
                         </div>
                       </button>
                     ))}
                   </div>
-                  {!activeProvider?.live && (
-                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave et Paystack le sont actuellement).</p>
+                  {!activeProvider?.integrated && (
+                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave, Paystack et Payunit le sont actuellement).</p>
                   )}
                 </div>
               )}

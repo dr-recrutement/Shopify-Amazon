@@ -895,6 +895,94 @@
           ]
         }
       ]
+    },
+    "help": {
+      "h1": "Help Center",
+      "search_placeholder": "Search the documentation…",
+      "contact_title": "Contact support",
+      "contact_sub": "Reply within 24h",
+      "video_title": "Video tutorial",
+      "video_default_sub": "Learn visually",
+      "video_soon": "Coming soon",
+      "community_title": "Community",
+      "community_sub": "Connect with other merchants",
+      "meta_title": "Help Center",
+      "meta_desc": "Find answers on setting up your store, payments, shipping and Sellia themes. Contact support at support@liafrik.com.",
+      "categories": [
+        {
+          "label": "Getting started",
+          "articles": [
+            {
+              "t": "Create your store in 5 minutes",
+              "body": "Choose a theme, add your first products, and publish your store instantly."
+            },
+            {
+              "t": "Set up your custom domain",
+              "body": "Connect an existing domain or buy one directly through Sellia with Cloudflare Registrar."
+            },
+            {
+              "t": "Invite staff members",
+              "body": "Add team members and set their access permissions in Staff Management."
+            }
+          ]
+        },
+        {
+          "label": "Selling",
+          "articles": [
+            {
+              "t": "Add and manage your products",
+              "body": "Create products with variants, images, prices and stock. Organize them into collections."
+            },
+            {
+              "t": "Process an order",
+              "body": "Track orders from payment to delivery. Statuses update automatically."
+            },
+            {
+              "t": "Manage customer reviews",
+              "body": "Approve, reject or reply to reviews your customers leave on your products."
+            }
+          ]
+        },
+        {
+          "label": "Shipping",
+          "articles": [
+            {
+              "t": "Set up your shipping zones",
+              "body": "Define zones by country, choose your carriers and set your shipping rates."
+            },
+            {
+              "t": "Offer free shipping",
+              "body": "Enable free shipping above a minimum order amount in each zone."
+            }
+          ]
+        },
+        {
+          "label": "Payments",
+          "articles": [
+            {
+              "t": "Connect your PSP",
+              "body": "Sellia supports 25+ global payment providers. Connect your account and accept payments with no redirect."
+            },
+            {
+              "t": "Accept Mobile Money",
+              "body": "Enable mobile payments for your customers in Africa: Orange Money, Wave, MTN, Airtel and more."
+            }
+          ]
+        },
+        {
+          "label": "Themes & design",
+          "articles": [
+            {
+              "t": "Customize your theme",
+              "body": "Change colors, fonts, sections and content in the visual editor with live preview."
+            },
+            {
+              "t": "Use Sellia Assistant",
+              "body": "Automatically generate premium content tailored to your business with a single click."
+            }
+          ]
+        }
+      ]
     }
   }
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import MarketingLayout from '@/components/marketing/MarketingLayout';
 import Support from '@/pages/Support';
 
@@ -8,10 +9,11 @@ import Support from '@/pages/Support';
 // previously this content was accidentally only reachable via /support
 // behind authentication, invisible to both visitors and search engines.
 export default function HelpCenter() {
+  const { t } = useTranslation();
   return (
     <MarketingLayout
-      title="Centre d'aide"
-      description="Trouvez des réponses sur la création de votre boutique, les paiements, la livraison et les thèmes Sellia. Contactez le support à support@liafrik.com."
+      title={t('pages.help.meta_title')}
+      description={t('pages.help.meta_desc')}
       url="/centre-aide"
     >
       <div className="py-10">

@@ -97,12 +97,12 @@ export default function LandingPricing() {
 
         <p className="mt-8 text-center text-sm text-[#6D7175]">{t('landing.pricing.all_prices_usd')} {annual ? t('landing.pricing.note_annual') : t('landing.pricing.note_monthly')}</p>
 
-        {/* Subscription payment methods — real logos on white tiles */}
+        {/* Subscription payment methods — transparent, no card/border, matching the scrolling PSP strip under the hero */}
         <div className="mt-6 flex flex-col items-center gap-3">
           <p className="text-xs font-semibold text-[#6D7175] uppercase tracking-wide">{t('landing.pricing.pay_with')}</p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
+          <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 divide-x divide-[#EDEDED]">
             {SUBSCRIPTION_PSPS.map((psp) => (
-              <div key={psp.name} className="h-11 w-[92px] shrink-0 rounded-lg bg-white border border-[#E1E1E1] flex items-center justify-center px-3">
+              <div key={psp.name} className="h-9 w-[84px] shrink-0 flex items-center justify-center px-3">
                 <img src={psp.logo} alt={psp.name} title={psp.name} className="max-w-full max-h-full object-contain" loading="lazy" />
               </div>
             ))}

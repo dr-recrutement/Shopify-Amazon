@@ -895,6 +895,94 @@
           ]
         }
       ]
+    },
+    "help": {
+      "h1": "Centre d'aide",
+      "search_placeholder": "Rechercher dans la documentation…",
+      "contact_title": "Contacter le support",
+      "contact_sub": "Réponse sous 24h",
+      "video_title": "Tutoriel vidéo",
+      "video_default_sub": "Apprenez visuellement",
+      "video_soon": "Bientôt disponible",
+      "community_title": "Communauté",
+      "community_sub": "Échangez avec d'autres marchands",
+      "meta_title": "Centre d'aide",
+      "meta_desc": "Trouvez des réponses sur la création de votre boutique, les paiements, la livraison et les thèmes Sellia. Contactez le support à support@liafrik.com.",
+      "categories": [
+        {
+          "label": "Démarrage",
+          "articles": [
+            {
+              "t": "Créer votre boutique en 5 minutes",
+              "body": "Choisissez un thème, ajoutez vos premiers produits, et publiez votre boutique instantanément."
+            },
+            {
+              "t": "Configurer votre domaine personnalisé",
+              "body": "Connectez un domaine existant ou achetez-en un directement via Sellia avec Cloudflare Registrar."
+            },
+            {
+              "t": "Inviter des employés",
+              "body": "Ajoutez des membres à votre équipe et définissez leurs permissions d'accès dans Gestion du personnel."
+            }
+          ]
+        },
+        {
+          "label": "Vendre",
+          "articles": [
+            {
+              "t": "Ajouter et gérer vos produits",
+              "body": "Créez des produits avec variantes, images, prix et stock. Organisez-les en collections."
+            },
+            {
+              "t": "Traiter une commande",
+              "body": "Suivez les commandes du paiement à la livraison. Mettez à jour les statuts automatiquement."
+            },
+            {
+              "t": "Gérer les avis clients",
+              "body": "Approuvez, rejetez ou répondez aux avis laissés par vos clients sur vos produits."
+            }
+          ]
+        },
+        {
+          "label": "Livraison",
+          "articles": [
+            {
+              "t": "Configurer vos zones de livraison",
+              "body": "Définissez des zones par pays, choisissez vos transporteurs et fixez vos tarifs d'expédition."
+            },
+            {
+              "t": "Proposer la livraison gratuite",
+              "body": "Activez la livraison gratuite au-dessus d'un montant minimum dans chaque zone."
+            }
+          ]
+        },
+        {
+          "label": "Paiements",
+          "articles": [
+            {
+              "t": "Connecter votre PSP",
+              "body": "Sellia prend en charge 25+ prestataires de paiement mondiaux. Connectez votre compte et acceptez les paiements sans redirection."
+            },
+            {
+              "t": "Accepter Mobile Money",
+              "body": "Activez les paiements mobiles pour vos clients en Afrique : Orange Money, Wave, MTN, Airtel et plus."
+            }
+          ]
+        },
+        {
+          "label": "Thèmes et design",
+          "articles": [
+            {
+              "t": "Personnaliser votre thème",
+              "body": "Modifiez les couleurs, polices, sections et contenu via l'éditeur visuel avec aperçu en temps réel."
+            },
+            {
+              "t": "Utiliser l'Sellia Assistant",
+              "body": "Générez automatiquement du contenu premium adapté à votre commerce avec un seul clic."
+            }
+          ]
+        }
+      ]
     }
   }
 }

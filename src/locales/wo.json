@@ -895,6 +895,94 @@
           ]
         }
       ]
+    },
+    "help": {
+      "h1": "Kër njàng",
+      "search_placeholder": "Seet ci documentation bi…",
+      "contact_title": "Jokkoo ak support bi",
+      "contact_sub": "Tontu ci diggante 24h",
+      "video_title": "Tutoriel vidéo",
+      "video_default_sub": "Jàng ak xool",
+      "video_soon": "Dina am ci kanam",
+      "community_title": "Communauté",
+      "community_sub": "Jokkoo ak marchand yu bees",
+      "meta_title": "Kër njàng",
+      "meta_desc": "Gis tontu ci configuration sa boutique, fay, yebbi ak thème Sellia. Jokkoo ak support ci support@liafrik.com.",
+      "categories": [
+        {
+          "label": "Tambali",
+          "articles": [
+            {
+              "t": "Sos sa boutique ci 5 minute",
+              "body": "Tàn thème, yokk say produit yu njëkk, te publié sa boutique ci saa si."
+            },
+            {
+              "t": "Configuré sa domaine bopp",
+              "body": "Jokkoo ak domaine bu am walla jënd benn ci Sellia ak Cloudflare Registrar."
+            },
+            {
+              "t": "Invité personnel yi",
+              "body": "Yokk membre ci sa équipe te def seen permission accès ci Gestion personnel."
+            }
+          ]
+        },
+        {
+          "label": "Jaay",
+          "articles": [
+            {
+              "t": "Yokk te yor say produit",
+              "body": "Sos produit ak variante, image, njëg ak stock. Organisé leen ci collection."
+            },
+            {
+              "t": "Jëfe benn commande",
+              "body": "Topp commande yi li dale ci fay ba ci yebbi. Statut yi dañuy soppeeku automatik."
+            },
+            {
+              "t": "Yor avis client yi",
+              "body": "Nangu, bañ walla tontu avis yi say client bind ci say produit."
+            }
+          ]
+        },
+        {
+          "label": "Yebbi",
+          "articles": [
+            {
+              "t": "Configuré say zone yebbi",
+              "body": "Def zone ci réew, tàn say transporteur te def say njëg yebbi."
+            },
+            {
+              "t": "Jox yebbi bu amul fay",
+              "body": "Activé yebbi bu amul fay su montant bi ëpp benn minimum ci zone bépp."
+            }
+          ]
+        },
+        {
+          "label": "Fay yi",
+          "articles": [
+            {
+              "t": "Jokkoo sa PSP",
+              "body": "Sellia dafay soutenir lu ëpp 25 prestataire fay ci àdduna bépp. Jokkoo sa compte te nangu fay bu amul redirection."
+            },
+            {
+              "t": "Nangu Mobile Money",
+              "body": "Activé fay mobile ngir say client ci Afrique: Orange Money, Wave, MTN, Airtel ak lu ci gën."
+            }
+          ]
+        },
+        {
+          "label": "Thème ak design",
+          "articles": [
+            {
+              "t": "Personnaliser sa thème",
+              "body": "Soppi couleur, police, section ak contenu ci editëer bu leer ak xool ci saa si."
+            },
+            {
+              "t": "Jëfandikoo Sellia Assistant",
+              "body": "Jur automatik contenu premium bu takkoo sa commerce ak benn clic."
+            }
+          ]
+        }
+      ]
     }
   }
 }

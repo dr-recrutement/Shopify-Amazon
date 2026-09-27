@@ -895,6 +895,94 @@
           ]
         }
       ]
+    },
+    "help": {
+      "h1": "Kituo cha msaada",
+      "search_placeholder": "Tafuta kwenye hati…",
+      "contact_title": "Wasiliana na msaada",
+      "contact_sub": "Jibu ndani ya masaa 24",
+      "video_title": "Mafunzo ya video",
+      "video_default_sub": "Jifunze kwa kuona",
+      "video_soon": "Inakuja hivi karibuni",
+      "community_title": "Jumuiya",
+      "community_sub": "Ungana na wafanyabiashara wengine",
+      "meta_title": "Kituo cha msaada",
+      "meta_desc": "Pata majibu kuhusu usanidi wa duka lako, malipo, usafirishaji na miundo ya Sellia. Wasiliana na msaada kupitia support@liafrik.com.",
+      "categories": [
+        {
+          "label": "Kuanza",
+          "articles": [
+            {
+              "t": "Unda duka lako kwa dakika 5",
+              "body": "Chagua muundo, ongeza bidhaa zako za kwanza, na chapisha duka lako papo hapo."
+            },
+            {
+              "t": "Sanidi kikoa chako maalum",
+              "body": "Unganisha kikoa kilichopo au nunua kimoja moja kwa moja kupitia Sellia na Cloudflare Registrar."
+            },
+            {
+              "t": "Alika wafanyakazi",
+              "body": "Ongeza wanachama wa timu yako na weka ruhusa zao za ufikiaji katika Usimamizi wa Wafanyakazi."
+            }
+          ]
+        },
+        {
+          "label": "Kuuza",
+          "articles": [
+            {
+              "t": "Ongeza na simamia bidhaa zako",
+              "body": "Unda bidhaa zenye aina, picha, bei na hisa. Zipange katika mikusanyiko."
+            },
+            {
+              "t": "Shughulikia agizo",
+              "body": "Fuatilia maagizo kutoka malipo hadi utoaji. Hali zinasasishwa kiotomatiki."
+            },
+            {
+              "t": "Simamia maoni ya wateja",
+              "body": "Idhinisha, kataa au jibu maoni yanayoachwa na wateja wako kwenye bidhaa zako."
+            }
+          ]
+        },
+        {
+          "label": "Usafirishaji",
+          "articles": [
+            {
+              "t": "Sanidi maeneo yako ya usafirishaji",
+              "body": "Fafanua maeneo kwa nchi, chagua wasafirishaji wako na weka bei zako za usafirishaji."
+            },
+            {
+              "t": "Toa usafirishaji bure",
+              "body": "Wezesha usafirishaji bure juu ya kiasi cha chini katika kila eneo."
+            }
+          ]
+        },
+        {
+          "label": "Malipo",
+          "articles": [
+            {
+              "t": "Unganisha mtoa huduma wako wa malipo",
+              "body": "Sellia inasaidia watoa huduma zaidi ya 25 wa malipo duniani kote. Unganisha akaunti yako na pokea malipo bila kuelekezwa pengine."
+            },
+            {
+              "t": "Kubali Pesa za Simu",
+              "body": "Wezesha malipo ya simu kwa wateja wako Afrika: Orange Money, Wave, MTN, Airtel na zaidi."
+            }
+          ]
+        },
+        {
+          "label": "Miundo na muundo",
+          "articles": [
+            {
+              "t": "Binafsisha muundo wako",
+              "body": "Badilisha rangi, fonti, sehemu na maudhui kupitia kihariri cha kuona na onyesho la wakati halisi."
+            },
+            {
+              "t": "Tumia Sellia Assistant",
+              "body": "Zalisha kiotomatiki maudhui ya premium yanayolingana na biashara yako kwa mbofyo mmoja."
+            }
+          ]
+        }
+      ]
     }
   }
 }

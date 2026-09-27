@@ -792,7 +792,29 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
   ];
 
   const cartSubtotal = (cart?.total_cents || 0) / 100;
-  const total = Math.max(0, cartSubtotal - discountAmount);
+
+  const [shippingZones, setShippingZones] = useState([]);
+  useEffect(() => {
+    supabase.from('shipping_zones').select('*').eq('tenant_id', store.id).eq('is_active', true).then(({ data }) => setShippingZones(data || []));
+  }, [store.id]);
+
+  // Real client-side estimate for display only - matches create-order's
+  // own server-side logic (specific-country zone wins over a global
+  // fallback, free-shipping threshold applies) so what the customer sees
+  // here lines up with what they're actually charged, computed
+  // authoritatively server-side at order creation.
+  const shippingEstimate = useMemo(() => {
+    if (!form.country) return null;
+    const specific = shippingZones.find((z) => !z.is_global && (z.countries || []).some((c) => c.toLowerCase() === form.country.toLowerCase()));
+    const zone = specific || shippingZones.find((z) => z.is_global);
+    if (!zone) return null;
+    if (zone.free_shipping_threshold_cents && cartSubtotal * 100 >= zone.free_shipping_threshold_cents) return 0;
+    if (zone.rate_type === 'free') return 0;
+    if (zone.rate_type === 'weight_based') return null; // depends on real product weights - server computes the exact figure, shown as "calculé à la commande" here
+    return (zone.rate_amount_cents || 0) / 100;
+  }, [form.country, shippingZones, cartSubtotal]);
+
+  const total = Math.max(0, cartSubtotal + (shippingEstimate || 0) - discountAmount);
 
   const placeOrder = async (e) => {
     e.preventDefault();
@@ -1165,7 +1187,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-600"><span className="font-medium">Réduction ({discount?.code})</span><span className="font-semibold">-{formatMoney(discountAmount, store.currency)}</span></div>
               )}
-              <div className="flex justify-between"><span className="text-muted-foreground inline-flex items-center gap-1.5"><Truck className="w-4 h-4" /> Livraison</span><span className="font-semibold text-emerald-600">Offerte</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground inline-flex items-center gap-1.5"><Truck className="w-4 h-4" /> Livraison</span><span className={`font-semibold ${shippingEstimate === 0 ? 'text-emerald-600' : 'text-foreground'}`}>{shippingEstimate === null ? 'Calculée à la commande' : shippingEstimate === 0 ? 'Offerte' : formatMoney(shippingEstimate, store.currency)}</span></div>
             </div>
 
             <div className="mt-3 pt-3 border-t border-border flex justify-between items-center">

@@ -60,6 +60,19 @@ const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg
 export default function Payments() {
   const { store, loading: storeLoading, staffRole } = useCurrentStore();
   const [providers, setProviders] = useState([]);
+  const [testing, setTesting] = useState(null);
+  const [testResults, setTestResults] = useState({});
+
+  const testConnection = async (p) => {
+    setTesting(p.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('test-gateway-connection', { body: { tenant_id: store.id, gateway: p.gateway } });
+      if (error) throw new Error(await functionErrorMessage(error));
+      setTestResults((r) => ({ ...r, [p.id]: data }));
+    } catch (e) {
+      setTestResults((r) => ({ ...r, [p.id]: { ok: false, message: e.message || "Échec du test" } }));
+    } finally { setTesting(null); }
+  };
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
@@ -190,7 +203,8 @@ export default function Payments() {
             {providers.map((p) => {
               const meta = PROVIDERS.find((x) => x.value === p.gateway) || { label: p.gateway, hint: '' };
               return (
-                <div key={p.id} className="bg-white rounded-xl border border-[#E1E1E1] p-4 flex items-center justify-between gap-3">
+                <div key={p.id}>
+                <div className="bg-white rounded-xl border border-[#E1E1E1] p-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-lg bg-white border border-[#E1E1E1] flex items-center justify-center shrink-0 overflow-hidden">
                       {meta.logo ? <img src={`/payment-logos/${meta.logo}`} alt="" className="w-full h-full object-contain p-1" /> : <CreditCard className="w-5 h-5 text-[#008060]" />}
@@ -201,10 +215,19 @@ export default function Payments() {
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
+                    <button onClick={() => testConnection(p)} disabled={testing === p.id} className="text-[11px] font-semibold px-2.5 py-1.5 rounded-md border border-[#E1E1E1] text-[#6D7175] hover:bg-black/5 disabled:opacity-50">
+                      {testing === p.id ? 'Test…' : 'Tester'}
+                    </button>
                     <button onClick={() => toggleActive(p)} className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-md border ${p.is_active ? 'bg-[#008060]/10 text-[#008060] border-[#008060]/30' : 'bg-[#F4F4F4] text-[#6D7175] border-[#E1E1E1]'}`}>{p.is_active ? 'Actif' : 'Inactif'}</button>
                     <button onClick={() => openEdit(p)} className="p-1.5 rounded text-[#6D7175] hover:bg-black/5"><Pencil className="w-4 h-4" /></button>
                     <button onClick={() => remove(p)} className="p-1.5 rounded text-[#6D7175] hover:text-red-500 hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
                   </div>
+                </div>
+                {testResults[p.id] && (
+                  <p className={`text-[11px] mt-2 px-1 ${testResults[p.id].ok ? 'text-[#008060]' : 'text-red-600'}`}>
+                    {testResults[p.id].ok ? '✓' : '✗'} {testResults[p.id].message}
+                  </p>
+                )}
                 </div>
               );
             })}

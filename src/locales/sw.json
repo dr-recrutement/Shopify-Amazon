@@ -612,6 +612,124 @@
       "spontaneous_h2": "Hakuna nafasi ya kazi inayolingana na wasifu wako?",
       "spontaneous_p": "Tutumie maombi yako ya hiari — tunasoma kila ujumbe.",
       "spontaneous_button": "Omba kwa barua pepe"
-    }
+    },
+    "terms": {
+      "meta_title": "Masharti ya matumizi",
+      "meta_desc": "Angalia masharti ya jumla ya matumizi ya Sellia, jukwaa la biashara mtandaoni lililoendelezwa na Liafrik.",
+      "h1": "Masharti ya matumizi",
+      "sections": [
+        {
+          "t": "1. Lengo",
+          "b": "Masharti haya ya jumla ya matumizi (\"Masharti\") yanasimamia ufikiaji na matumizi ya jukwaa la Sellia, lililochapishwa na Liafrik, linalomruhusu mfanyabiashara kuunda na kusimamia duka la mtandaoni."
+        },
+        {
+          "t": "2. Usajili na akaunti",
+          "b": "Matumizi ya Sellia yanahitaji kuunda akaunti ya mfanyabiashara. Unakubali kutoa taarifa sahihi na kudumisha usiri wa taarifa zako za kuingia."
+        },
+        {
+          "t": "3. Usajili wa malipo na malipo",
+          "b": "Sellia inatoa mipango kadhaa ya usajili (Starter, Growth, Pro, Enterprise), inayotozwa kila mwezi au kila mwaka. Jaribio la bure la siku 14 linatolewa bila ahadi wala kadi ya benki inayohitajika wakati wa usajili."
+        },
+        {
+          "t": "4. Matumizi yanayoruhusiwa",
+          "b": "Unakubali kutumia Sellia kwa kufuata sheria zinazotumika, hasa kuhusu mauzo mtandaoni, ulinzi wa watumiaji na haki miliki. Kuuza bidhaa haramu ni marufuku kabisa."
+        },
+        {
+          "t": "5. Maudhui ya mfanyabiashara",
+          "b": "Unabaki kuwa mwajibikaji pekee wa bidhaa, maelezo, picha na maudhui yaliyochapishwa kwenye duka lako. Sellia inahifadhi haki ya kusitisha duka endapo kuna ukiukaji dhahiri wa sheria zinazotumika."
+        },
+        {
+          "t": "6. Malipo",
+          "b": "Sellia inaunganisha zaidi ya watoa huduma 25 wa malipo wa wahusika wengine. Miamala kati ya mfanyabiashara na wateja wake inategemea masharti mahususi ya kila mtoa huduma wa malipo aliyechaguliwa."
+        },
+        {
+          "t": "7. Upatikanaji wa huduma",
+          "b": "Sellia inachukua hatua za busara kuhakikisha upatikanaji endelevu wa jukwaa, bila kuhakikisha kutokuwepo kabisa kwa usumbufu unaohusiana na matengenezo au sababu zilizo nje ya uwezo wetu."
+        },
+        {
+          "t": "8. Kusitisha",
+          "b": "Unaweza kusitisha usajili wako wakati wowote kutoka eneo lako la malipo. Sellia inahifadhi haki ya kusitisha au kufuta akaunti endapo kuna ukiukaji wa Masharti haya."
+        },
+        {
+          "t": "9. Mabadiliko ya Masharti",
+          "b": "Sellia inaweza kubadilisha Masharti haya. Wafanyabiashara watajulishwa kuhusu mabadiliko yoyote makubwa kwa barua pepe au arifa ndani ya programu."
+        },
+        {
+          "t": "10. Mawasiliano",
+          "b": "Kwa swali lolote kuhusu masharti haya, wasiliana nasi kupitia {{email}}."
+        }
+      ]
+    },
+    "privacy": {
+      "meta_title": "Sera ya faragha",
+      "meta_desc": "Gundua jinsi Sellia inavyokusanya, kutumia na kulinda data yako binafsi, pamoja na haki zako za GDPR na sera yetu ya vidakuzi.",
+      "h1": "Sera ya faragha",
+      "sections": [
+        {
+          "id": "",
+          "t": "1. Data tunayokusanya",
+          "b": "Sellia inakusanya taarifa muhimu kutoa huduma: utambulisho na mawasiliano ya mfanyabiashara, taarifa za malipo, data za wateja wako (jina, anwani, barua pepe) unapozishughulikia kupitia duka lako, pamoja na data za kiufundi (anwani ya IP, kumbukumbu za shughuli) kwa madhumuni ya usalama."
+        },
+        {
+          "id": "",
+          "t": "2. Malengo ya usindikaji",
+          "b": "Data hizi hutumika kutoa na kuboresha jukwaa, kutoa msaada kwa wateja, kuzuia udanganyifu, na kutimiza wajibu wetu wa kisheria na kihasibu."
+        },
+        {
+          "id": "rgpd",
+          "t": "3. Haki zako (GDPR)",
+          "b": "Kwa mujibu wa Kanuni ya Jumla ya Ulinzi wa Data na sheria za ndani zinazotumika, una haki ya kufikia, kurekebisha, kufuta, kuzuia, kupinga na kuhamisha data yako. Kutumia haki hizi, wasiliana nasi kupitia {{email}}."
+        },
+        {
+          "id": "cookies",
+          "t": "4. Vidakuzi",
+          "b": "Sellia inatumia vidakuzi vinavyohitajika kabisa kwa utendaji wa huduma (uthibitishaji, kikapu cha ununuzi) pamoja na vidakuzi vya kupima hadhira vinavyolenga kuboresha jukwaa. Unaweza kusanidi kivinjari chako kukataa vidakuzi visivyo vya lazima."
+        },
+        {
+          "id": "securite",
+          "t": "5. Usalama",
+          "b": "Data husimbwa wakati wa usafirishaji (HTTPS/TLS) na wakati wa kuhifadhiwa pale inapofaa kiufundi. Ufikiaji wa data za uzalishaji umezuiliwa kwa watu walioidhinishwa na unarekodiwa."
+        },
+        {
+          "id": "",
+          "t": "6. Kushiriki data",
+          "b": "Data yako haiuzwi kamwe. Inaweza kushirikiwa na watoa huduma wanaohitajika kabisa kwa utendaji wa huduma (uwekaji hosting, watoa huduma wa malipo uliowachagua mwenyewe, utumaji wa barua pepe za miamala)."
+        },
+        {
+          "id": "",
+          "t": "7. Uhifadhi",
+          "b": "Data huhifadhiwa kwa muda wa usajili wako, kisha kwa muda unaohitajika kutimiza wajibu wetu wa kisheria (kihasibu, kikodi), kabla ya kufutwa au kufanywa kutokujulikana."
+        },
+        {
+          "id": "",
+          "t": "8. Mawasiliano",
+          "b": "Kwa swali lolote kuhusu sera hii au data yako binafsi, tuandikie kupitia {{email}}."
+        }
+      ]
+    },
+    "legal": {
+      "meta_title": "Taarifa ya kisheria",
+      "meta_desc": "Taarifa ya kisheria ya jukwaa la Sellia, lililochapishwa na Liafrik.",
+      "h1": "Taarifa ya kisheria",
+      "sections": [
+        {
+          "t": "Mchapishaji",
+          "b": "Jukwaa la Sellia limechapishwa na Liafrik. Kwa ombi lolote kuhusu mchapishaji, wasiliana kupitia {{email}}."
+        },
+        {
+          "t": "Uwekaji hosting",
+          "b": "Jukwaa linawekwa hosting na watoa huduma wa kliaudi wa kitaalamu wanaohakikisha upatikanaji, usalama na urudufu wa data za wafanyabiashara."
+        },
+        {
+          "t": "Haki miliki",
+          "b": "Chapa ya Sellia, nembo yake, kiolesura chake na vipengele vyote vya picha na programu vya jukwaa ni mali ya Liafrik na vinalindwa na sheria ya haki miliki. Uigaji wowote usioidhinishwa ni marufuku."
+        },
+        {
+          "t": "Mawasiliano",
+          "b": "Msaada wa kiufundi: {{email}}\nHuduma kwa wateja: cs@liafrik.com"
+        }
+      ]
+    },
+    "updated_label": "Sasisho la mwisho:"
   }
 }

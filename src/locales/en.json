@@ -612,6 +612,124 @@
       "spontaneous_h2": "No open role matches your profile?",
       "spontaneous_p": "Send us a spontaneous application — we read every message.",
       "spontaneous_button": "Apply by email"
-    }
+    },
+    "terms": {
+      "meta_title": "Terms of use",
+      "meta_desc": "Read the terms of use for Sellia, the e-commerce platform developed by Liafrik.",
+      "h1": "Terms of use",
+      "sections": [
+        {
+          "t": "1. Purpose",
+          "b": "These terms of use (\"Terms\") govern access to and use of the Sellia platform, published by Liafrik, which lets a merchant create and manage an online store."
+        },
+        {
+          "t": "2. Registration and account",
+          "b": "Using Sellia requires creating a merchant account. You agree to provide accurate information and to keep your login credentials confidential."
+        },
+        {
+          "t": "3. Subscriptions and billing",
+          "b": "Sellia offers several subscription plans (Starter, Growth, Pro, Enterprise), billed monthly or annually. A 14-day free trial is offered with no commitment and no credit card required at sign-up."
+        },
+        {
+          "t": "4. Permitted use",
+          "b": "You agree to use Sellia in compliance with applicable laws, in particular regarding online sales, consumer protection and intellectual property. Selling illegal products is strictly prohibited."
+        },
+        {
+          "t": "5. Merchant content",
+          "b": "You remain solely responsible for the products, descriptions, images and content published on your store. Sellia reserves the right to suspend a store in the event of a clear violation of applicable laws."
+        },
+        {
+          "t": "6. Payments",
+          "b": "Sellia integrates more than 25 third-party payment service providers. Transactions between the merchant and their customers are subject to the terms specific to each chosen payment provider."
+        },
+        {
+          "t": "7. Service availability",
+          "b": "Sellia takes reasonable measures to ensure continuous availability of the platform, without guaranteeing a total absence of interruption related to maintenance or causes beyond our control."
+        },
+        {
+          "t": "8. Termination",
+          "b": "You may cancel your subscription at any time from your billing area. Sellia reserves the right to suspend or terminate an account in the event of a violation of these Terms."
+        },
+        {
+          "t": "9. Changes to these Terms",
+          "b": "Sellia may amend these Terms. Merchants will be informed of any substantial change by email or in-app notification."
+        },
+        {
+          "t": "10. Contact",
+          "b": "For any question about these terms, contact us at {{email}}."
+        }
+      ]
+    },
+    "privacy": {
+      "meta_title": "Privacy policy",
+      "meta_desc": "Learn how Sellia collects, uses and protects your personal data, plus your GDPR rights and our cookie policy.",
+      "h1": "Privacy policy",
+      "sections": [
+        {
+          "id": "",
+          "t": "1. Data we collect",
+          "b": "Sellia collects the information necessary to provide the service: the merchant's identity and contact details, billing information, your customers' data (name, address, email) when you process it through your store, and technical data (IP address, activity logs) for security purposes."
+        },
+        {
+          "id": "",
+          "t": "2. Purpose of processing",
+          "b": "This data is used to provide and improve the platform, deliver customer support, prevent fraud, and meet our legal and accounting obligations."
+        },
+        {
+          "id": "rgpd",
+          "t": "3. Your rights (GDPR)",
+          "b": "Under the General Data Protection Regulation and applicable local laws, you have the right to access, rectify, erase, restrict, object to and port your data. To exercise these rights, contact us at {{email}}."
+        },
+        {
+          "id": "cookies",
+          "t": "4. Cookies",
+          "b": "Sellia uses cookies strictly necessary for the service to function (authentication, shopping cart) as well as audience-measurement cookies used to improve the platform. You can configure your browser to reject non-essential cookies."
+        },
+        {
+          "id": "securite",
+          "t": "5. Security",
+          "b": "Data is encrypted in transit (HTTPS/TLS) and at rest where technically relevant. Access to production data is restricted to authorized personnel and logged."
+        },
+        {
+          "id": "",
+          "t": "6. Data sharing",
+          "b": "Your data is never sold. It may be shared with providers strictly necessary for the service to run (hosting, payment providers you have chosen yourself, transactional email delivery)."
+        },
+        {
+          "id": "",
+          "t": "7. Retention",
+          "b": "Data is retained for the duration of your subscription, then for the period required to meet our legal obligations (accounting, tax), before being deleted or anonymized."
+        },
+        {
+          "id": "",
+          "t": "8. Contact",
+          "b": "For any question about this policy or your personal data, write to us at {{email}}."
+        }
+      ]
+    },
+    "legal": {
+      "meta_title": "Legal notice",
+      "meta_desc": "Legal notice for the Sellia platform, published by Liafrik.",
+      "h1": "Legal notice",
+      "sections": [
+        {
+          "t": "Publisher",
+          "b": "The Sellia platform is published by Liafrik. For any request concerning the publisher, contact {{email}}."
+        },
+        {
+          "t": "Hosting",
+          "b": "The platform is hosted by professional cloud providers ensuring availability, security and redundancy of merchant data."
+        },
+        {
+          "t": "Intellectual property",
+          "b": "The Sellia brand, its logo, its interface and all graphic and software elements of the platform are the property of Liafrik and are protected by intellectual property law. Any unauthorized reproduction is prohibited."
+        },
+        {
+          "t": "Contact",
+          "b": "Technical support: {{email}}\nCustomer service: cs@liafrik.com"
+        }
+      ]
+    },
+    "updated_label": "Last updated:"
   }
 }

@@ -612,6 +612,124 @@
       "spontaneous_h2": "¿Ninguna vacante coincide con tu perfil?",
       "spontaneous_p": "Envíanos tu candidatura espontánea — leemos todos los mensajes.",
       "spontaneous_button": "Postular por email"
-    }
+    },
+    "terms": {
+      "meta_title": "Condiciones de uso",
+      "meta_desc": "Consulta las condiciones generales de uso de Sellia, la plataforma de e-commerce desarrollada por Liafrik.",
+      "h1": "Condiciones de uso",
+      "sections": [
+        {
+          "t": "1. Objeto",
+          "b": "Las presentes condiciones generales de uso («CGU») regulan el acceso y uso de la plataforma Sellia, publicada por Liafrik, que permite a un comerciante crear y gestionar una tienda online."
+        },
+        {
+          "t": "2. Registro y cuenta",
+          "b": "El uso de Sellia requiere la creación de una cuenta de comerciante. Te comprometes a proporcionar información exacta y a mantener la confidencialidad de tus credenciales de acceso."
+        },
+        {
+          "t": "3. Suscripciones y facturación",
+          "b": "Sellia ofrece varios planes de suscripción (Starter, Growth, Pro, Enterprise), facturados mensual o anualmente. Se ofrece una prueba gratuita de 14 días sin compromiso ni tarjeta de crédito requerida en el registro."
+        },
+        {
+          "t": "4. Uso permitido",
+          "b": "Te comprometes a usar Sellia respetando las leyes aplicables, en particular en materia de venta online, protección al consumidor y propiedad intelectual. La venta de productos ilícitos está estrictamente prohibida."
+        },
+        {
+          "t": "5. Contenido del comerciante",
+          "b": "Eres el único responsable de los productos, descripciones, imágenes y contenidos publicados en tu tienda. Sellia se reserva el derecho de suspender una tienda en caso de incumplimiento manifiesto de la normativa vigente."
+        },
+        {
+          "t": "6. Pagos",
+          "b": "Sellia integra más de 25 proveedores de servicios de pago externos. Las transacciones entre el comerciante y sus clientes están sujetas a las condiciones propias de cada proveedor de pago elegido."
+        },
+        {
+          "t": "7. Disponibilidad del servicio",
+          "b": "Sellia implementa los medios razonables para garantizar una disponibilidad continua de la plataforma, sin garantizar la ausencia total de interrupciones vinculadas al mantenimiento o a causas ajenas a nuestra voluntad."
+        },
+        {
+          "t": "8. Cancelación",
+          "b": "Puedes cancelar tu suscripción en cualquier momento desde tu área de facturación. Sellia se reserva el derecho de suspender o cancelar una cuenta en caso de incumplimiento de estas condiciones."
+        },
+        {
+          "t": "9. Modificación de las CGU",
+          "b": "Sellia puede modificar estas condiciones. Los comerciantes serán informados de cualquier cambio sustancial por email o notificación en la aplicación."
+        },
+        {
+          "t": "10. Contacto",
+          "b": "Para cualquier pregunta sobre estas condiciones, contáctanos en {{email}}."
+        }
+      ]
+    },
+    "privacy": {
+      "meta_title": "Política de privacidad",
+      "meta_desc": "Descubre cómo Sellia recopila, utiliza y protege tus datos personales, así como tus derechos RGPD y nuestra política de cookies.",
+      "h1": "Política de privacidad",
+      "sections": [
+        {
+          "id": "",
+          "t": "1. Datos que recopilamos",
+          "b": "Sellia recopila la información necesaria para prestar el servicio: identidad y datos de contacto del comerciante, información de facturación, datos de tus clientes (nombre, dirección, email) cuando los tratas a través de tu tienda, así como datos técnicos (dirección IP, registros de actividad) con fines de seguridad."
+        },
+        {
+          "id": "",
+          "t": "2. Finalidades del tratamiento",
+          "b": "Estos datos se utilizan para prestar y mejorar la plataforma, ofrecer soporte al cliente, prevenir el fraude y cumplir nuestras obligaciones legales y contables."
+        },
+        {
+          "id": "rgpd",
+          "t": "3. Tus derechos (RGPD)",
+          "b": "De acuerdo con el Reglamento General de Protección de Datos y las leyes locales aplicables, tienes derecho de acceso, rectificación, supresión, limitación, oposición y portabilidad de tus datos. Para ejercer estos derechos, contáctanos en {{email}}."
+        },
+        {
+          "id": "cookies",
+          "t": "4. Cookies",
+          "b": "Sellia utiliza cookies estrictamente necesarias para el funcionamiento del servicio (autenticación, carrito de compra), así como cookies de medición de audiencia destinadas a mejorar la plataforma. Puedes configurar tu navegador para rechazar las cookies no esenciales."
+        },
+        {
+          "id": "securite",
+          "t": "5. Seguridad",
+          "b": "Los datos se cifran en tránsito (HTTPS/TLS) y en reposo cuando es técnicamente pertinente. El acceso a los datos de producción está restringido al personal autorizado y queda registrado."
+        },
+        {
+          "id": "",
+          "t": "6. Compartición de datos",
+          "b": "Tus datos nunca se venden. Pueden compartirse con proveedores estrictamente necesarios para el funcionamiento del servicio (alojamiento, proveedores de pago que tú mismo has elegido, envío de emails transaccionales)."
+        },
+        {
+          "id": "",
+          "t": "7. Conservación",
+          "b": "Los datos se conservan durante la duración de tu suscripción, y después durante el periodo necesario para cumplir nuestras obligaciones legales (contables, fiscales), antes de ser eliminados o anonimizados."
+        },
+        {
+          "id": "",
+          "t": "8. Contacto",
+          "b": "Para cualquier pregunta sobre esta política o tus datos personales, escríbenos a {{email}}."
+        }
+      ]
+    },
+    "legal": {
+      "meta_title": "Aviso legal",
+      "meta_desc": "Aviso legal de la plataforma Sellia, publicada por Liafrik.",
+      "h1": "Aviso legal",
+      "sections": [
+        {
+          "t": "Editor",
+          "b": "La plataforma Sellia está publicada por Liafrik. Para cualquier solicitud relativa al editor, contacta con {{email}}."
+        },
+        {
+          "t": "Alojamiento",
+          "b": "La plataforma está alojada por proveedores cloud profesionales que garantizan la disponibilidad, seguridad y redundancia de los datos de los comerciantes."
+        },
+        {
+          "t": "Propiedad intelectual",
+          "b": "La marca Sellia, su logo, su interfaz y todos los elementos gráficos y de software de la plataforma son propiedad de Liafrik y están protegidos por el derecho de propiedad intelectual. Queda prohibida cualquier reproducción no autorizada."
+        },
+        {
+          "t": "Contacto",
+          "b": "Soporte técnico: {{email}}\nAtención al cliente: cs@liafrik.com"
+        }
+      ]
+    },
+    "updated_label": "Última actualización:"
   }
 }

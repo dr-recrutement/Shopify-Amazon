@@ -612,6 +612,124 @@
       "spontaneous_h2": "Amul poste ubbi bu mel ni say compétence?",
       "spontaneous_p": "Yónnee nu sa candidature spontanée — dañuy jàng message bépp.",
       "spontaneous_button": "Postulé ci email"
-    }
+    },
+    "terms": {
+      "meta_title": "Sarti jëfandikoo",
+      "meta_desc": "Xool sarti jëfandikoo yu Sellia, plateforme e-commerce bu Liafrik defar.",
+      "h1": "Sarti jëfandikoo",
+      "sections": [
+        {
+          "t": "1. Njëkk",
+          "b": "Sarti jëfandikoo yii (\"Sart\") dañuy yor jëfandikoo plateforme Sellia, bu Liafrik publié, bu may marchand sos te yor boutique ci internet."
+        },
+        {
+          "t": "2. Inscription ak compte",
+          "b": "Jëfandikoo Sellia soxla na sos benn compte marchand. Danga wara jox xibaar bu wóor te aar sa xibaar login."
+        },
+        {
+          "t": "3. Abonnement ak facturation",
+          "b": "Sellia dafay jox plusieurs formule abonnement (Starter, Growth, Pro, Enterprise), fay wer wu wer walla at mu at. Am na essai bu amul fay diirub 14 fan te amul engagement walla kart bank ci inscription."
+        },
+        {
+          "t": "4. Jëfandikoo bu am droit",
+          "b": "Danga wara jëfandikoo Sellia ci respect sarti yi am, surtout ci jaay ci internet, aar consommateur ak propriété intellectuelle. Jaay produit yu illicite bañ nañu ko lool."
+        },
+        {
+          "t": "5. Contenu marchand bi",
+          "b": "Yaw rekk moo wara jël responsabilité produit, description, image ak contenu yi ci sa boutique. Sellia am na droit di suspendé benn boutique su fekkee amul respect sarti yi am."
+        },
+        {
+          "t": "6. Fay yi",
+          "b": "Sellia dafa boole ci lu ëpp 25 prestataire fay tiers. Transaction ci diggante marchand ak client dañuy topp sarti bu nekk prestataire fay bu tànn."
+        },
+        {
+          "t": "7. Am-am service bi",
+          "b": "Sellia dafay def ay effort ngir am-am plateforme bi, waaye amul garantie interruption bu amul virementaire maintenance walla cause yu bañ ci sunu loxo."
+        },
+        {
+          "t": "8. Résiliation",
+          "b": "Mën nga résilié sa abonnement ci saa yépp ci sa espace facturation. Sellia am na droit di suspendé walla résilié compte su fekkee violation sarti yii."
+        },
+        {
+          "t": "9. Soppi sarti yi",
+          "b": "Sellia mën na soppi sarti yii. Marchand yi dañu leen di xamal soppi bu am solo ci email walla notification ci application bi."
+        },
+        {
+          "t": "10. Jokkoo",
+          "b": "Ngir laaj bépp ci sarti yii, jokkoo ak ñun ci {{email}}."
+        }
+      ]
+    },
+    "privacy": {
+      "meta_title": "Politique confidentialité",
+      "meta_desc": "Xam nu Sellia di jël, jëfandikoo te aar say xibaar bopp, ak say droit RGPD ak sunu politique cookies.",
+      "h1": "Politique confidentialité",
+      "sections": [
+        {
+          "id": "",
+          "t": "1. Xibaar yu ñu jël",
+          "b": "Sellia dafay jël xibaar yu am solo ngir jox service bi: identité ak coordonnée marchand bi, xibaar facturation, xibaar say client (tur, adresse, email) bu nga leen jëfandikoo ci sa boutique, ak xibaar technique (adresse IP, journal activité) ngir kaaraange."
+        },
+        {
+          "id": "",
+          "t": "2. Njëkk ci jëfandikoo xibaar yi",
+          "b": "Xibaar yii dañuy jëfandikoo ngir jox te gën plateforme bi, jox support client, aar ci fraude, te respecté sunu obligation légal ak comptable."
+        },
+        {
+          "id": "rgpd",
+          "t": "3. Say droit (RGPD)",
+          "b": "Ci respect Règlement Général Protection Données ak sarti local yi am, am nga droit accès, rectification, effacement, limitation, opposition ak portabilité say xibaar. Ngir jëfandikoo droit yii, jokkoo ak ñun ci {{email}}."
+        },
+        {
+          "id": "cookies",
+          "t": "4. Cookies",
+          "b": "Sellia dafay jëfandikoo cookies yu am solo ngir service bi jëfe (authentification, panier) ak cookies mesure audience ngir gën plateforme bi. Mën nga configuré sa navigateur ngir bañ cookies yu amul solo."
+        },
+        {
+          "id": "securite",
+          "t": "5. Kaaraange",
+          "b": "Xibaar yi dañuy chiffré ci transit (HTTPS/TLS) ak ci repos su fekkee am solo technique. Accès ci xibaar production yi dafa limité ci nit ñi am droit te journalisé."
+        },
+        {
+          "id": "",
+          "t": "6. Partage xibaar yi",
+          "b": "Say xibaar duñu ko jaay mukk. Mën nañu leen partagé ak prestataire yu am solo lool ngir service bi jëfe (hébergement, prestataire fay yaw ci sa bopp tànn, yónnee email transactionnel)."
+        },
+        {
+          "id": "",
+          "t": "7. Conservation",
+          "b": "Xibaar yi dañuy conservé diirub sa abonnement, gannaaw diirub soxla ngir respecté sunu obligation légal (comptable, fiscal), balaa ñu leen effacé walla anonymisé."
+        },
+        {
+          "id": "",
+          "t": "8. Jokkoo",
+          "b": "Ngir laaj bépp ci politique bii walla say xibaar bopp, bind nu ci {{email}}."
+        }
+      ]
+    },
+    "legal": {
+      "meta_title": "Xibaar yoon",
+      "meta_desc": "Xibaar yoon bu plateforme Sellia, bu Liafrik publié.",
+      "h1": "Xibaar yoon",
+      "sections": [
+        {
+          "t": "Éditeur",
+          "b": "Plateforme Sellia dafa publié ci Liafrik. Ngir laaj bépp ci éditeur bi, jokkoo ci {{email}}."
+        },
+        {
+          "t": "Hébergement",
+          "b": "Plateforme bi dafay hébergé ci prestataire cloud yu professionnel yu garantie am-am, kaaraange ak redondance xibaar marchand yi."
+        },
+        {
+          "t": "Propriété intellectuelle",
+          "b": "Marque Sellia, logo bi, interface bi ak élément graphique ak logiciel yépp ci plateforme bi mooy propriété Liafrik te aar ci droit propriété intellectuelle. Reproduction bu amul autorisation bañ nañu ko."
+        },
+        {
+          "t": "Jokkoo",
+          "b": "Ndimbal technique: {{email}}\nService client: cs@liafrik.com"
+        }
+      ]
+    },
+    "updated_label": "Mise à jour bu mujj:"
   }
 }

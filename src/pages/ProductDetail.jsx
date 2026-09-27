@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus, Star } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import ThemeRenderer from '@/components/theme/ThemeRenderer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { WishlistHeart } from '@/components/theme/ThemeRenderer';
 
@@ -233,11 +235,15 @@ export default function ProductDetail() {
         {theme.cartIcon ? <img src={theme.cartIcon} alt="Panier" className="w-5 h-5 object-contain" /> : <ShoppingCart className="w-5 h-5" />}
         {cartCount > 0 && <span className="absolute -top-1 -right-1 text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center" style={{ background: theme.palette.primary, color: theme.palette.primaryText }}>{cartCount}</span>}
       </Link>
-      <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
-        <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
-          <ArrowLeft className="w-4 h-4" /> {store.name}
-        </Link>
-      </header>
+      <ErrorBoundary fallback={
+        <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
+          <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
+            <ArrowLeft className="w-4 h-4" /> {store.name}
+          </Link>
+        </header>
+      }>
+        <ThemeRenderer theme={theme} sections={theme.sections.filter((s) => s.type === 'header')} mode="storefront" storeSlug={slug} tenantId={store.id} />
+      </ErrorBoundary>
 
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
         <div>

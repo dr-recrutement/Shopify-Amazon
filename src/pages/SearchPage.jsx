@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, Search as SearchIcon, Package } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import ThemeRenderer from '@/components/theme/ThemeRenderer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
 import { applySEO } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
@@ -71,11 +73,15 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen" style={{ background: p.bg, color: p.text, fontFamily: theme.fonts?.body }}>
       {theme.customCss && <style>{theme.customCss}</style>}
-      <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
-        <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
-          <ArrowLeft className="w-4 h-4" /> {store.name}
-        </Link>
-      </header>
+      <ErrorBoundary fallback={
+        <header className="flex items-center px-5 sm:px-8 py-4 border-b" style={{ borderColor: p.border }}>
+          <Link to={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: p.dark }}>
+            <ArrowLeft className="w-4 h-4" /> {store.name}
+          </Link>
+        </header>
+      }>
+        <ThemeRenderer theme={theme} sections={theme.sections.filter((s) => s.type === 'header')} mode="storefront" storeSlug={slug} tenantId={store.id} />
+      </ErrorBoundary>
 
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-8">
         <form onSubmit={onSubmit} className="flex items-center gap-2 mb-6 max-w-lg">

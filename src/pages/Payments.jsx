@@ -22,7 +22,7 @@ const PROVIDERS = [
   { value: 'stripe', label: 'Stripe', logo: 'stripe.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Clé secrète (sk_live_...)', api_key: 'Clé publique (pk_live_...)' }, hint: 'Cartes internationales', live: true , integrated: true },
   { value: 'flutterwave', label: 'Flutterwave', logo: 'flutterwave.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (FLWSECK-...)', api_key: 'Public Key (FLWPUBK-...)' }, hint: 'Cartes + Mobile Money', live: true , integrated: true },
   { value: 'paystack', label: 'Paystack', logo: 'paystack.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key (sk_live_...)', api_key: 'Public Key (pk_live_...)' }, hint: 'Afrique de l’Ouest & du Sud', live: true , integrated: true },
-  { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Client Secret', api_key: 'Client ID' }, hint: 'Portefeuille international' },
+  { value: 'paypal', label: 'PayPal', logo: 'paypal.png', region: 'Mondial', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Client Secret', api_key: 'Client ID' }, hint: 'Portefeuille international', integrated: true },
   { value: 'adyen', label: 'Adyen', logo: 'adyen.png', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'API Key', api_key: 'Client Key', client_id: 'Merchant Account' }, hint: 'Entreprise, multi-devises' },
   { value: 'braintree', label: 'Braintree', logo: 'braintree.jpg', region: 'Mondial', fields: ['api_secret', 'api_key', 'client_id'], labels: { api_secret: 'Private Key', api_key: 'Public Key', client_id: 'Merchant ID' }, hint: 'Groupe PayPal' },
   { value: 'square', label: 'Square', logo: 'square.jpg', region: 'Mondial', fields: ['api_secret', 'client_id'], labels: { api_secret: 'Access Token', client_id: 'Location ID' }, hint: 'Cartes & point de vente' },
@@ -266,7 +266,7 @@ export default function Payments() {
                     ))}
                   </div>
                   {!activeProvider?.integrated && (
-                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave, Paystack et Payunit le sont actuellement).</p>
+                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave, Paystack, Payunit et PayPal le sont actuellement).</p>
                   )}
                 </div>
               )}

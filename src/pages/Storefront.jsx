@@ -709,7 +709,9 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
   const [completedOrder, setCompletedOrder] = useState(null);
   const [error, setError] = useState('');
   const [stripeReady, setStripeReady] = useState(false);
+  const [paypalPending, setPaypalPending] = useState(null); // { paypalOrderId, sellionOrderId } while showing the Buttons overlay
   const cardElementRef = useRef(null);
+  const paypalButtonsRef = useRef(null);
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
 
@@ -735,11 +737,47 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     })();
   }, [paymentMethod, activeGateways, store.id]);
 
+  // Renders PayPal's own real Buttons once a PayPal order has actually
+  // been created server-side (paypalPending set in placeOrder above) -
+  // createOrder just hands back the already-created id, onApprove
+  // captures it through paypal-checkout's own server-side verification
+  // (never trusts the client-side approval alone, same rule as every
+  // other gateway here).
+  useEffect(() => {
+    if (!paypalPending || !window.paypal || !paypalButtonsRef.current) return;
+    paypalButtonsRef.current.innerHTML = '';
+    const buttons = window.paypal.Buttons({
+      createOrder: () => Promise.resolve(paypalPending.paypalOrderId),
+      onApprove: async () => {
+        setPlacing(true);
+        try {
+          const { data: v, error: vErr } = await supabase.functions.invoke('paypal-checkout', { body: { action: 'capture', order_id: paypalPending.sellionOrderId, paypal_order_id: paypalPending.paypalOrderId } });
+          if (vErr) throw new Error(await functionErrorMessage(vErr));
+          if (v.status !== 'paid') throw new Error('Paiement non confirmé par PayPal.');
+          if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+          setOrderNumber('#' + paypalPending.sellionOrderId.slice(0, 8).toUpperCase());
+          setPaypalPending(null);
+          setDone(true);
+          onDone();
+        } catch (e) {
+          setError(e.message || 'Paiement non confirmé.');
+        } finally {
+          setPlacing(false);
+        }
+      },
+      onCancel: () => setPaypalPending(null),
+      onError: () => setError('Une erreur PayPal est survenue. Réessayez.'),
+    });
+    buttons.render(paypalButtonsRef.current);
+    return () => { buttons.close?.(); };
+  }, [paypalPending]);
+
   const PAYMENT_METHODS = [
     ...(activeGateways?.includes('flutterwave') ? [{ id: 'flutterwave', label: 'Carte bancaire / Mobile Money', desc: 'Paiement immédiat sécurisé via Flutterwave', icon: CreditCard }] : []),
     ...(activeGateways?.includes('paystack') ? [{ id: 'paystack', label: 'Carte bancaire', desc: 'Paiement immédiat sécurisé via Paystack', icon: CreditCard }] : []),
     ...(activeGateways?.includes('stripe') ? [{ id: 'stripe', label: 'Carte bancaire (Stripe)', desc: 'Visa, Mastercard, Amex', icon: CreditCard }] : []),
     ...(activeGateways?.includes('payunit') ? [{ id: 'payunit', label: 'Mobile Money / Carte (Payunit)', desc: 'Orange Money, MTN MoMo, carte bancaire — paiement immédiat sécurisé', icon: Phone }] : []),
+    ...(activeGateways?.includes('paypal') ? [{ id: 'paypal', label: 'PayPal', desc: 'Payez avec votre compte PayPal', icon: CreditCard }] : []),
     { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
     { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
     { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
@@ -904,6 +942,23 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         return;
       }
 
+      if (paymentMethod === 'paypal') {
+        const { data: idData, error: idError } = await supabase.functions.invoke('paypal-checkout', { body: { action: 'get_client_id', order_id: order.id } });
+        if (idError) throw new Error(await functionErrorMessage(idError));
+        if (idData.error) throw new Error(idData.error);
+        const { data: created2, error: createError2 } = await supabase.functions.invoke('paypal-checkout', { body: { action: 'create_order', order_id: order.id } });
+        if (createError2) throw new Error(await functionErrorMessage(createError2));
+        if (created2.error) throw new Error(created2.error);
+        await loadScript(`https://www.paypal.com/sdk/js?client-id=${idData.client_id}&currency=${(store.currency || 'USD').toUpperCase()}`);
+        setPlacing(false);
+        // PayPal renders its own real "Pay" buttons (unlike the popups
+        // above, there is no single generic click to trigger) - shown in
+        // an overlay rather than replacing this form, so the customer's
+        // cart/order context stays visible.
+        setPaypalPending({ sellionOrderId: order.id, paypalOrderId: created2.paypal_order_id });
+        return;
+      }
+
       if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
@@ -1027,14 +1082,22 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 {!stripeReady && <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> Chargement du module de paiement sécurisé…</p>}
               </div>
             )}
+            {paymentMethod === 'paypal' && paypalPending && (
+              <div className="mt-3 p-3.5 border border-border rounded-lg bg-white">
+                <p className="text-xs text-muted-foreground mb-2">Finalisez votre paiement avec PayPal :</p>
+                <div ref={paypalButtonsRef} />
+              </div>
+            )}
           </section>
 
           {error && <p className="text-sm text-destructive font-medium bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           {/* Pay button (mobile) */}
+          {!(paymentMethod === 'paypal' && paypalPending) && (
           <button type="submit" disabled={placing} className="lg:hidden w-full font-semibold py-4 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg" style={{ background: primary, color: primaryText }}>
             {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
           </button>
+          )}
         </form>
 
         {/* Order summary column (Shopify sticky sidebar) */}
@@ -1074,9 +1137,13 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               </div>
             </div>
 
+            {!(paymentMethod === 'paypal' && paypalPending) ? (
             <button type="submit" form="checkout-form" disabled={placing} className="hidden lg:flex w-full font-semibold py-3.5 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 items-center justify-center gap-2 mt-4" style={{ background: primary, color: primaryText }}>
               {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
             </button>
+            ) : (
+              <p className="hidden lg:block text-xs text-muted-foreground mt-4">Finalisez votre paiement avec les boutons PayPal ci-dessus.</p>
+            )}
 
             <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Paiement chiffré & sécurisé

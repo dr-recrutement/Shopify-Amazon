@@ -779,9 +779,16 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     ...(activeGateways?.includes('stripe') ? [{ id: 'stripe', label: 'Carte bancaire (Stripe)', desc: 'Visa, Mastercard, Amex', icon: CreditCard }] : []),
     ...(activeGateways?.includes('payunit') ? [{ id: 'payunit', label: 'Mobile Money / Carte (Payunit)', desc: 'Orange Money, MTN MoMo, carte bancaire — paiement immédiat sécurisé', icon: Phone }] : []),
     ...(activeGateways?.includes('paypal') ? [{ id: 'paypal', label: 'PayPal', desc: 'Payez avec votre compte PayPal', icon: CreditCard }] : []),
-    { id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck },
-    { id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard },
-    { id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone },
+    // Manual methods now respect the merchant's own real choice
+    // (Paramètres > Paiements > Méthodes manuelles) instead of always
+    // showing all 3 to every customer regardless of what the merchant
+    // actually wants to offer (a merchant selling higher-value goods may
+    // not want cash-on-delivery's fraud/logistics risk at all, for
+    // example) - defaults to on so nothing changes for a merchant who
+    // never touched this setting.
+    ...(store.settings?.manualPayments?.cod !== false ? [{ id: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception', icon: Truck }] : []),
+    ...(store.settings?.manualPayments?.transfer !== false ? [{ id: 'transfer', label: 'Virement bancaire', desc: 'Virement avant expédition', icon: CreditCard }] : []),
+    ...(store.settings?.manualPayments?.mobile !== false ? [{ id: 'mobile', label: 'Mobile Money (manuel)', desc: 'Orange Money, Wave, MTN MoMo', icon: Phone }] : []),
   ];
 
   const cartSubtotal = (cart?.total_cents || 0) / 100;

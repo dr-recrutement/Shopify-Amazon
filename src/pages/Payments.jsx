@@ -58,10 +58,19 @@ const inputCls = 'w-full px-3 py-2 border border-[#E1E1E1] rounded-md text-sm bg
 // a key only that function can read) - this page only ever sends
 // plaintext over HTTPS to get it encrypted, and never fetches it back.
 export default function Payments() {
-  const { store, loading: storeLoading, staffRole } = useCurrentStore();
+  const { store, loading: storeLoading, staffRole, reload } = useCurrentStore();
   const [providers, setProviders] = useState([]);
   const [testing, setTesting] = useState(null);
   const [testResults, setTestResults] = useState({});
+
+  const toggleManualPayment = async (key) => {
+    const current = store.settings?.manualPayments || {};
+    const nextValue = current[key] === false ? true : false;
+    const { error } = await supabase.from('tenants').update({ settings: { ...(store.settings || {}), manualPayments: { ...current, [key]: nextValue } } }).eq('id', store.id);
+    if (error) { alert(error.message); return; }
+    await reload();
+  };
+
 
   const testConnection = async (p) => {
     setTesting(p.id);
@@ -185,7 +194,7 @@ export default function Payments() {
           <ShieldCheck className="w-5 h-5 text-[#008060] shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-[#202223]">Chiffrées, propres à votre boutique</p>
-            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants sont chiffrés côté serveur avant d'être enregistrés et ne sont jamais renvoyés en clair — même à vous, une fois saisis. Un traitement de paiement réel côté checkout n'est pas encore branché (voir la note ci-dessous) ; ceci enregistre déjà la connexion en toute sécurité.</p>
+            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants sont chiffrés côté serveur avant d'être enregistrés et ne sont jamais renvoyés en clair — même à vous, une fois saisis. Un vrai traitement de paiement au checkout existe pour Stripe, Flutterwave, Paystack, Payunit et PayPal (badge « Paiement client réel » ci-dessous) — pour les autres, la connexion est enregistrée en toute sécurité mais l'intégration au checkout n'existe pas encore (badge « Config. seulement »).</p>
           </div>
         </div>
 
@@ -234,6 +243,22 @@ export default function Payments() {
             })}
           </div>
         )}
+      </div>
+
+      <div className="bg-white rounded-xl border border-[#E1E1E1] p-4 mt-4">
+        <p className="text-sm font-semibold text-[#202223] mb-1">Méthodes de paiement manuelles</p>
+        <p className="text-xs text-[#6D7175] mb-3">Ces options s'affichent réellement au paiement client, sans identifiants à connecter. Désactivez celles que vous ne souhaitez pas proposer.</p>
+        <div className="space-y-2">
+          {[['cod', 'Paiement à la livraison (Cash on Delivery)'], ['transfer', 'Virement bancaire'], ['mobile', 'Mobile Money (manuel)']].map(([key, label]) => {
+            const enabled = store.settings?.manualPayments?.[key] !== false;
+            return (
+              <label key={key} className="flex items-center justify-between px-3 py-2 rounded-lg border border-[#E1E1E1] cursor-pointer">
+                <span className="text-sm text-[#202223]">{label}</span>
+                <input type="checkbox" checked={enabled} onChange={() => toggleManualPayment(key)} className="accent-[#008060] w-4 h-4" />
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       {formOpen && (

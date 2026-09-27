@@ -51,16 +51,13 @@ export function loadScript(src) {
   return scriptPromises[src];
 }
 
-// Real inventory tracking - only called once a sale is truly confirmed
-// (manual payment methods at order creation, card payments only after
-// server-side verification succeeds) so stock never drops for an order
-// that was abandoned or declined. Non-fatal: a stock-sync hiccup
-// shouldn't block an already-committed/paid order from completing.
-async function decrementStockForItems(items) {
-  await Promise.all((items || []).map((it) =>
-    supabase.rpc('decrement_stock', { p_product_id: it.product_id, p_variant_id: it.variant_id || null, p_quantity: it.quantity }).catch(() => {})
-  ));
-}
+// Stock is now reserved atomically at order creation (create-order Edge
+// Function -> reserve_stock, a real conditional UPDATE, not just a
+// read-then-compare check a concurrent buyer of the last unit could slip
+// past) - no separate decrement-on-payment-success step needed anymore.
+// An order that never completes payment has its reservation released
+// automatically after 45 minutes (release_expired_pending_orders,
+// scheduled).
 
 // Real homepage popup with 3 real design variants, not just one fixed
 // shape - a discount-code teaser, a newsletter capture (reuses the same
@@ -258,12 +255,12 @@ export default function Storefront() {
         if (error) throw new Error(await functionErrorMessage(error));
         const paid = data?.status === 'paid';
         if (paid) {
-          // Real success path for Payunit, same as every other gateway's
-          // own success point - was missing entirely (stock never
-          // decremented, cart never marked recovered for a real Payunit
-          // sale) until caught here.
-          const { data: orderItemsRows } = await supabase.from('order_items').select('product_id, variant_id, quantity').eq('order_id', orderId);
-          await decrementStockForItems(orderItemsRows || []);
+          // Cart recovery only - stock is already reserved atomically at
+          // order creation (create-order) now, not decremented again
+          // here (was previously missing this path's decrement entirely,
+          // then briefly double-decremented after the reservation fix -
+          // this is the corrected final state: reserve once, never touch
+          // stock again on success).
           const sessionId = getCartSessionId();
           await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('session_id', sessionId).eq('status', 'open');
           localStorage.removeItem(CART_KEY);
@@ -786,7 +783,6 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       if (created.error) throw new Error(created.error);
 
       const order = { id: created.order_id };
-      const items = created.items.map((i) => ({ product_id: i.product_id, variant_id: i.variant_id, quantity: i.quantity }));
       setCompletedOrder({ id: order.id, items: cart.items || [] });
 
       // Cart is marked recovered at each real payment-success point below
@@ -815,7 +811,6 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
 
         if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
-        await decrementStockForItems(items);
         setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
         setDone(true);
         onDone();
@@ -845,7 +840,6 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               if (vErr) throw new Error(await functionErrorMessage(vErr));
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
               if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
-              await decrementStockForItems(items);
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
               setDone(true);
               onDone();
@@ -881,7 +875,6 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 if (vErr) throw new Error(await functionErrorMessage(vErr));
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
                 if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
-                await decrementStockForItems(items);
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
                 setDone(true);
                 onDone();
@@ -912,7 +905,6 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
       }
 
       if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
-      await decrementStockForItems(items);
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
       onDone();

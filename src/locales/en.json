@@ -730,6 +730,171 @@
         }
       ]
     },
-    "updated_label": "Last updated:"
+    "updated_label": "Last updated:",
+    "security": {
+      "meta_title": "Security & trust",
+      "meta_desc": "See how Sellia protects your customers' data and payments: encryption, no card storage, cloud infrastructure, GDPR compliance.",
+      "badge": "Security & trust",
+      "h1": "Your store's security, taken seriously",
+      "hero_p": "Your customers trust you to pay online. Here's how Sellia protects every transaction and every piece of data, from day one to the last.",
+      "points": [
+        {
+          "title": "End-to-end encryption",
+          "text": "All data travels over HTTPS/TLS. Sensitive data is encrypted at rest wherever technically relevant."
+        },
+        {
+          "title": "No card storage on payments",
+          "text": "Sellia never stores card numbers. Every transaction is processed directly by the chosen payment provider (Stripe, PayPal, Flutterwave, Mobile Money…), compliant with its sector's PCI-DSS standards."
+        },
+        {
+          "title": "Professional cloud infrastructure",
+          "text": "Hosted with recognized cloud providers, with regular backups and redundancy of merchant data."
+        },
+        {
+          "title": "99.9% uptime",
+          "text": "A 99.9% uptime target, with continuous platform monitoring and immediate alerts in case of an incident."
+        },
+        {
+          "title": "Restricted, logged access",
+          "text": "Access to production data is limited to authorized personnel and every sensitive action is logged (internal audit trail)."
+        },
+        {
+          "title": "GDPR compliance",
+          "text": "Sellia follows GDPR principles for collecting and processing personal data — full details in our privacy policy."
+        }
+      ],
+      "contact_h2": "A security question, or a vulnerability to report?",
+      "contact_p": "Write to us directly — our technical team gives it priority.",
+      "contact_button": "Contact the security team"
+    },
+    "feature_group_cta": {
+      "h2": "Ready to try it?",
+      "p": "14-day free trial. No credit card required.",
+      "button": "Create my store"
+    },
+    "feature_create_sell": {
+      "eyebrow": "Create & Sell",
+      "meta_title": "Build a premium store, no code needed",
+      "meta_desc": "Discover Sellia's store editor, premium themes and optimized checkout — everything you need to build and sell online.",
+      "intro": "From the visual editor to premium themes to the checkout flow — everything you need to launch a store that inspires trust from the first visit.",
+      "sections": [
+        {
+          "title": "Store editor",
+          "text": "A drag-and-drop visual editor to build a premium storefront without writing a line of code, with live preview on desktop, tablet and mobile.",
+          "points": [
+            "Drag and drop on every section",
+            "Real-time responsive preview",
+            "Instant publishing, no redeploy",
+            "Unlimited undo/redo while editing"
+          ]
+        },
+        {
+          "title": "Premium themes",
+          "text": "Refined, fully customizable themes — colors, typography, layout — designed for merchants worldwide, included in your subscription at no extra cost.",
+          "points": [
+            "Themes included, no separate purchase",
+            "Full color and font customization",
+            "Switch themes anytime",
+            "Optimized for conversion"
+          ]
+        },
+        {
+          "title": "Optimized checkout",
+          "text": "A buying flow 100% embedded in your store — your customers are never redirected to a third-party site to pay, which meaningfully cuts cart abandonment.",
+          "points": [
+            "No external redirect at checkout",
+            "Simplified order form",
+            "Compatible with Mobile Money and cards",
+            "Automatic abandoned-cart recovery"
+          ]
+        }
+      ]
+    },
+    "feature_manage": {
+      "eyebrow": "Manage",
+      "meta_title": "Manage stock, payments and shipping effortlessly",
+      "meta_desc": "Discover Sellia's inventory management, integrated payments (Mobile Money included), multi-zone shipping and promotions.",
+      "intro": "From stock to payment to shipping — Sellia automates repetitive tasks so you can focus on your products and your customers.",
+      "sections": [
+        {
+          "title": "Inventory management",
+          "text": "Precise per-variant tracking, low-stock alerts and multi-location management so you're never caught off guard when an order comes in.",
+          "points": [
+            "Per-variant tracking (size, color…)",
+            "Automatic low-stock alerts",
+            "Multi-location management",
+            "Full movement history"
+          ]
+        },
+        {
+          "title": "Integrated payments",
+          "text": "More than 25 global payment providers, including native Mobile Money — Orange Money, Wave, MTN Mobile Money, Airtel Money — with no third-party app.",
+          "points": [
+            "Native Mobile Money, no plugin",
+            "Cards and bank transfers",
+            "Multi-currency (XOF, NGN, USD, EUR…)",
+            "No redirect away from your store"
+          ]
+        },
+        {
+          "title": "Multi-zone shipping",
+          "text": "Shipping rates configurable by region, country and weight, with automated parcel tracking to reassure your customers from payment to delivery.",
+          "points": [
+            "Rates by region, country and weight",
+            "Conditional free shipping",
+            "Automated order tracking",
+            "Unlimited shipping zones"
+          ]
+        },
+        {
+          "title": "Promotions & discounts",
+          "text": "Promo codes, percentage or fixed-amount discounts, free shipping — with automatic rules to drive sales without manual effort.",
+          "points": [
+            "Customizable promo codes",
+            "% or fixed-amount discounts",
+            "Conditional free shipping",
+            "Automatic rules by product or collection"
+          ]
+        }
+      ]
+    },
+    "feature_grow": {
+      "eyebrow": "Grow",
+      "meta_title": "Analyze, sell internationally, save time",
+      "meta_desc": "Discover real-time analytics, multi-currency and Sellia Assistant (AI) — Sellia's growth tools.",
+      "intro": "Clear data, native international reach and an AI that works for you — to grow your store without piling on tools.",
+      "sections": [
+        {
+          "title": "Real-time analytics",
+          "text": "A clear dashboard to track sales, visitors, per-product conversion rate and buying funnel — actionable data, not just numbers.",
+          "points": [
+            "Real-time revenue and trends",
+            "Per-product conversion rate",
+            "Exportable reports",
+            "Multi-store view"
+          ]
+        },
+        {
+          "title": "Multi-currency",
+          "text": "Sell everywhere with native ISO currency management (XOF, NGN, USD, EUR…) and an interface translated into 7 languages — no technical setup.",
+          "points": [
+            "Native ISO currencies",
+            "Automatic price conversion",
+            "7 languages available",
+            "One catalog, multiple markets"
+          ]
+        },
+        {
+          "title": "Sellia Assistant",
+          "text": "Sellia's built-in AI assistant generates product descriptions, SEO content and even entire themes — saving you hours every week.",
+          "points": [
+            "AI-generated product descriptions",
+            "SEO-optimized content",
+            "Full theme generation",
+            "Available on Pro and Enterprise plans"
+          ]
+        }
+      ]
+    }
   }
 }

@@ -730,6 +730,171 @@
         }
       ]
     },
-    "updated_label": "Sasisho la mwisho:"
+    "updated_label": "Sasisho la mwisho:",
+    "security": {
+      "meta_title": "Usalama na uaminifu",
+      "meta_desc": "Gundua jinsi Sellia inavyolinda data na malipo ya wateja wako: usimbaji, malipo bila kuhifadhi kadi, miundombinu ya kliaudi, uzingatiaji wa GDPR.",
+      "badge": "Usalama na uaminifu",
+      "h1": "Usalama wa duka lako, unaochukuliwa kwa uzito",
+      "hero_p": "Wateja wako wanakuamini kulipa mtandaoni. Hivi ndivyo Sellia inavyolinda kila muamala na kila data, tangu siku ya kwanza hadi ya mwisho.",
+      "points": [
+        {
+          "title": "Usimbaji wa mwanzo hadi mwisho",
+          "text": "Data zote husafiri kupitia HTTPS/TLS. Data nyeti husimbwa wakati wa kuhifadhiwa pale inapofaa kiufundi."
+        },
+        {
+          "title": "Malipo bila kuhifadhi kadi",
+          "text": "Sellia haihifadhi kamwe nambari za kadi za benki. Kila muamala unashughulikiwa moja kwa moja na mtoa huduma wa malipo aliyechaguliwa (Stripe, PayPal, Flutterwave, Pesa za Simu…), unaozingatia viwango vya PCI-DSS vya sekta yake."
+        },
+        {
+          "title": "Miundombinu ya kliaudi ya kitaalamu",
+          "text": "Uwekaji hosting kwa watoa huduma wa kliaudi wanaotambulika, wenye nakala za akiba za mara kwa mara na urudufu wa data za wafanyabiashara."
+        },
+        {
+          "title": "Upatikanaji wa 99.9%",
+          "text": "Lengo la upatikanaji la 99.9%, likiwa na ufuatiliaji endelevu wa jukwaa na tahadhari za haraka endapo kuna tatizo."
+        },
+        {
+          "title": "Ufikiaji uliozuiliwa na kurekodiwa",
+          "text": "Ufikiaji wa data za uzalishaji umezuiliwa kwa watu walioidhinishwa na kila hatua nyeti inarekodiwa (rekodi ya ukaguzi wa ndani)."
+        },
+        {
+          "title": "Uzingatiaji wa GDPR",
+          "text": "Sellia inafuata kanuni za GDPR katika ukusanyaji na usindikaji wa data binafsi — maelezo kamili katika sera yetu ya faragha."
+        }
+      ],
+      "contact_h2": "Una swali la usalama, au udhaifu wa kuripoti?",
+      "contact_p": "Tuandikie moja kwa moja, timu yetu ya kiufundi itakujibu kwa kipaumbele.",
+      "contact_button": "Wasiliana na timu ya usalama"
+    },
+    "feature_group_cta": {
+      "h2": "Uko tayari kujaribu?",
+      "p": "Jaribio la bure la siku 14. Hakuna kadi ya benki inayohitajika.",
+      "button": "Unda duka langu"
+    },
+    "feature_create_sell": {
+      "eyebrow": "Unda na Uza",
+      "meta_title": "Unda duka la premium, bila msimbo",
+      "meta_desc": "Gundua kihariri cha duka, miundo ya premium na malipo yaliyoboreshwa ya Sellia — kila unachohitaji kuunda na kuuza mtandaoni.",
+      "intro": "Kutoka kihariri cha kuona hadi miundo ya premium hadi mchakato wa malipo — kila unachohitaji kuanzisha duka linaloaminika tangu ziara ya kwanza.",
+      "sections": [
+        {
+          "title": "Kihariri cha duka",
+          "text": "Kihariri cha kubofya na kuweka kuunda duka la premium bila kuandika msimbo wowote, na onyesho la moja kwa moja kwenye kompyuta, kompyuta kibao na simu.",
+          "points": [
+            "Kubofya na kuweka kwenye sehemu zote",
+            "Onyesho linalojirekebisha wakati halisi",
+            "Uchapishaji wa papo hapo, bila kupeleka upya",
+            "Tendua/rudia bila kikomo wakati wa kuhariri"
+          ]
+        },
+        {
+          "title": "Miundo ya premium",
+          "text": "Miundo mizuri inayoweza kubadilishwa kikamilifu — rangi, fonti, mpangilio — iliyoundwa kwa wafanyabiashara duniani kote, imejumuishwa kwenye usajili wako bila gharama ya ziada.",
+          "points": [
+            "Miundo imejumuishwa, hakuna ununuzi tofauti",
+            "Ubinafsishaji kamili wa rangi na fonti",
+            "Kubadilisha muundo wakati wowote",
+            "Imeboreshwa kwa ubadilishaji"
+          ]
+        },
+        {
+          "title": "Malipo yaliyoboreshwa",
+          "text": "Mchakato wa ununuzi uliounganishwa 100% na duka lako — wateja wako hawapelekwi kamwe kwenye tovuti nyingine kulipa, jambo linalopunguza kwa kiasi kikubwa uachaji wa kikapu.",
+          "points": [
+            "Hakuna kuelekezwa nje wakati wa malipo",
+            "Fomu ya agizo iliyorahisishwa",
+            "Inaendana na Pesa za Simu na kadi",
+            "Urejeshaji wa kiotomatiki wa vikapu vilivyoachwa"
+          ]
+        }
+      ]
+    },
+    "feature_manage": {
+      "eyebrow": "Simamia",
+      "meta_title": "Simamia hisa, malipo na usafirishaji bila taabu",
+      "meta_desc": "Gundua usimamizi wa hisa, malipo yaliyounganishwa (ikiwa ni pamoja na Pesa za Simu), usafirishaji wa maeneo mengi na ofa za Sellia.",
+      "intro": "Kutoka hisa hadi malipo hadi usafirishaji — Sellia inaotomatisha kazi zinazojirudia ili uweze kuzingatia bidhaa na wateja wako.",
+      "sections": [
+        {
+          "title": "Usimamizi wa hisa",
+          "text": "Ufuatiliaji sahihi kwa kila aina, arifa za hisa ndogo na usimamizi wa maeneo mengi ili usishtukiwe kamwe wakati agizo linapofika.",
+          "points": [
+            "Ufuatiliaji kwa kila aina (ukubwa, rangi…)",
+            "Arifa za kiotomatiki za hisa ndogo",
+            "Usimamizi wa maeneo mengi",
+            "Historia kamili ya harakati"
+          ]
+        },
+        {
+          "title": "Malipo yaliyounganishwa",
+          "text": "Zaidi ya watoa huduma 25 wa malipo duniani kote, ikiwa ni pamoja na Pesa za Simu kiasili — Orange Money, Wave, MTN Mobile Money, Airtel Money — bila programu ya nje.",
+          "points": [
+            "Pesa za Simu asilia, hakuna programu-jalizi",
+            "Kadi na uhamisho wa benki",
+            "Sarafu nyingi (XOF, NGN, USD, EUR…)",
+            "Hakuna kuelekezwa nje ya duka lako"
+          ]
+        },
+        {
+          "title": "Usafirishaji wa maeneo mengi",
+          "text": "Bei za usafirishaji zinazoweza kusanidiwa kwa mkoa, nchi na uzito, zikiwa na ufuatiliaji wa kiotomatiki wa vifurushi kuwahakikishia wateja wako kutoka malipo hadi utoaji.",
+          "points": [
+            "Bei kwa mkoa, nchi na uzito",
+            "Usafirishaji bure wa masharti",
+            "Ufuatiliaji wa maagizo wa kiotomatiki",
+            "Maeneo ya usafirishaji yasiyo na kikomo"
+          ]
+        },
+        {
+          "title": "Ofa na punguzo",
+          "text": "Nambari za punguzo, punguzo la asilimia au kiasi maalum, usafirishaji bure — na sheria za kiotomatiki kuchochea mauzo yako bila juhudi za mkono.",
+          "points": [
+            "Nambari za punguzo zinazoweza kubinafsishwa",
+            "Punguzo la % au kiasi maalum",
+            "Usafirishaji bure wa masharti",
+            "Sheria za kiotomatiki kwa bidhaa au mkusanyiko"
+          ]
+        }
+      ]
+    },
+    "feature_grow": {
+      "eyebrow": "Kua",
+      "meta_title": "Chambua, uza kimataifa, okoa muda",
+      "meta_desc": "Gundua uchambuzi wa wakati halisi, sarafu nyingi na Sellia Assistant (AI) — zana za ukuaji za Sellia.",
+      "intro": "Data wazi, ufikiaji wa kimataifa asilia na AI inayofanya kazi kwa ajili yako — kukuza duka lako bila kuongeza zana nyingi.",
+      "sections": [
+        {
+          "title": "Uchambuzi wa wakati halisi",
+          "text": "Dashibodi wazi kufuatilia mauzo, wageni, kiwango cha ubadilishaji kwa kila bidhaa na mchakato wa ununuzi — data zinazoweza kutekelezwa, si nambari tu.",
+          "points": [
+            "Mapato na mienendo ya wakati halisi",
+            "Kiwango cha ubadilishaji kwa kila bidhaa",
+            "Ripoti zinazoweza kuhamishwa",
+            "Muonekano wa maduka mengi"
+          ]
+        },
+        {
+          "title": "Sarafu nyingi",
+          "text": "Uza kila mahali kwa usimamizi asilia wa sarafu za ISO (XOF, NGN, USD, EUR…) na kiolesura kilichotafsiriwa katika lugha 7 — bila usanidi wa kiufundi.",
+          "points": [
+            "Sarafu za ISO asilia",
+            "Ubadilishaji wa kiotomatiki wa bei",
+            "Lugha 7 zinazopatikana",
+            "Katalogi moja, masoko mengi"
+          ]
+        },
+        {
+          "title": "Sellia Assistant",
+          "text": "Msaidizi wa AI aliyojengwa ndani ya Sellia huzalisha maelezo ya bidhaa, maudhui ya SEO na hata miundo kamili — akikuokolea saa kila wiki.",
+          "points": [
+            "Maelezo ya bidhaa yaliyozalishwa na AI",
+            "Maudhui yaliyoboreshwa kwa SEO",
+            "Uzalishaji wa miundo kamili",
+            "Inapatikana katika mipango ya Pro na Enterprise"
+          ]
+        }
+      ]
+    }
   }
 }

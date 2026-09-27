@@ -730,6 +730,171 @@
         }
       ]
     },
-    "updated_label": "Mise à jour bu mujj:"
+    "updated_label": "Mise à jour bu mujj:",
+    "security": {
+      "meta_title": "Kaaraange & wóolute",
+      "meta_desc": "Xam nu Sellia di aar xibaar ak fay say client: chiffrement, fay bu amul stockage kart, infrastructure cloud, respect RGPD.",
+      "badge": "Kaaraange & wóolute",
+      "h1": "Kaaraange sa boutique, jël nañu ko bu sax",
+      "hero_p": "Say client wóolu nañu la ngir fay ci internet. Nii Sellia di aar transaction bépp ak xibaar bépp, li dale ci bis bu njëkk ba ci bu mujj.",
+      "points": [
+        {
+          "title": "Chiffrement bu mat sëkk",
+          "text": "Xibaar yépp dañuy jaar ci HTTPS/TLS. Xibaar yu am solo dañuy chiffré ci repos su fekkee am solo technique."
+        },
+        {
+          "title": "Fay bu amul stockage kart",
+          "text": "Sellia du stocké mukk numéro kart bank. Transaction bépp dañuy jëfe directement ci prestataire fay bu tànn (Stripe, PayPal, Flutterwave, Mobile Money…), respecté sarti PCI-DSS bu secteur bi."
+        },
+        {
+          "title": "Infrastructure cloud bu professionnel",
+          "text": "Hébergement ci prestataire cloud yu am solo, ak sauvegarde yu réguliers ak redondance xibaar marchand yi."
+        },
+        {
+          "title": "Am-am 99,9 %",
+          "text": "Objectif am-am bu 99,9 %, ak surveillance continue plateforme bi ak alerte ci saa si su fekkee am incident."
+        },
+        {
+          "title": "Accès bu limité te journalisé",
+          "text": "Accès ci xibaar production yi dafa limité ci nit ñi am droit te jëf bépp bu am solo dafay journalisé (journal audit interne)."
+        },
+        {
+          "title": "Respect RGPD",
+          "text": "Sellia respecté nañu principe RGPD ngir jël ak jëfandikoo xibaar bopp — detail yépp ci sunu politique confidentialité."
+        }
+      ],
+      "contact_h2": "Am nga laaj ci kaaraange, walla vulnérabilité bu nga bëgg xamal?",
+      "contact_p": "Bind nu directement, sunu équipe technique dina la tontu ci njëkk.",
+      "contact_button": "Jokkoo ak équipe kaaraange bi"
+    },
+    "feature_group_cta": {
+      "h2": "Dangaa parey seetal?",
+      "p": "Essai bu amul fay diirub 14 fan. Kart bank warula.",
+      "button": "Sos sama boutique"
+    },
+    "feature_create_sell": {
+      "eyebrow": "Sos & Jaay",
+      "meta_title": "Sos boutique bu premium, kod amul",
+      "meta_desc": "Xam editëer boutique bi, thème yu premium ak checkout bu Sellia — lépp lu la soxla ngir sos te jaay ci internet.",
+      "intro": "Li dale ci editëer bu leer ba thème yu premium ba jëfandikoo fay bi — lépp lu la soxla ngir tambali boutique bu wóolu li ko xool bu njëkk.",
+      "sections": [
+        {
+          "title": "Editëer boutique",
+          "text": "Editëer bu leer, taxawalul kod, ngir sos boutique bu premium te bindaloo kod, ak xool ci saa si ci computer, tablette ak téléphone.",
+          "points": [
+            "Leer ci section yépp",
+            "Xool bu takkoo ci saa si",
+            "Publication ci saa si, laalul redéploiement",
+            "Tëj/delluwaat bu amul dayo ci édition bi"
+          ]
+        },
+        {
+          "title": "Thème yu premium",
+          "text": "Thème yu rafet te mën nga leen soppi ni nga bëgge — couleur, typographie, mise en page — defar ngir marchand yi ci àdduna bépp, bokk ci sa abonnement laalul depense.",
+          "points": [
+            "Thème bokk, laalul jënd bu bees",
+            "Soppi bu mat sëkk couleur ak police",
+            "Soppi thème ci saa yépp",
+            "Optimisé ngir conversion"
+          ]
+        },
+        {
+          "title": "Checkout bu gaaw",
+          "text": "Jëfandikoo bu 100% boole ci sa boutique — say client duñu genn ci site tiers ngir fay, li di wàññi lool ñi bàyyi paanax.",
+          "points": [
+            "Amul redirection externe ci fay",
+            "Formulaire commande bu yomb",
+            "Compatible Mobile Money ak kart",
+            "Delluwaat automatik panier yu bàyyeeku"
+          ]
+        }
+      ]
+    },
+    "feature_manage": {
+      "eyebrow": "Yor",
+      "meta_title": "Yor stock, fay ak yebbi laalul jafe-jafe",
+      "meta_desc": "Xam yoroon stock, fay yu boole (Mobile Money bokk), yoonu yebbi ci diggante bu bari ak wàññi Sellia.",
+      "intro": "Li dale ci stock ba fay ba yebbi — Sellia dafay automatisé liggéey yu wuute ngir nga mën a jub sa produit ak sa client.",
+      "sections": [
+        {
+          "title": "Yoroon stock",
+          "text": "Wottu bu wóor ci variante bépp, alerte stock wàcc ak yoroon plusieurs boutique ngir bañ a am problème su commande bi agsee.",
+          "points": [
+            "Wottu ci variante (taille, couleur…)",
+            "Alerte automatik stock wàcc",
+            "Yoroon plusieurs boutique",
+            "Istwaar mat sëkk mouvement yi"
+          ]
+        },
+        {
+          "title": "Fay yu boole",
+          "text": "Lu ëpp 25 prestataire fay ci àdduna bépp, Mobile Money bokk ci njëkk — Orange Money, Wave, MTN Mobile Money, Airtel Money — laalul application tiers.",
+          "points": [
+            "Mobile Money ci njëkk, laalul plugin",
+            "Kart ak wallesu bank",
+            "Xaalis yu bari (XOF, NGN, USD, EUR…)",
+            "Amul redirection ci biti boutique bi"
+          ]
+        },
+        {
+          "title": "Yoonu yebbi ci diggante bu bari",
+          "text": "Njëg yebbi yu mën nga configuré ci region, réew ak diis, ak wottu automatik colis yi ngir yebbil sa client li dale ci fay ba ci nangu.",
+          "points": [
+            "Njëg ci region, réew ak diis",
+            "Yebbi bu amul fay ci sart",
+            "Wottu commande automatik",
+            "Zone yebbi yu amul dayo"
+          ]
+        },
+        {
+          "title": "Wàññi & promotion",
+          "text": "Code promo, wàññi ci pourcentage walla montant fixe, yebbi bu amul fay — ak sart automatik ngir yokk sa jaay laalul liggéey ci loxo.",
+          "points": [
+            "Code promo bu mën nga personnaliser",
+            "Wàññi ci % walla montant fixe",
+            "Yebbi bu amul fay ci sart",
+            "Sart automatik ci produit walla collection"
+          ]
+        }
+      ]
+    },
+    "feature_grow": {
+      "eyebrow": "Yokku",
+      "meta_title": "Analyser, jaay ci àdduna bépp, mucc waxtu",
+      "meta_desc": "Xam analytics ci saa si, xaalis yu bari ak Sellia Assistant (IA) — outil yokku yi ci plateforme Sellia.",
+      "intro": "Xibaar yu leer, portée internationale ci njëkk ak IA buy liggéey ngir yaw — ngir yokk sa boutique laalul yokk outil yu bari.",
+      "sections": [
+        {
+          "title": "Analytics ci saa si",
+          "text": "Dashboard bu leer ngir topp jaay, visiteur, taux conversion ci produit bépp ak jëfandikoo ci saa si — xibaar yu mën nga jëfandikoo, du chiffre rekk.",
+          "points": [
+            "Revenu ak yëngu-yëngu ci saa si",
+            "Taux conversion ci produit bépp",
+            "Rapport yu mën nga exporté",
+            "Xool plusieurs boutique"
+          ]
+        },
+        {
+          "title": "Xaalis yu bari",
+          "text": "Jaay fu nekk ak yoroon ci njëkk xaalis ISO (XOF, NGN, USD, EUR…) ak interface bu tekki ci 7 làkk — laalul configuration technique.",
+          "points": [
+            "Xaalis ISO ci njëkk",
+            "Soppi prix automatik",
+            "7 làkk am nañu",
+            "Benn catalogue, plusieurs marché"
+          ]
+        },
+        {
+          "title": "Sellia Assistant",
+          "text": "Assistant IA bu bokk ci Sellia dafay jur description produit, contenu SEO te am thème yu mat sëkk — ngir muccal waxtu bu bari ci wer bépp.",
+          "points": [
+            "Description produit jur ci IA",
+            "Contenu optimisé ngir SEO",
+            "Jur thème yu mat sëkk",
+            "Am ci plan Pro ak Enterprise"
+          ]
+        }
+      ]
+    }
   }
 }

@@ -730,6 +730,171 @@
         }
       ]
     },
-    "updated_label": "Dernière mise à jour :"
+    "updated_label": "Dernière mise à jour :",
+    "security": {
+      "meta_title": "Sécurité & confiance",
+      "meta_desc": "Découvrez comment Sellia protège les données et les paiements de vos clients : chiffrement, paiements sans stockage de carte, infrastructure cloud, conformité RGPD.",
+      "badge": "Sécurité & confiance",
+      "h1": "La sécurité de votre boutique, prise au sérieux",
+      "hero_p": "Vos clients vous font confiance pour payer en ligne. Voici comment Sellia protège chaque transaction et chaque donnée, du premier au dernier jour.",
+      "points": [
+        {
+          "title": "Chiffrement de bout en bout",
+          "text": "Toutes les données transitent en HTTPS/TLS. Les données sensibles sont chiffrées au repos lorsque cela est techniquement pertinent."
+        },
+        {
+          "title": "Paiements sans stockage de carte",
+          "text": "Sellia ne stocke jamais les numéros de carte bancaire. Chaque transaction est traitée directement par le prestataire de paiement choisi (Stripe, PayPal, Flutterwave, Mobile Money…), conforme aux standards PCI-DSS de son secteur."
+        },
+        {
+          "title": "Infrastructure cloud professionnelle",
+          "text": "Hébergement chez des fournisseurs cloud reconnus, avec sauvegardes régulières et redondance des données marchandes."
+        },
+        {
+          "title": "Disponibilité 99,9 %",
+          "text": "Un objectif de disponibilité de 99,9 %, avec surveillance continue de la plateforme et alerte immédiate en cas d'incident."
+        },
+        {
+          "title": "Accès restreint et journalisé",
+          "text": "L'accès aux données de production est limité aux personnes habilitées et chaque action sensible est journalisée (journal d'audit interne)."
+        },
+        {
+          "title": "Conformité RGPD",
+          "text": "Sellia respecte les principes du RGPD pour la collecte et le traitement des données personnelles — détails complets dans notre politique de confidentialité."
+        }
+      ],
+      "contact_h2": "Une question de sécurité, une vulnérabilité à signaler ?",
+      "contact_p": "Écrivez-nous directement, notre équipe technique vous répond en priorité.",
+      "contact_button": "Contacter l'équipe sécurité"
+    },
+    "feature_group_cta": {
+      "h2": "Prêt à essayer ?",
+      "p": "14 jours d'essai gratuit. Sans carte bancaire.",
+      "button": "Créer ma boutique"
+    },
+    "feature_create_sell": {
+      "eyebrow": "Créer & Vendre",
+      "meta_title": "Créez une boutique premium, sans code",
+      "meta_desc": "Découvrez l'éditeur de boutique, les thèmes premium et le checkout optimisé de Sellia — tout ce qu'il faut pour créer et vendre en ligne.",
+      "intro": "De l'éditeur visuel aux thèmes premium jusqu'au tunnel de paiement — tout ce dont vous avez besoin pour lancer une boutique qui inspire confiance dès la première visite.",
+      "sections": [
+        {
+          "title": "Éditeur de boutique",
+          "text": "Un éditeur visuel par glisser-déposer pour construire une vitrine premium sans écrire une ligne de code, avec prévisualisation en direct sur desktop, tablette et mobile.",
+          "points": [
+            "Glisser-déposer sur toutes les sections",
+            "Prévisualisation responsive en temps réel",
+            "Publication instantanée, sans redéploiement",
+            "Undo/redo illimité pendant l'édition"
+          ]
+        },
+        {
+          "title": "Thèmes premium",
+          "text": "Des thèmes raffinés et entièrement personnalisables — couleurs, typographies, mise en page — pensés pour les marchands du monde entier, inclus dans votre abonnement sans surcoût.",
+          "points": [
+            "Thèmes inclus, aucun achat séparé",
+            "Personnalisation complète des couleurs et polices",
+            "Changement de thème à tout moment",
+            "Optimisés pour la conversion"
+          ]
+        },
+        {
+          "title": "Checkout optimisé",
+          "text": "Un tunnel d'achat 100% intégré à votre boutique — vos clients ne sont jamais redirigés vers un site tiers pour payer, ce qui réduit sensiblement l'abandon de panier.",
+          "points": [
+            "Aucune redirection externe au paiement",
+            "Formulaire de commande simplifié",
+            "Compatible Mobile Money et cartes",
+            "Reprise automatique des paniers abandonnés"
+          ]
+        }
+      ]
+    },
+    "feature_manage": {
+      "eyebrow": "Gérer",
+      "meta_title": "Gérez stocks, paiements et livraisons sans effort",
+      "meta_desc": "Découvrez la gestion des stocks, les paiements intégrés (Mobile Money inclus), la livraison multi-zones et les promotions de Sellia.",
+      "intro": "Du stock au paiement jusqu'à la livraison — Sellia automatise les tâches répétitives pour que vous puissiez vous concentrer sur vos produits et vos clients.",
+      "sections": [
+        {
+          "title": "Gestion des stocks",
+          "text": "Suivi précis par variante, alertes de stock bas et gestion multi-emplacements pour ne jamais être pris au dépourvu quand une commande arrive.",
+          "points": [
+            "Suivi par variante (taille, couleur…)",
+            "Alertes automatiques de stock bas",
+            "Gestion multi-emplacements",
+            "Historique complet des mouvements"
+          ]
+        },
+        {
+          "title": "Paiements intégrés",
+          "text": "Plus de 25 prestataires de paiement mondiaux, dont le Mobile Money nativement — Orange Money, Wave, MTN Mobile Money, Airtel Money — sans application tierce.",
+          "points": [
+            "Mobile Money natif, sans plugin",
+            "Cartes bancaires et virements",
+            "Multi-devises (XOF, NGN, USD, EUR…)",
+            "Aucune redirection hors de la boutique"
+          ]
+        },
+        {
+          "title": "Livraison multi-zones",
+          "text": "Des tarifs de livraison configurables par région, pays et poids, avec suivi automatisé des colis pour rassurer vos clients du paiement à la réception.",
+          "points": [
+            "Tarifs par région, pays et poids",
+            "Livraison gratuite conditionnelle",
+            "Suivi de commande automatisé",
+            "Zones de livraison illimitées"
+          ]
+        },
+        {
+          "title": "Promotions & réductions",
+          "text": "Codes promo, remises en pourcentage ou montant fixe, livraison offerte — avec des règles automatiques pour animer vos ventes sans effort manuel.",
+          "points": [
+            "Codes promo personnalisables",
+            "Remises en % ou montant fixe",
+            "Livraison offerte conditionnelle",
+            "Règles automatiques par produit ou collection"
+          ]
+        }
+      ]
+    },
+    "feature_grow": {
+      "eyebrow": "Croître",
+      "meta_title": "Analysez, vendez à l'international, gagnez du temps",
+      "meta_desc": "Découvrez les analytics en temps réel, le multi-devises et Sellia Assistant (IA) — les outils de croissance de la plateforme Sellia.",
+      "intro": "Des données claires, une portée internationale native et une IA qui travaille pour vous — pour faire grandir votre boutique sans multiplier les outils.",
+      "sections": [
+        {
+          "title": "Analytics en temps réel",
+          "text": "Un tableau de bord clair pour suivre ventes, visiteurs, taux de conversion par produit et tunnel d'achat — des données actionnables, pas juste des chiffres.",
+          "points": [
+            "Revenu et tendances en temps réel",
+            "Taux de conversion par produit",
+            "Rapports exportables",
+            "Vue multi-boutiques"
+          ]
+        },
+        {
+          "title": "Multi-devises",
+          "text": "Vendez partout avec une gestion native des devises ISO (XOF, NGN, USD, EUR…) et une interface traduite en 7 langues — sans configuration technique.",
+          "points": [
+            "Devises ISO natives",
+            "Conversion automatique des prix",
+            "7 langues disponibles",
+            "Un seul catalogue, plusieurs marchés"
+          ]
+        },
+        {
+          "title": "Sellia Assistant",
+          "text": "L'assistant IA intégré à Sellia génère descriptions produit, contenus SEO et même des thèmes entiers — pour gagner des heures chaque semaine.",
+          "points": [
+            "Descriptions produit générées par IA",
+            "Contenus optimisés pour le SEO",
+            "Génération de thèmes complets",
+            "Disponible dans les plans Pro et Enterprise"
+          ]
+        }
+      ]
+    }
   }
 }

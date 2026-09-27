@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check } from 'lucide-react';
 import MarketingLayout from '@/components/marketing/MarketingLayout';
 
@@ -18,6 +19,7 @@ function useHashScroll() {
 }
 
 export default function FeatureGroupPage({ eyebrow, title, description, url, intro, sections, heroImage }) {
+  const { t } = useTranslation();
   useHashScroll();
   return (
     <MarketingLayout title={title} description={description} url={url}>
@@ -64,10 +66,10 @@ export default function FeatureGroupPage({ eyebrow, title, description, url, int
 
       <section className="py-16 bg-[#F8F9FA]">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-landing font-bold text-2xl sm:text-3xl text-[#202223] tracking-tight">Prêt à essayer ?</h2>
-          <p className="mt-3 text-[#6D7175]">14 jours d'essai gratuit. Sans carte bancaire.</p>
+          <h2 className="font-landing font-bold text-2xl sm:text-3xl text-[#202223] tracking-tight">{t('pages.feature_group_cta.h2')}</h2>
+          <p className="mt-3 text-[#6D7175]">{t('pages.feature_group_cta.p')}</p>
           <Link to="/register" className="mt-6 inline-flex items-center gap-2 bg-[#008060] text-white font-semibold px-7 py-3.5 rounded-full text-sm hover:bg-[#00694d] transition-colors shadow-lg shadow-[#008060]/20">
-            Créer ma boutique <ArrowRight className="w-4 h-4" />
+            {t('pages.feature_group_cta.button')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

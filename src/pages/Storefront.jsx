@@ -756,59 +756,38 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     setPlacing(true);
     setError('');
     try {
-      const shippingAddress = `${form.address}, ${form.postal_code} ${form.city}, ${form.country}`.trim();
-      const { data: order, error: orderError } = await supabase.from('orders').insert({
-        tenant_id: store.id,
-        customer_email: form.email,
-        customer_name: `${form.first_name} ${form.last_name}`.trim(),
-        customer_phone: form.phone,
-        total_cents: Math.round(total * 100),
-        currency: store.currency,
-        status: 'pending',
-        shipping_address: shippingAddress,
-        shipping_city: form.city,
-        discount_code: discount?.code || null,
-        payment_gateway: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
-      }).select().single();
-      if (orderError) throw orderError;
-      setCompletedOrder({ id: order.id, items: cart.items || [] });
-
-      const items = (cart.items || []).map((i) => ({
-        order_id: order.id,
-        product_id: i.product_id,
-        variant_id: i.variant_id || null,
-        product_name: i.variant_title ? `${i.title} (${i.variant_title})` : i.title,
-        quantity: i.quantity,
-        price_cents: Math.round(i.price * 100),
-      }));
-      if (items.length) {
-        const { error: itemsError } = await supabase.from('order_items').insert(items);
-        if (itemsError) throw itemsError;
-      }
-
-      // Fire-and-forget: a slow or failed confirmation email should never
-      // block the customer from seeing their own order confirmation.
-      // order_confirmation mode needs no merchant auth (there is none here
-      // - this is a guest checkout) and derives recipient/content entirely
-      // server-side from the real order it just created.
-      supabase.functions.invoke('send-email', { body: { mode: 'order_confirmation', tenant_id: store.id, order_id: order.id } })
-        .catch((e) => console.error('Order confirmation email failed to send:', e));
-
-      if (discount?.id) {
-        try { await supabase.from('discount_codes').update({ used_count: (discount.used_count || 0) + 1 }).eq('id', discount.id); } catch { /* non-fatal */ }
-      }
-
-      // Server-side upsert (SECURITY DEFINER RPC) instead of a direct
-      // select+insert/update on customers - that table has no broad anon
-      // read/write policy anymore (see the isolation fix migration), so
-      // this is the only way a guest checkout can record itself.
-      await supabase.rpc('upsert_guest_customer', {
-        p_tenant_id: store.id,
-        p_email: form.email,
-        p_name: `${form.first_name} ${form.last_name}`.trim(),
-        p_phone: form.phone,
-        p_spend_delta_cents: Math.round(total * 100),
+      // Real order creation now happens entirely server-side
+      // (create-order) - the browser never supplies a price for anything,
+      // only product_id/variant_id/quantity. The server looks up real
+      // current prices and re-validates the discount code itself, so a
+      // tampered client-side total can no longer be paid as if it were
+      // the real price (a genuine gap found in a deep checkout audit -
+      // every gateway's verify step correctly checked payment against
+      // orders.total_cents, but nothing had ever confirmed that number
+      // matched the real products in the first place).
+      const orderItemsForApi = (cart.items || []).map((i) => ({ product_id: i.product_id, variant_id: i.variant_id || null, quantity: i.quantity }));
+      const { data: created, error: createError } = await supabase.functions.invoke('create-order', {
+        body: {
+          tenant_id: store.id,
+          items: orderItemsForApi,
+          email: form.email,
+          first_name: form.first_name,
+          last_name: form.last_name,
+          phone: form.phone,
+          country: form.country,
+          city: form.city,
+          address: form.address,
+          postal_code: form.postal_code,
+          discount_code: discount?.code || null,
+          payment_method_label: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
+        },
       });
+      if (createError) throw new Error(await functionErrorMessage(createError));
+      if (created.error) throw new Error(created.error);
+
+      const order = { id: created.order_id };
+      const items = created.items.map((i) => ({ product_id: i.product_id, variant_id: i.variant_id, quantity: i.quantity }));
+      setCompletedOrder({ id: order.id, items: cart.items || [] });
 
       // Cart is marked recovered at each real payment-success point below
       // (not here) - marking it immediately after order creation would

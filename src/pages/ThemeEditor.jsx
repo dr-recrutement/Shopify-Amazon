@@ -594,6 +594,43 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
       <div>
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-4 rounded bg-[#008060]" />
+          <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Checkout</p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-[#202223] mb-2 cursor-pointer">
+          <input type="checkbox" checked={theme.checkout?.enableOrderNote !== false} onChange={(e) => commit({ ...theme, checkout: { ...(theme.checkout || {}), enableOrderNote: e.target.checked } })} className="accent-[#008060]" />
+          Afficher un champ « Note de commande »
+        </label>
+        {theme.checkout?.enableOrderNote !== false && (
+          <input
+            value={theme.checkout?.orderNoteLabel || ''}
+            onChange={(e) => commit({ ...theme, checkout: { ...(theme.checkout || {}), orderNoteLabel: e.target.value } })}
+            placeholder="Instructions de livraison, message cadeau…"
+            className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white mb-3"
+          />
+        )}
+        <label className="flex items-center gap-2 text-xs text-[#202223] mb-2 cursor-pointer">
+          <input type="checkbox" checked={theme.checkout?.enableTerms === true} onChange={(e) => commit({ ...theme, checkout: { ...(theme.checkout || {}), enableTerms: e.target.checked } })} className="accent-[#008060]" />
+          Exiger l'acceptation des conditions avant paiement
+        </label>
+        {theme.checkout?.enableTerms === true && (
+          <div className="space-y-2">
+            <input
+              value={theme.checkout?.termsText || ''}
+              onChange={(e) => commit({ ...theme, checkout: { ...(theme.checkout || {}), termsText: e.target.value } })}
+              placeholder="J'accepte les conditions générales de vente"
+              className="w-full px-2.5 py-1.5 border border-[#E1E1E1] rounded-md text-xs bg-white"
+            />
+            <div>
+              <label className="block text-[10px] font-semibold text-[#6D7175] mb-1">Lien vers les conditions</label>
+              <LinkUrlField value={theme.checkout?.termsUrl || ''} onChange={(v) => commit({ ...theme, checkout: { ...(theme.checkout || {}), termsUrl: v } })} />
+            </div>
+          </div>
+        )}
+        <p className="text-[10px] text-[#6D7175] mt-2">S'applique à votre vrai processus de paiement — pas un aperçu.</p>
+      </div>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-1.5 h-4 rounded bg-[#008060]" />
           <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">Popup d'accueil</p>
         </div>
         <label className="flex items-center gap-2 text-xs text-[#202223] mb-3 cursor-pointer">

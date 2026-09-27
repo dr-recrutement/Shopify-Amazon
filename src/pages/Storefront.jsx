@@ -701,7 +701,8 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
   // caller doesn't pass theme (defensive - every real caller now does).
   const primary = theme?.palette?.primary || '#008060';
   const primaryText = theme?.palette?.primaryText || '#FFFFFF';
-  const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '' });
+  const [form, setForm] = useState({ email: '', first_name: '', last_name: '', phone: '', country: '', city: '', address: '', postal_code: '', note: '' });
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(activeGateways?.includes('flutterwave') ? 'flutterwave' : activeGateways?.includes('paystack') ? 'paystack' : activeGateways?.includes('stripe') ? 'stripe' : 'cod');
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
@@ -788,6 +789,10 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
   const placeOrder = async (e) => {
     e.preventDefault();
+    if (theme.checkout?.enableTerms === true && !termsAccepted) {
+      setError("Veuillez accepter les conditions pour continuer.");
+      return;
+    }
     setPlacing(true);
     setError('');
     try {
@@ -815,6 +820,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           postal_code: form.postal_code,
           discount_code: discount?.code || null,
           payment_method_label: PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || 'Manuel',
+          customer_note: theme.checkout?.enableOrderNote !== false ? form.note : undefined,
         },
       });
       if (createError) throw new Error(await functionErrorMessage(createError));
@@ -1055,6 +1061,20 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             </div>
           </section>
 
+          {theme.checkout?.enableOrderNote !== false && (
+            <section>
+              <label className="block text-sm font-semibold text-foreground mb-1.5">{theme.checkout?.orderNoteLabel || 'Note de commande (optionnel)'}</label>
+              <textarea
+                value={form.note}
+                onChange={(e) => setForm({ ...form, note: e.target.value })}
+                rows={2}
+                maxLength={1000}
+                placeholder="Instructions de livraison, message cadeau…"
+                className="w-full px-3 py-2.5 border border-border rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand/30 bg-white resize-none"
+              />
+            </section>
+          )}
+
           {/* Payment */}
           <section>
             <h2 className="flex items-center gap-2 font-heading font-bold text-base text-foreground mb-3"><span className="w-6 h-6 rounded-full bg-foreground text-background text-xs flex items-center justify-center">3</span> Mode de paiement</h2>
@@ -1090,11 +1110,23 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             )}
           </section>
 
+          {theme.checkout?.enableTerms === true && (
+            <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+              <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="mt-0.5 accent-current" style={{ color: primary }} />
+              <span>
+                {theme.checkout?.termsText || "J'accepte les conditions générales de vente"}
+                {theme.checkout?.termsUrl && theme.checkout.termsUrl !== '#' && (
+                  <> — <a href={theme.checkout.termsUrl.startsWith('/store/') || theme.checkout.termsUrl.startsWith('http') ? theme.checkout.termsUrl : `/store/${slug}${theme.checkout.termsUrl.startsWith('/') ? theme.checkout.termsUrl : '/' + theme.checkout.termsUrl}`} target="_blank" rel="noreferrer" className="underline" onClick={(e) => e.stopPropagation()}>Lire</a></>
+                )}
+              </span>
+            </label>
+          )}
+
           {error && <p className="text-sm text-destructive font-medium bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           {/* Pay button (mobile) */}
           {!(paymentMethod === 'paypal' && paypalPending) && (
-          <button type="submit" disabled={placing} className="lg:hidden w-full font-semibold py-4 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg" style={{ background: primary, color: primaryText }}>
+          <button type="submit" disabled={placing || (theme.checkout?.enableTerms === true && !termsAccepted)} className="lg:hidden w-full font-semibold py-4 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 sticky bottom-3 shadow-lg" style={{ background: primary, color: primaryText }}>
             {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
           </button>
           )}
@@ -1138,7 +1170,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
             </div>
 
             {!(paymentMethod === 'paypal' && paypalPending) ? (
-            <button type="submit" form="checkout-form" disabled={placing} className="hidden lg:flex w-full font-semibold py-3.5 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 items-center justify-center gap-2 mt-4" style={{ background: primary, color: primaryText }}>
+            <button type="submit" form="checkout-form" disabled={placing || (theme.checkout?.enableTerms === true && !termsAccepted)} className="hidden lg:flex w-full font-semibold py-3.5 rounded-full text-sm hover:opacity-90 transition-colors disabled:opacity-50 items-center justify-center gap-2 mt-4" style={{ background: primary, color: primaryText }}>
               {placing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} {placing ? 'Traitement…' : `Payer ${formatMoney(total, store.currency)}`}
             </button>
             ) : (

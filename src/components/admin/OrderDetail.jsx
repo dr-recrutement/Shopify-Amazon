@@ -127,6 +127,12 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
               {order.shipping_city && <p className="text-xs text-[#6D7175]">{order.shipping_city}</p>}
             </div>
           )}
+          {order.customer_note && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="text-xs font-semibold text-amber-800 mb-1">Note du client</p>
+              <p className="text-sm text-amber-900 whitespace-pre-wrap">{order.customer_note}</p>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="pt-2">

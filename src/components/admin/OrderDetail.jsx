@@ -45,11 +45,27 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
   const save = async () => {
     setSaving(true);
     try {
+      const wasActive = !['cancelled', 'refunded'].includes(order.status);
+      const nowInactive = ['cancelled', 'refunded'].includes(status);
       const { error } = await supabase
         .from('orders')
         .update({ status, tracking_number: tracking || null })
         .eq('id', order.id);
       if (error) throw error;
+
+      // Stock was reserved atomically at checkout (create-order) for
+      // every order, manual payment methods included - cancelling or
+      // refunding one here has to release it back, or that stock stays
+      // permanently unavailable even though nothing was ever actually
+      // sold. The automatic 45-minute release only covers orders left
+      // pending and abandoned, not an explicit manual cancellation like
+      // this one.
+      if (wasActive && nowInactive) {
+        for (const item of order.items || []) {
+          await supabase.rpc('release_stock', { p_product_id: item.product_id, p_variant_id: item.variant_id || null, p_quantity: item.quantity });
+        }
+      }
+
       onSaved();
       onOpenChange(false);
     } catch (e) {

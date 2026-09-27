@@ -12,7 +12,7 @@ export const PLANS = {
       users: 1,
       themes: 'basic',
       editor: false,
-      payments: 'manual',
+      payments: 'integrated', // was 'manual' - declared but never enforced anywhere (Payments.jsx has no plan check at all), and real PSP access for every plan is the intended, current behavior - every merchant needs to get paid regardless of tier. Gating this reads poorly next to genuinely tiered features like AI/analytics/automations below.
       multi_currency: false,
       analytics: false,
       ai_assistant: false,

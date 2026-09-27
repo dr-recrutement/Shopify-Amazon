@@ -9,6 +9,8 @@ import { useCurrentStore } from '@/hooks/useCurrentStore';
 import { formatMoney, CURRENCIES } from '@/lib/world/currencies';
 import { COUNTRIES } from '@/lib/world/countries';
 import { Plus, Trash2 } from 'lucide-react';
+import { hasFeature } from '@/lib/plans';
+import PaywallCard from '@/components/admin/PaywallCard';
 
 const CHANNELS = [
   { id: 'online_store', name: 'Boutique en ligne', icon: Store, color: '#008060', desc: 'Votre site Sellia', active: true },
@@ -143,6 +145,10 @@ export default function Markets() {
           <Globe className="w-4 h-4 text-[#008060]" />
           <h2 className="text-sm font-bold text-[#202223]">Marchés</h2>
         </div>
+        {!hasFeature(store.plan, 'multi_currency') ? (
+          <PaywallCard requiredPlan="growth" title="Les marchés multi-devises nécessitent le plan Growth" description="Définissez les pays où vous vendez, chacun avec sa propre devise d'affichage. Passez au plan Growth pour y accéder." />
+        ) : (
+          <>
         <p className="text-xs text-[#6D7175] mb-4">Définissez les pays où vous vendez, chacun avec sa propre devise d'affichage.</p>
 
         <div className="flex flex-col sm:flex-row gap-2 mb-4">
@@ -183,6 +189,8 @@ export default function Markets() {
           </div>
         )}
         <p className="text-[10px] text-[#6D7175] mt-3">Ceci définit dans quelle devise chaque marché s'affiche. La conversion automatique des prix (taux de change en temps réel) et les tarifs spécifiques par marché ne sont pas encore disponibles — les prix restent ceux saisis sur vos produits.</p>
+          </>
+        )}
       </div>
 
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5 mt-6">

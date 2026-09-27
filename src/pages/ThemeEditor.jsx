@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { hasFeature } from '@/lib/plans';
 import {
   ArrowLeft, Plus, Trash2, Eye, EyeOff, ArrowUp, ArrowDown,
   Monitor, Tablet, Smartphone, Undo2, Redo2, Check, Menu, X, SlidersHorizontal,
@@ -455,7 +456,7 @@ const BUTTON_STYLES = [
   { id: 'square', label: 'Carré' },
 ];
 
-function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onWhatsapp, onPopup, onReset }) {
+function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, onFavicon, onProductSuggestions, onCardStyle, onCartPosition, onWhatsapp, onPopup, onReset, store }) {
   return (
     <div className="p-4 space-y-5">
       <div>
@@ -559,7 +560,12 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-4 rounded bg-[#008060]" />
           <p className="text-xs font-bold text-[#202223] uppercase tracking-wide">CSS personnalisé</p>
+          {!hasFeature(store?.plan, 'editor') && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#6D7175]/10 text-[#6D7175]">Growth+</span>}
         </div>
+        {!hasFeature(store?.plan, 'editor') ? (
+          <p className="text-xs text-[#6D7175]">Le CSS personnalisé nécessite le plan Growth. <a href="/settings?section=plan" className="text-[#008060] font-semibold hover:underline">Passer au plan supérieur</a>.</p>
+        ) : (
+          <>
         <textarea
           value={theme.customCss || ''}
           onChange={(e) => commit({ ...theme, customCss: e.target.value })}
@@ -569,6 +575,8 @@ function ThemeSettings({ theme, onPalette, onFont, onButtonStyle, onCartIcon, on
           placeholder=".sellia-btn { border-radius: 0 !important; }"
         />
         <p className="text-[10px] text-[#6D7175] mt-1.5">Pour les utilisateurs avancés. Injecté directement sur votre boutique publiée.</p>
+          </>
+        )}
       </div>
       <div>
         <div className="flex items-center gap-2 mb-3">
@@ -951,7 +959,7 @@ export default function ThemeEditor() {
           </div>
           <div className="overflow-y-auto flex-1">
             {tab === 'section' && <Inspector section={selectedSection} onSetProp={setProp} />}
-            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onWhatsapp={onWhatsapp} onPopup={onPopup} onReset={onReset} />}
+            {tab === 'theme' && <ThemeSettings theme={theme} onPalette={onPalette} onFont={onFont} onButtonStyle={onButtonStyle} onCartIcon={onCartIcon} onFavicon={onFavicon} onProductSuggestions={onProductSuggestions} onCardStyle={onCardStyle} onCartPosition={onCartPosition} onWhatsapp={onWhatsapp} onPopup={onPopup} onReset={onReset} store={store} />}
           </div>
         </div>
       </div>

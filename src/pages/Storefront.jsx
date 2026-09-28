@@ -154,6 +154,7 @@ export default function Storefront() {
   const [theme, setTheme] = useState(() => cloneTheme(DEFAULT_THEME_ID));
   const [cart, setCart] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [cartLimitNotice, setCartLimitNotice] = useState('');
   const [cartCount, setCartCount] = useState(0);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [couponCode, setCouponCode] = useState('');
@@ -410,6 +411,27 @@ export default function Storefront() {
     const items = [...(cart.items || [])];
     const item = items.find((i) => i.product_id === productId && (i.variant_id || null) === variantId);
     if (!item) return;
+    if (delta > 0) {
+      // Real stock check before incrementing - was previously unbounded
+      // (a customer could raise quantity to 999 regardless of real stock
+      // and only find out at the very end of checkout, after filling in
+      // their whole address). create-order still re-validates for real at
+      // order time; this just surfaces the same limit proactively instead
+      // of as a late, frustrating rejection.
+      const { data: product } = await supabase.from('products').select('stock, variants, metafields').eq('id', productId).maybeSingle();
+      if (product?.metafields?.track_inventory !== false) {
+        let available = product?.stock;
+        if (variantId) {
+          const v = (product?.variants || []).find((x) => x.id === variantId);
+          if (v) available = v.stock;
+        }
+        if (available != null && item.quantity >= available) {
+          setCartLimitNotice(`Stock disponible : ${available}`);
+          setTimeout(() => setCartLimitNotice(''), 2500);
+          return;
+        }
+      }
+    }
     item.quantity = Math.max(1, item.quantity + delta);
     item.line_total = item.price * item.quantity;
     const updated = await saveCart(items);
@@ -553,6 +575,7 @@ export default function Storefront() {
                             <span className="w-8 text-center text-sm font-semibold text-foreground">{item.quantity}</span>
                             <button onClick={() => updateQty(item.product_id, 1, item.variant_id || null)} className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:bg-surface"><Plus className="w-3.5 h-3.5" /></button>
                           </div>
+                          {cartLimitNotice && <span className="text-[10px] font-medium text-amber-600">{cartLimitNotice}</span>}
                           <button onClick={() => removeFromCart(item.product_id, item.variant_id || null)} className="text-muted-foreground hover:text-destructive inline-flex items-center gap-1 text-xs font-medium"><Trash2 className="w-3.5 h-3.5" /> Retirer</button>
                         </div>
                       </div>

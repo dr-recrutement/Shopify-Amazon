@@ -195,15 +195,16 @@ export default function CartPage() {
         )}
       </div>
 
-      {checkoutOpen && cart && (
+      {checkoutOpen && (
         <CheckoutModal
           store={store}
           cart={cart}
           discount={discount}
           discountAmount={discountAmount}
           activeGateways={activeGateways}
+          theme={theme}
           onClose={() => setCheckoutOpen(false)}
-          onDone={() => { localStorage.removeItem('sellia_cart_session'); setCart(null); setDiscount(null); setCouponCode(''); setCheckoutOpen(false); }}
+          onDone={() => { localStorage.removeItem('sellia_cart_session'); setCart(null); setDiscount(null); setCouponCode(''); }}
         />
       )}
     </div>

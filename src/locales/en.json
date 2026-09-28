@@ -1031,6 +1031,288 @@
           "In practice, this means a lower cart-abandonment rate, greater customer trust (they stay on your brand from start to finish), and a single interface to track every transaction — whether it comes from a customer in Dakar, Lagos, Paris, or Montreal."
         ]
       }
-    ]
+    ],
+    "alternative": {
+      "ui": {
+        "badge": "{{year}} comparison",
+        "h1": "The best alternative to {{name}}",
+        "cta_try": "Try Sellia for free",
+        "cta_compare": "See the comparison",
+        "pain_h2": "{{name}}'s limits for today's merchants",
+        "table_h2": "Sellia vs {{name}}",
+        "th_criterion": "Criterion",
+        "footnote": "Comparison based on the public offerings of {{name}} and Sellia as of {{date}}. Competitors' pricing and features may change.",
+        "faq_h2": "Frequently asked questions",
+        "faq1_q": "Is Sellia really cheaper than {{name}}?",
+        "faq1_a": "Sellia starts at $7/month with the essentials included (themes, payments, multi-currency), without the extra costs often needed with {{name}}. The exact price depends on your needs — compare the plans in detail above.",
+        "faq2_q": "Can I easily migrate from {{name}} to Sellia?",
+        "faq2_a": "Yes. The Sellia team can help you import your products, customers and orders. Contact support@liafrik.com to start your migration.",
+        "faq3_q": "Does Sellia support Mobile Money?",
+        "faq3_a": "Yes, natively: Orange Money, Wave, MTN Mobile Money, Airtel Money and more than 25 global payment providers, with no redirect away from your store.",
+        "cta_h2": "Ready to switch to Sellia?",
+        "cta_p": "14-day free trial. No credit card. Guided migration from {{name}}.",
+        "cta_button": "Create my store",
+        "others": "Other comparisons"
+      },
+      "brands": {
+        "shopify": {
+          "metaTitle": "Shopify alternative in {{year}}: why choose Sellia",
+          "metaDescription": "Compare Sellia and Shopify: pricing, Mobile Money payments, transaction fees, themes and AI assistant. Discover the premium Shopify alternative built to sell internationally.",
+          "intro": "Shopify remains a global e-commerce benchmark, but its extra-fees model and lack of native Mobile Money leave real room for a more complete, more affordable alternative for merchants selling in Africa, Europe and beyond.",
+          "painPoints": [
+            "Extra transaction fees on most plans if you don't use Shopify Payments (unavailable in many countries).",
+            "Mobile Money (Orange Money, Wave, MTN, Airtel…) isn't natively supported — you have to go through paid third-party apps.",
+            "Premium themes and most useful apps are billed on top of the monthly subscription."
+          ],
+          "rows": [
+            {
+              "label": "Starting price",
+              "sellia": "From $7/month, all included",
+              "them": "From $29/month + transaction fees"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "No-redirect payments (25+ PSPs)",
+              "sellia": true,
+              "them": "Partial (Shopify Payments limited by country)"
+            },
+            {
+              "label": "Native multi-currency (XOF, NGN, USD, EUR…)",
+              "sellia": true,
+              "them": "Via third-party app"
+            },
+            {
+              "label": "Built-in AI assistant (content, themes)",
+              "sellia": true,
+              "them": "Paid add-on"
+            },
+            {
+              "label": "Premium themes included",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "3 days"
+            }
+          ]
+        },
+        "bigcommerce": {
+          "metaTitle": "BigCommerce alternative in {{year}}: Sellia, simpler and more complete",
+          "metaDescription": "Sellia vs BigCommerce: pricing, revenue caps, local payments and ease of use. See why Sellia is a premium BigCommerce alternative.",
+          "intro": "BigCommerce targets mid-size and large businesses with a powerful architecture that's often harder to get to grips with — and bills extra as soon as your annual revenue passes a certain threshold, whatever your plan.",
+          "painPoints": [
+            "Annual revenue thresholds that trigger an automatic, forced plan change.",
+            "An interface built for technical teams, with a longer learning curve for an independent merchant.",
+            "No native support for the mobile payment methods used in Africa and emerging markets."
+          ],
+          "rows": [
+            {
+              "label": "Starting price",
+              "sellia": "From $7/month, all included",
+              "them": "From $39/month"
+            },
+            {
+              "label": "Revenue cap per plan",
+              "sellia": "No forced cap",
+              "them": "Yes — automatic upgrade beyond a threshold"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "No-code visual editor",
+              "sellia": true,
+              "them": "Limited, developer-oriented"
+            },
+            {
+              "label": "Built-in AI assistant",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "15 days"
+            }
+          ]
+        },
+        "prestashop": {
+          "metaTitle": "PrestaShop alternative in {{year}}: Sellia, no hosting to manage",
+          "metaDescription": "Sellia vs PrestaShop: no server to maintain, no paid modules piling up. Discover the premium SaaS alternative to PrestaShop, ready to use.",
+          "intro": "PrestaShop is free open-source software to download, but free doesn't mean cost-free: hosting, security updates, premium modules and technical maintenance add up quickly and require server skills.",
+          "painPoints": [
+            "You have to host, secure and update your store yourself (or pay an agency to do it).",
+            "Essential modules (payment, shipping, advanced SEO) are sold separately on the PrestaShop marketplace.",
+            "No AI assistance or modern visual editor included by default."
+          ],
+          "rows": [
+            {
+              "label": "Model",
+              "sellia": "All-in-one SaaS, hosted and maintained by Sellia",
+              "them": "Self-hosted open-source software"
+            },
+            {
+              "label": "Real cost (hosting + modules)",
+              "sellia": "From $7/month, all included",
+              "them": "Free + hosting + paid modules"
+            },
+            {
+              "label": "Security updates",
+              "sellia": "Automatic",
+              "them": "Manual, at your expense"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": "Via third-party module"
+            },
+            {
+              "label": "Built-in AI assistant",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "N/A (free download)"
+            }
+          ]
+        },
+        "woocommerce": {
+          "metaTitle": "WooCommerce alternative in {{year}}: Sellia, no plugins to manage",
+          "metaDescription": "Sellia vs WooCommerce: one unified e-commerce platform instead of a stack of WordPress plugins. Compare pricing, security and ease of use.",
+          "intro": "WooCommerce turns WordPress into an online store via a free plugin — but every advanced feature (local payment, subscriptions, multi-currency) needs an additional plugin, with the conflict and security-hole risks that implies.",
+          "painPoints": [
+            "Entirely dependent on the WordPress ecosystem: updates, plugin and theme conflicts to monitor constantly.",
+            "Local payment and translation plugins multiply hidden costs and points of failure.",
+            "Requires separate, high-performance WordPress hosting that you choose and configure yourself."
+          ],
+          "rows": [
+            {
+              "label": "Model",
+              "sellia": "All-in-one SaaS",
+              "them": "WordPress plugin + separate hosting"
+            },
+            {
+              "label": "Real cost (hosting + plugins)",
+              "sellia": "From $7/month, all included",
+              "them": "Free + hosting + premium plugins"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": "Via third-party plugin"
+            },
+            {
+              "label": "Risk of technical conflicts",
+              "sellia": "None (unified platform)",
+              "them": "Frequent (third-party plugins/themes)"
+            },
+            {
+              "label": "Built-in AI assistant",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "N/A (free plugin)"
+            }
+          ]
+        },
+        "odoo": {
+          "metaTitle": "Odoo e-commerce alternative in {{year}}: Sellia, simpler to launch",
+          "metaDescription": "Sellia vs Odoo: an online store ready in minutes, with no complex ERP setup. Compare simplicity, pricing and local payments.",
+          "intro": "Odoo is a powerful ERP suite where e-commerce is just one module among dozens (accounting, HR, CRM…) — an asset for large organizations, but often needless complexity for a merchant who simply wants to sell online quickly.",
+          "painPoints": [
+            "Odoo's initial setup generally requires the help of an integrator or consultant.",
+            "The e-commerce interface inherits ERP logic, which is less intuitive for day-to-day store management.",
+            "Apps beyond the free plan (1 app) are quickly billed per unit."
+          ],
+          "rows": [
+            {
+              "label": "Time to go live",
+              "sellia": "A few minutes, no code",
+              "them": "Often several days, ERP configuration"
+            },
+            {
+              "label": "Starting e-commerce price",
+              "sellia": "From $7/month, all included",
+              "them": "From ~$24/month/user (paid app)"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Built for",
+              "sellia": "E-commerce merchants",
+              "them": "Companies needing a full ERP"
+            },
+            {
+              "label": "Built-in e-commerce AI assistant",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "Free plan limited to 1 app"
+            }
+          ]
+        },
+        "wix": {
+          "metaTitle": "Wix eCommerce alternative in {{year}}: Sellia, built to sell",
+          "metaDescription": "Sellia vs Wix: a platform built for international commerce, with Mobile Money payments and 25+ PSPs. Compare features and pricing.",
+          "intro": "Wix is an excellent website builder, but its e-commerce features lag behind specialized platforms: fewer payment methods, no native Mobile Money, and a mandatory plan switch to sell online seriously.",
+          "painPoints": [
+            "Designed first as a website builder, e-commerce is an added layer rather than the core of the product.",
+            "No native Mobile Money support, essential for selling in Africa.",
+            "Changing themes after launch is limited once the store is published on some plans."
+          ],
+          "rows": [
+            {
+              "label": "Starting e-commerce price",
+              "sellia": "From $7/month, all included",
+              "them": "From $17/month"
+            },
+            {
+              "label": "Native Mobile Money payments",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Number of PSPs available",
+              "sellia": "25+",
+              "them": "Limited depending on country"
+            },
+            {
+              "label": "E-commerce-focused AI assistant",
+              "sellia": true,
+              "them": "Site-design-focused AI"
+            },
+            {
+              "label": "Theme change after launch",
+              "sellia": "Free at any time",
+              "them": "Limited on some plans"
+            },
+            {
+              "label": "Free trial",
+              "sellia": "14 days, no credit card",
+              "them": "No (14-day money-back guarantee)"
+            }
+          ]
+        }
+      }
+    }
   }
 }

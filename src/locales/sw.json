@@ -1031,6 +1031,288 @@
           "Kwa vitendo, hii inamaanisha kiwango cha chini cha uachaji wa kikapu, imani zaidi ya mteja (anabaki kwenye chapa yako tangu mwanzo hadi mwisho), na kiolesura kimoja kufuatilia miamala yako yote — iwe inatoka kwa mteja Dakar, Lagos, Paris au Montreal."
         ]
       }
-    ]
+    ],
+    "alternative": {
+      "ui": {
+        "badge": "Ulinganisho wa {{year}}",
+        "h1": "Mbadala bora wa {{name}}",
+        "cta_try": "Jaribu Sellia bure",
+        "cta_compare": "Angalia ulinganisho",
+        "pain_h2": "Mipaka ya {{name}} kwa wafanyabiashara wa leo",
+        "table_h2": "Sellia dhidi ya {{name}}",
+        "th_criterion": "Kigezo",
+        "footnote": "Ulinganisho unaotegemea ofa za umma za {{name}} na Sellia kufikia {{date}}. Bei na vipengele vya washindani vinaweza kubadilika.",
+        "faq_h2": "Maswali yanayoulizwa mara kwa mara",
+        "faq1_q": "Je, Sellia ni nafuu kweli kuliko {{name}}?",
+        "faq1_a": "Sellia inaanza kwa $7/mwezi ikiwa na mambo muhimu yaliyojumuishwa (miundo, malipo, sarafu nyingi), bila gharama za ziada zinazohitajika mara nyingi na {{name}}. Bei kamili inategemea mahitaji yako — linganisha mipango kwa undani hapo juu.",
+        "faq2_q": "Je, naweza kuhamia kwa urahisi kutoka {{name}} kwenda Sellia?",
+        "faq2_a": "Ndiyo. Timu ya Sellia inaweza kukusaidia kuingiza bidhaa, wateja na maagizo yako. Wasiliana na support@liafrik.com kuanza uhamiaji wako.",
+        "faq3_q": "Je, Sellia inasaidia Pesa za Simu?",
+        "faq3_a": "Ndiyo, kiasili: Orange Money, Wave, MTN Mobile Money, Airtel Money na zaidi ya watoa huduma 25 wa malipo duniani kote, bila kuelekezwa nje ya duka lako.",
+        "cta_h2": "Uko tayari kuhamia Sellia?",
+        "cta_p": "Jaribio la bure la siku 14. Bila kadi ya benki. Uhamiaji wenye msaada kutoka {{name}}.",
+        "cta_button": "Unda duka langu",
+        "others": "Ulinganisho mwingine"
+      },
+      "brands": {
+        "shopify": {
+          "metaTitle": "Mbadala wa Shopify mwaka {{year}}: kwa nini uchague Sellia",
+          "metaDescription": "Linganisha Sellia na Shopify: bei, malipo ya Pesa za Simu, ada za miamala, miundo na msaidizi wa AI. Gundua mbadala wa kiwango cha juu wa Shopify ulioundwa kuuza kimataifa.",
+          "intro": "Shopify bado ni kigezo cha kimataifa cha biashara mtandaoni, lakini mtindo wake wa ada za ziada na kukosekana kwa Pesa za Simu asilia kunaacha nafasi halisi kwa mbadala kamili zaidi na nafuu zaidi kwa wafanyabiashara wanaouza Afrika, Ulaya na kwingineko.",
+          "painPoints": [
+            "Ada za ziada za miamala kwenye mipango mingi ikiwa hutumii Shopify Payments (haipatikani katika nchi nyingi).",
+            "Pesa za Simu (Orange Money, Wave, MTN, Airtel…) hazitumiki kiasili — lazima upitie programu za nje za kulipia.",
+            "Miundo ya premium na programu nyingi muhimu hutozwa juu ya usajili wa kila mwezi."
+          ],
+          "rows": [
+            {
+              "label": "Bei ya kuanzia",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Kuanzia $29/mwezi + ada za miamala"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Malipo bila kuelekezwa pengine (zaidi ya PSP 25)",
+              "sellia": true,
+              "them": "Sehemu (Shopify Payments imepunguzwa kwa nchi)"
+            },
+            {
+              "label": "Sarafu nyingi asilia (XOF, NGN, USD, EUR…)",
+              "sellia": true,
+              "them": "Kupitia programu ya nje"
+            },
+            {
+              "label": "Msaidizi wa AI aliyejengwa ndani (maudhui, miundo)",
+              "sellia": true,
+              "them": "Nyongeza ya kulipia"
+            },
+            {
+              "label": "Miundo ya premium imejumuishwa",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Siku 3"
+            }
+          ]
+        },
+        "bigcommerce": {
+          "metaTitle": "Mbadala wa BigCommerce mwaka {{year}}: Sellia, rahisi zaidi na kamili zaidi",
+          "metaDescription": "Sellia dhidi ya BigCommerce: bei, vikomo vya mapato, malipo ya ndani na urahisi wa matumizi. Ona kwa nini Sellia ni mbadala wa kiwango cha juu wa BigCommerce.",
+          "intro": "BigCommerce inalenga biashara za kati na kubwa kwa usanifu wenye nguvu lakini mara nyingi mgumu zaidi kuelewa — na hutoza ziada mara mapato yako ya mwaka yanapozidi kiwango fulani, bila kujali mpango wako.",
+          "painPoints": [
+            "Vikomo vya mapato ya mwaka vinavyosababisha mabadiliko ya kiotomatiki na ya lazima ya mpango.",
+            "Kiolesura kilichoundwa kwa timu za kiufundi, chenye mkondo mrefu wa kujifunza kwa mfanyabiashara binafsi.",
+            "Hakuna usaidizi asilia wa njia za malipo za simu zinazotumika Afrika na masoko yanayoibuka."
+          ],
+          "rows": [
+            {
+              "label": "Bei ya kuanzia",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Kuanzia $39/mwezi"
+            },
+            {
+              "label": "Kikomo cha mapato kwa kila mpango",
+              "sellia": "Hakuna kikomo cha lazima",
+              "them": "Ndiyo — kupandishwa kiotomatiki juu ya kiwango"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Kihariri cha kuona bila msimbo",
+              "sellia": true,
+              "them": "Kimepunguzwa, kinalenga wasanidi programu"
+            },
+            {
+              "label": "Msaidizi wa AI aliyejengwa ndani",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Siku 15"
+            }
+          ]
+        },
+        "prestashop": {
+          "metaTitle": "Mbadala wa PrestaShop mwaka {{year}}: Sellia, bila hosting ya kusimamia",
+          "metaDescription": "Sellia dhidi ya PrestaShop: hakuna seva ya kutunza, hakuna moduli za kulipia zinazorundikana. Gundua mbadala wa SaaS wa kiwango cha juu wa PrestaShop, tayari kutumika.",
+          "intro": "PrestaShop ni programu huria ya bure kupakua, lakini bure haimaanishi bila gharama: hosting, masasisho ya usalama, moduli za premium na matengenezo ya kiufundi hurundikana haraka na kuhitaji ujuzi wa seva.",
+          "painPoints": [
+            "Lazima uweke hosting, ulinde na usasishe duka lako mwenyewe (au ulipe wakala afanye hivyo).",
+            "Moduli muhimu (malipo, usafirishaji, SEO ya hali ya juu) huuzwa kando kwenye soko la PrestaShop.",
+            "Hakuna msaada wa AI wala kihariri cha kisasa cha kuona kilichojumuishwa kwa chaguo-msingi."
+          ],
+          "rows": [
+            {
+              "label": "Mtindo",
+              "sellia": "SaaS ya kila kitu, iliyowekwa hosting na kutunzwa na Sellia",
+              "them": "Programu huria iliyowekwa hosting binafsi"
+            },
+            {
+              "label": "Gharama halisi (hosting + moduli)",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Bure + hosting + moduli za kulipia"
+            },
+            {
+              "label": "Masasisho ya usalama",
+              "sellia": "Ya kiotomatiki",
+              "them": "Ya mkono, kwa gharama yako"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": "Kupitia moduli ya nje"
+            },
+            {
+              "label": "Msaidizi wa AI aliyejengwa ndani",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Haitumiki (upakuaji bure)"
+            }
+          ]
+        },
+        "woocommerce": {
+          "metaTitle": "Mbadala wa WooCommerce mwaka {{year}}: Sellia, bila programu-jalizi za kusimamia",
+          "metaDescription": "Sellia dhidi ya WooCommerce: jukwaa moja la biashara mtandaoni badala ya rundo la programu-jalizi za WordPress. Linganisha bei, usalama na urahisi wa matumizi.",
+          "intro": "WooCommerce hubadilisha WordPress kuwa duka la mtandaoni kupitia programu-jalizi ya bure — lakini kila kipengele cha hali ya juu (malipo ya ndani, usajili, sarafu nyingi) kinahitaji programu-jalizi ya ziada, pamoja na hatari za migongano na mianya ya usalama zinazoambatana nayo.",
+          "painPoints": [
+            "Inategemea kabisa mfumo wa WordPress: masasisho, migongano ya programu-jalizi na miundo ya kufuatilia kila wakati.",
+            "Programu-jalizi za malipo ya ndani na tafsiri huongeza gharama zilizofichwa na sehemu za kushindwa.",
+            "Inahitaji hosting ya WordPress yenye utendaji wa juu iliyotengwa, ya kuchagua na kusanidi mwenyewe."
+          ],
+          "rows": [
+            {
+              "label": "Mtindo",
+              "sellia": "SaaS ya kila kitu",
+              "them": "Programu-jalizi ya WordPress + hosting tofauti"
+            },
+            {
+              "label": "Gharama halisi (hosting + programu-jalizi)",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Bure + hosting + programu-jalizi za premium"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": "Kupitia programu-jalizi ya nje"
+            },
+            {
+              "label": "Hatari ya migongano ya kiufundi",
+              "sellia": "Hakuna (jukwaa moja)",
+              "them": "Mara kwa mara (programu-jalizi/miundo ya nje)"
+            },
+            {
+              "label": "Msaidizi wa AI aliyejengwa ndani",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Haitumiki (programu-jalizi ya bure)"
+            }
+          ]
+        },
+        "odoo": {
+          "metaTitle": "Mbadala wa Odoo e-commerce mwaka {{year}}: Sellia, rahisi zaidi kuanzisha",
+          "metaDescription": "Sellia dhidi ya Odoo: duka la mtandaoni tayari kwa dakika chache, bila usanidi mgumu wa ERP. Linganisha urahisi, bei na malipo ya ndani.",
+          "intro": "Odoo ni safu ya ERP yenye nguvu ambapo biashara mtandaoni ni moduli moja tu kati ya kadhaa (uhasibu, rasilimali watu, CRM…) — faida kwa taasisi kubwa, lakini mara nyingi utata usio wa lazima kwa mfanyabiashara anayetaka tu kuuza mtandaoni haraka.",
+          "painPoints": [
+            "Usanidi wa awali wa Odoo kwa kawaida huhitaji msaada wa mwunganishaji au mshauri.",
+            "Kiolesura cha biashara mtandaoni kinarithi mantiki ya ERP, isiyo rahisi kwa usimamizi wa kila siku wa duka.",
+            "Programu zaidi ya mpango wa bure (programu 1) hutozwa haraka kwa kila kimoja."
+          ],
+          "rows": [
+            {
+              "label": "Muda wa kuanza",
+              "sellia": "Dakika chache, bila msimbo",
+              "them": "Mara nyingi siku kadhaa, usanidi wa ERP"
+            },
+            {
+              "label": "Bei ya kuanzia ya biashara mtandaoni",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Kuanzia ~$24/mwezi/mtumiaji (programu ya kulipia)"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Imeundwa kwa",
+              "sellia": "Wafanyabiashara wa mtandaoni",
+              "them": "Kampuni zinazohitaji ERP kamili"
+            },
+            {
+              "label": "Msaidizi wa AI aliyejengwa ndani wa biashara mtandaoni",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Mpango wa bure umepunguzwa kwa programu 1"
+            }
+          ]
+        },
+        "wix": {
+          "metaTitle": "Mbadala wa Wix eCommerce mwaka {{year}}: Sellia, iliyoundwa kuuza",
+          "metaDescription": "Sellia dhidi ya Wix: jukwaa lililoundwa kwa biashara ya kimataifa, lenye malipo ya Pesa za Simu na zaidi ya PSP 25. Linganisha vipengele na bei.",
+          "intro": "Wix ni mjenzi bora wa tovuti, lakini vipengele vyake vya biashara mtandaoni viko nyuma ya majukwaa maalum: njia chache za malipo, hakuna Pesa za Simu asilia, na mabadiliko ya lazima ya mpango ili kuuza mtandaoni kwa uzito.",
+          "painPoints": [
+            "Iliundwa kwanza kama mjenzi wa tovuti, biashara mtandaoni ni tabaka lililoongezwa badala ya kiini cha bidhaa.",
+            "Hakuna usaidizi asilia wa Pesa za Simu, muhimu kwa kuuza Afrika.",
+            "Kubadilisha muundo baada ya kuzindua ni kwa kikomo mara duka linapochapishwa kwenye baadhi ya mipango."
+          ],
+          "rows": [
+            {
+              "label": "Bei ya kuanzia ya biashara mtandaoni",
+              "sellia": "Kuanzia $7/mwezi, kila kitu kimejumuishwa",
+              "them": "Kuanzia $17/mwezi"
+            },
+            {
+              "label": "Malipo ya Pesa za Simu asilia",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Idadi ya PSP zinazopatikana",
+              "sellia": "25+",
+              "them": "Kimepunguzwa kulingana na nchi"
+            },
+            {
+              "label": "Msaidizi wa AI unaolenga biashara mtandaoni",
+              "sellia": true,
+              "them": "AI inayolenga muundo wa tovuti"
+            },
+            {
+              "label": "Kubadilisha muundo baada ya kuzindua",
+              "sellia": "Huru wakati wowote",
+              "them": "Kimepunguzwa kwenye baadhi ya mipango"
+            },
+            {
+              "label": "Jaribio la bure",
+              "sellia": "Siku 14, bila kadi ya benki",
+              "them": "Hapana (dhamana ya kurejeshewa pesa ya siku 14)"
+            }
+          ]
+        }
+      }
+    }
   }
 }

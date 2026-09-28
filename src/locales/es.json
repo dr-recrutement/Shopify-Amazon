@@ -1031,6 +1031,288 @@
           "En la práctica, esto se traduce en una menor tasa de abandono del carrito, mayor confianza del cliente (permanece en tu marca de principio a fin) y una única interfaz para seguir todas tus transacciones — vengan de un cliente en Dakar, Lagos, París o Montreal."
         ]
       }
-    ]
+    ],
+    "alternative": {
+      "ui": {
+        "badge": "Comparativa {{year}}",
+        "h1": "La mejor alternativa a {{name}}",
+        "cta_try": "Probar Sellia gratis",
+        "cta_compare": "Ver la comparativa",
+        "pain_h2": "Los límites de {{name}} para los comerciantes de hoy",
+        "table_h2": "Sellia vs {{name}}",
+        "th_criterion": "Criterio",
+        "footnote": "Comparación basada en las ofertas públicas de {{name}} y de Sellia a {{date}}. Los precios y funciones de la competencia pueden cambiar.",
+        "faq_h2": "Preguntas frecuentes",
+        "faq1_q": "¿Es Sellia realmente más barato que {{name}}?",
+        "faq1_a": "Sellia empieza en 7$/mes con lo esencial incluido (temas, pagos, multi-moneda), sin los costes adicionales que suelen hacer falta con {{name}}. El precio exacto depende de tus necesidades — compara los planes en detalle más arriba.",
+        "faq2_q": "¿Puedo migrar fácilmente de {{name}} a Sellia?",
+        "faq2_a": "Sí. El equipo de Sellia puede acompañarte para importar tus productos, clientes y pedidos. Contacta con support@liafrik.com para iniciar tu migración.",
+        "faq3_q": "¿Sellia admite Mobile Money?",
+        "faq3_a": "Sí, de forma nativa: Orange Money, Wave, MTN Mobile Money, Airtel Money y más de 25 proveedores de pago globales, sin redirección fuera de tu tienda.",
+        "cta_h2": "¿Listo para pasarte a Sellia?",
+        "cta_p": "14 días de prueba gratuita. Sin tarjeta de crédito. Migración acompañada desde {{name}}.",
+        "cta_button": "Crear mi tienda",
+        "others": "Otras comparativas"
+      },
+      "brands": {
+        "shopify": {
+          "metaTitle": "Alternativa a Shopify en {{year}}: por qué elegir Sellia",
+          "metaDescription": "Compara Sellia y Shopify: precios, pagos con Mobile Money, comisiones por transacción, temas y asistente de IA. Descubre la alternativa premium a Shopify pensada para vender a nivel internacional.",
+          "intro": "Shopify sigue siendo una referencia mundial del e-commerce, pero su modelo de comisiones adicionales y la ausencia nativa de Mobile Money dejan un espacio real para una alternativa más completa y más asequible para los comerciantes que venden en África, Europa y más allá.",
+          "painPoints": [
+            "Comisiones por transacción adicionales en la mayoría de los planes si no usas Shopify Payments (no disponible en muchos países).",
+            "El Mobile Money (Orange Money, Wave, MTN, Airtel…) no se admite de forma nativa — hay que pasar por aplicaciones externas de pago.",
+            "Los temas premium y la mayoría de las aplicaciones útiles se facturan aparte de la suscripción mensual."
+          ],
+          "rows": [
+            {
+              "label": "Precio de entrada",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Desde 29$/mes + comisiones por transacción"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Pagos sin redirección (25+ PSP)",
+              "sellia": true,
+              "them": "Parcial (Shopify Payments limitado por país)"
+            },
+            {
+              "label": "Multi-moneda nativo (XOF, NGN, USD, EUR…)",
+              "sellia": true,
+              "them": "Mediante app externa"
+            },
+            {
+              "label": "Asistente de IA integrado (contenidos, temas)",
+              "sellia": true,
+              "them": "Complemento de pago"
+            },
+            {
+              "label": "Temas premium incluidos",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "3 días"
+            }
+          ]
+        },
+        "bigcommerce": {
+          "metaTitle": "Alternativa a BigCommerce en {{year}}: Sellia, más simple y más completa",
+          "metaDescription": "Sellia vs BigCommerce: precios, límites de facturación, pagos locales y facilidad de uso. Descubre por qué Sellia es una alternativa premium a BigCommerce.",
+          "intro": "BigCommerce se dirige a medianas y grandes empresas con una arquitectura potente pero a menudo más compleja de dominar — y factura un suplemento en cuanto tu facturación anual supera cierto umbral, sea cual sea tu plan.",
+          "painPoints": [
+            "Umbrales de facturación anual que desencadenan un cambio de plan automático y forzado.",
+            "Una interfaz pensada para equipos técnicos, con una curva de aprendizaje más larga para un comerciante independiente.",
+            "Ningún soporte nativo de los métodos de pago móviles utilizados en África y en los mercados emergentes."
+          ],
+          "rows": [
+            {
+              "label": "Precio de entrada",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Desde 39$/mes"
+            },
+            {
+              "label": "Límite de facturación por plan",
+              "sellia": "Sin límite forzado",
+              "them": "Sí — actualización automática al superar un umbral"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Editor visual sin código",
+              "sellia": true,
+              "them": "Limitado, orientado a desarrolladores"
+            },
+            {
+              "label": "Asistente de IA integrado",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "15 días"
+            }
+          ]
+        },
+        "prestashop": {
+          "metaTitle": "Alternativa a PrestaShop en {{year}}: Sellia, sin alojamiento que gestionar",
+          "metaDescription": "Sellia vs PrestaShop: sin servidor que mantener, sin módulos de pago acumulándose. Descubre la alternativa SaaS premium a PrestaShop, lista para usar.",
+          "intro": "PrestaShop es un software de código abierto gratuito de descargar, pero gratuito no significa sin costes: alojamiento, actualizaciones de seguridad, módulos premium y mantenimiento técnico se acumulan rápidamente y requieren conocimientos de servidores.",
+          "painPoints": [
+            "Debes alojar, proteger y actualizar tú mismo tu tienda (o pagar a una agencia para que lo haga).",
+            "Los módulos imprescindibles (pago, envío, SEO avanzado) se venden por separado en el marketplace de PrestaShop.",
+            "Ninguna asistencia de IA ni editor visual moderno incluidos por defecto."
+          ],
+          "rows": [
+            {
+              "label": "Modelo",
+              "sellia": "SaaS todo en uno, alojado y mantenido por Sellia",
+              "them": "Software de código abierto autoalojado"
+            },
+            {
+              "label": "Coste real (alojamiento + módulos)",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Gratis + alojamiento + módulos de pago"
+            },
+            {
+              "label": "Actualizaciones de seguridad",
+              "sellia": "Automáticas",
+              "them": "Manuales, a tu cargo"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": "Mediante módulo externo"
+            },
+            {
+              "label": "Asistente de IA integrado",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "N/A (descarga gratuita)"
+            }
+          ]
+        },
+        "woocommerce": {
+          "metaTitle": "Alternativa a WooCommerce en {{year}}: Sellia, sin plugins que gestionar",
+          "metaDescription": "Sellia vs WooCommerce: una plataforma de e-commerce unificada en lugar de una pila de plugins de WordPress. Compara precios, seguridad y facilidad de uso.",
+          "intro": "WooCommerce convierte WordPress en una tienda online mediante un plugin gratuito — pero cada función avanzada (pago local, suscripciones, multi-moneda) requiere un plugin adicional, con los riesgos de conflictos y fallos de seguridad que ello implica.",
+          "painPoints": [
+            "Depende por completo del ecosistema WordPress: actualizaciones, conflictos de plugins y temas que vigilar constantemente.",
+            "Los plugins de pago local y de traducción multiplican los costes ocultos y los puntos de fallo.",
+            "Requiere un alojamiento WordPress de alto rendimiento por separado, que debes elegir y configurar tú mismo."
+          ],
+          "rows": [
+            {
+              "label": "Modelo",
+              "sellia": "SaaS todo en uno",
+              "them": "Plugin de WordPress + alojamiento aparte"
+            },
+            {
+              "label": "Coste real (alojamiento + plugins)",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Gratis + alojamiento + plugins premium"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": "Mediante plugin externo"
+            },
+            {
+              "label": "Riesgo de conflictos técnicos",
+              "sellia": "Ninguno (plataforma unificada)",
+              "them": "Frecuente (plugins/temas externos)"
+            },
+            {
+              "label": "Asistente de IA integrado",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "N/A (plugin gratuito)"
+            }
+          ]
+        },
+        "odoo": {
+          "metaTitle": "Alternativa a Odoo e-commerce en {{year}}: Sellia, más simple de lanzar",
+          "metaDescription": "Sellia vs Odoo: una tienda online lista en minutos, sin configuración compleja de ERP. Compara simplicidad, precios y pagos locales.",
+          "intro": "Odoo es una potente suite ERP en la que el e-commerce es solo un módulo entre decenas de otros (contabilidad, RR. HH., CRM…) — una ventaja para las grandes estructuras, pero a menudo una complejidad innecesaria para un comerciante que simplemente quiere vender online rápidamente.",
+          "painPoints": [
+            "La configuración inicial de Odoo suele requerir la ayuda de un integrador o consultor.",
+            "La interfaz de e-commerce hereda la lógica ERP, menos intuitiva para la gestión diaria de una tienda.",
+            "Las aplicaciones más allá del plan gratuito (1 app) se facturan rápidamente por unidad."
+          ],
+          "rows": [
+            {
+              "label": "Tiempo de puesta en marcha",
+              "sellia": "Unos minutos, sin código",
+              "them": "A menudo varios días, configuración ERP"
+            },
+            {
+              "label": "Precio de entrada e-commerce",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Desde ~24$/mes/usuario (app de pago)"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Pensado para",
+              "sellia": "Comerciantes de e-commerce",
+              "them": "Empresas que necesitan un ERP completo"
+            },
+            {
+              "label": "Asistente de IA integrado en el e-commerce",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "Plan gratuito limitado a 1 aplicación"
+            }
+          ]
+        },
+        "wix": {
+          "metaTitle": "Alternativa a Wix eCommerce en {{year}}: Sellia, pensada para vender",
+          "metaDescription": "Sellia vs Wix: una plataforma diseñada para el comercio internacional, con pagos Mobile Money y 25+ PSP. Compara funciones y precios.",
+          "intro": "Wix es un excelente creador de sitios web, pero sus funciones de e-commerce quedan por detrás de las plataformas especializadas: menos métodos de pago, sin Mobile Money nativo y un cambio de plan obligatorio para vender online en serio.",
+          "painPoints": [
+            "Concebido primero como creador de sitios, el e-commerce es una capa añadida más que el núcleo del producto.",
+            "Ningún soporte nativo de Mobile Money, esencial para vender en África.",
+            "Cambiar de tema tras el lanzamiento está limitado una vez publicada la tienda en algunos planes."
+          ],
+          "rows": [
+            {
+              "label": "Precio de entrada e-commerce",
+              "sellia": "Desde 7$/mes, todo incluido",
+              "them": "Desde 17$/mes"
+            },
+            {
+              "label": "Pagos Mobile Money nativos",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Número de PSP disponibles",
+              "sellia": "25+",
+              "them": "Limitado según el país"
+            },
+            {
+              "label": "Asistente de IA orientado al e-commerce",
+              "sellia": true,
+              "them": "IA orientada al diseño de sitios"
+            },
+            {
+              "label": "Cambio de tema tras el lanzamiento",
+              "sellia": "Libre en cualquier momento",
+              "them": "Limitado en algunos planes"
+            },
+            {
+              "label": "Prueba gratuita",
+              "sellia": "14 días, sin tarjeta de crédito",
+              "them": "No (garantía de devolución de 14 días)"
+            }
+          ]
+        }
+      }
+    }
   }
 }

@@ -1031,6 +1031,288 @@
           "Ci jëf, lii di wàññi taux abandon panier, yokk wóolute client (mu nekk ci sa marque li dale ci njëkk ba ci mujj), ak benn interface ngir topp transaction yépp — su jóge ci client ci Ndakaaru, Lagos, Paris walla Montréal."
         ]
       }
-    ]
+    ],
+    "alternative": {
+      "ui": {
+        "badge": "Méngale {{year}}",
+        "h1": "Alternative bu gën ci {{name}}",
+        "cta_try": "Seetal Sellia bu amul fay",
+        "cta_compare": "Xool méngale bi",
+        "pain_h2": "Limite {{name}} ngir marchand yu tey",
+        "table_h2": "Sellia vs {{name}}",
+        "th_criterion": "Critère",
+        "footnote": "Méngale bu takkoo ci offre publique {{name}} ak Sellia ci {{date}}. Njëg ak fonctionnalité concurrent yi mën nañu soppeeku.",
+        "faq_h2": "Laaj yu bari",
+        "faq1_q": "Sellia dafa yomb lool ci {{name}}?",
+        "faq1_a": "Sellia dafay tambali ci 7$/wer ak li am solo bokk (thème, fay, xaalis yu bari), te amul frais yu yokk yi soxla ak {{name}}. Njëg bu wóor dafay dëppoo ci sa soxla — méngale plan yi ci kaw.",
+        "faq2_q": "Mën naa migré ci {{name}} ba ci Sellia ci yomb?",
+        "faq2_a": "Waaw. Équipe Sellia mën na la jappale ngir import say produit, client ak commande. Jokkoo ak support@liafrik.com ngir tambali sa migration.",
+        "faq3_q": "Sellia dafay jëfandikoo Mobile Money?",
+        "faq3_a": "Waaw, ci njëkk: Orange Money, Wave, MTN Mobile Money, Airtel Money ak lu ëpp 25 prestataire fay ci àdduna bépp, amul redirection ci biti sa boutique.",
+        "cta_h2": "Dangaa parey pour dem ci Sellia?",
+        "cta_p": "Essai bu amul fay diirub 14 fan. Kart bank amul. Migration bu ñu jiite li dale ci {{name}}.",
+        "cta_button": "Sos sama boutique",
+        "others": "Méngale yu ci des"
+      },
+      "brands": {
+        "shopify": {
+          "metaTitle": "Alternative ci Shopify ci {{year}}: lu tax nga tànn Sellia",
+          "metaDescription": "Méngale Sellia ak Shopify: njëg, fay Mobile Money, frais transaction, thème ak assistant IA. Xam alternative premium bu Shopify bu defar ngir jaay ci àdduna bépp.",
+          "intro": "Shopify di na ab référence ci àdduna ci e-commerce, waaye modèle frais yu yokk ak amul Mobile Money ci njëkk day bàyyi ab bérébu alternative bu mat sëkk te gën a yomb ngir marchand yiy jaay ci Afrique, Europe ak fu ci gën.",
+          "painPoints": [
+            "Frais transaction yu yokk ci plan yu bari su nga jëfandikoowul Shopify Payments (amul ci réew yu bari).",
+            "Mobile Money (Orange Money, Wave, MTN, Airtel…) dañu ko jëfandikoowul ci njëkk — dafa soxla jaar ci application tiers yu fay.",
+            "Thème yu premium ak ëpp ci application yu am njariñ dañuy fay ci kaw abonnement wer wi."
+          ],
+          "rows": [
+            {
+              "label": "Njëg bu njëkk",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Li dale ci 29$/wer + frais transaction"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Fay bu amul redirection (25+ PSP)",
+              "sellia": true,
+              "them": "Ci pàcc (Shopify Payments dafa limité ci réew)"
+            },
+            {
+              "label": "Xaalis yu bari ci njëkk (XOF, NGN, USD, EUR…)",
+              "sellia": true,
+              "them": "Jaar ci application tiers"
+            },
+            {
+              "label": "Assistant IA bu boole (contenu, thème)",
+              "sellia": true,
+              "them": "Add-on bu fay"
+            },
+            {
+              "label": "Thème yu premium bokk",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "3 fan"
+            }
+          ]
+        },
+        "bigcommerce": {
+          "metaTitle": "Alternative ci BigCommerce ci {{year}}: Sellia, gën a yomb te gën a mat sëkk",
+          "metaDescription": "Sellia vs BigCommerce: njëg, plafond chiffre d'affaires, fay yu ci diggante bu am ak yomb jëfandikoo. Gis lu tax Sellia di alternative premium ci BigCommerce.",
+          "intro": "BigCommerce dafay jubal entreprise yu diggante ak yu mag ak architecture bu am doole waaye bu gën a jafe ci jàng — te di yokk frais bu chiffre d'affaires at mi jàllee benn seuil, kon plan bi nga am.",
+          "painPoints": [
+            "Seuil chiffre d'affaires at mi yuy tambali soppi plan bu automatik te bu forcé.",
+            "Interface bu defar ngir équipe technique, ak courbe apprentissage bu gën a yàgg ngir marchand indépendant.",
+            "Amul yoroon ci njëkk ngir fecc fay mobile yi ñuy jëfandikoo ci Afrique ak ci marché yu ñëw."
+          ],
+          "rows": [
+            {
+              "label": "Njëg bu njëkk",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Li dale ci 39$/wer"
+            },
+            {
+              "label": "Plafond chiffre d'affaires ci plan bu nekk",
+              "sellia": "Amul plafond bu forcé",
+              "them": "Waaw — upgrade automatik ginnaaw benn seuil"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Editëer bu leer te kod amul",
+              "sellia": true,
+              "them": "Limité, jubal développeur yi"
+            },
+            {
+              "label": "Assistant IA bu boole",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "15 fan"
+            }
+          ]
+        },
+        "prestashop": {
+          "metaTitle": "Alternative ci PrestaShop ci {{year}}: Sellia, hébergement amul ngir yor",
+          "metaDescription": "Sellia vs PrestaShop: amul serveur ngir yor, amul module yu fay yu di bari. Xam alternative SaaS premium ci PrestaShop, bu waaj ngir jëfandikoo.",
+          "intro": "PrestaShop mooy logiciel open-source bu amul fay ngir télécharger, waaye amul fay du ne amul coût: hébergement, mise à jour kaaraange, module premium ak maintenance technique dañuy yokku gaaw te soxla compétence serveur.",
+          "painPoints": [
+            "Danga wara hébergé, aar te mise à jour sa boutique yaw ci sa bopp (walla fay agence ngir def ko).",
+            "Module yu am solo (fay, yebbi, SEO bu kawe) dañuy jaay ci ab wet ci marketplace PrestaShop.",
+            "Amul ndimbal IA walla editëer visuel bu bees bu bokk ci défaut."
+          ],
+          "rows": [
+            {
+              "label": "Modèle",
+              "sellia": "SaaS bu lépp bokk, hébergé te yor ci Sellia",
+              "them": "Logiciel open-source bu auto-hébergé"
+            },
+            {
+              "label": "Coût bu wóor (hébergement + module)",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Amul fay + hébergement + module yu fay"
+            },
+            {
+              "label": "Mise à jour kaaraange",
+              "sellia": "Automatik",
+              "them": "Ci loxo, ci sa bopp"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": "Jaar ci module tiers"
+            },
+            {
+              "label": "Assistant IA bu boole",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "N/A (télécharger amul fay)"
+            }
+          ]
+        },
+        "woocommerce": {
+          "metaTitle": "Alternative ci WooCommerce ci {{year}}: Sellia, plugin amul ngir yor",
+          "metaDescription": "Sellia vs WooCommerce: benn plateforme e-commerce bu boole tuuti ak yokk plugin WordPress. Méngale njëg, kaaraange ak yomb jëfandikoo.",
+          "intro": "WooCommerce dafay soppi WordPress ci boutique ci internet jaar ci plugin bu amul fay — waaye fonctionnalité bu kawe bu nekk (fay bu ci diggante bu am, abonnement, xaalis yu bari) soxla plugin bu yokk, ak risque conflit ak faille kaaraange yi ci topp.",
+          "painPoints": [
+            "Dafa dëppoo ci écosystème WordPress: mise à jour, conflit plugin ak thème yu war a seetlu saa su nekk.",
+            "Plugin fay bu ci diggante bu am ak tekki dañuy yokk coût yu nëbbu ak pàcc yu mën a fàtte.",
+            "Soxla hébergement WordPress bu am doole te wuute, bu nga tànn te configuré yaw ci sa bopp."
+          ],
+          "rows": [
+            {
+              "label": "Modèle",
+              "sellia": "SaaS bu lépp bokk",
+              "them": "Plugin WordPress + hébergement bu wuute"
+            },
+            {
+              "label": "Coût bu wóor (hébergement + plugin)",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Amul fay + hébergement + plugin premium"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": "Jaar ci plugin tiers"
+            },
+            {
+              "label": "Risque conflit technique",
+              "sellia": "Amul (plateforme bu boole)",
+              "them": "Bari (plugin/thème tiers)"
+            },
+            {
+              "label": "Assistant IA bu boole",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "N/A (plugin bu amul fay)"
+            }
+          ]
+        },
+        "odoo": {
+          "metaTitle": "Alternative ci Odoo e-commerce ci {{year}}: Sellia, gën a yomb ngir tambali",
+          "metaDescription": "Sellia vs Odoo: boutique ci internet bu waaj ci ay minute, configuration ERP bu jafe amul. Méngale yomb, njëg ak fay yu ci diggante bu am.",
+          "intro": "Odoo mooy suite ERP bu am doole, e-commerce di rekk benn module ci ay fukk yeneen (comptabilité, RH, CRM…) — njariñ ngir structure yu mag, waaye bari ci yoon complexité bu amul benn solo ngir marchand bu bëgg rekk jaay ci internet gaaw.",
+          "painPoints": [
+            "Configuration bu njëkk Odoo dafay soxla ndimbal intégrateur walla consultant.",
+            "Interface e-commerce bi dafay jël logique ERP, bu gën a jafe ngir yoroon bés bu nekk boutique.",
+            "Application yu weesu plan bu amul fay (1 app) dañuy fay gaaw ci benn benn."
+          ],
+          "rows": [
+            {
+              "label": "Waxtu ngir ubbi",
+              "sellia": "Ay minute, kod amul",
+              "them": "Bari ci yoon ay fan, configuration ERP"
+            },
+            {
+              "label": "Njëg bu njëkk e-commerce",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Li dale ci ~24$/wer/jëfandikukat (app bu fay)"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Defar ngir",
+              "sellia": "Marchand e-commerce",
+              "them": "Entreprise yu soxla ERP bu mat sëkk"
+            },
+            {
+              "label": "Assistant IA bu boole ci e-commerce",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "Plan bu amul fay limité ci 1 application"
+            }
+          ]
+        },
+        "wix": {
+          "metaTitle": "Alternative ci Wix eCommerce ci {{year}}: Sellia, defar ngir jaay",
+          "metaDescription": "Sellia vs Wix: benn plateforme bu defar ngir commerce ci àdduna bépp, ak fay Mobile Money ak 25+ PSP. Méngale fonctionnalité ak njëg.",
+          "intro": "Wix mooy créateur site bu baax, waaye fonctionnalité e-commerce yi ci gannaaw nañu plateforme yu spécialisé: fecc fay yu néew, Mobile Money ci njëkk amul, ak soppi plan bu forcé ngir jaay ci internet ci lu wóor.",
+          "painPoints": [
+            "Defar nañu ko njëkk ni créateur site, e-commerce mooy couche bu yokk du xol bu produit bi.",
+            "Amul yoroon Mobile Money ci njëkk, bu am solo ngir jaay ci Afrique.",
+            "Soppi thème ginnaaw lancement dafa limité bu boutique bi publié ci yenn plan."
+          ],
+          "rows": [
+            {
+              "label": "Njëg bu njëkk e-commerce",
+              "sellia": "Li dale ci 7$/wer, lépp bokk",
+              "them": "Li dale ci 17$/wer"
+            },
+            {
+              "label": "Fay Mobile Money ci njëkk",
+              "sellia": true,
+              "them": false
+            },
+            {
+              "label": "Limu PSP yu am",
+              "sellia": "25+",
+              "them": "Limité ci réew"
+            },
+            {
+              "label": "Assistant IA bu jubal e-commerce",
+              "sellia": true,
+              "them": "IA bu jubal design site"
+            },
+            {
+              "label": "Soppi thème ginnaaw lancement",
+              "sellia": "Yoon ci saa su nekk",
+              "them": "Limité ci yenn plan"
+            },
+            {
+              "label": "Essai bu amul fay",
+              "sellia": "14 fan, kart bank amul",
+              "them": "Déedéet (garantie remboursement 14 fan)"
+            }
+          ]
+        }
+      }
+    }
   }
 }

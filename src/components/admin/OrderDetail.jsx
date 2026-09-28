@@ -64,6 +64,11 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
         for (const item of order.items || []) {
           await supabase.rpc('release_stock', { p_product_id: item.product_id, p_variant_id: item.variant_id || null, p_quantity: item.quantity });
         }
+        // Same for the discount code's usage count - it was incremented
+        // at order creation, so a cancelled/refunded order gives it back.
+        if (order.discount_code) {
+          await supabase.rpc('release_discount_usage', { p_order_id: order.id });
+        }
       }
 
       onSaved();

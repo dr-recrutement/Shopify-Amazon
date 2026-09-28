@@ -7,6 +7,15 @@ const BUCKET = 'product-images'; // same bucket already used platform-wide for i
 const PREFIX = 'platform/help-center';
 const SETTINGS_KEY = 'help_center_tutorial_video';
 
+// Awaiting a supabase query is enough (failures come back in {error}, they
+// are not thrown) - but the query builder is only "thenable": it does NOT
+// reliably expose .catch(), so chaining supabase.from(...).insert(...)
+// .catch(() => {}) threw "...catch is not a function" AFTER the upload and
+// the save had already succeeded, and the surrounding try/catch then showed
+// that as if the whole upload had failed. This runs any thenable as a true
+// best-effort step.
+const bestEffort = async (thenable) => { try { await thenable; } catch { /* non-blocking by design */ } };
+
 // Publicly readable via platform_settings' RLS (see
 // supabase-help-center-video.sql) — this is what makes it possible for an
 // anonymous visitor on /centre-aide to see the video a super admin uploads
@@ -55,14 +64,15 @@ export default function HelpCenterVideoManager() {
       // Best-effort cleanup of the previous file so storage doesn't
       // accumulate an orphaned video every time this is replaced.
       if (video?.path && video.path !== path) {
-        await supabase.storage.from(BUCKET).remove([video.path]).catch(() => {});
+        await bestEffort(supabase.storage.from(BUCKET).remove([video.path]));
       }
 
-      await supabase.from('platform_audit_log').insert({
+      // audit log is best-effort, never blocks the upload
+      await bestEffort(supabase.from('platform_audit_log').insert({
         admin_id: user?.id, admin_email: user?.email, action: 'help_center_video_updated',
         target_type: 'platform_settings', target_id: SETTINGS_KEY,
         new_value: { title: value.title },
-      }).catch(() => {}); // audit log is best-effort, never blocks the upload
+      }));
 
       setVideo(value);
       setSaved(true);
@@ -76,12 +86,12 @@ export default function HelpCenterVideoManager() {
     if (!video || !confirm('Supprimer la vidéo tutoriel ? Elle disparaîtra du Centre d’aide.')) return;
     setUploading(true);
     try {
-      await supabase.storage.from(BUCKET).remove([video.path]).catch(() => {});
+      await bestEffort(supabase.storage.from(BUCKET).remove([video.path]));
       const { error: delError } = await supabase.from('platform_settings').delete().eq('key', SETTINGS_KEY);
       if (delError) throw delError;
-      await supabase.from('platform_audit_log').insert({
+      await bestEffort(supabase.from('platform_audit_log').insert({
         admin_id: user?.id, admin_email: user?.email, action: 'help_center_video_removed', target_type: 'platform_settings', target_id: SETTINGS_KEY,
-      }).catch(() => {});
+      }));
       setVideo(null); setTitle('');
     } catch (e) {
       setError(e.message || 'Échec de la suppression.');

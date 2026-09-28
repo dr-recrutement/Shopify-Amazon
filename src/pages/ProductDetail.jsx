@@ -161,8 +161,9 @@ export default function ProductDetail() {
 
   const price = selectedVariant ? selectedVariant.price : (product?.price_cents || 0) / 100;
   const compareAt = selectedVariant ? selectedVariant.compare_at_price : (product?.compare_at_price_cents || 0) / 100;
+  const trackInventory = product?.metafields?.track_inventory !== false;
   const stock = variants.length > 0 ? (selectedVariant?.stock ?? 0) : (product?.stock ?? 0);
-  const inStock = variants.length > 0 ? !!selectedVariant && stock > 0 : stock > 0;
+  const inStock = variants.length > 0 ? !!selectedVariant && (!trackInventory || stock > 0) : (!trackInventory || stock > 0);
 
   useEffect(() => {
     if (!store || !product) return;
@@ -307,7 +308,7 @@ export default function ProductDetail() {
 
           <div className="mt-5">
             {inStock ? (
-              <p className="text-xs font-medium" style={{ color: '#16a34a' }}>En stock{stock <= 5 ? ` — plus que ${stock}` : ''}</p>
+              <p className="text-xs font-medium" style={{ color: '#16a34a' }}>{trackInventory ? `En stock${stock <= 5 ? ` — plus que ${stock}` : ''}` : 'En stock'}</p>
             ) : (
               <p className="text-xs font-medium text-red-500">{variants.length > 0 && !selectedVariant ? 'Sélectionnez une option disponible' : 'Rupture de stock'}</p>
             )}
@@ -317,7 +318,7 @@ export default function ProductDetail() {
             <div className="inline-flex items-center border rounded-full overflow-hidden" style={{ borderColor: p.border }}>
               <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-9 h-9 flex items-center justify-center" style={{ color: p.text }}><Minus className="w-4 h-4" /></button>
               <span className="w-10 text-center text-sm font-semibold">{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} className="w-9 h-9 flex items-center justify-center" style={{ color: p.text }}><Plus className="w-4 h-4" /></button>
+              <button onClick={() => setQty((q) => trackInventory ? Math.min(stock || 1, q + 1) : q + 1)} className="w-9 h-9 flex items-center justify-center" style={{ color: p.text }}><Plus className="w-4 h-4" /></button>
             </div>
             <button
               onClick={addToCart}

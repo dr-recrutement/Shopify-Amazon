@@ -37,10 +37,17 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       // Public platform settings (maintenance mode, announcement banner).
-      // Row-level security allows anyone to read this single row.
+      // Row-level security allows anyone to read this row. Pinned to its
+      // own fixed id: platform_settings also holds key/value rows now
+      // (e.g. the help-center tutorial video), and an unfiltered
+      // .maybeSingle() would fail with "multiple rows" the moment a second
+      // row exists - the error is swallowed below, which would have
+      // silently switched off maintenance mode and the announcement banner
+      // for the whole platform.
       const { data } = await supabase
         .from('platform_settings')
         .select('maintenance_mode, maintenance_message, announcement_active, announcement_message')
+        .eq('id', '00000000-0000-0000-0000-000000000001')
         .maybeSingle();
       setAppPublicSettings(data || null);
     } catch (error) {

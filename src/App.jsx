@@ -215,12 +215,25 @@ function CustomDomainGate({ children }) {
     const isPlatformHost = host === 'localhost' || host.endsWith('.liafrik.com') || host.endsWith('.pages.dev') || host.endsWith('.vercel.app') || host.endsWith('.netlify.app');
     if (isPlatformHost) { setState('not-custom'); return; }
 
+    const path = window.location.pathname;
+    // A custom domain only ever needs to resolve for the public storefront
+    // - admin routes (/login, /dashboard, etc.) must keep working normally
+    // if someone reaches them on it (a bookmark, a shared link, or simply
+    // a domain that isn't verified yet), never get redirected to (or
+    // blocked behind) a lookup that only makes sense for a storefront
+    // visit. Whitelisting real storefront shapes is safer than trying to
+    // list every admin path there could ever be.
+    const storefrontPath = path === '/'
+      || /^\/(cart|wishlist|search)\/?$/.test(path)
+      || /^\/(products|collections|blog)\//.test(path);
+    if (!storefrontPath) { setState('not-custom'); return; }
+
     supabase.from('domains').select('domain_name, dns_status, tenant_id, tenants(slug)').eq('domain_name', host).eq('dns_status', 'verified').maybeSingle()
       .then(({ data }) => {
         const slug = data?.tenants?.slug;
         if (!slug) { setState('not-found'); return; }
         setState('redirecting');
-        const suffix = window.location.pathname === '/' ? '' : window.location.pathname;
+        const suffix = path === '/' ? '' : path;
         navigate(`/store/${slug}${suffix}${window.location.search}`, { replace: true });
       })
       .catch(() => setState('not-found'));

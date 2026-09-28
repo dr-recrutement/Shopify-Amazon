@@ -30,7 +30,15 @@ export default function LandingFooter() {
   // plain <span> text with no href at all, promising pages (Carrières,
   // Documentation, RGPD…) the site never actually had.
   const platformLabels = t('landing.footer.platform_links', { returnObjects: true });
-  const platformHrefs = ['/#fonctionnalites', '/#fonctionnalites', '/#fonctionnalites', '/#fonctionnalites', '/#tarifs'];
+  // Real, distinct pages — matching the header's "Plateforme" mega-menu —
+  // instead of every item collapsing to the same homepage anchor.
+  const platformHrefs = [
+    '/fonctionnalites/creer-vendre#editeur-boutique',
+    '/fonctionnalites/creer-vendre#themes-premium',
+    '/fonctionnalites/gerer#paiements-integres',
+    '/fonctionnalites/croitre#sellia-assistant',
+    '/#tarifs',
+  ];
   const companyLabels = t('landing.footer.company_links', { returnObjects: true });
   const companyHrefs = ['/a-propos', '/carrieres', '/contact'];
   const legalLabels = t('landing.footer.legal_links', { returnObjects: true });

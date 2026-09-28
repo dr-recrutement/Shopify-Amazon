@@ -1,7 +1,10 @@
 import { Toaster } from "@/components/ui/toaster"
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
+import { supabase } from '@/api/supabaseClient';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -195,6 +198,50 @@ const AuthenticatedApp = () => {
 };
 
 
+// A merchant's own connected domain (Domains.jsx already lets them verify
+// one via CNAME/DNS) previously had no effect at all once "verified" -
+// nothing anywhere checked the incoming hostname, so visiting it loaded
+// the platform's own marketing page, never the merchant's store. This
+// resolves the real hostname against verified custom_domains rows and
+// sends the visitor to the real /store/:slug route that already renders
+// everything correctly - reuses the existing, already-tested routing
+// instead of duplicating slug-resolution logic across six pages.
+function CustomDomainGate({ children }) {
+  const [state, setState] = useState('checking'); // checking | not-custom | redirecting | not-found
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const host = window.location.hostname;
+    const isPlatformHost = host === 'localhost' || host.endsWith('.liafrik.com') || host.endsWith('.pages.dev') || host.endsWith('.vercel.app') || host.endsWith('.netlify.app');
+    if (isPlatformHost) { setState('not-custom'); return; }
+
+    supabase.from('domains').select('domain_name, dns_status, tenant_id, tenants(slug)').eq('domain_name', host).eq('dns_status', 'verified').maybeSingle()
+      .then(({ data }) => {
+        const slug = data?.tenants?.slug;
+        if (!slug) { setState('not-found'); return; }
+        setState('redirecting');
+        const suffix = window.location.pathname === '/' ? '' : window.location.pathname;
+        navigate(`/store/${slug}${suffix}${window.location.search}`, { replace: true });
+      })
+      .catch(() => setState('not-found'));
+  }, [navigate]);
+
+  if (state === 'checking' || state === 'redirecting') {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
+  }
+  if (state === 'not-found') {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-center px-6">
+        <div>
+          <p className="text-lg font-semibold text-foreground">Aucune boutique n'est configurée pour ce domaine.</p>
+          <p className="text-sm text-muted-foreground mt-1">Si vous êtes le propriétaire de ce site, vérifiez la configuration DNS dans votre tableau de bord Sellia.</p>
+        </div>
+      </div>
+    );
+  }
+  return children;
+}
+
 function App() {
 
   return (
@@ -202,7 +249,9 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
-          <AuthenticatedApp />
+          <CustomDomainGate>
+            <AuthenticatedApp />
+          </CustomDomainGate>
         </Router>
         <Toaster />
       </QueryClientProvider>

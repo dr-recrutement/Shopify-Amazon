@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight, Calendar } from 'lucide-react';
 import MarketingLayout from '@/components/marketing/MarketingLayout';
-import { GUIDES, getGuide } from '@/lib/guides';
+import { GUIDES, getGuide, localizeGuide } from '@/lib/guides';
 import { applyArticleJsonLd } from '@/lib/seo';
 
 export default function GuideArticle() {
   const { slug } = useParams();
-  const guide = getGuide(slug);
+  const { t, i18n } = useTranslation();
+  const raw = getGuide(slug);
+  const guide = raw ? localizeGuide(raw, t) : null;
+  const locale = { fr: 'fr-FR', en: 'en-US', es: 'es-ES', pt: 'pt-PT', ar: 'ar', sw: 'sw', wo: 'fr-FR' }[i18n.language] || 'fr-FR';
 
   useEffect(() => {
     if (guide) {
@@ -19,22 +23,22 @@ export default function GuideArticle() {
         url: `https://sellia.liafrik.com/guides/${guide.slug}`,
       });
     }
-  }, [guide]);
+  }, [guide?.slug, guide?.title]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!guide) return <Navigate to="/guides" replace />;
 
-  const others = GUIDES.filter((g) => g.slug !== guide.slug).slice(0, 2);
+  const others = GUIDES.filter((g) => g.slug !== guide.slug).slice(0, 2).map((g) => localizeGuide(g, t));
 
   return (
     <MarketingLayout title={guide.title} description={guide.excerpt} url={`/guides/${guide.slug}`}>
       <article className="py-16 lg:py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
           <Link to="/guides" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6D7175] hover:text-[#202223]">
-            <ArrowLeft className="w-4 h-4" /> Tous les guides
+            <ArrowLeft className="w-4 h-4" /> {t('pages.guides_index.back_link')}
           </Link>
           <div className="mt-6 flex items-center gap-1.5 text-xs text-[#6D7175]">
             <Calendar className="w-3.5 h-3.5" />
-            {new Date(guide.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {new Date(guide.date).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })}
           </div>
           <h1 className="mt-3 font-landing font-semibold text-2xl sm:text-3xl text-[#202223] tracking-tight leading-tight">{guide.title}</h1>
           <div className="mt-8 space-y-5">
@@ -44,16 +48,16 @@ export default function GuideArticle() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-[#E1E1E1] text-center bg-[#F8F9FA] rounded-2xl p-8">
-            <h2 className="font-landing font-semibold text-xl text-[#202223]">Prêt à lancer votre boutique ?</h2>
-            <p className="mt-2 text-sm text-[#6D7175]">14 jours d'essai gratuit sur Sellia, sans carte bancaire.</p>
+            <h2 className="font-landing font-semibold text-xl text-[#202223]">{t('pages.guides_index.cta_h2')}</h2>
+            <p className="mt-2 text-sm text-[#6D7175]">{t('pages.guides_index.cta_p')}</p>
             <Link to="/register" className="mt-5 inline-flex items-center gap-2 bg-[#008060] text-white font-semibold px-6 py-3 rounded-full text-sm hover:bg-[#00694d] transition-colors">
-              Commencer maintenant <ArrowRight className="w-4 h-4" />
+              {t('pages.guides_index.cta_button')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {others.length > 0 && (
             <div className="mt-12">
-              <p className="text-xs font-semibold text-[#6D7175] uppercase tracking-wide">À lire aussi</p>
+              <p className="text-xs font-semibold text-[#6D7175] uppercase tracking-wide">{t('pages.guides_index.see_also')}</p>
               <div className="mt-3 space-y-3">
                 {others.map((g) => (
                   <Link key={g.slug} to={`/guides/${g.slug}`} className="block text-sm font-semibold text-[#008060] hover:underline">{g.title}</Link>

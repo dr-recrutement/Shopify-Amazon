@@ -983,6 +983,54 @@
           ]
         }
       ]
-    }
+    },
+    "guides_index": {
+      "meta_title": "E-commerce guides",
+      "meta_desc": "Practical guides on choosing an e-commerce platform, migrating to Sellia, and Mobile Money payments in Africa.",
+      "h1": "Sellia Guides",
+      "hero_p": "Choosing your platform, migrating without risk, selling internationally — our guides for e-commerce merchants.",
+      "read_more": "Read the guide",
+      "back_link": "All guides",
+      "see_also": "Also worth reading",
+      "cta_h2": "Ready to launch your store?",
+      "cta_p": "14-day free trial on Sellia, no credit card required.",
+      "cta_button": "Start now"
+    },
+    "guides": [
+      {
+        "title": "How to choose the right e-commerce platform in Africa in 2026",
+        "excerpt": "Shopify, Wix, PrestaShop, WooCommerce, Odoo, Sellia... The criteria that actually matter when your customers pay with Mobile Money.",
+        "body": [
+          "Choosing an e-commerce platform isn't just about comparing pricing tables. For a merchant selling in Africa, Europe, or several markets at once, three criteria matter more than any other: the payment methods accepted, how simple day-to-day management is, and the real cost once every necessary add-on is included.",
+          "Legacy platforms like Shopify, BigCommerce, or Wix were designed first for markets where credit cards dominate. Mobile Money — Orange Money, Wave, MTN Mobile Money, Airtel Money — is treated there as a secondary option, bolted on through a third-party app, with extra fees and integration delays.",
+          "PrestaShop and WooCommerce, for their part, are free to download but shift the burden of hosting, security, and maintenance onto the merchant — or onto the agency they have to pay to handle it. Odoo, built as a full ERP, often requires technical hand-holding before you can even publish a first product.",
+          "Sellia was built by starting from the opposite question: what does it take for a merchant to publish their store in minutes, immediately accept Mobile Money and international card payments, and never have to manage a server or a plugin? The answer rests on three principles: everything included in the subscription, no technical skills required, and native coverage of the payment methods your customers actually use.",
+          "Before choosing, ask yourself four concrete questions: can my customers pay with the methods they already use every day? Can I change a theme or add a product without a developer? Is the displayed price the final price, or do I need to add hosting, plugins, and transaction fees? And finally, does the support team answer in my language and my time zone?"
+        ]
+      },
+      {
+        "title": "Migrating your store to Sellia: the complete guide",
+        "excerpt": "From Shopify, WooCommerce, PrestaShop or Wix: here's how a migration actually happens, step by step, without losing your data.",
+        "body": [
+          "Switching e-commerce platforms is scary — rightly so, if the migration is poorly prepared. Lost products, lost order history, lost SEO already earned on your product pages: these are the real risks of an improvised migration. Here's how Sellia avoids them.",
+          "Step 1 — Export your current data. Whether you're coming from Shopify, WooCommerce, PrestaShop, Wix, BigCommerce, or Odoo, exporting your product catalog, customer base, and order history is usually a few clicks away from your current platform's admin panel, in CSV format.",
+          "Step 2 — Guided import. The Sellia team helps import these files into your new store: products, variants, images, prices, stock, and customer records are brought back in without manual re-entry.",
+          "Step 3 — SEO redirects. To avoid losing the SEO you've already built, your old product page URLs can be redirected to their new addresses on Sellia, sparing your visitors and Google from 404 errors.",
+          "Step 4 — Connecting payments. Your existing payment providers (Stripe, PayPal, Flutterwave, Paystack…) as well as Mobile Money can be connected from day one, with no interruption for your customers.",
+          "Step 5 — Domain switchover. Once your new store is tested and validated, your domain name is pointed to Sellia — the downtime for your visitors lasts only a few minutes, the time it takes for DNS to propagate.",
+          "To start your guided migration, contact support@liafrik.com stating your current platform: the team will reply with a migration plan tailored to your catalog."
+        ]
+      },
+      {
+        "title": "Mobile Money and payments in Africa: the e-commerce guide",
+        "excerpt": "Orange Money, Wave, MTN, Airtel: why Mobile Money changes everything for an online merchant, and how to integrate it with no redirect.",
+        "body": [
+          "In several African markets, Mobile Money far outpaces credit cards as the everyday payment method. For an online merchant, not offering it means closing your register to a majority of potential customers.",
+          "The problem: most international e-commerce platforms (Shopify, BigCommerce, Wix) don't natively integrate Orange Money, Wave, MTN Mobile Money, or Airtel Money. You have to go through a third-party app, with its own fees, its own validation delays, and often a redirect away from the store that breaks the buying experience — and scares off some buyers right at the moment of payment.",
+          "Sellia integrates Mobile Money natively, alongside more than 25 global payment providers (cards, transfers, e-wallets), in a single, redirect-free checkout flow: the customer enters their number, confirms on their phone, and lands straight back on your store's confirmation page.",
+          "In practice, this means a lower cart-abandonment rate, greater customer trust (they stay on your brand from start to finish), and a single interface to track every transaction — whether it comes from a customer in Dakar, Lagos, Paris, or Montreal."
+        ]
+      }
+    ]
   }
 }

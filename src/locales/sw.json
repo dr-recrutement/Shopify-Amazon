@@ -983,6 +983,54 @@
           ]
         }
       ]
-    }
+    },
+    "guides_index": {
+      "meta_title": "Miongozo ya biashara mtandaoni",
+      "meta_desc": "Miongozo ya vitendo kuhusu kuchagua jukwaa la biashara mtandaoni, kuhamia Sellia na malipo ya Pesa za Simu barani Afrika.",
+      "h1": "Miongozo ya Sellia",
+      "hero_p": "Kuchagua jukwaa lako, kuhama bila hatari, kuuza kimataifa — miongozo yetu kwa wafanyabiashara wa mtandaoni.",
+      "read_more": "Soma mwongozo",
+      "back_link": "Miongozo yote",
+      "see_also": "Soma pia",
+      "cta_h2": "Uko tayari kuanzisha duka lako?",
+      "cta_p": "Jaribio la bure la siku 14 kwenye Sellia, bila kadi ya benki.",
+      "cta_button": "Anza sasa"
+    },
+    "guides": [
+      {
+        "title": "Jinsi ya kuchagua jukwaa sahihi la biashara mtandaoni barani Afrika mwaka 2026",
+        "excerpt": "Shopify, Wix, PrestaShop, WooCommerce, Odoo, Sellia... Vigezo vinavyojalisha kweli wakati wateja wako wanalipa kwa Pesa za Simu.",
+        "body": [
+          "Kuchagua jukwaa la biashara mtandaoni si tu kulinganisha meza za bei. Kwa mfanyabiashara anayeuza Afrika, Ulaya au masoko kadhaa kwa wakati mmoja, vigezo vitatu vina uzito kuliko vingine vyote: njia za malipo zinazokubaliwa, urahisi wa usimamizi wa kila siku, na gharama halisi baada ya chaguo zote muhimu kuongezwa.",
+          "Majukwaa ya zamani kama Shopify, BigCommerce au Wix yaliundwa kwanza kwa masoko ambayo kadi ya benki inatawala. Pesa za Simu — Orange Money, Wave, MTN Mobile Money, Airtel Money — hutendewa huko kama chaguo la pili, linaloongezwa kupitia programu ya nje, kwa ada na ucheleweshaji wa ziada wa muunganisho.",
+          "PrestaShop na WooCommerce, kwa upande wao, ni bure kupakua lakini huhamisha mzigo wa uwekaji hosting, usalama na matengenezo kwa mfanyabiashara — au kwa wakala anayepaswa kumlipa kushughulikia. Odoo, iliyoundwa kama ERP kamili, mara nyingi huhitaji msaada wa kiufundi hata kabla ya kuchapisha bidhaa ya kwanza.",
+          "Sellia iliundwa kwa kuanzia na tatizo kinyume: inahitajika nini ili mfanyabiashara achapishe duka lake kwa dakika chache, akubali mara moja malipo ya Pesa za Simu na kadi za kimataifa, na asiwe na seva wala programu-jalizi za kusimamia? Jibu linatokana na kanuni tatu: kila kitu kimejumuishwa kwenye usajili, hakuna ujuzi wa kiufundi unaohitajika, na ufunikaji asilia wa njia za malipo ambazo wateja wako wanatumia kweli.",
+          "Kabla ya kuchagua, jiulize maswali manne halisi: je, wateja wangu wanaweza kulipa kwa njia wanazotumia tayari kila siku? Je, naweza kubadilisha muundo au kuongeza bidhaa bila msanidi programu? Je, bei iliyoonyeshwa ndiyo bei ya mwisho, au lazima niongeze hosting, programu-jalizi na ada za miamala? Na mwishowe, je, timu ya msaada inajibu kwa lugha yangu na saa za eneo langu?"
+        ]
+      },
+      {
+        "title": "Kuhamisha duka lako kwenda Sellia: mwongozo kamili",
+        "excerpt": "Kutoka Shopify, WooCommerce, PrestaShop au Wix: hivi ndivyo uhamiaji unavyofanyika, hatua kwa hatua, bila kupoteza data yako.",
+        "body": [
+          "Kubadilisha jukwaa la biashara mtandaoni kunatisha — kwa sababu nzuri, ikiwa uhamiaji haujaandaliwa vizuri. Kupoteza bidhaa, historia ya maagizo, nafasi ya SEO iliyopatikana tayari kwenye kurasa za bidhaa zako: hizi ni hatari halisi za uhamiaji usiopangwa. Hivi ndivyo Sellia inavyoziepuka.",
+          "Hatua ya 1 — Hamisha data zako za sasa. Iwe unatoka Shopify, WooCommerce, PrestaShop, Wix, BigCommerce au Odoo, kuhamisha katalogi ya bidhaa zako, hifadhidata ya wateja wako na historia ya maagizo yako kwa kawaida hufanywa kwa mibofyo michache kutoka kwenye utawala wa jukwaa lako la sasa, kwa muundo wa CSV.",
+          "Hatua ya 2 — Uingizaji wenye mwongozo. Timu ya Sellia inakusaidia kuingiza faili hizi kwenye duka lako jipya: bidhaa, aina, picha, bei, hisa na kumbukumbu za wateja zinarudishwa bila kuingiza upya kwa mkono.",
+          "Hatua ya 3 — Uelekezaji upya wa SEO. Ili kutopoteza nafasi ya SEO uliyojenga tayari, URL za kurasa zako za zamani za bidhaa zinaweza kuelekezwa kwenye anwani zao mpya kwenye Sellia, kuepusha makosa ya 404 kwa wageni wako na kwa Google.",
+          "Hatua ya 4 — Kuunganisha malipo. Watoa huduma wako wa sasa wa malipo (Stripe, PayPal, Flutterwave, Paystack…) pamoja na Pesa za Simu wanaweza kuunganishwa tangu siku ya kwanza, bila usumbufu kwa wateja wako.",
+          "Hatua ya 5 — Kubadilisha kikoa. Baada ya duka lako jipya kujaribiwa na kuthibitishwa, jina la kikoa chako linaelekezwa kwenye Sellia — kukatika kwa wageni wako kunachukua dakika chache tu, muda wa kuenea kwa DNS.",
+          "Ili kuanza uhamiaji wako wenye msaada, wasiliana na support@liafrik.com ukitaja jukwaa lako la sasa: timu itakujibu na mpango wa uhamiaji unaofaa katalogi yako."
+        ]
+      },
+      {
+        "title": "Pesa za Simu na malipo barani Afrika: mwongozo wa biashara mtandaoni",
+        "excerpt": "Orange Money, Wave, MTN, Airtel: kwa nini Pesa za Simu zinabadilisha kila kitu kwa mfanyabiashara wa mtandaoni, na jinsi ya kuziunganisha bila kuelekezwa pengine.",
+        "body": [
+          "Katika masoko kadhaa ya Afrika, Pesa za Simu zinapita kadi ya benki kwa mbali kama njia ya malipo ya kila siku. Kwa mfanyabiashara wa mtandaoni, kutozitoa ni sawa na kufunga kaunta yake kwa wateja wengi watarajiwa.",
+          "Tatizo: majukwaa mengi ya kimataifa ya biashara mtandaoni (Shopify, BigCommerce, Wix) hayaunganishi kiasili Orange Money, Wave, MTN Mobile Money au Airtel Money. Lazima upitie programu ya nje, yenye ada zake, ucheleweshaji wake wa uthibitishaji, na mara nyingi kuelekezwa nje ya duka kunakoharibu uzoefu wa ununuzi — na kuwafukuza baadhi ya wanunuzi wakati wa kulipa.",
+          "Sellia inaunganisha Pesa za Simu kiasili, pamoja na zaidi ya watoa huduma 25 wa malipo duniani kote (kadi, uhamisho, pochi za kielektroniki), katika mchakato mmoja wa ununuzi bila kuelekezwa pengine: mteja anaingiza nambari yake, anathibitisha kwenye simu yake, na kurudi moja kwa moja kwenye ukurasa wa uthibitisho wa duka lako.",
+          "Kwa vitendo, hii inamaanisha kiwango cha chini cha uachaji wa kikapu, imani zaidi ya mteja (anabaki kwenye chapa yako tangu mwanzo hadi mwisho), na kiolesura kimoja kufuatilia miamala yako yote — iwe inatoka kwa mteja Dakar, Lagos, Paris au Montreal."
+        ]
+      }
+    ]
   }
 }

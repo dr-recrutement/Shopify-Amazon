@@ -983,6 +983,54 @@
           ]
         }
       ]
-    }
+    },
+    "guides_index": {
+      "meta_title": "Guide e-commerce yi",
+      "meta_desc": "Guide yu njariñ ci tànn plateforme e-commerce, migration ci Sellia ak fay Mobile Money ci Afrique.",
+      "h1": "Guide Sellia yi",
+      "hero_p": "Tànn sa plateforme, migré laalul risque, jaay ci àdduna bépp — sunu guide ngir marchand e-commerce yi.",
+      "read_more": "Jàng guide bi",
+      "back_link": "Guide yépp",
+      "see_also": "Jàng it",
+      "cta_h2": "Dangaa parey pour tambali sa boutique?",
+      "cta_p": "Essai bu amul fay diirub 14 fan ci Sellia, kart bank warula.",
+      "cta_button": "Tambali léegi"
+    },
+    "guides": [
+      {
+        "title": "Nu nga tànn plateforme e-commerce bu baax ci Afrique ci 2026",
+        "excerpt": "Shopify, Wix, PrestaShop, WooCommerce, Odoo, Sellia... Critère yi am solo bu say client fay ak Mobile Money.",
+        "body": [
+          "Tànn plateforme e-commerce du rekk seetlu tableau njëg. Ngir marchand buy jaay ci Afrique, Europe walla plusieurs marché ci saa si, ñett critère yi ëpp nañu yeneen yépp: fecc fay yi nangu, yomb yoroon bés bu nekk, ak coût bu wóor su option yépp yu soxla yokkeekoon.",
+          "Plateforme yu njëkk yi ni Shopify, BigCommerce walla Wix, defar nañu leen njëkk ngir marché yu kart bank di jiite. Mobile Money — Orange Money, Wave, MTN Mobile Money, Airtel Money — dañu ko jël ni option bu ñaareel, yokk ko ci application tiers, ak frais ak delai intégration yu yokk.",
+          "PrestaShop ak WooCommerce, ci seen wàll, dañu bàyyi ngir télécharger waaye dañuy jaarale doole hébergement, kaaraange ak maintenance ci marchand bi — walla ci agence bi mu wara fay ngir jëfe ko. Odoo, bu defar ni ERP bu mat sëkk, dafay soxla ndimbal technique balaa nga publié benn produit bu njëkk.",
+          "Sellia defar nañu ko ci laaj bu bokkul: lan la soxla ngir marchand publié sa boutique ci ay minute, nangu ci saa si fay Mobile Money ak kart internationale, te amul serveur walla plugin ngir yor? Tontu bi dafa taxawal ci ñett principe: lépp bokk ci abonnement, amul compétence technique bu soxla, ak couverture ci njëkk fecc fay yi say client jëfandikoo.",
+          "Balaa nga tànn, laajal sa bopp ñeent laaj yu wóor: say client mën nañu fay ak fecc yi ñuy jëfandikoo bés bu nekk? Mën naa soppi thème walla yokk produit te amul développeur? Njëg bi feeñ mooy njëg bu mujj, walla warna yokk hébergement, plugin ak frais transaction? Te ci mujj, équipe support bi dafay tontu ci sama làkk ak sama fuseau horaire?"
+        ]
+      },
+      {
+        "title": "Migré sa boutique ci Sellia: guide bu mat sëkk",
+        "excerpt": "Ci Shopify, WooCommerce, PrestaShop walla Wix: nii migration di jëfe, tàllif ak tàllif, te lëkkatoo sa xibaar.",
+        "body": [
+          "Soppi plateforme e-commerce dafay tiit — ak sabab, su migration bi waajul bu baax. Yàqu produit, istwaar commande, référencement SEO bu am ci say fiche produit: mooy risque yu wóor ci migration bu amul plan. Nii Sellia di leen moytu.",
+          "Tàllif 1 — Export sa xibaar yu jëkk. Wu nga jóge ci Shopify, WooCommerce, PrestaShop, Wix, BigCommerce walla Odoo, export catalogue produit, base client ak istwaar commande dafay am ci ay clic ci administration sa plateforme bi nga nekk, ci format CSV.",
+          "Tàllif 2 — Import bu ñu jiite. Équipe Sellia dafay jappale import fichier yii ci sa boutique bu bees: produit, variante, image, njëg, stock ak fiche client dañuy delloosi te amul ressaisie ci loxo.",
+          "Tàllif 3 — Redirection SEO. Ngir bañ a yàqu référencement bi nga defar, URL say fiche produit yu yàgg mën nañu leen redirigé ci seen adresse yu bees ci Sellia, ngir bañ erreur 404 ngir say visiteur ak Google.",
+          "Tàllif 4 — Jokkoo fay yi. Say prestataire fay yu am (Stripe, PayPal, Flutterwave, Paystack…) ak Mobile Money mën nañu leen jokkoo li dale ci bis bu njëkk, amul interruption ngir say client.",
+          "Tàllif 5 — Soppi domaine bi. Bu sa boutique bu bees bi jéggee test te validé, sa tur domaine dañu ko jubal ci Sellia — coupure bi ngir say visiteur diiru ko ay minute rekk, waxtu propagation DNS.",
+          "Ngir tambali sa migration bu ñu jiite, jokkoo ak support@liafrik.com te wax sa plateforme bi nga nekk: équipe bi dina la tontu ak plan migration bu takkoo sa catalogue."
+        ]
+      },
+      {
+        "title": "Mobile Money ak fay ci Afrique: guide e-commerce",
+        "excerpt": "Orange Money, Wave, MTN, Airtel: lu tax Mobile Money soppi lépp ngir marchand e-commerce, ak nu ko mën a boole te amul redirection.",
+        "body": [
+          "Ci plusieurs marché Afrique, Mobile Money dafay weesu kart bank ni fecc fay bu bés bu nekk. Ngir marchand ci internet, bañ ko jox mooy tëj sa caisse ci lu ëpp ci client yu mën a am.",
+          "Jafe-jafe bi: ëpp ci plateforme e-commerce internationale yi (Shopify, BigCommerce, Wix) duñu boole ci njëkk Orange Money, Wave, MTN Mobile Money walla Airtel Money. Dafa soxla jaar ci application tiers, ak seen frais, seen delai validation, te bari ci yoon redirection ci biti boutique bi buy yàqu expérience jënd — te di daaneel ay acheteur ci saa si ñuy fay.",
+          "Sellia dafay boole Mobile Money ci njëkk, ak lu ëpp 25 prestataire fay ci àdduna bépp (kart, wallesu, portefeuille électronique), ci benn tunnel jënd te amul redirection: client bi dafay bind sa numéro, validé ci sa téléphone, te dellu directement ci page confirmation sa boutique.",
+          "Ci jëf, lii di wàññi taux abandon panier, yokk wóolute client (mu nekk ci sa marque li dale ci njëkk ba ci mujj), ak benn interface ngir topp transaction yépp — su jóge ci client ci Ndakaaru, Lagos, Paris walla Montréal."
+        ]
+      }
+    ]
   }
 }

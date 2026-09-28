@@ -983,6 +983,54 @@
           ]
         }
       ]
-    }
+    },
+    "guides_index": {
+      "meta_title": "Guias de e-commerce",
+      "meta_desc": "Guias práticos sobre como escolher uma plataforma de e-commerce, migrar para a Sellia e pagamentos por Mobile Money em África.",
+      "h1": "Guias Sellia",
+      "hero_p": "Escolher a sua plataforma, migrar sem risco, vender a nível internacional — os nossos guias para comerciantes online.",
+      "read_more": "Ler o guia",
+      "back_link": "Todos os guias",
+      "see_also": "Também pode interessar-lhe",
+      "cta_h2": "Pronto para lançar a sua loja?",
+      "cta_p": "14 dias de teste gratuito na Sellia, sem cartão de crédito.",
+      "cta_button": "Começar agora"
+    },
+    "guides": [
+      {
+        "title": "Como escolher a plataforma de e-commerce certa em África em 2026",
+        "excerpt": "Shopify, Wix, PrestaShop, WooCommerce, Odoo, Sellia... Os critérios que realmente importam quando os seus clientes pagam com Mobile Money.",
+        "body": [
+          "Escolher uma plataforma de e-commerce não se resume a comparar tabelas de preços. Para um comerciante que vende em África, na Europa ou em vários mercados ao mesmo tempo, três critérios pesam mais do que quaisquer outros: os métodos de pagamento aceites, a simplicidade da gestão diária e o custo real depois de adicionar todas as opções necessárias.",
+          "As plataformas históricas como Shopify, BigCommerce ou Wix foram concebidas primeiro para mercados onde o cartão bancário domina. O Mobile Money — Orange Money, Wave, MTN Mobile Money, Airtel Money — é ali tratado como uma opção secundária, adicionada através de uma aplicação externa, com custos e prazos de integração suplementares.",
+          "A PrestaShop e a WooCommerce, por sua vez, são gratuitas para descarregar mas transferem o encargo do alojamento, da segurança e da manutenção para o comerciante — ou para a agência que este tem de pagar para tratar disso. A Odoo, pensada como um ERP completo, exige frequentemente acompanhamento técnico antes mesmo de conseguir publicar um primeiro produto.",
+          "A Sellia foi concebida partindo do problema inverso: o que é necessário para que um comerciante publique a sua loja em minutos, aceite imediatamente pagamentos por Mobile Money e cartões internacionais, e não tenha nem servidor nem plugins para gerir? A resposta assenta em três princípios: tudo incluído na subscrição, nenhuma competência técnica exigida, e cobertura nativa dos métodos de pagamento que os seus clientes realmente utilizam.",
+          "Antes de escolher, faça a si mesmo quatro perguntas concretas: os meus clientes podem pagar com os métodos que já usam diariamente? Posso mudar um tema ou adicionar um produto sem um programador? O preço apresentado é o preço final, ou tenho de acrescentar alojamento, plugins e comissões de transação? E, por fim, a equipa de suporte responde no meu idioma e no meu fuso horário?"
+        ]
+      },
+      {
+        "title": "Migrar a sua loja para a Sellia: o guia completo",
+        "excerpt": "Da Shopify, WooCommerce, PrestaShop ou Wix: veja como decorre uma migração, passo a passo, sem perder os seus dados.",
+        "body": [
+          "Mudar de plataforma de e-commerce assusta — e com razão, se a migração for mal preparada. Perda de produtos, de histórico de encomendas, de posicionamento SEO já conquistado nas suas fichas de produto: estes são os riscos reais de uma migração improvisada. Veja como a Sellia os evita.",
+          "Passo 1 — Exportação dos seus dados atuais. Quer venha da Shopify, WooCommerce, PrestaShop, Wix, BigCommerce ou Odoo, a exportação do seu catálogo de produtos, da sua base de clientes e do seu histórico de encomendas é geralmente feita em poucos cliques a partir da administração da sua plataforma atual, em formato CSV.",
+          "Passo 2 — Importação guiada. A equipa da Sellia acompanha a importação destes ficheiros para a sua nova loja: produtos, variantes, imagens, preços, stock e fichas de clientes são reintegrados sem reintrodução manual.",
+          "Passo 3 — Redirecionamento SEO. Para não perder o posicionamento já construído, os URLs das suas antigas fichas de produto podem ser redirecionados para os seus novos endereços na Sellia, evitando erros 404 tanto para os seus visitantes como para o Google.",
+          "Passo 4 — Ligação dos pagamentos. Os seus prestadores de pagamento existentes (Stripe, PayPal, Flutterwave, Paystack…), bem como o Mobile Money, podem ser ligados desde o primeiro dia, sem interrupções para os seus clientes.",
+          "Passo 5 — Mudança de domínio. Uma vez testada e validada a sua nova loja, o seu nome de domínio é apontado para a Sellia — a interrupção para os seus visitantes dura apenas alguns minutos, o tempo necessário para a propagação do DNS.",
+          "Para iniciar a sua migração acompanhada, contacte support@liafrik.com indicando a sua plataforma atual: a equipa responderá com um plano de migração adaptado ao seu catálogo."
+        ]
+      },
+      {
+        "title": "Mobile Money e pagamentos em África: o guia de e-commerce",
+        "excerpt": "Orange Money, Wave, MTN, Airtel: porque é que o Mobile Money muda tudo para um comerciante online, e como integrá-lo sem redirecionamento.",
+        "body": [
+          "Em vários mercados africanos, o Mobile Money ultrapassa largamente o cartão bancário como método de pagamento do dia a dia. Para um comerciante online, não o oferecer equivale a fechar a caixa à maioria dos seus clientes potenciais.",
+          "O problema: a maioria das plataformas de e-commerce internacionais (Shopify, BigCommerce, Wix) não integra nativamente o Orange Money, o Wave, o MTN Mobile Money ou o Airtel Money. É preciso passar por uma aplicação externa, com as suas próprias comissões, os seus próprios prazos de validação, e frequentemente um redirecionamento para fora da loja que quebra a experiência de compra — afastando parte dos compradores mesmo no momento de pagar.",
+          "A Sellia integra o Mobile Money de forma nativa, ao lado de mais de 25 prestadores de pagamento globais (cartões, transferências, carteiras eletrónicas), num único fluxo de compra sem redirecionamento: o cliente introduz o seu número, confirma no telemóvel, e regressa diretamente à página de confirmação da sua loja.",
+          "Na prática, isto significa uma taxa de abandono de carrinho mais baixa, uma confiança acrescida do cliente (que permanece na sua marca do início ao fim), e uma única interface para acompanhar todas as suas transações — venham de um cliente em Dakar, Lagos, Paris ou Montreal."
+        ]
+      }
+    ]
   }
 }

@@ -13,12 +13,27 @@ export default function Inventory() {
   const [filter, setFilter] = useState('all');
   const [adjusting, setAdjusting] = useState(null);
   const [alertDismissed, setAlertDismissed] = useState(false);
+  const [reserved, setReserved] = useState({}); // product_id -> units held by pending (unpaid) orders
 
   const load = useCallback(async () => {
     if (!store?.id) return;
     const { data, error } = await supabase.from('products').select('*').eq('tenant_id', store.id).order('created_at', { ascending: false }).limit(500);
     if (error) { console.error('Failed to load products:', error); setProducts([]); return; }
     setProducts((data || []).map((row) => ({ ...row, title: row.name, price: (row.price_cents || 0) / 100 })));
+
+    // Stock is decremented the moment an order is created (reserve_stock),
+    // before payment resolves - a real, visible drop with no sale to show
+    // for it yet, which reads as a mystery without this. Sums real
+    // pending order_items so the merchant can see it's held by checkouts
+    // in progress, not lost or miscounted.
+    const { data: pendingItems } = await supabase
+      .from('order_items')
+      .select('product_id, quantity, orders!inner(tenant_id, status)')
+      .eq('orders.tenant_id', store.id)
+      .eq('orders.status', 'pending');
+    const byProduct = {};
+    (pendingItems || []).forEach((i) => { byProduct[i.product_id] = (byProduct[i.product_id] || 0) + i.quantity; });
+    setReserved(byProduct);
   }, [store?.id]);
 
   useEffect(() => { load(); }, [load]);
@@ -26,14 +41,15 @@ export default function Inventory() {
   const flat = useMemo(() => {
     const rows = [];
     products.forEach((p) => {
+      const reservedCount = reserved[p.id] || 0;
       if (p.variants?.length) {
-        p.variants.forEach((v, i) => rows.push({ id: p.id, variantIndex: i, title: p.title, variantTitle: v.title || 'Défaut', sku: v.sku || p.sku || '—', stock: v.stock ?? 0, price: v.price ?? p.price }));
+        p.variants.forEach((v, i) => rows.push({ id: p.id, variantIndex: i, title: p.title, variantTitle: v.title || 'Défaut', sku: v.sku || p.sku || '—', stock: v.stock ?? 0, price: v.price ?? p.price, reservedCount }));
       } else {
-        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: p.stock ?? 0, price: p.price });
+        rows.push({ id: p.id, variantIndex: -1, title: p.title, variantTitle: '—', sku: p.sku || '—', stock: p.stock ?? 0, price: p.price, reservedCount });
       }
     });
     return rows;
-  }, [products]);
+  }, [products, reserved]);
 
   const filtered = useMemo(() => {
     return flat.filter((r) => {
@@ -150,6 +166,7 @@ export default function Inventory() {
                 <td className="px-4 py-3 text-[#6D7175] font-mono text-xs">{r.sku}</td>
                 <td className="px-4 py-3 text-right">
                   <span className={`font-bold ${r.stock <= 0 ? 'text-red-600' : r.stock <= LOW_THRESHOLD ? 'text-amber-600' : 'text-[#202223]'}`}>{r.stock}</span>
+                  {r.reservedCount > 0 && <span className="block text-[10px] text-[#6D7175] mt-0.5">dont {r.reservedCount} réservé{r.reservedCount > 1 ? 's' : ''}</span>}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1.5">

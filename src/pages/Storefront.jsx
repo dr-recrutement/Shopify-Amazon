@@ -160,7 +160,7 @@ export default function Storefront() {
   const [couponCode, setCouponCode] = useState('');
   const [couponMsg, setCouponMsg] = useState(null);
   const [discount, setDiscount] = useState(null);
-  const [payunitReturn, setPayunitReturn] = useState(null); // null | 'checking' | { paid: bool, orderNumber }
+  const [payunitReturn, setPayunitReturn] = useState(null); // null | 'checking' | { paid: bool, orderNumber } - despite the name, this now covers the return from any redirect-based gateway (Payunit, CinetPay, Yoco, Mercado Pago), not just Payunit
 
   const loadStore = useCallback(async () => {
     if (!slug) return;
@@ -242,17 +242,21 @@ export default function Storefront() {
 
   useEffect(() => { loadStore(); }, [loadStore]);
 
-  // Real return handling for Payunit's redirect-based checkout - the
-  // customer lands back here (not inside the now-unmounted checkout
-  // modal) after paying on Payunit's own hosted page, so verification and
-  // the confirmation experience live at this top level instead.
+  // Real return handling for every redirect-based checkout (Payunit,
+  // CinetPay, Yoco, Mercado Pago) - the customer lands back here (not
+  // inside the now-unmounted checkout modal) after paying on the
+  // provider's own hosted page, so verification and the confirmation
+  // experience live at this top level instead. One shared handler for
+  // all four instead of duplicating this per provider.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payunit_return') !== '1') return;
-    const orderId = params.get('order') || sessionStorage.getItem('sellia_payunit_pending_order');
+    const gatewayFns = { payunit: 'payunit-checkout', cinetpay: 'cinetpay-checkout', yoco: 'yoco-checkout', mercadopago: 'mercadopago-checkout' };
+    const gateway = Object.keys(gatewayFns).find((g) => params.get(`${g}_return`) === '1');
+    if (!gateway) return;
+    const orderId = params.get('order') || sessionStorage.getItem(`sellia_${gateway}_pending_order`);
     if (!orderId) return;
     setPayunitReturn('checking');
-    supabase.functions.invoke('payunit-checkout', { body: { action: 'verify', order_id: orderId } })
+    supabase.functions.invoke(gatewayFns[gateway], { body: { action: 'verify', order_id: orderId } })
       .then(async ({ data, error }) => {
         if (error) throw new Error(await functionErrorMessage(error));
         const paid = data?.status === 'paid';
@@ -270,7 +274,7 @@ export default function Storefront() {
           setCartCount(0);
         }
         setPayunitReturn({ paid, orderNumber: '#' + orderId.slice(0, 8).toUpperCase() });
-        sessionStorage.removeItem('sellia_payunit_pending_order');
+        sessionStorage.removeItem(`sellia_${gateway}_pending_order`);
       })
       .catch((e) => setPayunitReturn({ paid: false, error: e.message }));
     // Clean the query string so refreshing the page doesn't re-verify.
@@ -807,6 +811,9 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     ...(activeGateways?.includes('stripe') ? [{ id: 'stripe', label: 'Carte bancaire (Stripe)', desc: 'Visa, Mastercard, Amex', icon: CreditCard }] : []),
     ...(activeGateways?.includes('payunit') ? [{ id: 'payunit', label: 'Mobile Money / Carte (Payunit)', desc: 'Orange Money, MTN MoMo, carte bancaire — paiement immédiat sécurisé', icon: Phone }] : []),
     ...(activeGateways?.includes('paypal') ? [{ id: 'paypal', label: 'PayPal', desc: 'Payez avec votre compte PayPal', icon: CreditCard }] : []),
+    ...(activeGateways?.includes('cinetpay') ? [{ id: 'cinetpay', label: 'CinetPay', desc: 'Mobile Money & carte (CEMAC/UEMOA)', icon: Phone }] : []),
+    ...(activeGateways?.includes('yoco') ? [{ id: 'yoco', label: 'Yoco', desc: 'Carte bancaire (Afrique du Sud)', icon: CreditCard }] : []),
+    ...(activeGateways?.includes('mercadopago') ? [{ id: 'mercadopago', label: 'Mercado Pago', desc: 'Carte & espèces (Amérique latine)', icon: CreditCard }] : []),
     // Manual methods now respect the merchant's own real choice
     // (Paramètres > Paiements > Méthodes manuelles) instead of always
     // showing all 3 to every customer regardless of what the merchant
@@ -1034,6 +1041,23 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         // (not cleared here) so the return handler below can still find
         // the pending order after the round trip.
         sessionStorage.setItem('sellia_payunit_pending_order', order.id);
+        window.location.href = data.transaction_url;
+        return;
+      }
+
+      // Same real, hosted-redirect shape as Payunit for these three -
+      // each function was built and verified against that provider's own
+      // official API docs (CinetPay, Mercado Pago) or its official
+      // Checkout API plus its community SDK (Yoco, whose verify endpoint
+      // isn't on the official docs page directly - flagged in that
+      // function's own comments).
+      const redirectGateways = { cinetpay: 'cinetpay-checkout', yoco: 'yoco-checkout', mercadopago: 'mercadopago-checkout' };
+      if (redirectGateways[paymentMethod]) {
+        const fn = redirectGateways[paymentMethod];
+        const { data, error: initError } = await supabase.functions.invoke(fn, { body: { action: 'initiate', order_id: order.id } });
+        if (initError) throw new Error(await functionErrorMessage(initError));
+        if (data.error) throw new Error(data.error);
+        sessionStorage.setItem(`sellia_${paymentMethod}_pending_order`, order.id);
         window.location.href = data.transaction_url;
         return;
       }

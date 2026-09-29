@@ -36,14 +36,14 @@ const PROVIDERS = [
   { value: 'airtel-money', label: 'Airtel Money', logo: 'airtel-money.jpg', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Client ID', api_secret: 'Client Secret' }, hint: 'Mobile Money' },
   { value: 'mpesa', label: 'M-Pesa', logo: 'mpesa.png', region: 'Afrique', fields: ['client_id', 'api_secret', 'api_key'], labels: { client_id: 'Consumer Key', api_secret: 'Consumer Secret', api_key: 'Shortcode / Passkey' }, hint: 'Mobile Money (Daraja API)' },
   { value: 'cellulant', label: 'Cellulant', logo: 'cellulant.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Client ID', api_secret: 'Client Secret' }, hint: 'Agrégateur panafricain (Tingg)' },
-  { value: 'cinetpay', label: 'CinetPay', logo: 'cinetpay.webp', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'Site ID', api_secret: 'Clé secrète' }, hint: 'Agrégateur (CEMAC/UEMOA)' },
+  { value: 'cinetpay', label: 'CinetPay', logo: 'cinetpay.webp', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'API Key', client_id: 'Site ID', api_secret: 'Clé secrète' }, hint: 'Agrégateur (CEMAC/UEMOA)', integrated: true },
   { value: 'kkiapay', label: 'Kkiapay', logo: 'kkiapay.png', region: 'Afrique', fields: ['api_key', 'client_id', 'api_secret'], labels: { api_key: 'Public Key', client_id: 'Private Key', api_secret: 'Secret Key' }, hint: 'Agrégateur (Bénin & région)' },
   { value: 'azipay', label: 'AziPay', logo: 'azipay.png', region: 'Afrique', fields: ['api_key', 'api_secret'], labels: { api_key: 'API Key', api_secret: 'Clé secrète' }, hint: 'Mobile Money' },
   { value: 'touchpay', label: 'TouchPay', logo: 'touchpay.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'ID Agent / Marchand', api_secret: 'Clé API' }, hint: 'Mobile Money' },
   { value: 'pesapal', label: 'Pesapal', logo: 'pesapal.png', region: 'Afrique', fields: ['client_id', 'api_secret'], labels: { client_id: 'Consumer Key', api_secret: 'Consumer Secret' }, hint: 'Afrique de l’Est' },
   { value: 'payfast', label: 'PayFast', logo: 'payfast.png', region: 'Afrique', fields: ['client_id', 'api_key', 'api_secret'], labels: { client_id: 'Merchant ID', api_key: 'Merchant Key', api_secret: 'Passphrase' }, hint: 'Afrique du Sud' },
-  { value: 'yoco', label: 'Yoco', logo: 'yoco.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key', api_key: 'Public Key' }, hint: 'Afrique du Sud' },
-  { value: 'mercadopago', label: 'Mercado Pago', logo: 'mercadopago.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Access Token', api_key: 'Public Key' }, hint: 'Amérique latine' },
+  { value: 'yoco', label: 'Yoco', logo: 'yoco.png', region: 'Afrique', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Secret Key', api_key: 'Public Key' }, hint: 'Afrique du Sud', integrated: true },
+  { value: 'mercadopago', label: 'Mercado Pago', logo: 'mercadopago.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Access Token', api_key: 'Public Key' }, hint: 'Amérique latine', integrated: true },
   { value: 'pagseguro', label: 'PagSeguro', logo: 'pagseguro.png', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Token', api_key: 'E-mail du compte' }, hint: 'Brésil' },
   { value: 'ebanx', label: 'EBANX', logo: 'ebanx.jpg', region: 'Amérique latine', fields: ['api_secret', 'api_key'], labels: { api_secret: 'Integration Key', api_key: 'Public Integration Key' }, hint: 'Amérique latine' },
 ];
@@ -194,7 +194,7 @@ export default function Payments() {
           <ShieldCheck className="w-5 h-5 text-[#008060] shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-[#202223]">Chiffrées, propres à votre boutique</p>
-            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants sont chiffrés côté serveur avant d'être enregistrés et ne sont jamais renvoyés en clair — même à vous, une fois saisis. Un vrai traitement de paiement au checkout existe pour Stripe, Flutterwave, Paystack, Payunit et PayPal (badge « Paiement client réel » ci-dessous) — pour les autres, la connexion est enregistrée en toute sécurité mais l'intégration au checkout n'existe pas encore (badge « Config. seulement »).</p>
+            <p className="text-xs text-[#6D7175] mt-0.5 leading-relaxed">Vos identifiants sont chiffrés côté serveur avant d'être enregistrés et ne sont jamais renvoyés en clair — même à vous, une fois saisis. Un vrai traitement de paiement au checkout existe pour Stripe, Flutterwave, Paystack, Payunit, PayPal, CinetPay, Yoco et Mercado Pago (badge « Paiement client réel » ci-dessous) — pour les autres, la connexion est enregistrée en toute sécurité mais l'intégration au checkout n'existe pas encore (badge « Config. seulement »).</p>
           </div>
         </div>
 
@@ -291,7 +291,7 @@ export default function Payments() {
                     ))}
                   </div>
                   {!activeProvider?.integrated && (
-                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave, Paystack, Payunit et PayPal le sont actuellement).</p>
+                    <p className="text-[11px] text-[#6D7175] mt-2 flex items-start gap-1"><AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" /> Ce PSP enregistre vos identifiants chiffrés en toute sécurité, mais l'encaissement réel via ce fournisseur n'est pas encore branché au checkout (seuls Stripe, Flutterwave, Paystack, Payunit, PayPal, CinetPay, Yoco et Mercado Pago le sont actuellement).</p>
                   )}
                 </div>
               )}

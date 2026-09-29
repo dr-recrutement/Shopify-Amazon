@@ -17,8 +17,34 @@ import CommandCenterManager from '@/components/superadmin/CommandCenterManager';
 import { formatMoney } from '@/lib/world/currencies';
 import {
   ShieldCheck, Loader2, Store, ShoppingCart, Package, Ban, CheckCircle2, ArrowLeft, RefreshCw, Lock,
-  UserPlus, Trash2, Clock, Mail,
+  UserPlus, Trash2, Clock, Mail, LayoutGrid, Sparkles, Tag, MessageSquare, ScrollText, ShoppingBag,
+  BarChart3, CreditCard, Wallet, PlayCircle, Radio,
 } from 'lucide-react';
+
+const SIDEBAR_GROUPS = [
+  { label: 'Général', items: [
+    { id: 'overview', label: "Vue d'ensemble", icon: LayoutGrid },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ] },
+  { label: 'Boutiques & ventes', items: [
+    { id: 'subscriptions', label: 'Abonnements', icon: Sparkles },
+    { id: 'coupons', label: 'Coupons', icon: Tag },
+    { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+  ] },
+  { label: 'Paiements', items: [
+    { id: 'payments', label: 'Commissions', icon: Wallet },
+    { id: 'payment-providers', label: 'Fournisseurs de paiement', icon: CreditCard },
+  ] },
+  { label: 'Contenu & support', items: [
+    { id: 'icons', label: "Bibliothèque d'icônes", icon: LayoutGrid },
+    { id: 'help-video', label: 'Tutoriel vidéo', icon: PlayCircle },
+    { id: 'comms', label: 'Communications', icon: MessageSquare },
+  ] },
+  { label: 'Système', items: [
+    { id: 'audit', label: "Journal d'audit", icon: ScrollText },
+    { id: 'command-center', label: 'Command Center', icon: Radio },
+  ] },
+];
 
 const PLAN_LABELS = { starter: 'Starter', growth: 'Growth', pro: 'Pro', enterprise: 'Enterprise' };
 const STATUS_STYLE = {
@@ -158,7 +184,7 @@ export default function Superadmin() {
         <button onClick={load} className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white px-3 py-1.5 rounded-md hover:bg-white/10 shrink-0"><RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> <span className="hidden sm:inline">Actualiser</span></button>
       </div>
 
-      <div className="px-4 sm:px-6 py-5 max-w-6xl mx-auto space-y-6">
+      <div className="px-4 sm:px-6 py-5 max-w-7xl mx-auto space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
@@ -175,22 +201,33 @@ export default function Superadmin() {
           ))}
         </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-1 bg-[#F4F4F4] p-1 rounded-lg w-fit">
-          <button onClick={() => setTab('overview')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'overview' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Vue d'ensemble</button>
-          <button onClick={() => setTab('subscriptions')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'subscriptions' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Abonnements</button>
-          <button onClick={() => setTab('icons')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'icons' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Bibliothèque d'icônes</button>
-          <button onClick={() => setTab('coupons')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'coupons' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Coupons</button>
-          <button onClick={() => setTab('comms')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'comms' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Communications</button>
-          <button onClick={() => setTab('audit')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'audit' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Journal d'audit</button>
-          <button onClick={() => setTab('marketplace')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'marketplace' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Marketplace</button>
-          <button onClick={() => setTab('analytics')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'analytics' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Analytics</button>
-          <button onClick={() => setTab('payments')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'payments' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Paiements</button>
-          <button onClick={() => setTab('payment-providers')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'payment-providers' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Fournisseurs de paiement</button>
-          <button onClick={() => setTab('help-video')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'help-video' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Tutoriel vidéo</button>
-          <button onClick={() => setTab('command-center')} className={`text-xs font-semibold px-3.5 py-1.5 rounded-md transition ${tab === 'command-center' ? 'bg-white text-[#202223] shadow-sm' : 'text-[#6D7175] hover:text-[#202223]'}`}>Command Center</button>
-        </div>
+        {/* Navigation + content: a sidebar instead of a 12-item horizontal
+            tab bar, which had no wrap/scroll and was overflowing the
+            page on any real screen width - especially now, with the
+            payment-providers tab this session just added making it
+            worse. Grouped into logical sections, matching how a real
+            admin panel with this many areas is organized (Shopify's own
+            Settings, for one), rather than one long flat row. */}
+        <div className="flex flex-col lg:flex-row gap-5 items-start">
+          <nav className="w-full lg:w-56 shrink-0 bg-white rounded-xl border border-[#E1E1E1] p-2 lg:sticky lg:top-20">
+            {SIDEBAR_GROUPS.map((group) => (
+              <div key={group.label} className="mb-1 last:mb-0">
+                <p className="px-2.5 pt-2.5 pb-1 text-[10px] font-bold text-[#6D7175] uppercase tracking-wide">{group.label}</p>
+                {group.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setTab(item.id)}
+                    className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-left transition ${tab === item.id ? 'bg-[#008060]/10 text-[#008060]' : 'text-[#42474B] hover:bg-[#F4F4F4]'}`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            ))}
+          </nav>
 
+          <div className="flex-1 min-w-0 space-y-6 w-full">
         {tab === 'subscriptions' ? <SubscriptionManager /> : tab === 'icons' ? <IconLibraryManager /> : tab === 'coupons' ? <CouponsOverview /> : tab === 'comms' ? <CommunicationsManager /> : tab === 'audit' ? <AuditLogViewer /> : tab === 'marketplace' ? <MarketplaceModeration /> : tab === 'analytics' ? <PlatformAnalytics /> : tab === 'payments' ? <PaymentsCommissions /> : tab === 'payment-providers' ? <PlatformPaymentProviders /> : tab === 'help-video' ? <HelpCenterVideoManager /> : tab === 'command-center' ? <CommandCenterManager /> : (
         <>
         {/* Super admins */}
@@ -267,6 +304,8 @@ export default function Superadmin() {
         </div>
         </>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );

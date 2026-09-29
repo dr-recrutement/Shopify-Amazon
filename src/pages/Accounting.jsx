@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calculator, Loader2, AlertCircle, TrendingUp, Wallet,
-  Download, ArrowUpCircle, Truck,
+  Download, ArrowUpCircle, Truck, Tag,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useCurrentStore } from '@/hooks/useCurrentStore';
@@ -53,6 +53,7 @@ export default function Accounting() {
     const paidIds = new Set(paid.map((o) => o.id));
     const revenue = paid.reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
     const shipping = paid.reduce((s, o) => s + (o.shipping_cost_cents || 0) / 100, 0);
+    const discounts = paid.reduce((s, o) => s + (o.discount_amount_cents || 0) / 100, 0);
     const netRevenue = revenue - shipping;
     const refunds = orders.filter((o) => o.status === 'refunded').reduce((s, o) => s + (o.total_cents || 0) / 100, 0);
     // Real gross profit: revenue minus cost of goods sold (only counted
@@ -63,7 +64,7 @@ export default function Accounting() {
       .reduce((s, i) => s + ((costByProduct[i.product_id] || 0) * (i.quantity || 0)) / 100, 0);
     const grossProfit = netRevenue - cogs;
     const hasCostData = Object.values(costByProduct).some((c) => c > 0);
-    return { revenue, shipping, netRevenue, refunds, orderCount: paid.length, cogs, grossProfit, hasCostData };
+    return { revenue, shipping, discounts, netRevenue, refunds, orderCount: paid.length, cogs, grossProfit, hasCostData };
   }, [orders, orderItems, costByProduct]);
 
   const monthly = useMemo(() => {
@@ -174,8 +175,9 @@ export default function Accounting() {
       <div className="bg-white rounded-xl border border-[#E1E1E1] p-5">
         <h2 className="text-sm font-bold text-[#202223] mb-4">Ventilation</h2>
         <div className="space-y-3">
-          <LineItem label="Chiffre d’affaires brut" value={formatMoney(stats.revenue, store.currency)} icon={Wallet} />
+          <LineItem label="Chiffre d’affaires brut" value={formatMoney(stats.revenue + stats.discounts, store.currency)} icon={Wallet} />
           <LineItem label="Livraison" value={`- ${formatMoney(stats.shipping, store.currency)}`} icon={Truck} negative />
+          {stats.discounts > 0 && <LineItem label="Remises accordées" value={`- ${formatMoney(stats.discounts, store.currency)}`} icon={Tag} negative />}
           <div className="border-t border-[#E1E1E1] pt-3">
             <LineItem label="Revenu net" value={formatMoney(stats.netRevenue, store.currency)} icon={TrendingUp} bold positive />
           </div>

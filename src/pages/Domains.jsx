@@ -132,11 +132,11 @@ export default function Domains() {
   // payment is independently confirmed paid (by whichever provider the
   // merchant picked), never on faith that a redirect/popup closing means
   // paid.
-  const registerDomainAfterPayment = async (domainName) => {
+  const registerDomainAfterPayment = async (domainName, reference) => {
     setPurchaseFinalizing(true);
     try {
       const { data: reg, error: regErr } = await supabase.functions.invoke('cloudflare-domains', {
-        body: { action: 'register', domain_name: domainName, tenant_id: store.id, confirm: true },
+        body: { action: 'register', domain_name: domainName, tenant_id: store.id, reference },
       });
       if (regErr) throw new Error(await functionErrorMessage(regErr));
       if (reg.error) throw new Error(`Paiement confirmé mais l'enregistrement du domaine a échoué : ${reg.error}. Contactez le support.`);
@@ -156,24 +156,21 @@ export default function Domains() {
     setShowPaymentPicker(true);
   };
 
-  // Handles the return from Payunit's hosted payment page
-  // (?payunit_return=1&tx=...&domain=...). Verifies the transaction against
-  // Payunit's own status endpoint (never the URL params alone) before
-  // registering the domain via Cloudflare.
+  // Return from Payunit's hosted page (?platform_return=1&ref=...): the server
+  // re-verifies the payment against Payunit and tells us which domain it was for.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payunit_return') !== '1' || !store?.id) return;
-    const tx = params.get('tx');
-    const domainName = params.get('domain');
+    if (params.get('platform_return') !== '1' || !store?.id) return;
+    const ref = params.get('ref');
     window.history.replaceState({}, '', window.location.pathname);
-    if (!tx || !domainName) return;
+    if (!ref) return;
     (async () => {
       setPurchaseFinalizing(true);
       try {
-        const { data: v, error: vErr } = await supabase.functions.invoke('payunit-platform-billing', { body: { action: 'verify', transaction_id: tx } });
+        const { data: v, error: vErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'verify', reference: ref } });
         if (vErr) throw new Error(await functionErrorMessage(vErr));
-        if (!v.paid) throw new Error(`Paiement non confirmé (statut : ${v.status}). Le domaine n'a pas été acheté.`);
-        await registerDomainAfterPayment(domainName);
+        if (!v.paid) throw new Error("Paiement non confirmé. Le domaine n'a pas été acheté.");
+        await registerDomainAfterPayment(v.domain_name, ref);
       } catch (e) {
         toast({ variant: 'destructive', title: 'Erreur', description: e.message || "Échec de la finalisation de l'achat" });
       } finally { setPurchaseFinalizing(false); }
@@ -353,12 +350,12 @@ export default function Domains() {
           amount={buyTarget.price}
           currency={buyTarget.currency}
           purpose="domain"
-          reference={`domain-${store.id}-${buyTarget.name}-${Date.now()}`}
+          domainName={buyTarget.name}
           email={billingEmail}
           name={billingName}
           tenantId={store.id}
           onCancel={() => setShowPaymentPicker(false)}
-          onSuccess={() => registerDomainAfterPayment(buyTarget.name)}
+          onSuccess={({ reference }) => registerDomainAfterPayment(buyTarget.name, reference)}
         />
       )}
     </div>

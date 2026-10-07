@@ -228,9 +228,10 @@ function CustomDomainGate({ children }) {
       || /^\/(products|collections|blog)\//.test(path);
     if (!storefrontPath) { setState('not-custom'); return; }
 
-    supabase.from('domains').select('domain_name, dns_status, tenant_id, tenants(slug)').eq('domain_name', host).eq('dns_status', 'verified').maybeSingle()
-      .then(({ data }) => {
-        const slug = data?.tenants?.slug;
+    supabase.from('domains').select('domain_name, dns_status, tenant_id').eq('domain_name', host).eq('dns_status', 'verified').maybeSingle()
+      .then(async ({ data }) => {
+        const { data: t } = data?.tenant_id ? await supabase.from('public_tenants').select('slug').eq('id', data.tenant_id).maybeSingle() : { data: null };
+        const slug = t?.slug;
         if (!slug) { setState('not-found'); return; }
         setState('redirecting');
         const suffix = path === '/' ? '' : path;

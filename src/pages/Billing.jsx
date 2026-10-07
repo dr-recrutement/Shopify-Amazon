@@ -47,25 +47,29 @@ export default function Billing() {
     if (!inTrial) { setPayingFor(planId); return; }
     setChanging(planId);
     try {
-      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'trial', trial_ends_at: store.trial_ends_at || new Date(Date.now() + 14 * 86400000).toISOString() }).eq('id', store.id);
+      const { error } = await supabase.rpc('change_trial_plan', { p_tenant_id: store.id, p_plan: planId });
       if (error) throw error;
       window.location.reload();
     } catch (e) {
       alert(e.message || 'Échec du changement de plan');
     } finally { setChanging(null); }
   };
-  const onSubscriptionPaid = async () => {
-    const planId = payingFor;
-    setPayingFor(null);
-    setChanging(planId);
-    try {
-      const { error } = await supabase.from('tenants').update({ plan: planId, status: 'active', subscription_ends_at: new Date(Date.now() + 30 * 86400000).toISOString() }).eq('id', store.id);
-      if (error) throw error;
+  // The server (platform-billing) verifies the payment against the PSP and
+  // applies the plan itself - nothing is written to the tenant from here.
+  const onSubscriptionPaid = () => { setPayingFor(null); window.location.reload(); };
+
+  // Return from a hosted checkout (Payunit): re-verify server-side, then reload.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('platform_return') !== '1') return;
+    const ref = params.get('ref');
+    window.history.replaceState({}, '', window.location.pathname);
+    if (!ref) return;
+    supabase.functions.invoke('platform-billing', { body: { action: 'verify', reference: ref } }).then(({ data, error }) => {
+      if (error || !data?.paid) { alert('Paiement non confirmé. Si vous avez été débité, contactez le support avec la référence ' + ref); return; }
       window.location.reload();
-    } catch (e) {
-      alert(e.message || "Paiement confirmé mais l'activation du plan a échoué. Contactez le support.");
-    } finally { setChanging(null); }
-  };
+    });
+  }, []);
 
   if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-6 h-6 animate-spin text-[#008060]" /></div>;
   if (!store) return <div className="max-w-md mx-auto mt-20 text-center"><AlertCircle className="w-10 h-10 text-[#008060] mx-auto mb-3" /><p className="text-sm text-[#6D7175]">Configurez votre boutique pour gérer l'abonnement.</p></div>;
@@ -154,7 +158,6 @@ export default function Billing() {
           currency="USD"
           purpose="subscription"
           plan={payingFor}
-          reference={`sub-${store.id}-${payingFor}-${Date.now()}`}
           tenantId={store.id}
           onCancel={() => setPayingFor(null)}
           onSuccess={onSubscriptionPaid}

@@ -5,6 +5,7 @@ import {
   Minus, Plus, Tag, Truck, MapPin, Mail, Phone, ShieldCheck, Lock, CreditCard, Star,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { cartGet, cartSave, cartSetEmail, cartRecover, validateDiscount } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
@@ -167,7 +168,7 @@ export default function Storefront() {
     setLoading(true);
     try {
       const { data: tenant, error: tenantError } = await supabase
-        .from('tenants').select('*').eq('slug', slug).maybeSingle();
+        .from('public_tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
       if (!tenant) throw new Error("Cette boutique n'existe pas.");
       if (tenant.suspended_at) {
@@ -232,7 +233,7 @@ export default function Storefront() {
     if (!store?.id) return;
     const sessionId = getCartSessionId();
     try {
-      const { data } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
+      const data = await cartGet(store.id, sessionId);
       if (data) {
         setCart(data);
         setCartCount((data.items || []).reduce((s, i) => s + i.quantity, 0));
@@ -268,7 +269,7 @@ export default function Storefront() {
           // this is the corrected final state: reserve once, never touch
           // stock again on success).
           const sessionId = getCartSessionId();
-          await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('session_id', sessionId).eq('status', 'open');
+          await cartRecover(store.id, sessionId);
           localStorage.removeItem(CART_KEY);
           setCart(null);
           setCartCount(0);
@@ -377,17 +378,7 @@ export default function Storefront() {
 
   const saveCart = async (items) => {
     const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-    const sessionId = getCartSessionId();
-    if (cart?.id) {
-      const { data, error } = await supabase.from('abandoned_carts').update({ items, total_cents: Math.round(subtotal * 100), last_activity_at: new Date().toISOString() }).eq('id', cart.id).select().single();
-      if (error) throw error;
-      return data;
-    }
-    const { data, error } = await supabase.from('abandoned_carts').insert({
-      tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'open',
-    }).select().single();
-    if (error) throw error;
-    return data;
+    return cartSave(store.id, getCartSessionId(), items, subtotal, store.currency);
   };
 
   const addToCart = async (product) => {
@@ -455,7 +446,7 @@ export default function Storefront() {
     if (!cart || !couponCode.trim()) return;
     setCouponMsg(null);
     try {
-      const { data: d } = await supabase.from('discount_codes').select('*').eq('tenant_id', store.id).eq('code', couponCode.trim().toUpperCase()).eq('is_active', true).maybeSingle();
+      const d = await validateDiscount(store.id, couponCode.trim());
       if (!d) { setCouponMsg({ ok: false, text: 'Code promo invalide.' }); return; }
       if (d.max_uses && d.used_count >= d.max_uses) { setCouponMsg({ ok: false, text: "Ce code a atteint sa limite d'utilisation." }); return; }
       if (d.ends_at && new Date(d.ends_at) < new Date()) { setCouponMsg({ ok: false, text: 'Ce code a expiré.' }); return; }
@@ -787,7 +778,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           const { data: v, error: vErr } = await supabase.functions.invoke('paypal-checkout', { body: { action: 'capture', order_id: paypalPending.sellionOrderId, paypal_order_id: paypalPending.paypalOrderId } });
           if (vErr) throw new Error(await functionErrorMessage(vErr));
           if (v.status !== 'paid') throw new Error('Paiement non confirmé par PayPal.');
-          if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+          if (cart?.id) await cartRecover(store.id, getCartSessionId());
           setOrderNumber('#' + paypalPending.sellionOrderId.slice(0, 8).toUpperCase());
           setPaypalPending(null);
           setDone(true);
@@ -951,7 +942,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         if (vErr) throw new Error(await functionErrorMessage(vErr));
         if (v.status !== 'paid') throw new Error('Paiement non confirmé par Stripe.');
 
-        if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+        if (cart?.id) await cartRecover(store.id, getCartSessionId());
         setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
         setDone(true);
         onDone();
@@ -980,7 +971,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               const { data: v, error: vErr } = await supabase.functions.invoke('flutterwave-checkout', { body: { action: 'verify', transaction_id: response.transaction_id, tx_ref: response.tx_ref } });
               if (vErr) throw new Error(await functionErrorMessage(vErr));
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
-              if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+              if (cart?.id) await cartRecover(store.id, getCartSessionId());
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
               setDone(true);
               onDone();
@@ -1015,7 +1006,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 const { data: v, error: vErr } = await supabase.functions.invoke('paystack-checkout', { body: { action: 'verify', reference: response.reference } });
                 if (vErr) throw new Error(await functionErrorMessage(vErr));
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
-                if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+                if (cart?.id) await cartRecover(store.id, getCartSessionId());
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
                 setDone(true);
                 onDone();
@@ -1079,7 +1070,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
         return;
       }
 
-      if (cart?.id) await supabase.from('abandoned_carts').update({ status: 'recovered' }).eq('id', cart.id);
+      if (cart?.id) await cartRecover(store.id, getCartSessionId());
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
       setDone(true);
       onDone();
@@ -1143,7 +1134,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                     // before the order is placed.
                     const email = e.target.value.trim();
                     if (!email || !email.includes('@') || !store?.id) return;
-                    supabase.from('abandoned_carts').update({ customer_email: email }).eq('tenant_id', store.id).eq('session_id', getCartSessionId()).eq('status', 'open').then(() => {});
+                    cartSetEmail(store.id, getCartSessionId(), email).catch(() => {});
                   }}
                   className="flex-1 outline-none text-sm"
                 />

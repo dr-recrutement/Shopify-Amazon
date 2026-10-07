@@ -95,7 +95,7 @@ export function SettingsPlan() {
     if (inTrial) {
       setBusy(id);
       try {
-        const { error } = await supabase.from('tenants').update({ plan: id, status: 'trial', trial_ends_at: store.trial_ends_at || new Date(Date.now() + 14 * 86400000).toISOString() }).eq('id', store.id);
+        const { error } = await supabase.rpc('change_trial_plan', { p_tenant_id: store.id, p_plan: id });
         if (error) throw error;
         await reload();
       } catch (e) { alert(e.message || "Échec du changement de plan"); } finally { setBusy(null); }
@@ -104,19 +104,8 @@ export function SettingsPlan() {
     setPayingFor(id);
   };
 
-  const onPaid = async () => {
-    const id = payingFor;
-    setPayingFor(null);
-    setBusy(id);
-    try {
-      const { error } = await supabase.from('tenants').update({
-        plan: id, status: 'active', subscription_ends_at: new Date(Date.now() + 30 * 86400000).toISOString(),
-      }).eq('id', store.id);
-      if (error) throw error;
-      await reload();
-      alert('Abonnement activé !');
-    } catch (e) { alert(e.message || "Paiement confirmé mais l'activation du plan a échoué. Contactez le support."); } finally { setBusy(null); }
-  };
+  // Payment is verified and the plan applied server-side (platform-billing).
+  const onPaid = async () => { setPayingFor(null); await reload(); alert('Abonnement activé !'); };
 
   if (!store) return null;
   const payingPlan = plans.find(([id]) => id === payingFor);
@@ -141,7 +130,6 @@ export function SettingsPlan() {
         currency="USD"
         purpose="subscription"
         plan={payingFor}
-        reference={`sub-${store.id}-${payingFor}-${Date.now()}`}
         tenantId={store.id}
         onCancel={() => setPayingFor(null)}
         onSuccess={onPaid}

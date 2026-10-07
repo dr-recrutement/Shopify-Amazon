@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShoppingCart, Check, Minus, Plus, Star } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { cartGet, cartSave } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
@@ -66,7 +67,7 @@ export default function ProductDetail() {
   const loadCartCount = useCallback(async () => {
     if (!store) return;
     const sessionId = getCartSessionId();
-    const { data } = await supabase.from('abandoned_carts').select('items').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
+    const data = await cartGet(store.id, sessionId).catch(() => null);
     setCartCount((data?.items || []).reduce((s, i) => s + (i.quantity || 0), 0));
   }, [store]);
 
@@ -78,7 +79,7 @@ export default function ProductDetail() {
     if (!slug || !productId) return;
     setLoading(true);
     try {
-      const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
+      const { data: tenant, error: tenantError } = await supabase.from('public_tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
       if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore(tenant);
@@ -185,7 +186,7 @@ export default function ProductDetail() {
     setAdding(true);
     try {
       const sessionId = getCartSessionId();
-      const { data: existingCart } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', store.id).eq('status', 'open').maybeSingle();
+      const existingCart = await cartGet(store.id, sessionId);
       const items = [...(existingCart?.items || [])];
       const variantId = selectedVariant?.id || null;
       const variantTitle = selectedVariant?.title || null;
@@ -198,11 +199,7 @@ export default function ProductDetail() {
         items.push({ product_id: product.id, variant_id: variantId, variant_title: variantTitle, title: product.name, image: product.images?.[0] || '', price, quantity: qty, line_total: price * qty });
       }
       const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-      if (existingCart?.id) {
-        await supabase.from('abandoned_carts').update({ items, total_cents: Math.round(subtotal * 100), last_activity_at: new Date().toISOString() }).eq('id', existingCart.id);
-      } else {
-        await supabase.from('abandoned_carts').insert({ tenant_id: store.id, session_id: sessionId, items, total_cents: Math.round(subtotal * 100), currency: store.currency, status: 'open' });
-      }
+      await cartSave(store.id, sessionId, items, subtotal, store.currency);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
       setCartCount((c) => c + qty);

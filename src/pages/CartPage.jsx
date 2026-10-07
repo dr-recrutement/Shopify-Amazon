@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, Trash2, Minus, Plus, ArrowLeft, Loader2, AlertCircle, Tag } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { cartGet, cartSave, validateDiscount } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
@@ -29,7 +30,7 @@ export default function CartPage() {
     if (!slug) return;
     setLoading(true);
     try {
-      const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
+      const { data: tenant, error: tenantError } = await supabase.from('public_tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
       if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore({ ...tenant, currency: tenant.currency || 'USD' });
@@ -42,7 +43,7 @@ export default function CartPage() {
       setActiveGateways((gatewaysRes.data || []).map((g) => g.gateway));
 
       const sessionId = getCartSessionId();
-      const { data: cartData } = await supabase.from('abandoned_carts').select('*').eq('session_id', sessionId).eq('tenant_id', tenant.id).eq('status', 'open').maybeSingle();
+      const cartData = await cartGet(tenant.id, sessionId);
       setCart(cartData || null);
       setError(null);
     } catch (e) {
@@ -59,9 +60,7 @@ export default function CartPage() {
 
   const saveCart = async (items) => {
     const subtotal = items.reduce((s, i) => s + i.line_total, 0);
-    const { data, error: saveError } = await supabase.from('abandoned_carts').update({ items, total_cents: Math.round(subtotal * 100), last_activity_at: new Date().toISOString() }).eq('id', cart.id).select().single();
-    if (saveError) throw saveError;
-    return data;
+    return cartSave(store.id, getCartSessionId(), items, subtotal, store.currency);
   };
 
   const updateQty = async (productId, variantId, delta) => {
@@ -84,7 +83,7 @@ export default function CartPage() {
     if (!cart || !couponCode.trim()) return;
     setCouponMsg(null);
     try {
-      const { data: d } = await supabase.from('discount_codes').select('*').eq('tenant_id', store.id).eq('code', couponCode.trim().toUpperCase()).eq('is_active', true).maybeSingle();
+      const d = await validateDiscount(store.id, couponCode.trim());
       if (!d) { setCouponMsg({ ok: false, text: 'Code promo invalide.' }); return; }
       if (d.max_uses && d.used_count >= d.max_uses) { setCouponMsg({ ok: false, text: 'Ce code a atteint sa limite d’utilisation.' }); return; }
       if (d.ends_at && new Date(d.ends_at) < new Date()) { setCouponMsg({ ok: false, text: 'Ce code a expiré.' }); return; }

@@ -30,18 +30,22 @@ const PROVIDER_META = {
 // client. Reused for both domain purchases and subscription billing so
 // there's exactly one implementation of "let the customer pick a PSP",
 // not one per feature.
-export default function PlatformPaymentPicker({ amount, currency = 'USD', purpose, reference, email, name, tenantId, plan, onSuccess, onCancel }) {
+export default function PlatformPaymentPicker({ amount, currency = 'USD', purpose, domainName, email, name, tenantId, plan, onSuccess, onCancel }) {
+  // `amount` / `currency` are DISPLAY hints only. The server computes the real
+  // amount (plan price table / live Cloudflare quote), creates the payment
+  // record and reference, and re-verifies the payment against the PSP.
   const [available, setAvailable] = useState(null);
   const [busyProvider, setBusyProvider] = useState(null);
   const [error, setError] = useState('');
   const [stripeView, setStripeView] = useState(false);
   const [stripeReady, setStripeReady] = useState(false);
   const [stripeSubmitting, setStripeSubmitting] = useState(false);
+  const [quote, setQuote] = useState(null); // { amount, currency } as decided by the server
   const cardElRef = useRef(null);
   const stripeRef = useRef(null);
   const cardRef = useRef(null);
   const clientSecretRef = useRef(null);
-  const paymentIntentIdRef = useRef(null);
+  const referenceRef = useRef(null);
 
   useEffect(() => {
     supabase.functions.invoke('platform-billing', { body: { action: 'availability' } })
@@ -49,25 +53,33 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
       .catch(() => setAvailable({}));
   }, []);
 
-  const verifyThenSucceed = async (provider, ref) => {
-    const { data, error: vErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'verify', provider, reference: ref, payment_intent_id: paymentIntentIdRef.current } });
-    if (vErr) { setError(await functionErrorMessage(vErr)); setBusyProvider(null); setStripeSubmitting(false); return; }
-    if (!data?.paid) { setError('Paiement non confirmé. Réessayez ou choisissez un autre moyen de paiement.'); setBusyProvider(null); setStripeSubmitting(false); return; }
-    onSuccess({ provider, reference: ref });
+  const start = async (provider) => {
+    const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', {
+      body: { action: 'start', provider, purpose, tenant_id: tenantId, plan, domain_name: domainName, email, name },
+    });
+    if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
+    if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
+    referenceRef.current = data.reference;
+    setQuote({ amount: data.amount, currency: data.currency });
+    return data;
   };
 
-  // Stripe Elements needs a real mounted card field, not a one-call popup
-  // like the others - this opens a dedicated inline step within the same
-  // picker instead of a separate page, so it's still a real embedded
-  // payment, just Stripe's specific shape of "no redirect".
+  const verifyThenSucceed = async (extra = {}) => {
+    const { data, error: vErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'verify', reference: referenceRef.current, ...extra } });
+    if (vErr) { setError(await functionErrorMessage(vErr)); setBusyProvider(null); setStripeSubmitting(false); return; }
+    if (!data?.paid) {
+      setError(data?.reason === 'amount_mismatch' ? 'Le montant payé ne correspond pas. Contactez le support.' : 'Paiement non confirmé. Réessayez ou choisissez un autre moyen de paiement.');
+      setBusyProvider(null); setStripeSubmitting(false); return;
+    }
+    onSuccess({ reference: referenceRef.current, ...data });
+  };
+
+  // Stripe Elements needs a real mounted card field (inline step in the same popup).
   const openStripe = async () => {
     setError(''); setBusyProvider('stripe'); setStripeView(true);
     try {
-      const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'create_intent', provider: 'stripe', amount, currency, reference, purpose } });
-      if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-      if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
+      const data = await start('stripe');
       clientSecretRef.current = data.client_secret;
-      paymentIntentIdRef.current = data.payment_intent_id;
       await loadScript('https://js.stripe.com/v3/');
       stripeRef.current = window.Stripe(data.publishable_key);
       const elements = stripeRef.current.elements();
@@ -88,7 +100,7 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
       });
       if (confirmError) throw new Error(confirmError.message);
       if (paymentIntent.status !== 'succeeded') throw new Error('Paiement non confirmé.');
-      await verifyThenSucceed('stripe', paymentIntent.id);
+      await verifyThenSucceed();
     } catch (e) {
       setError(e.message || 'Échec du paiement');
       setStripeSubmitting(false);
@@ -99,69 +111,53 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
     if (provider === 'stripe') { openStripe(); return; }
     setError(''); setBusyProvider(provider);
     try {
+      const data = await start(provider);
       if (provider === 'flutterwave') {
-        const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'initiate', provider, amount, currency, reference, email, name } });
-        if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-        if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
         await loadScript('https://checkout.flutterwave.com/v3.js');
         window.FlutterwaveCheckout({
           public_key: data.public_key, tx_ref: data.tx_ref, amount: data.amount, currency: data.currency,
           customer: data.customer, payment_options: 'card, mobilemoney, ussd',
-          callback: () => verifyThenSucceed('flutterwave', data.tx_ref),
+          callback: () => verifyThenSucceed(),
           onclose: () => setBusyProvider(null),
         });
         return;
       }
       if (provider === 'paystack') {
-        const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'initiate', provider, amount, currency, reference, email, name } });
-        if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-        if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
         await loadScript('https://js.paystack.co/v1/inline.js');
         window.PaystackPop.setup({
-          key: data.public_key, email: data.email || email, amount: data.amount, currency: data.currency, ref: data.reference,
-          callback: () => verifyThenSucceed('paystack', data.reference),
+          key: data.public_key, email: data.email, amount: data.paystack_amount, currency: data.currency, ref: data.reference,
+          callback: () => verifyThenSucceed(),
           onClose: () => setBusyProvider(null),
         }).openIframe();
         return;
       }
       if (provider === 'korapay') {
-        const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'initiate', provider, amount, currency, reference, email, name } });
-        if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-        if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
         await loadScript('https://korablobstorage.blob.core.windows.net/modal-bucket/korapay-collections.min.js');
         window.Korapay.initialize({
           key: data.public_key, reference: data.reference, amount: data.amount, currency: data.currency,
           customer: data.customer, notification_url: data.notification_url,
           onClose: () => setBusyProvider(null),
-          onSuccess: () => verifyThenSucceed('korapay', data.reference),
+          onSuccess: () => verifyThenSucceed(),
         });
         return;
       }
       if (provider === 'paddle') {
-        const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'initiate', provider, amount, currency, reference, plan, purpose } });
-        if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-        if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
         await loadScript('https://cdn.paddle.com/paddle/v2/paddle.js');
         window.Paddle.Environment.set('production');
         window.Paddle.Initialize({
           token: data.client_token,
           eventCallback: (e) => {
-            if (e.name === 'checkout.completed') verifyThenSucceed('paddle', reference);
+            if (e.name === 'checkout.completed') verifyThenSucceed({ provider_txn_id: e.data?.transaction_id });
             if (e.name === 'checkout.closed') setBusyProvider(null);
           },
         });
-        window.Paddle.Checkout.open({ items: [{ priceId: data.price_id, quantity: 1 }], customer: { email } });
+        window.Paddle.Checkout.open({ items: [{ priceId: data.price_id, quantity: 1 }], customer: { email }, customData: { reference: data.reference } });
         return;
       }
       if (provider === 'payunit') {
-        const { data, error: invokeErr } = await supabase.functions.invoke('platform-billing', { body: { action: 'initiate', provider, amount, currency, reference, email, name, tenant_id: tenantId } });
-        if (invokeErr) throw new Error(await functionErrorMessage(invokeErr));
-        if (!data || data.error) throw new Error(data?.error || 'Réponse invalide du serveur');
-        // Payunit's own hosted checkout page - the one exception to "no
-        // redirect" in this picker, because that's how Payunit's flow is
-        // built (confirmed live against their real API earlier), not a
-        // shortcut taken here.
-        sessionStorage.setItem('sellia_platform_payment_pending', JSON.stringify({ provider: 'payunit', reference: data.transaction_id }));
+        // Payunit's own hosted page - the one redirect in this picker, because
+        // that is how their flow works. The return lands on /domains or
+        // /billing with ?platform_return=1&ref=..., which re-verifies server-side.
         window.location.href = data.transaction_url;
         return;
       }
@@ -189,7 +185,7 @@ export default function PlatformPaymentPicker({ amount, currency = 'USD', purpos
             <div ref={cardElRef} className="px-3 py-3 border border-[#E1E1E1] rounded-lg mb-3 bg-white" />
             {!stripeReady && <div className="flex items-center justify-center py-4"><Loader2 className="w-5 h-5 animate-spin text-[#008060]" /></div>}
             <button onClick={submitStripe} disabled={!stripeReady || stripeSubmitting} className="w-full bg-[#008060] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#00694d] disabled:opacity-40 flex items-center justify-center gap-2">
-              {stripeSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null} {stripeSubmitting ? 'Traitement…' : `Payer ${amount} ${currency}`}
+              {stripeSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null} {stripeSubmitting ? 'Traitement…' : `Payer ${quote?.amount ?? amount} ${quote?.currency ?? currency}`}
             </button>
           </div>
         ) : options === null ? (

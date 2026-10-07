@@ -24,7 +24,7 @@ export default function WishlistPage() {
     if (!slug) return;
     setLoading(true);
     try {
-      const { data: tenant, error: tenantError } = await supabase.from('tenants').select('*').eq('slug', slug).maybeSingle();
+      const { data: tenant, error: tenantError } = await supabase.from('public_tenants').select('*').eq('slug', slug).maybeSingle();
       if (tenantError) throw tenantError;
       if (!tenant) throw new Error('Cette boutique n’existe pas.');
       setStore(tenant);

@@ -31,7 +31,7 @@ async function generateUniqueSlug(name, currentTenantId) {
   // suffix after a reasonable number of collisions rather than looping
   // forever against a pathological name.
   for (let attempt = 0; attempt < 20; attempt++) {
-    const { data } = await supabase.from('tenants').select('id').eq('slug', candidate).maybeSingle();
+    const { data } = await supabase.from('public_tenants').select('id').eq('slug', candidate).maybeSingle();
     if (!data || data.id === currentTenantId) return candidate;
     suffix += 1;
     candidate = `${base}-${suffix}`;

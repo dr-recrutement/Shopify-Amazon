@@ -85,11 +85,11 @@ export default function SearchPage() {
 
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-8">
         <form onSubmit={onSubmit} className="flex items-center gap-2 mb-6 max-w-lg">
-          <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-full" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
+          <div className="flex-1 min-w-0 flex items-center gap-2 px-4 py-3 rounded-full" style={{ background: p.surface, border: `1px solid ${p.border}` }}>
             <SearchIcon className="w-4 h-4" style={{ color: p.muted }} />
-            <input autoFocus value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Rechercher un produit…" className="flex-1 bg-transparent outline-none text-sm" style={{ color: p.text }} />
+            <input autoFocus value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Rechercher un produit…" className="flex-1 min-w-0 w-full bg-transparent outline-none text-sm" style={{ color: p.text }} />
           </div>
-          <button type="submit" className="sellia-btn px-5 py-3 text-sm font-semibold" style={{ background: theme.palette.primary, color: p.primaryText }}>Rechercher</button>
+          <button type="submit" className="sellia-btn shrink-0 px-5 py-3 text-sm font-semibold" style={{ background: theme.palette.primary, color: p.primaryText }}>Rechercher</button>
         </form>
 
         {loading ? (

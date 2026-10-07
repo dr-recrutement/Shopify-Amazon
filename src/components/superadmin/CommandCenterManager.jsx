@@ -196,6 +196,34 @@ function KeysTab() {
   );
 }
 
+function DeliveryLog({ webhookId, refreshKey }) {
+  const [rows, setRows] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    supabase.from('command_center_webhook_deliveries')
+      .select('id, event_type, status, attempts, response_status, response_body, next_retry_at, created_at')
+      .eq('webhook_id', webhookId).order('created_at', { ascending: false }).limit(8)
+      .then(({ data }) => { if (!cancelled) setRows(data || []); });
+    return () => { cancelled = true; };
+  }, [webhookId, refreshKey]);
+  if (!rows || rows.length === 0) return null;
+  return (
+    <div className="mt-3 border border-[#F0F0F0] rounded-lg overflow-hidden">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-[#6D7175] px-2.5 py-1.5 bg-[#F6F6F7]">Dernières livraisons</p>
+      {rows.map((r) => (
+        <div key={r.id} className="flex items-center gap-2 px-2.5 py-1.5 text-[11px] border-t border-[#F0F0F0]">
+          <span className={`font-bold ${r.status === 'success' ? 'text-[#008060]' : r.next_retry_at ? 'text-amber-600' : 'text-red-600'}`}>
+            {r.status === 'success' ? 'Livré' : r.next_retry_at ? 'Nouvel essai prévu' : 'Échec définitif'}
+          </span>
+          <span className="font-mono text-[#202223]">{r.event_type}</span>
+          <span className="text-[#6D7175]">essai {r.attempts}{r.response_status ? ` · HTTP ${r.response_status}` : ''}</span>
+          <span className="ml-auto text-[#6D7175] shrink-0">{r.next_retry_at && r.status !== 'success' ? `prochain ${new Date(r.next_retry_at).toLocaleTimeString()}` : new Date(r.created_at).toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function WebhooksTab() {
   const [webhooks, setWebhooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -287,6 +315,7 @@ function WebhooksTab() {
                     {testing === w.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCcw className="w-3.5 h-3.5" />} Tester
                   </button>
                 </div>
+                <DeliveryLog webhookId={w.id} refreshKey={testResults[w.id]} />
                 {testResults[w.id] && (
                   <div className={`mt-2 text-[11px] font-mono p-2 rounded ${testResults[w.id].delivered ? 'bg-[#008060]/5 text-[#008060]' : 'bg-red-50 text-red-600'}`}>
                     {testResults[w.id].delivered ? `✓ Livré (HTTP ${testResults[w.id].response_status})` : `✗ Échec : ${testResults[w.id].response_body}`}
@@ -297,7 +326,7 @@ function WebhooksTab() {
           </div>
         )}
       </div>
-      <p className="text-[11px] text-[#6D7175]">Livraison automatique pour les vrais événements (suspension, réactivation) branchée pour tenant.suspended/reactivated. order.created n'est pas encore déclenché automatiquement — le test manuel ci-dessus envoie un vrai appel signé pour vérifier votre point de terminaison.</p>
+      <p className="text-[11px] text-[#6D7175]">Événements envoyés automatiquement : tenant.suspended, tenant.reactivated, order.created, order.paid. Chaque livraison est signée (HMAC-SHA256) ; en cas d'échec elle est renvoyée automatiquement après 1 min, 5 min, 30 min, 2 h puis 12 h (6 essais au total). Le bouton Tester envoie un vrai appel signé, sans relance.</p>
     </div>
   );
 }

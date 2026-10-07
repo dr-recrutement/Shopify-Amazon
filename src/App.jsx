@@ -17,6 +17,7 @@ import ProductDetail from '@/pages/ProductDetail';
 import CategoryPage from '@/pages/CategoryPage';
 import SearchPage from '@/pages/SearchPage';
 import WishlistPage from '@/pages/WishlistPage';
+import OrderStatusPage from '@/pages/OrderStatusPage';
 import CartPage from '@/pages/CartPage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -115,6 +116,8 @@ const AuthenticatedApp = () => {
       <Route path="/store/:slug/collections/:categoryId" element={<CategoryPage />} />
       <Route path="/store/:slug/search" element={<SearchPage />} />
       <Route path="/store/:slug/wishlist" element={<WishlistPage />} />
+      <Route path="/store/:slug/order" element={<OrderStatusPage />} />
+      <Route path="/store/:slug/order/:id" element={<OrderStatusPage />} />
       <Route path="/store/:slug/blog/:handle" element={<ArticleDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -224,8 +227,8 @@ function CustomDomainGate({ children }) {
     // visit. Whitelisting real storefront shapes is safer than trying to
     // list every admin path there could ever be.
     const storefrontPath = path === '/'
-      || /^\/(cart|wishlist|search)\/?$/.test(path)
-      || /^\/(products|collections|blog)\//.test(path);
+      || /^\/(cart|wishlist|search|order)\/?$/.test(path)
+      || /^\/(products|collections|blog|order)\//.test(path);
     if (!storefrontPath) { setState('not-custom'); return; }
 
     supabase.from('domains').select('domain_name, dns_status, tenant_id').eq('domain_name', host).eq('dns_status', 'verified').maybeSingle()

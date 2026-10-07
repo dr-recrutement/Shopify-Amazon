@@ -6,7 +6,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatMoney } from '@/lib/world/currencies';
-import { Loader2, MapPin } from 'lucide-react';
+import { Loader2, MapPin, FileText, Package } from 'lucide-react';
+import { printOrderDocument } from '@/lib/invoice';
 
 const ORDER_STATUSES = ['pending', 'paid', 'processing', 'fulfilled', 'shipped', 'delivered', 'cancelled', 'refunded'];
 
@@ -118,11 +119,18 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
           <div className="rounded-lg border border-[#E1E1E1] px-3 py-1">
             <Row label="Client" value={order.customer_name || order.customer_email} />
             <Row label="Téléphone" value={order.customer_phone} />
+            {order.discount_amount_cents > 0 && <Row label={`Remise${order.discount_code ? ' (' + order.discount_code + ')' : ''}`} value={'- ' + formatMoney(order.discount_amount_cents / 100, cur)} />}
             {order.shipping_cost_cents > 0 && <Row label="Livraison" value={formatMoney(order.shipping_cost_cents / 100, cur)} />}
+            {order.tax_cents > 0 && <Row label={`${order.tax_included ? 'Dont taxes' : 'Taxes'} (${order.tax_rate}%)`} value={formatMoney(order.tax_cents / 100, cur)} />}
             <div className="flex justify-between py-2">
               <span className="font-bold text-[#202223]">Total</span>
               <span className="font-bold text-[#008060]">{formatMoney((order.total_cents || 0) / 100, cur)}</span>
             </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button type="button" onClick={() => printOrderDocument(order, store, 'invoice')} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold border border-[#E1E1E1] rounded-md py-2 hover:bg-black/5"><FileText className="w-3.5 h-3.5" /> Facture (PDF / imprimer)</button>
+            <button type="button" onClick={() => printOrderDocument(order, store, 'packing')} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold border border-[#E1E1E1] rounded-md py-2 hover:bg-black/5"><Package className="w-3.5 h-3.5" /> Bon de livraison</button>
           </div>
 
           {order.shipping_address && (

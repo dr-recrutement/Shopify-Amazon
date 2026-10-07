@@ -5,6 +5,7 @@ import {
   Minus, Plus, Tag, Truck, MapPin, Mail, Phone, ShieldCheck, Lock, CreditCard, Star,
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { computeTax } from '@/lib/tax';
 import { cartGet, cartSave, cartSetEmail, cartRecover, validateDiscount } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -274,7 +275,7 @@ export default function Storefront() {
           setCart(null);
           setCartCount(0);
         }
-        setPayunitReturn({ paid, orderNumber: '#' + orderId.slice(0, 8).toUpperCase() });
+        setPayunitReturn({ paid, orderNumber: '#' + orderId.slice(0, 8).toUpperCase(), orderId });
         sessionStorage.removeItem(`sellia_${gateway}_pending_order`);
       })
       .catch((e) => setPayunitReturn({ paid: false, error: e.message }));
@@ -513,6 +514,7 @@ export default function Storefront() {
                 <Check className="w-10 h-10 text-[#008060] mx-auto mb-3" />
                 <p className="text-base font-bold text-[#202223]">Paiement confirmé !</p>
                 <p className="text-xs text-[#6D7175] mt-1">Commande {payunitReturn.orderNumber}</p>
+                {payunitReturn.orderId && <a href={`/store/${slug}/order/${payunitReturn.orderId}`} className="block text-xs underline text-[#008060] mt-2">Suivre ma commande</a>}
                 <button onClick={() => setPayunitReturn(null)} className="mt-5 w-full bg-[#008060] text-white text-sm font-semibold py-2.5 rounded-full hover:bg-[#00694d]">Continuer</button>
               </>
             ) : (
@@ -730,6 +732,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [orderFullId, setOrderFullId] = useState('');
   const [completedOrder, setCompletedOrder] = useState(null);
   const [error, setError] = useState('');
   const [stripeReady, setStripeReady] = useState(false);
@@ -780,6 +783,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           if (v.status !== 'paid') throw new Error('Paiement non confirmé par PayPal.');
           if (cart?.id) await cartRecover(store.id, getCartSessionId());
           setOrderNumber('#' + paypalPending.sellionOrderId.slice(0, 8).toUpperCase());
+          setOrderFullId(paypalPending.sellionOrderId);
           setPaypalPending(null);
           setDone(true);
           onDone();
@@ -868,7 +872,12 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
     return (zone.rate_amount_cents || 0) / 100;
   }, [form.country, shippingZones, cartSubtotal]);
 
-  const total = Math.max(0, cartSubtotal + (shippingEstimate || 0) - discountAmount);
+  const taxInfo = useMemo(
+    () => computeTax(store.settings?.taxes, form.country || store.country, Math.round(cartSubtotal * 100), Math.round(discountAmount * 100), Math.round((shippingEstimate || 0) * 100)),
+    [store.settings, store.country, form.country, cartSubtotal, discountAmount, shippingEstimate]
+  );
+  const taxAmount = taxInfo.taxCents / 100;
+  const total = Math.max(0, cartSubtotal + (shippingEstimate || 0) - discountAmount + (taxInfo.included ? 0 : taxAmount));
 
   const placeOrder = async (e) => {
     e.preventDefault();
@@ -944,6 +953,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
         if (cart?.id) await cartRecover(store.id, getCartSessionId());
         setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+        setOrderFullId(order.id);
         setDone(true);
         onDone();
         return;
@@ -973,6 +983,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               if (v.status !== 'paid') throw new Error('Paiement non confirmé par Flutterwave.');
               if (cart?.id) await cartRecover(store.id, getCartSessionId());
               setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+              setOrderFullId(order.id);
               setDone(true);
               onDone();
             } catch (vErr2) {
@@ -1008,6 +1019,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 if (v.status !== 'paid') throw new Error('Paiement non confirmé par Paystack.');
                 if (cart?.id) await cartRecover(store.id, getCartSessionId());
                 setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+                setOrderFullId(order.id);
                 setDone(true);
                 onDone();
               } catch (vErr2) {
@@ -1072,6 +1084,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
 
       if (cart?.id) await cartRecover(store.id, getCartSessionId());
       setOrderNumber('#' + order.id.slice(0, 8).toUpperCase());
+      setOrderFullId(order.id);
       setDone(true);
       onDone();
     } catch (err) {
@@ -1093,7 +1106,8 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
           {completedOrder && completedOrder.items.length > 0 && (
             <ReviewPrompt tenantId={store.id} order={completedOrder} theme={theme} />
           )}
-          <button onClick={onClose} className="mt-6 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
+          {orderFullId && <a href={`/store/${store.slug}/order/${orderFullId}`} className="mt-5 block text-center text-sm font-medium underline text-foreground">Suivre ma commande</a>}
+          <button onClick={onClose} className="mt-3 w-full bg-foreground text-background font-semibold py-3 rounded-full text-sm hover:opacity-90">Continuer mes achats</button>
         </div>
       </div>
     );
@@ -1270,6 +1284,9 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                 <div className="flex justify-between text-emerald-600"><span className="font-medium">Réduction ({discount?.code})</span><span className="font-semibold">-{formatMoney(discountAmount, store.currency)}</span></div>
               )}
               <div className="flex justify-between"><span className="text-muted-foreground inline-flex items-center gap-1.5"><Truck className="w-4 h-4" /> Livraison</span><span className={`font-semibold ${shippingEstimate === 0 ? 'text-emerald-600' : 'text-foreground'}`}>{shippingEstimate === null ? 'Calculée à la commande' : shippingEstimate === 0 ? 'Offerte' : formatMoney(shippingEstimate, store.currency)}</span></div>
+              {taxInfo.taxCents > 0 && (
+                <div className="flex justify-between"><span className="text-muted-foreground">{taxInfo.included ? `Dont ${store.settings?.taxes?.name || 'taxes'} (${taxInfo.rate}%)` : `${store.settings?.taxes?.name || 'Taxes'} (${taxInfo.rate}%)`}</span><span className="font-semibold text-foreground">{formatMoney(taxAmount, store.currency)}</span></div>
+              )}
             </div>
 
             <div className="mt-3 pt-3 border-t border-border flex justify-between items-center">

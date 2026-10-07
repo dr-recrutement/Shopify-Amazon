@@ -36,3 +36,9 @@ export async function validateDiscount(tenantId, code) {
   if (error) throw error;
   return data || null;
 }
+
+export async function getOrderStatus(tenantId, ref, email = null) {
+  const { data, error } = await supabase.rpc('storefront_order_status', { p_tenant_id: tenantId, p_ref: ref, p_email: email });
+  if (error) throw error;
+  return data || null;
+}

@@ -159,8 +159,40 @@ export function SettingsShippingDelivery() { return <div className={card}><h2 cl
 
 export function SettingsTaxes() {
   const { settings, patch, saved } = useSettingsBag();
-  const enabled = settings.taxes_auto_collect !== false;
-  return <div className={card}><h2 className={ttl}>Taxes et droits <SavedBadge show={saved} /></h2><label className="flex items-center justify-between mb-3"><span className="text-sm text-[#202223]">Collecter automatiquement les taxes</span><input type="checkbox" checked={enabled} onChange={(e) => patch({ taxes_auto_collect: e.target.checked })} className="accent-[#008060] w-4 h-4" /></label><p className="text-xs text-[#6D7175]">Ce réglage enregistre votre préférence. Le calcul de taxe réel selon le pays du client n'est pas encore appliqué au checkout.</p></div>;
+  const t = { enabled: false, name: 'TVA', default_rate: 0, prices_include_tax: false, tax_shipping: false, rates: [], ...(settings.taxes || {}) };
+  const [draft, setDraft] = useState(t);
+  useEffect(() => { setDraft({ enabled: false, name: 'TVA', default_rate: 0, prices_include_tax: false, tax_shipping: false, rates: [], ...(settings.taxes || {}) }); }, [settings.taxes]);
+  const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
+  const setRate = (i, k, v) => setDraft((d) => ({ ...d, rates: d.rates.map((r, idx) => (idx === i ? { ...r, [k]: v } : r)) }));
+  const save = () => patch({ taxes: { ...draft, default_rate: Number(draft.default_rate) || 0, rates: (draft.rates || []).filter((r) => r.country).map((r) => ({ country: r.country, rate: Number(r.rate) || 0 })) } });
+  return <div className={card}>
+    <h2 className={ttl}>Taxes et droits <SavedBadge show={saved} /></h2>
+    <label className="flex items-center justify-between mb-4"><span className="text-sm text-[#202223]">Calculer les taxes au checkout</span><input type="checkbox" checked={draft.enabled} onChange={(e) => set('enabled', e.target.checked)} className="accent-[#008060] w-4 h-4" /></label>
+    {draft.enabled && <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div><label className={lbl}>Nom de la taxe</label><input value={draft.name} onChange={(e) => set('name', e.target.value)} className={fld} placeholder="TVA" /></div>
+        <div><label className={lbl}>Taux par défaut (%)</label><input type="number" min="0" max="100" step="0.01" value={draft.default_rate} onChange={(e) => set('default_rate', e.target.value)} className={fld} /></div>
+      </div>
+      <label className="flex items-center justify-between"><span className="text-sm text-[#202223]">Les prix affichés incluent déjà la taxe</span><input type="checkbox" checked={draft.prices_include_tax} onChange={(e) => set('prices_include_tax', e.target.checked)} className="accent-[#008060] w-4 h-4" /></label>
+      <label className="flex items-center justify-between"><span className="text-sm text-[#202223]">Appliquer la taxe aux frais de livraison</span><input type="checkbox" checked={draft.tax_shipping} onChange={(e) => set('tax_shipping', e.target.checked)} className="accent-[#008060] w-4 h-4" /></label>
+      <div>
+        <p className="text-xs font-semibold text-[#6D7175] mb-2">Taux par pays (remplace le taux par défaut)</p>
+        <div className="space-y-2">
+          {draft.rates.map((r, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <select value={r.country} onChange={(e) => setRate(i, 'country', e.target.value)} className={fld}><option value="">Pays…</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}</select>
+              <input type="number" min="0" max="100" step="0.01" value={r.rate} onChange={(e) => setRate(i, 'rate', e.target.value)} className={`${fld} !w-28`} />
+              <span className="text-sm text-[#6D7175]">%</span>
+              <button type="button" onClick={() => setDraft((d) => ({ ...d, rates: d.rates.filter((_, idx) => idx !== i) }))} className="text-xs text-red-600 hover:underline">Retirer</button>
+            </div>
+          ))}
+        </div>
+        <button type="button" onClick={() => setDraft((d) => ({ ...d, rates: [...d.rates, { country: '', rate: 0 }] }))} className="text-xs font-semibold text-[#008060] hover:underline mt-2">+ Ajouter un pays</button>
+      </div>
+    </div>}
+    <button onClick={save} className="mt-5 bg-[#008060] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#00694d]">Enregistrer</button>
+    <p className="text-xs text-[#6D7175] mt-3">Le taux est choisi selon le pays de livraison du client, calculé côté serveur à la commande, enregistré sur chaque commande et repris dans la comptabilité et les factures.</p>
+  </div>;
 }
 
 export function SettingsLocations() {

@@ -870,7 +870,7 @@ export default function ThemeEditor() {
           { onConflict: 'tenant_id' }
         );
         if (cfgError) throw cfgError;
-        const { error: tenantError } = await supabase.from('tenants').update({ theme_id: theme.id, status: store.status === 'trial' ? store.status : 'active' }).eq('id', store.id);
+        const { error: tenantError } = await supabase.from('tenants').update({ theme_id: theme.id }).eq('id', store.id);
         if (tenantError) throw tenantError;
       }
       setPublished(true);

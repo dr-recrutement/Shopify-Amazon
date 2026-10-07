@@ -51,35 +51,90 @@ async function hmacSha256Hex(secret: string, message: string): Promise<string> {
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function deliverToWebhook(admin: ReturnType<typeof createClient>, webhook: { id: string; url: string; signing_secret_encrypted: string }, eventType: string, data: Record<string, unknown>) {
-  const eventId = `evt_${crypto.randomUUID().replace(/-/g, '')}`;
+// Exponential backoff between attempts (attempt N failed -> wait BACKOFF[N-1]).
+// After MAX_ATTEMPTS the delivery stays 'failed' with no next_retry_at (dead letter).
+const BACKOFF_MS = [60_000, 300_000, 1_800_000, 7_200_000, 43_200_000];
+const MAX_ATTEMPTS = BACKOFF_MS.length + 1;
+
+type Admin = ReturnType<typeof createClient>;
+type Webhook = { id: string; url: string; signing_secret_encrypted: string };
+
+// POSTs one signed payload. Same event_id on every retry so receivers can dedupe
+// (replay protection); X-LIAFRIK-Attempt tells them which try this is.
+async function sendSigned(admin: Admin, webhook: Webhook, eventPayload: Record<string, unknown>, attempt: number) {
+  const { data: encKeyRow } = await admin.from('platform_secrets').select('value').eq('key', 'gateway_encryption_key').maybeSingle();
+  if (!encKeyRow?.value) throw new Error('Encryption key not configured');
+  const signingSecret = await decryptOne(encKeyRow.value, webhook.signing_secret_encrypted);
+  const bodyStr = JSON.stringify(eventPayload);
+  const signature = await hmacSha256Hex(signingSecret, bodyStr);
+  let responseStatus = 0; let responseBody = ''; let ok = false;
   try {
-    const { data: encKeyRow } = await admin.from('platform_secrets').select('value').eq('key', 'gateway_encryption_key').maybeSingle();
-    if (!encKeyRow?.value) throw new Error('Encryption key not configured');
-    const signingSecret = await decryptOne(encKeyRow.value, webhook.signing_secret_encrypted);
-    const eventPayload = { id: eventId, type: eventType, application_id: 'sellia-platform', environment: 'production', timestamp: new Date().toISOString(), correlation_id: eventId, data };
-    const bodyStr = JSON.stringify(eventPayload);
-    const signature = await hmacSha256Hex(signingSecret, bodyStr);
-    let responseStatus = 0; let responseBody = ''; let status = 'failed';
-    try {
-      const res = await fetch(webhook.url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-LIAFRIK-Signature': `sha256=${signature}`, 'X-LIAFRIK-Event-Id': eventId }, body: bodyStr });
-      responseStatus = res.status;
-      responseBody = (await res.text()).slice(0, 500);
-      status = res.ok ? 'success' : 'failed';
-    } catch (e) {
-      responseBody = e instanceof Error ? e.message : 'Network error';
-    }
+    const res = await fetch(webhook.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-LIAFRIK-Signature': `sha256=${signature}`, 'X-LIAFRIK-Event-Id': String(eventPayload.id), 'X-LIAFRIK-Attempt': String(attempt) },
+      body: bodyStr,
+      signal: AbortSignal.timeout(10_000),
+    });
+    responseStatus = res.status;
+    responseBody = (await res.text()).slice(0, 500);
+    ok = res.ok;
+  } catch (e) {
+    responseBody = e instanceof Error ? e.message : 'Network error';
+  }
+  return { ok, responseStatus, responseBody };
+}
+
+function nextRetry(attempt: number): string | null {
+  return attempt >= MAX_ATTEMPTS ? null : new Date(Date.now() + BACKOFF_MS[attempt - 1]).toISOString();
+}
+
+async function deliverToWebhook(admin: Admin, webhook: Webhook, eventType: string, data: Record<string, unknown>) {
+  const eventId = `evt_${crypto.randomUUID().replace(/-/g, '')}`;
+  const eventPayload = { id: eventId, type: eventType, application_id: 'sellia-platform', environment: 'production', timestamp: new Date().toISOString(), correlation_id: eventId, data };
+  try {
+    const r = await sendSigned(admin, webhook, eventPayload, 1);
     await admin.from('command_center_webhook_deliveries').insert({
-      webhook_id: webhook.id, event_id: eventId, event_type: eventType, payload: eventPayload, status, attempts: 1, response_status: responseStatus || null, response_body: responseBody, delivered_at: status === 'success' ? new Date().toISOString() : null,
+      webhook_id: webhook.id, event_id: eventId, event_type: eventType, payload: eventPayload,
+      status: r.ok ? 'success' : 'failed', attempts: 1, response_status: r.responseStatus || null, response_body: r.responseBody,
+      delivered_at: r.ok ? new Date().toISOString() : null, next_retry_at: r.ok || eventType === 'connection.test' ? null : nextRetry(1),
     });
   } catch (e) {
-    // A broken signing secret (or any other setup issue) must not crash
-    // the caller, and must not vanish silently either - logged as a real
-    // failed delivery so it's visible in the audit/deliveries UI.
+    // A broken signing secret (or any other setup issue) must not crash the
+    // caller, and must not vanish silently either - logged as a failed delivery.
     await admin.from('command_center_webhook_deliveries').insert({
-      webhook_id: webhook.id, event_id: eventId, event_type: eventType, payload: { error: 'setup_failure' }, status: 'failed', attempts: 1, response_body: e instanceof Error ? e.message : String(e),
+      webhook_id: webhook.id, event_id: eventId, event_type: eventType, payload: eventPayload, status: 'failed', attempts: 1,
+      response_body: e instanceof Error ? e.message : String(e), next_retry_at: eventType === 'connection.test' ? null : nextRetry(1),
     });
   }
+}
+
+// Re-attempts every failed delivery whose backoff has elapsed.
+async function retryDue(admin: Admin) {
+  const { data: due } = await admin.from('command_center_webhook_deliveries')
+    .select('id, webhook_id, payload, attempts')
+    .eq('status', 'failed').not('next_retry_at', 'is', null).lte('next_retry_at', new Date().toISOString()).lt('attempts', MAX_ATTEMPTS)
+    .order('next_retry_at', { ascending: true }).limit(50);
+  let retried = 0; let succeeded = 0;
+  for (const d of due || []) {
+    // Claim the row first (compare-and-set on attempts) so overlapping runs never double-send.
+    const attempt = d.attempts + 1;
+    const { data: claimed } = await admin.from('command_center_webhook_deliveries').update({ attempts: attempt, next_retry_at: null }).eq('id', d.id).eq('attempts', d.attempts).select('id');
+    if (!claimed?.length) continue;
+    const { data: wh } = await admin.from('command_center_webhooks').select('id, url, signing_secret_encrypted, enabled').eq('id', d.webhook_id).maybeSingle();
+    if (!wh || !wh.enabled) { await admin.from('command_center_webhook_deliveries').update({ response_body: 'webhook disabled or deleted - retries stopped' }).eq('id', d.id); continue; }
+    retried++;
+    try {
+      const r = await sendSigned(admin, wh, d.payload, attempt);
+      if (r.ok) succeeded++;
+      await admin.from('command_center_webhook_deliveries').update({
+        status: r.ok ? 'success' : 'failed', response_status: r.responseStatus || null, response_body: r.responseBody,
+        delivered_at: r.ok ? new Date().toISOString() : null, next_retry_at: r.ok ? null : nextRetry(attempt),
+      }).eq('id', d.id);
+    } catch (e) {
+      await admin.from('command_center_webhook_deliveries').update({ response_body: e instanceof Error ? e.message : String(e), next_retry_at: nextRetry(attempt) }).eq('id', d.id);
+    }
+  }
+  return { retried, succeeded };
 }
 
 Deno.serve(async (req: Request) => {
@@ -96,6 +151,13 @@ Deno.serve(async (req: Request) => {
     payload = await req.json();
   } catch {
     return json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  if (payload.action === 'retry_due') {
+    const provided = (req.headers.get('Authorization') || '').replace('Bearer ', '');
+    const { data: secretRow } = await admin.from('platform_secrets').select('value').eq('key', 'command_center_trigger_secret').maybeSingle();
+    if (!secretRow?.value || provided !== secretRow.value) return json({ error: 'Unauthorized' }, 401);
+    return json(await retryDue(admin));
   }
 
   if (payload.action === 'deliver_event') {

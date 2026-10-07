@@ -29,3 +29,5 @@ All functions read `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and (when they ac
 | yoco-checkout | Yoco hosted checkout (initiate + verify) | false | built-in; platform_secrets: `gateway_encryption_key` |
 
 Already present in the repo but not covered by this table: `platform-billing`, `platform-payment-providers-admin`.
+
+| refund-order | PSP refunds (Stripe/Flutterwave/Paystack/PayPal) for store owner/admin, verify_jwt=false (JWT checked in code) | merchant gateway keys + gateway_encryption_key |

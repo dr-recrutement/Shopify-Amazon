@@ -26,7 +26,7 @@ async function sha256Hex(input: string): Promise<string> {
 const APP_INFO = {
   id: 'sellia-platform',
   name: 'Sellia',
-  version: '1.0.0',
+  version: '1.1.0',
 };
 
 // Every module/action/scope described here is real and implemented below
@@ -44,6 +44,8 @@ const CAPABILITIES = [
     scopes: { read: 'read:analytics' },
   },
 ];
+const WEBHOOK_EVENTS = ['tenant.suspended', 'tenant.reactivated', 'order.created', 'order.paid'];
+const RATE_LIMIT_PER_MINUTE = 60;
 const ALL_SCOPES = ['read:tenants', 'write:tenants', 'read:analytics', 'execute:actions'];
 
 async function auditLog(admin: ReturnType<typeof createClient>, entry: Record<string, unknown>) {
@@ -95,6 +97,28 @@ Deno.serve(async (req: Request) => {
     return json(body);
   }
 
+  if (path === 'v1/openapi.json' || path === 'openapi.json') {
+    const base = `${supabaseUrl}/functions/v1/command-center`;
+    const err = { description: 'Error', content: { 'application/json': { schema: { type: 'object', properties: { error: { type: 'string' } } } } } };
+    const sec = [{ bearerAuth: [] }];
+    const tenantParam = { name: 'tenant_id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } };
+    return json({
+      openapi: '3.0.3',
+      info: { title: 'Sellia - LIAFRIK Command Center API', version: APP_INFO.version, description: `Server-to-server API. Authenticate with Authorization: Bearer <api key>. Rate limit: ${RATE_LIMIT_PER_MINUTE} requests/minute/key (429 + Retry-After). Webhooks are signed: header X-LIAFRIK-Signature = sha256=HMAC_SHA256(signing_secret, raw body); events (${WEBHOOK_EVENTS.join(', ')}) carry a unique id (X-LIAFRIK-Event-Id, stable across retries - dedupe on it) and a timestamp; failed deliveries are retried with backoff 1m, 5m, 30m, 2h, 12h (X-LIAFRIK-Attempt header).` },
+      servers: [{ url: base }],
+      components: { securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer' } } },
+      paths: {
+        '/v1/health': { get: { summary: 'Health check (no auth)', responses: { 200: { description: 'Status' } } } },
+        '/v1/openapi.json': { get: { summary: 'This document (no auth)', responses: { 200: { description: 'OpenAPI 3 document' } } } },
+        '/v1/capabilities': { get: { summary: 'Modules, actions and scopes', security: sec, responses: { 200: { description: 'Capabilities' }, 401: err, 429: err } } },
+        '/v1/tenants': { get: { summary: 'List stores (scope read:tenants)', security: sec, parameters: [{ name: 'page', in: 'query', schema: { type: 'integer' } }, { name: 'per_page', in: 'query', schema: { type: 'integer', maximum: 100 } }, { name: 'status', in: 'query', schema: { type: 'string' } }, { name: 'search', in: 'query', schema: { type: 'string' } }], responses: { 200: { description: 'Paginated tenants' }, 401: err, 403: err, 429: err } } },
+        '/v1/tenants/{tenant_id}/suspend': { post: { summary: 'Suspend a store (scope write:tenants)', security: sec, parameters: [tenantParam], requestBody: { content: { 'application/json': { schema: { type: 'object', properties: { reason: { type: 'string' } } } } } }, responses: { 200: { description: 'Suspended' }, 403: err, 429: err } } },
+        '/v1/tenants/{tenant_id}/reactivate': { post: { summary: 'Reactivate a store (scope write:tenants)', security: sec, parameters: [tenantParam], responses: { 200: { description: 'Reactivated' }, 403: err, 429: err } } },
+        '/v1/analytics': { get: { summary: 'Platform counters (scope read:analytics)', security: sec, responses: { 200: { description: 'Analytics' }, 403: err, 429: err } } },
+      },
+    });
+  }
+
   // Every other endpoint requires a real, active, non-expired API key -
   // presented as Authorization: Bearer <raw key>. Never accepted as a
   // query param (would leak into logs/browser history at the transport
@@ -115,6 +139,12 @@ Deno.serve(async (req: Request) => {
     await auditLog(admin, { request_id: requestId, correlation_id: correlationId, api_key_id: apiKey.id, endpoint: path, method: req.method, result: 'denied', http_status: 401, ip_address: ip });
     return json({ error: 'API key expired' }, 401);
   }
+  // Rate limit per API key, counted from the audit log (every request is logged).
+  const { count: recent } = await admin.from('command_center_audit_log').select('id', { count: 'exact', head: true }).eq('api_key_id', apiKey.id).gte('created_at', new Date(Date.now() - 60_000).toISOString());
+  if ((recent || 0) >= RATE_LIMIT_PER_MINUTE) {
+    await auditLog(admin, { request_id: requestId, correlation_id: correlationId, api_key_id: apiKey.id, endpoint: path, method: req.method, result: 'denied', http_status: 429, ip_address: ip });
+    return new Response(JSON.stringify({ error: `Rate limit exceeded (${RATE_LIMIT_PER_MINUTE}/minute)` }), { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '30', ...CORS_HEADERS } });
+  }
   // Best-effort - never blocks the actual request on a failed bookkeeping write.
   admin.from('command_center_api_keys').update({ last_used_at: new Date().toISOString() }).eq('id', apiKey.id).then(() => {});
 
@@ -133,6 +163,9 @@ Deno.serve(async (req: Request) => {
         application: { ...APP_INFO, environment: 'production' },
         api_version: 'v1',
         capabilities: CAPABILITIES,
+        webhook_events: WEBHOOK_EVENTS,
+        rate_limit_per_minute: RATE_LIMIT_PER_MINUTE,
+        openapi: 'v1/openapi.json',
         granted_scopes: apiKey.scopes || [],
       });
     }

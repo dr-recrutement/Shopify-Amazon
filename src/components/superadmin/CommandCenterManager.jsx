@@ -205,7 +205,7 @@ function WebhooksTab() {
   const [testing, setTesting] = useState(null);
   const [testResults, setTestResults] = useState({});
 
-  const EVENTS = ['tenant.suspended', 'tenant.reactivated', 'order.created', 'connection.test'];
+  const EVENTS = ['tenant.suspended', 'tenant.reactivated', 'order.created', 'order.paid', 'connection.test'];
 
   const load = useCallback(async () => {
     setLoading(true);

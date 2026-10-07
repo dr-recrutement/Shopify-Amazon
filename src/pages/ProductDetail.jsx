@@ -5,7 +5,7 @@ import { supabase } from '@/api/supabaseClient';
 import { cartGet, cartSave } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme, inkOn } from '@/lib/themes';
 import { WishlistHeart } from '@/components/theme/ThemeRenderer';
 
 // Real color swatches for a "Couleur/Color" option, not just a text
@@ -266,14 +266,14 @@ export default function ProductDetail() {
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5" style={{ color: theme.palette.primary }} fill={i < Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) ? theme.palette.primary : 'none'} />
+                  <Star key={i} className="w-3.5 h-3.5" style={{ color: inkOn(theme.palette) }} fill={i < Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) ? inkOn(theme.palette) : 'none'} />
                 ))}
               </div>
               <span className="text-xs" style={{ color: p.muted }}>{(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} ({reviews.length} avis)</span>
             </div>
           )}
           <div className="flex items-baseline gap-2 mt-3">
-            <span className="text-xl font-bold" style={{ color: theme.palette.primary }}>{formatMoney(price, store.currency)}</span>
+            <span className="text-xl font-bold" style={{ color: inkOn(theme.palette) }}>{formatMoney(price, store.currency)}</span>
             {compareAt > price && <span className="text-sm line-through" style={{ color: p.muted }}>{formatMoney(compareAt, store.currency)}</span>}
           </div>
 
@@ -344,7 +344,7 @@ export default function ProductDetail() {
                     </div>
                     <div className="flex gap-0.5 mb-1.5">
                       {Array.from({ length: 5 }, (_, i) => (
-                        <Star key={i} className="w-3 h-3" style={{ color: theme.palette.primary }} fill={i < r.rating ? theme.palette.primary : 'none'} />
+                        <Star key={i} className="w-3 h-3" style={{ color: inkOn(theme.palette) }} fill={i < r.rating ? inkOn(theme.palette) : 'none'} />
                       ))}
                     </div>
                     {r.comment && <p className="text-sm" style={{ color: p.muted }}>{r.comment}</p>}
@@ -367,7 +367,7 @@ export default function ProductDetail() {
                 </div>
                 <div className="p-3">
                   <p className="text-sm font-semibold truncate" style={{ color: p.text }}>{sp.name}</p>
-                  <p className="text-sm font-bold mt-1" style={{ color: theme.palette.primary }}>{formatMoney((sp.price_cents || 0) / 100, store.currency)}</p>
+                  <p className="text-sm font-bold mt-1" style={{ color: inkOn(theme.palette) }}>{formatMoney((sp.price_cents || 0) / 100, store.currency)}</p>
                 </div>
               </Link>
             ))}

@@ -9,7 +9,7 @@ import { computeTax } from '@/lib/tax';
 import { cartGet, cartSave, cartSetEmail, cartRecover, validateDiscount } from '@/lib/storefrontApi';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme, inkOn } from '@/lib/themes';
 import { applySEO, applyStoreJsonLd, applyProductListJsonLd } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 import { COUNTRIES } from '@/lib/world/countries';
@@ -115,7 +115,7 @@ function StorePopup({ theme, store }) {
 
         {design === 'discount' && (
           <div className="mt-5">
-            <div className="border-2 border-dashed rounded-lg py-3 font-mono text-lg font-bold tracking-widest" style={{ borderColor: theme.palette.primary, color: theme.palette.primary }}>
+            <div className="border-2 border-dashed rounded-lg py-3 font-mono text-lg font-bold tracking-widest" style={{ borderColor: theme.palette.primary, color: inkOn(theme.palette) }}>
               {cfg.discountCode || 'BIENVENUE10'}
             </div>
             <button onClick={dismiss} className="w-full mt-4 py-3 sellia-btn text-sm font-semibold" style={{ background: theme.palette.primary, color: p.primaryText }}>Copier et magasiner</button>
@@ -124,7 +124,7 @@ function StorePopup({ theme, store }) {
 
         {design === 'newsletter' && (
           submitted ? (
-            <p className="mt-5 text-sm font-semibold" style={{ color: theme.palette.primary }}>Merci ! Votre inscription est confirmée.</p>
+            <p className="mt-5 text-sm font-semibold" style={{ color: inkOn(theme.palette) }}>Merci ! Votre inscription est confirmée.</p>
           ) : (
             <form onSubmit={submitNewsletter} className="mt-5 space-y-2">
               <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Votre e-mail" className="w-full px-4 py-2.5 rounded-md text-sm border outline-none" style={{ borderColor: p.border, color: p.text }} />

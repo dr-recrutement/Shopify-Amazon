@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, Calendar, ArrowRight } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme, inkOn } from '@/lib/themes';
 import { applySEO, applyArticleJsonLd } from '@/lib/seo';
 
 // Was calling base44.functions.invoke('publicStore', ...) - a Base44 edge
@@ -83,7 +83,7 @@ export default function ArticleDetail() {
           </div>
         )}
         <div className="mt-6 prose prose-sm max-w-none text-sm leading-relaxed [&_a]:underline" style={{ color: p.text }} dangerouslySetInnerHTML={{ __html: article.body || '' }} />
-        <Link to={`/store/${slug}`} className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: theme.palette.primary }}>
+        <Link to={`/store/${slug}`} className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: inkOn(theme.palette) }}>
           Retour à la boutique <ArrowRight className="w-4 h-4" />
         </Link>
       </article>

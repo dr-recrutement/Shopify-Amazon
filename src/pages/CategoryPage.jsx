@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, AlertCircle, Package } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import ThemeRenderer from '@/components/theme/ThemeRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme } from '@/lib/themes';
+import { cloneTheme, DEFAULT_THEME_ID, isValidTheme, migrateTheme, inkOn } from '@/lib/themes';
 import { applySEO } from '@/lib/seo';
 import { formatMoney } from '@/lib/world/currencies';
 
@@ -117,7 +117,7 @@ export default function CategoryPage() {
                 </div>
                 <div className="p-3">
                   <p className="text-sm font-semibold truncate" style={{ color: p.text }}>{prod.name}</p>
-                  <p className="text-sm font-bold mt-1" style={{ color: theme.palette.primary }}>{formatMoney((prod.price_cents || 0) / 100, store.currency)}</p>
+                  <p className="text-sm font-bold mt-1" style={{ color: inkOn(theme.palette) }}>{formatMoney((prod.price_cents || 0) / 100, store.currency)}</p>
                 </div>
               </Link>
             ))}

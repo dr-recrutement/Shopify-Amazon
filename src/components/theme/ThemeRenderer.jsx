@@ -1,3 +1,4 @@
+import { inkOn } from '@/lib/themes';
 import { useState, useEffect } from 'react';
 import { Image } from '@/components/ui/image';
 import { Upload, Link2, X, Star, Check, ArrowRight, Menu, Search, Heart } from 'lucide-react';
@@ -618,7 +619,7 @@ export default function ThemeRenderer({ theme, sections, mode = 'gallery', selec
                         <p className="text-sm font-bold" style={{ color: p.dark }}>{loc.name}</p>
                         <p className="text-xs mt-1.5" style={{ color: p.muted }}>{loc.address}{loc.city ? `, ${loc.city}` : ''}{loc.country ? `, ${loc.country}` : ''}</p>
                         {loc.phone && <p className="text-xs mt-1" style={{ color: p.muted }}>{loc.phone}</p>}
-                        {loc.hours && <p className="text-xs mt-1" style={{ color: theme.palette.primary }}>{loc.hours}</p>}
+                        {loc.hours && <p className="text-xs mt-1" style={{ color: inkOn(theme.palette) }}>{loc.hours}</p>}
                       </div>
                     ))}
                   </div>

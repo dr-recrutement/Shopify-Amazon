@@ -100,6 +100,12 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
             </div>
           </div>
 
+          {status === 'refunded' && order.payment_reference && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              Marquer la commande « Remboursée » met à jour Sellia et remet le stock en vente, mais <strong>ne renvoie pas l'argent au client</strong>. Effectuez le remboursement depuis le tableau de bord de {order.payment_gateway || 'votre prestataire de paiement'} (référence : {order.payment_reference}).
+            </div>
+          )}
+
           <div>
             <p className="text-xs font-semibold text-[#6D7175] mb-1.5">Articles</p>
             <div className="rounded-lg border border-[#E1E1E1] divide-y divide-[#F0F0F0]">

@@ -32,7 +32,7 @@ function ArticleEditor({ article, onSave, onClose, saving }) {
     setUploading(true);
     try {
       const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-      const path = `content/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const path = `content/${store.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error } = await supabase.storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false });
       if (error) throw error;
       const { data } = supabase.storage.from('product-images').getPublicUrl(path);

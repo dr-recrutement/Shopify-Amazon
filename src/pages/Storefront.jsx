@@ -585,7 +585,7 @@ export default function Storefront() {
                     <div className="flex gap-2">
                       <div className="flex-1 flex items-center gap-2 px-3 py-2 border border-border rounded-lg">
                         <Tag className="w-4 h-4 text-muted-foreground" />
-                        <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Code promo" className="flex-1 outline-none text-sm" />
+                        <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Code promo" className="flex-1 min-w-0 w-full outline-none text-sm" />
                       </div>
                       <button onClick={applyCoupon} className="px-4 py-2 rounded-lg text-sm font-semibold border border-foreground text-foreground hover:bg-foreground hover:text-background transition">Appliquer</button>
                     </div>
@@ -1150,12 +1150,12 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
                     if (!email || !email.includes('@') || !store?.id) return;
                     cartSetEmail(store.id, getCartSessionId(), email).catch(() => {});
                   }}
-                  className="flex-1 outline-none text-sm"
+                  className="flex-1 min-w-0 w-full outline-none text-sm"
                 />
               </div>
               <div className="flex items-center gap-2 px-3 py-3 border border-border rounded-lg bg-white">
                 <Phone className="w-4 h-4 text-muted-foreground" />
-                <input required placeholder="Téléphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="flex-1 outline-none text-sm" />
+                <input required placeholder="Téléphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="flex-1 min-w-0 w-full outline-none text-sm" />
               </div>
             </div>
           </section>
@@ -1170,7 +1170,7 @@ export function CheckoutModal({ store, cart, discount, discountAmount, activeGat
               </div>
               <div className="flex items-center gap-2 px-3 py-3 border border-border rounded-lg bg-white">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <input required placeholder="Adresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="flex-1 outline-none text-sm" />
+                <input required placeholder="Adresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="flex-1 min-w-0 w-full outline-none text-sm" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input required placeholder="Ville" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="px-3 py-3 border border-border rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand/30 bg-white" />

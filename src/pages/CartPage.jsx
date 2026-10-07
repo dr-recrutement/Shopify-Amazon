@@ -168,11 +168,11 @@ export default function CartPage() {
             </div>
 
             <div className="flex gap-2 mb-6">
-              <div className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg" style={{ border: `1px solid ${p.border}` }}>
+              <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2.5 rounded-lg" style={{ border: `1px solid ${p.border}` }}>
                 <Tag className="w-4 h-4" style={{ color: p.muted }} />
-                <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Code promo" className="flex-1 outline-none text-sm bg-transparent" style={{ color: p.text }} />
+                <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Code promo" className="flex-1 min-w-0 w-full outline-none text-sm bg-transparent" style={{ color: p.text }} />
               </div>
-              <button onClick={applyCoupon} className="px-4 py-2.5 rounded-lg text-sm font-semibold" style={{ border: `1px solid ${p.dark}`, color: p.dark }}>Appliquer</button>
+              <button onClick={applyCoupon} className="shrink-0 px-4 py-2.5 rounded-lg text-sm font-semibold" style={{ border: `1px solid ${p.dark}`, color: p.dark }}>Appliquer</button>
             </div>
             {couponMsg && <p className={`text-xs font-medium -mt-4 mb-6 ${couponMsg.ok ? 'text-emerald-600' : 'text-red-500'}`}>{couponMsg.text}</p>}
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
-import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { useCurrentStore, selectStore } from '@/hooks/useCurrentStore';
 import {
   Store, Package, Palette, CreditCard, Truck, Rocket, Loader2, Check, ArrowRight, ArrowLeft, X, Plus, Sparkles, Globe,
 } from 'lucide-react';
@@ -115,15 +115,16 @@ export default function Onboarding() {
           const { error } = await supabase.from('tenants').update(payload).eq('id', store.id);
           if (error) throw error;
         } else {
-          const { error } = await supabase.from('tenants').insert({
+          const { data: created, error } = await supabase.from('tenants').insert({
             ...payload,
             slug,
             owner_id: user.id,
             status: 'trial',
             plan: 'growth',
             trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString(),
-          });
+          }).select('id').single();
           if (error) throw error;
+          selectStore(created.id);
         }
         await reload();
       }

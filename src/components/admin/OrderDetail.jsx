@@ -31,8 +31,11 @@ function Row({ label, value }) {
 // (product_name/quantity/price_cents), not a Base44-style embedded array.
 export default function OrderDetail({ open, onOpenChange, order, store, onSaved }) {
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState('pending');
+  const [statusState, setStatus] = useState('pending');
+  const status = statusState;
   const [tracking, setTracking] = useState('');
+  const [refundAmount, setRefundAmount] = useState('');
+  const [refunding, setRefunding] = useState(false);
 
   useEffect(() => {
     if (!order) return;
@@ -43,7 +46,8 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
   if (!order) return null;
   const cur = order.currency || store?.currency || 'USD';
 
-  const save = async () => {
+  const save = async (statusOverride) => {
+    const status = typeof statusOverride === 'string' ? statusOverride : statusState;
     setSaving(true);
     try {
       const wasActive = !['cancelled', 'refunded'].includes(order.status);
@@ -79,6 +83,28 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
     } finally { setSaving(false); }
   };
 
+  const REFUNDABLE = ['stripe', 'flutterwave', 'paystack', 'paypal'];
+  const refundedCents = order.refunded_cents || 0;
+  const remainingCents = (order.total_cents || 0) - refundedCents;
+  const canRefund = REFUNDABLE.includes(order.payment_gateway) && order.payment_reference
+    && !['pending', 'cancelled', 'refunded'].includes(order.status) && remainingCents > 0;
+
+  const refund = async () => {
+    const cents = refundAmount ? Math.round(parseFloat(refundAmount.replace(',', '.')) * 100) : remainingCents;
+    if (!Number.isFinite(cents) || cents <= 0 || cents > remainingCents) { alert('Montant invalide'); return; }
+    if (!confirm(`Rembourser ${formatMoney(cents / 100, cur)} au client via ${order.payment_gateway} ? Cette action est irréversible.`)) return;
+    setRefunding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('refund-order', { body: { order_id: order.id, amount_cents: cents } });
+      if (error) throw new Error((await error.context?.json?.())?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      if (data?.full) await save('refunded');
+      else { onSaved(); onOpenChange(false); }
+    } catch (e) {
+      alert(e.message || 'Échec du remboursement');
+    } finally { setRefunding(false); }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -100,9 +126,22 @@ export default function OrderDetail({ open, onOpenChange, order, store, onSaved 
             </div>
           </div>
 
-          {status === 'refunded' && order.payment_reference && (
+          {canRefund && (
+            <div className="rounded-lg border border-[#E1E1E1] p-3 space-y-2">
+              <p className="text-xs font-semibold text-[#202223]">Remboursement via {order.payment_gateway}</p>
+              <p className="text-[11px] text-[#6D7175]">Reste remboursable : {formatMoney(remainingCents / 100, cur)}{refundedCents > 0 && ` (déjà remboursé : ${formatMoney(refundedCents / 100, cur)})`}. Laissez vide pour un remboursement total (la commande passe alors en « Remboursée » et le stock est remis en vente).</p>
+              <div className="flex gap-2">
+                <Input value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} className={inputCls} placeholder={`Montant (${cur}) — total par défaut`} />
+                <Button type="button" onClick={refund} disabled={refunding} variant="outline">{refunding ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Rembourser'}</Button>
+              </div>
+            </div>
+          )}
+          {!canRefund && refundedCents > 0 && (
+            <div className="rounded-lg border border-[#E1E1E1] bg-[#F6F6F7] px-3 py-2 text-xs text-[#202223]">Remboursé au client : {formatMoney(refundedCents / 100, cur)}{order.refund_reference ? ` (réf. ${order.refund_reference})` : ''}.</div>
+          )}
+          {status === 'refunded' && order.payment_reference && !REFUNDABLE.includes(order.payment_gateway) && refundedCents === 0 && (
             <div className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              Marquer la commande « Remboursée » met à jour Sellia et remet le stock en vente, mais <strong>ne renvoie pas l'argent au client</strong>. Effectuez le remboursement depuis le tableau de bord de {order.payment_gateway || 'votre prestataire de paiement'} (référence : {order.payment_reference}).
+              Ce moyen de paiement ({order.payment_gateway || 'prestataire'}) n'est pas remboursable automatiquement : marquer la commande « Remboursée » met à jour Sellia et remet le stock en vente, mais <strong>ne renvoie pas l'argent au client</strong>. Effectuez le remboursement depuis le tableau de bord du prestataire (référence : {order.payment_reference}).
             </div>
           )}
 

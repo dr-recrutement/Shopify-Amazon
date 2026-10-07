@@ -28,7 +28,18 @@ function normalizeTenant(t) {
   };
 }
 
+const SELECTED_KEY = 'sellia_current_store';
+export const NEW_STORE = '__new__';
+export function getSelectedStore() { try { return localStorage.getItem(SELECTED_KEY); } catch { return null; } }
+export function selectStore(id) {
+  try { if (id) localStorage.setItem(SELECTED_KEY, id); else localStorage.removeItem(SELECTED_KEY); } catch { /* storage unavailable */ }
+}
+// Switching stores reloads the page: ~40 components each hold their own copy
+// of the store, so a reload is the only way to make them all agree.
+export function switchStore(id) { selectStore(id); window.location.assign(id === NEW_STORE ? '/onboarding' : '/'); }
+
 export function useCurrentStore() {
+  const [stores, setStores] = useState([]);
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,14 +55,23 @@ export function useCurrentStore() {
         setError(null);
         return;
       }
-      const { data, error: queryError } = await supabase
+      const { data: owned, error: queryError } = await supabase
         .from('tenants')
         .select('*')
         .eq('owner_id', user.id)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: true });
       if (queryError) throw queryError;
+      setStores((owned || []).map(normalizeTenant));
+      const selected = getSelectedStore();
+      if (owned?.length && selected === NEW_STORE && window.location.pathname === '/onboarding') {
+        // Creating an additional store: no current store until onboarding inserts it.
+        setStore(null);
+        setStaffRole('owner');
+        setError(null);
+        return;
+      }
+      const data = (owned || []).find((t) => t.id === selected) || (owned || [])[0];
+      if (selected === NEW_STORE) selectStore(null); // abandoned creation: stop forcing onboarding
       if (data) {
         setStore(normalizeTenant(data));
         setStaffRole('owner');
@@ -69,13 +89,15 @@ export function useCurrentStore() {
         .select('tenant_id, role')
         .eq('status', 'invited')
         .ilike('email', user.email)
-        .maybeSingle();
-      if (membership?.tenant_id) {
-        const { data: staffTenant, error: staffTenantError } = await supabase
-          .from('tenants').select('*').eq('id', membership.tenant_id).maybeSingle();
-        if (staffTenantError) throw staffTenantError;
+        .order('created_at', { ascending: true });
+      const memberships = membership || [];
+      const picked = memberships.find((m) => m.tenant_id === getSelectedStore()) || memberships[0];
+      if (picked?.tenant_id) {
+        const { data: staffTenants } = await supabase.from('tenants').select('*').in('id', memberships.map((m) => m.tenant_id));
+        setStores((staffTenants || []).map(normalizeTenant));
+        const staffTenant = (staffTenants || []).find((t) => t.id === picked.tenant_id);
         setStore(normalizeTenant(staffTenant));
-        setStaffRole(membership.role || 'user');
+        setStaffRole(picked.role || 'user');
         setError(null);
         return;
       }
@@ -95,7 +117,7 @@ export function useCurrentStore() {
   // restrict something to owners/admins do so (Payments, Billing, Staff
   // management itself). Everything else keeps working exactly as before
   // for an owner, who still gets staffRole 'owner' unconditionally.
-  return { store, loading, error, reload: load, staffRole };
+  return { store, stores, loading, error, reload: load, staffRole };
 }
 
 export default useCurrentStore;

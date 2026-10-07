@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
-import { useCurrentStore } from '@/hooks/useCurrentStore';
+import { useCurrentStore, switchStore, NEW_STORE } from '@/hooks/useCurrentStore';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
 import { LANGUAGES } from '@/lib/i18n';
 
@@ -177,7 +177,7 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { store, loading: storeLoading } = useCurrentStore();
+  const { store, stores, loading: storeLoading, staffRole } = useCurrentStore();
   const [superadmin, setSuperadmin] = useState(false);
   const [superadminChecked, setSuperadminChecked] = useState(false);
   useEffect(() => {
@@ -311,6 +311,20 @@ export default function AdminLayout() {
                   <p className="text-sm font-bold truncate">{displayName}</p>
                   <p className="text-xs text-[#6D7175] truncate">{user?.email || ''}</p>
                 </div>
+                {(stores?.length > 1 || staffRole === 'owner') && (
+                  <div className="py-1 border-b border-[#F4F4F4]">
+                    <p className="px-4 pt-1 pb-0.5 text-[10px] font-bold uppercase tracking-wide text-[#6D7175]">Mes boutiques</p>
+                    {(stores || []).map((st) => (
+                      <button key={st.id} onClick={() => st.id !== store?.id && switchStore(st.id)} className="w-full flex items-center gap-2 px-4 py-1.5 text-sm hover:bg-black/5 text-left">
+                        <span className={`w-1.5 h-1.5 rounded-full ${st.id === store?.id ? 'bg-[#008060]' : 'bg-transparent'}`} />
+                        <span className="truncate flex-1">{st.name}</span>
+                      </button>
+                    ))}
+                    {staffRole === 'owner' && (
+                      <button onClick={() => switchStore(NEW_STORE)} className="w-full flex items-center gap-2 px-4 py-1.5 text-sm text-[#008060] hover:bg-black/5 text-left font-medium">+ Créer une boutique</button>
+                    )}
+                  </div>
+                )}
                 <Link to="/store-settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-black/5"><SettingsIcon className="w-4 h-4 opacity-60" /> Paramètres de la boutique</Link>
                 <Link to="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-black/5"><UserIcon className="w-4 h-4 opacity-60" /> Mes paramètres</Link>
                 <button onClick={doLogout} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-[#F4F4F4]"><LogOut className="w-4 h-4" /> Déconnexion</button>

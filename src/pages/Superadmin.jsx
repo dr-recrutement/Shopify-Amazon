@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { checkIsSuperAdmin } from '@/lib/superadmin';
+import { retryOnClockSkew } from '@/lib/clockSkew';
 import SubscriptionManager from '@/components/superadmin/SubscriptionManager';
 import IconLibraryManager from '@/components/superadmin/IconLibraryManager';
 import CommunicationsManager from '@/components/superadmin/CommunicationsManager';
@@ -61,6 +62,7 @@ export default function Superadmin() {
   const [admins, setAdmins] = useState([]);
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [tab, setTab] = useState('overview');
   const [busy, setBusy] = useState(null);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -75,13 +77,21 @@ export default function Superadmin() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      setLoadError('');
       const [s, o, p, a, i] = await Promise.all([
-        supabase.from('tenants').select('*').order('created_at', { ascending: false }).limit(500),
-        supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(100),
-        supabase.from('products').select('id').limit(1000),
-        supabase.from('super_admins').select('*').order('promoted_at', { ascending: true }),
-        supabase.from('super_admin_invites').select('*').order('created_at', { ascending: true }),
+        retryOnClockSkew(() => supabase.from('tenants').select('*').order('created_at', { ascending: false }).limit(500)),
+        retryOnClockSkew(() => supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(100)),
+        retryOnClockSkew(() => supabase.from('products').select('id').limit(1000)),
+        retryOnClockSkew(() => supabase.from('super_admins').select('*').order('promoted_at', { ascending: true })),
+        retryOnClockSkew(() => supabase.from('super_admin_invites').select('*').order('created_at', { ascending: true })),
       ]);
+      // A failed query used to be treated as "no data": the dashboard then
+      // looked empty although nothing was lost. Keep what we had and say so.
+      const failed = [s, o, p, a, i].find((r) => r.error);
+      if (failed) {
+        setLoadError(failed.error.message || 'Chargement impossible');
+        return;
+      }
       setStores(s.data || []);
       setOrders(o.data || []);
       setProducts(p.data || []);
@@ -89,6 +99,7 @@ export default function Superadmin() {
       setInvites(i.data || []);
     } catch (e) {
       console.error('Superadmin load failed:', e);
+      setLoadError(e?.message || 'Chargement impossible');
     } finally { setLoading(false); }
   }, []);
 
@@ -183,6 +194,12 @@ export default function Superadmin() {
         </div>
         <button onClick={load} className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white px-3 py-1.5 rounded-md hover:bg-white/10 shrink-0"><RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> <span className="hidden sm:inline">Actualiser</span></button>
       </div>
+      {loadError && (
+        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-800 flex items-center justify-between gap-3">
+          <span>Les données n'ont pas pu être chargées ({loadError}). Elles ne sont pas perdues : réessayez.</span>
+          <button onClick={load} className="font-medium underline shrink-0">Réessayer</button>
+        </div>
+      )}
 
       <div className="px-4 sm:px-6 py-5 max-w-7xl mx-auto space-y-6">
         {/* Stats */}

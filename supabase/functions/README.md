@@ -31,3 +31,4 @@ All functions read `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and (when they ac
 Already present in the repo but not covered by this table: `platform-billing`, `platform-payment-providers-admin`.
 
 | refund-order | PSP refunds (Stripe/Flutterwave/Paystack/PayPal) for store owner/admin, verify_jwt=false (JWT checked in code) | merchant gateway keys + gateway_encryption_key |
+| register-user | Fallback sign-up when Supabase Auth cannot send the confirmation email (creates a confirmed account, re-checks the failure itself) | none |

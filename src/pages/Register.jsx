@@ -67,7 +67,28 @@ export default function Register() {
           emailRedirectTo: window.location.origin + postAuthDestination,
         },
       });
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        // Supabase Auth could not send the confirmation email (project SMTP
+        // broken): without this fallback nobody could create an account at
+        // all, and the person then hit "account doesn't exist" at login.
+        // The server function re-checks that this is exactly the failure,
+        // creates the confirmed account, and we sign the person in.
+        if (/sending (confirmation )?email/i.test(signUpError.message || "") || signUpError.status === 500) {
+          const { data: fb, error: fbError } = await supabase.functions.invoke("register-user", { body: { email, password, phone, country } });
+          let fbMsg = fb?.message || fb?.error;
+          if (fbError && !fbMsg) { try { const j = await fbError.context?.json?.(); fbMsg = j?.message || j?.error; } catch { /* ignore */ } }
+          if (fbError || fb?.error) throw new Error(fbMsg || signUpError.message);
+          if (fb?.mode === "created_confirmed") {
+            const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+            if (loginError) throw loginError;
+            window.location.href = postAuthDestination;
+            return;
+          }
+          setShowOtp(true);
+          return;
+        }
+        throw signUpError;
+      }
       if (data.session) {
         // Email confirmation is disabled for this project: the account is
         // already active and signed in, so there's nothing to wait for.

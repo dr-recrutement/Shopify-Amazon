@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/toaster"
+import LogoLoader from "@/components/LogoLoader";
 import { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -87,11 +87,7 @@ const AuthenticatedApp = () => {
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LogoLoader />;
   }
 
   // Handle authentication errors that block the whole app (e.g. this app
@@ -244,7 +240,7 @@ function CustomDomainGate({ children }) {
   }, [navigate]);
 
   if (state === 'checking' || state === 'redirecting') {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
+    return <LogoLoader />;
   }
   if (state === 'not-found') {
     return (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import LogoLoader from "@/components/LogoLoader";
 import { useParams, Link } from 'react-router-dom';
 import {
   ShoppingCart, X, Loader2, AlertCircle, Trash2, ArrowRight, ArrowLeft, Check,
@@ -464,7 +465,7 @@ export default function Storefront() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center py-32"><Loader2 className="w-8 h-8 animate-spin text-brand" /></div>;
+  if (loading) return <LogoLoader />;
   if (error) return (
     <div className="max-w-md mx-auto mt-24 text-center">
       <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />

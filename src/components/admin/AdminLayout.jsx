@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import LogoLoader from "@/components/LogoLoader";
 import { NavLink, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Search, Bell, ChevronDown, Home, ShoppingCart, Package, Users, TrendingUp,
   Tag, FileText, BarChart3, Store, Settings as SettingsIcon, Globe, Bot, Megaphone,
   FileBarChart, Zap, Calculator, LayoutGrid, Palette,
-  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, Loader2, AlertCircle, Languages, ClipboardList,
+  Star, Truck, Boxes, Image as ImageIcon, BookOpen, Menu, X, LogOut, User as UserIcon, ShieldCheck, Eye, Activity, AlertCircle, Languages, ClipboardList,
 } from 'lucide-react';
 import { BRAND } from '@/lib/brand';
 import { useAuth } from '@/lib/AuthContext';
@@ -246,11 +247,7 @@ export default function AdminLayout() {
   }
 
   if (storeLoading || !superadminChecked || (!superadmin && !store && location.pathname !== '/onboarding')) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F4F4F4]">
-        <Loader2 className="w-6 h-6 animate-spin text-[#008060]" />
-      </div>
-    );
+    return <LogoLoader />;
   }
 
   const displayName = user?.user_metadata?.full_name || user?.email || 'Utilisateur';

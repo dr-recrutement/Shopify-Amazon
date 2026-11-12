@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/api/supabaseClient';
+import { retryOnClockSkew, isClockSkewError } from '@/lib/clockSkew';
 
 // Loads the tenant (boutique) owned by the current user from the native
 // `tenants` table (RLS: owner_id = auth.uid()), and normalizes it into the
@@ -55,11 +56,16 @@ export function useCurrentStore() {
         setError(null);
         return;
       }
-      const { data: owned, error: queryError } = await supabase
+      // A failed query must never be read as "this user has no store": that
+      // is exactly what sent already-registered owners back through
+      // onboarding when the backend briefly rejected their token ("JWT
+      // issued at future"). Clock-skew errors are retried (waiting), and
+      // any remaining error is thrown so callers can see `error`.
+      const { data: owned, error: queryError } = await retryOnClockSkew(() => supabase
         .from('tenants')
         .select('*')
         .eq('owner_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true }));
       if (queryError) throw queryError;
       setStores((owned || []).map(normalizeTenant));
       const selected = getSelectedStore();
@@ -84,16 +90,20 @@ export function useCurrentStore() {
       // matches by email, not a user_id column). Every page reading
       // `store` from here would render its "configurez votre boutique"
       // empty state for a real, logged-in staff member.
-      const { data: membership } = await supabase
+      const { data: membership, error: membershipError } = await retryOnClockSkew(() => supabase
         .from('team_members')
         .select('tenant_id, role')
         .eq('status', 'invited')
         .ilike('email', user.email)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true }));
+      // Only the clock-skew failure is escalated here; any other error on
+      // this lookup keeps its previous behaviour (treated as "not staff").
+      if (membershipError && isClockSkewError(membershipError)) throw membershipError;
       const memberships = membership || [];
       const picked = memberships.find((m) => m.tenant_id === getSelectedStore()) || memberships[0];
       if (picked?.tenant_id) {
-        const { data: staffTenants } = await supabase.from('tenants').select('*').in('id', memberships.map((m) => m.tenant_id));
+        const { data: staffTenants, error: staffTenantsError } = await retryOnClockSkew(() => supabase.from('tenants').select('*').in('id', memberships.map((m) => m.tenant_id)));
+        if (staffTenantsError && isClockSkewError(staffTenantsError)) throw staffTenantsError;
         setStores((staffTenants || []).map(normalizeTenant));
         const staffTenant = (staffTenants || []).find((t) => t.id === picked.tenant_id);
         setStore(normalizeTenant(staffTenant));

@@ -63,7 +63,11 @@
     "total": "Total",
     "date": "Date",
     "language": "Language",
-    "logout": "Log out"
+    "logout": "Log out",
+    "store_check_title": "Can't check your store right now",
+    "store_check_body": "A temporary server error is preventing us from finding your store. Your account and store are intact: don't recreate anything. Wait a few moments, then try again.",
+    "store_check_retry": "Try again",
+    "store_check_logout": "Log out"
   },
   "dashboard": {
     "welcome": "Welcome to Sellia",

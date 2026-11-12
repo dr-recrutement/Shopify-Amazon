@@ -63,7 +63,11 @@
     "total": "Total",
     "date": "Date",
     "language": "Langue",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "store_check_title": "Vérification de votre boutique impossible pour le moment",
+    "store_check_body": "Une erreur temporaire du serveur nous empêche de retrouver votre boutique. Votre compte et votre boutique sont intacts : ne recréez rien. Patientez quelques instants puis réessayez.",
+    "store_check_retry": "Réessayer",
+    "store_check_logout": "Se déconnecter"
   },
   "dashboard": {
     "welcome": "Bienvenue sur Sellia",

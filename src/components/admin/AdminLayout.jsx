@@ -177,7 +177,7 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { store, stores, loading: storeLoading, staffRole } = useCurrentStore();
+  const { store, stores, loading: storeLoading, error: storeError, reload: reloadStore, staffRole } = useCurrentStore();
   const [superadmin, setSuperadmin] = useState(false);
   const [superadminChecked, setSuperadminChecked] = useState(false);
   useEffect(() => {
@@ -222,10 +222,28 @@ export default function AdminLayout() {
   // exempt: they manage the whole platform, not one tenant, and have no
   // reason to be funneled through store creation at all.
   useEffect(() => {
-    if (!storeLoading && superadminChecked && !superadmin && !store && location.pathname !== '/onboarding') {
+    // `!storeError`: when looking up the store FAILED (e.g. a transient
+    // backend error), we don't know that the user has no store - sending
+    // them to onboarding would make them recreate a store they already own.
+    if (!storeLoading && superadminChecked && !superadmin && !store && !storeError && location.pathname !== '/onboarding') {
       navigate('/onboarding', { replace: true });
     }
-  }, [storeLoading, superadminChecked, superadmin, store, location.pathname, navigate]);
+  }, [storeLoading, superadminChecked, superadmin, store, storeError, location.pathname, navigate]);
+
+  if (!storeLoading && superadminChecked && !superadmin && !store && storeError && location.pathname !== '/onboarding') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F4F4] p-4">
+        <div className="max-w-md w-full bg-white border border-[#E1E1E1] rounded-2xl p-7 text-center shadow-sm">
+          <h1 className="text-lg font-bold text-[#202223]">{t('common.store_check_title')}</h1>
+          <p className="mt-3 text-sm text-[#6D7175] leading-relaxed">{t('common.store_check_body')}</p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-center">
+            <button onClick={() => reloadStore()} className="bg-[#008060] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#00694d] transition-colors">{t('common.store_check_retry')}</button>
+            <button onClick={() => logout()} className="border border-[#E1E1E1] text-[#202223] text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-black/5 transition-colors">{t('common.store_check_logout')}</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (storeLoading || !superadminChecked || (!superadmin && !store && location.pathname !== '/onboarding')) {
     return (

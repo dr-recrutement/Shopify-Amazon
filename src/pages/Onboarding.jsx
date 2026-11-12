@@ -58,7 +58,7 @@ const fld = 'w-full px-3 py-2.5 border border-[#E1E1E1] rounded-lg text-sm focus
 const lbl = 'text-xs font-semibold text-[#6D7175] mb-1.5 block';
 
 export default function Onboarding() {
-  const { store, reload } = useCurrentStore();
+  const { store, reload, loading: storeLoading, error: storeError } = useCurrentStore();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -95,6 +95,15 @@ export default function Onboarding() {
     setBusy(true); setError('');
     try {
       if (step === 0) {
+        // Never insert a store while we can't tell whether this account
+        // already has one: a failed (or still running) store lookup looks
+        // identical to "no store", and creating one then duplicates the
+        // merchant's real store.
+        if (!store?.id && (storeLoading || storeError)) {
+          throw new Error(storeError
+            ? "Impossible de vérifier si vous avez déjà une boutique (erreur temporaire du serveur). Votre compte est intact : ne créez rien de nouveau. Patientez quelques instants, rechargez la page puis reconnectez-vous."
+            : "Vérification de votre compte en cours, réessayez dans un instant.");
+        }
         const { data: { user } } = await supabase.auth.getUser();
         // A store with an existing slug keeps it (don't silently change a
         // merchant's real, possibly-already-shared URL); one with none

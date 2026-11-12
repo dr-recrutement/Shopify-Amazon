@@ -63,7 +63,11 @@
     "total": "Lépp",
     "date": "Bis",
     "language": "Làkk",
-    "logout": "Genn"
+    "logout": "Genn",
+    "store_check_title": "Mënuñu seet sa boutique léegi",
+    "store_check_body": "Benn erreur serveur bu yàgul dafay tax nu gisu sa boutique. Sa compte ak sa boutique am nañu: bu sos dara ci bees. Xaar ab diir tuuti te jéemaat.",
+    "store_check_retry": "Jéemaat",
+    "store_check_logout": "Génn"
   },
   "dashboard": {
     "welcome": "Dalal ak jàmm ci Sellia",

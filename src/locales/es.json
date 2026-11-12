@@ -63,7 +63,11 @@
     "total": "Total",
     "date": "Fecha",
     "language": "Idioma",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "store_check_title": "No se puede comprobar tu tienda en este momento",
+    "store_check_body": "Un error temporal del servidor nos impide encontrar tu tienda. Tu cuenta y tu tienda están intactas: no vuelvas a crear nada. Espera unos instantes y vuelve a intentarlo.",
+    "store_check_retry": "Reintentar",
+    "store_check_logout": "Cerrar sesión"
   },
   "dashboard": {
     "welcome": "Bienvenido a Sellia",

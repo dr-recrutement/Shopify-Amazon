@@ -63,7 +63,11 @@
     "total": "Jumla",
     "date": "Tarehe",
     "language": "Lugha",
-    "logout": "Toka"
+    "logout": "Toka",
+    "store_check_title": "Haiwezekani kuthibitisha duka lako kwa sasa",
+    "store_check_body": "Hitilafu ya muda ya seva inatuzuia kupata duka lako. Akaunti yako na duka lako viko salama: usiunde upya chochote. Subiri kidogo kisha ujaribu tena.",
+    "store_check_retry": "Jaribu tena",
+    "store_check_logout": "Toka"
   },
   "dashboard": {
     "welcome": "Karibu Sellia",

@@ -1,4 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
+import { retryOnClockSkew } from '@/lib/clockSkew';
 
 // Super admin status now lives in the database (public.super_admins), with
 // RLS that only lets existing active super admins add/remove others (see
@@ -8,12 +9,12 @@ import { supabase } from '@/api/supabaseClient';
 
 export async function checkIsSuperAdmin(userId) {
   if (!userId) return false;
-  const { data } = await supabase
+  const { data } = await retryOnClockSkew(() => supabase
     .from('super_admins')
     .select('id')
     .eq('user_id', userId)
     .eq('status', 'active')
-    .maybeSingle();
+    .maybeSingle());
   return !!data;
 }
 
